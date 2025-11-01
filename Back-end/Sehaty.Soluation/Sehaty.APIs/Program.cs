@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using Sehaty.Infrastructure.Data.Contexts;
+
 namespace Sehaty.APIs
 {
     public class Program
@@ -13,6 +16,11 @@ namespace Sehaty.APIs
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContext<SehatyDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("Sehaty"));
+            });
 
             var app = builder.Build();
 

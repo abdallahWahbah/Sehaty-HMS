@@ -8,5 +8,6 @@ namespace Sehaty.Core.Entites
 {
     public class Department : BaseEntity
     {
+        public string Name { get; set; }
     }
 }

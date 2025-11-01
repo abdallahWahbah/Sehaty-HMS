@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sehaty.Core.Entites
 {
     public class DoctorAvailabilitySlot : BaseEntity
     {
-        [ForeignKey(nameof(Doctors))]
+        [ForeignKey(nameof(Doctor))]
         [Column(TypeName = "nvarchar(10)")]
-        public string Doctor_ID { get; set; }
-        public Doctor Doctors { get; set; }
+        public string DoctorId { get; set; }
+        public Doctor Doctor { get; set; }
         [Column(TypeName = "nvarchar(10)")]
-
-        public string? Day_of_Week { get; set; }
-        public TimeOnly Start_Time { get; set; }
-        public TimeOnly End_Time { get; set; }
-        public bool Is_Recurring { get; set; }
-        public DateOnly? Date { get; set; }
-        public bool Available_Flag { get; set; }
+        public string DayOfWeek { get; set; }
+        public TimeOnly StartTime { get; set; }
+        public TimeOnly EndTime { get; set; }
+        public bool IsRecurring { get; set; }
+        public DateOnly Date { get; set; }
+        public bool AvailableFlag { get; set; }
     }
 }
