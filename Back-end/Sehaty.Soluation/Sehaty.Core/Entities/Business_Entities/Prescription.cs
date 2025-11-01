@@ -9,5 +9,7 @@ namespace Sehaty.Core.Entities.Business_Entities
 {
     public class Prescription : BaseEntity
     {
+        public string MedicationName { get; set; }
+
     }
 }
