@@ -1,0 +1,12 @@
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Core\bin\Debug\net8.0\Sehaty.Core.deps.json
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Core\bin\Debug\net8.0\Sehaty.Core.dll
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Core\bin\Debug\net8.0\Sehaty.Core.pdb
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Core\obj\Debug\net8.0\Sehaty.Core.GeneratedMSBuildEditorConfig.editorconfig
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Core\obj\Debug\net8.0\Sehaty.Core.AssemblyInfoInputs.cache
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Core\obj\Debug\net8.0\Sehaty.Core.AssemblyInfo.cs
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Core\obj\Debug\net8.0\Sehaty.Core.csproj.CoreCompileInputs.cache
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Core\obj\Debug\net8.0\Sehaty.Core.sourcelink.json
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Core\obj\Debug\net8.0\Sehaty.Core.dll
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Core\obj\Debug\net8.0\refint\Sehaty.Core.dll
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Core\obj\Debug\net8.0\Sehaty.Core.pdb
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Core\obj\Debug\net8.0\ref\Sehaty.Core.dll

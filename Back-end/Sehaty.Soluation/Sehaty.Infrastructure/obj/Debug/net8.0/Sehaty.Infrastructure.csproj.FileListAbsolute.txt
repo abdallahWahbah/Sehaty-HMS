@@ -1,0 +1,16 @@
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\bin\Debug\net8.0\Sehaty.Infrastructure.deps.json
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\bin\Debug\net8.0\Sehaty.Infrastructure.dll
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\bin\Debug\net8.0\Sehaty.Infrastructure.pdb
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\bin\Debug\net8.0\Sehaty.Core.dll
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\bin\Debug\net8.0\Sehaty.Core.pdb
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\obj\Debug\net8.0\Sehaty.Infrastructure.csproj.AssemblyReference.cache
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\obj\Debug\net8.0\Sehaty.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\obj\Debug\net8.0\Sehaty.Infrastructure.AssemblyInfoInputs.cache
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\obj\Debug\net8.0\Sehaty.Infrastructure.AssemblyInfo.cs
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\obj\Debug\net8.0\Sehaty.Infrastructure.csproj.CoreCompileInputs.cache
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\obj\Debug\net8.0\Sehaty.Infrastructure.sourcelink.json
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\obj\Debug\net8.0\Sehaty.I.CBC0544A.Up2Date
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\obj\Debug\net8.0\Sehaty.Infrastructure.dll
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\obj\Debug\net8.0\refint\Sehaty.Infrastructure.dll
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\obj\Debug\net8.0\Sehaty.Infrastructure.pdb
+F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS-AbdullahMuhammad\Back-end\Sehaty.Soluation\Sehaty.Infrastructure\obj\Debug\net8.0\ref\Sehaty.Infrastructure.dll

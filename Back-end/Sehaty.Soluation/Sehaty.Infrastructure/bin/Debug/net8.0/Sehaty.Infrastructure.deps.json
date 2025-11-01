@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Sehaty.Infrastructure/1.0.0": {
+        "dependencies": {
+          "Sehaty.Core": "1.0.0"
+        },
+        "runtime": {
+          "Sehaty.Infrastructure.dll": {}
+        }
+      },
+      "Sehaty.Core/1.0.0": {
+        "runtime": {
+          "Sehaty.Core.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Sehaty.Infrastructure/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Sehaty.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
