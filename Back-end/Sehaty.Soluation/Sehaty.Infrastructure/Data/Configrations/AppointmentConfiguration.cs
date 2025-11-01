@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sehaty.Core.Entites
+namespace Sehaty.Infrastructure.Data.Configrations
 {
-    public class Department : BaseEntity
+    internal class AppointmentConfiguration
     {
-        public string Name { get; set; }
     }
 }
