@@ -1,2 +1,49 @@
-# Visual Studio cache and settings
+# ============================
+# Build results
+# ============================
+bin/
+obj/
+Debug/
+Release/
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
+**/net8.0/
+ 
+# ============================
+# Visual Studio
+# ============================
 .vs/
+*.user
+*.suo
+*.slnx/
+*.vscode/
+ 
+# ============================
+# Logs and temporary files
+# ============================
+*.log
+*.cache
+*.temp
+*.swp
+*.pid
+ 
+# ============================
+# Resharper, Rider, etc.
+# ============================
+_ReSharper*/
+*.DotSettings.user
+ 
+# ============================
+# Keep config and code
+# ============================
+# Do NOT ignore these:
+# - Solution & project files
+!*.sln
+!*.csproj
+# - Config files (only the main ones, exclude secrets)
+!appsettings.json
+!appsettings.Development.json
+# - C# code files
+!*.cs

@@ -1,0 +1,6 @@
+@Sehaty.APIs_HostAddress = http://localhost:5122
+
+GET {{Sehaty.APIs_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
