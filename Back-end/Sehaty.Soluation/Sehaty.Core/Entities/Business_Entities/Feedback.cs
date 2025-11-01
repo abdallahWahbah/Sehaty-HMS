@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sehaty.Core.Entites
+﻿namespace Sehaty.Core.Entites
 {
     public class Feedback : BaseEntity
     {
+        // Range (1,5)
+        public int Rating { get; set; }
+        public string Comments { get; set; }
+        public bool IsAnonymous { get; set; }
+        public DateTime SubmittedAt { get; set; }
+        public int AppointmentId { get; set; }
+        public Appointment Appointment { get; set; }
     }
 }
