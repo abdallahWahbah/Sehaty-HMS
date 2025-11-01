@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Specifications\" />
-    <Folder Include="Services.Contracts\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Specifications\" />
+		<Folder Include="Services.Contracts\" />
+	</ItemGroup>
 
 </Project>
