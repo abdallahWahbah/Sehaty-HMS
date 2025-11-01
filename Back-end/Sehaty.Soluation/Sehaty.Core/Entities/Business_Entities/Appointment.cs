@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Sehaty.Core.Entities.Business_Entities;
+﻿using Sehaty.Core.Entities.Business_Entities;
 
 namespace Sehaty.Core.Entites
 {
     public class Appointment : BaseEntity
     {
-        public int Id { get; set; } 
         public int PatientId { get; set; }
         public int DoctorId { get; set; }
         public DateTime AppointmentDateTime { get; set; }
