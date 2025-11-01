@@ -9,6 +9,7 @@ namespace Sehaty.Core.Entities.User_Entities
 {
     public class ApplicationUser : BaseEntity
     {
-        
-    }
+		public ICollection<Notification> Notification { get; set; }=new List<Notification>();
+
+	}
 }
