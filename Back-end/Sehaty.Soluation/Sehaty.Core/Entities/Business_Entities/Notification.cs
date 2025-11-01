@@ -24,8 +24,8 @@ namespace Sehaty.Core.Entites
 		public bool IsRead { get; set; } //how we would track if notification is read or not????
 		public string Priority { get; set; }
 		public NotificationType NotificationType { get; set; }
-		public string? RelatedEntityType { get; set; }//what is this???
-		public int RelatedEntityId { get; set; }//what is this???  is it fk???
+		public string? RelatedEntityType { get; set; }
+		public int RelatedEntityId { get; set; }
 		public bool SentViaEmail { get; set; }
 		public bool SentViaSMS { get; set; }
 		public int UserId { get; set; } // Foreign key to User
