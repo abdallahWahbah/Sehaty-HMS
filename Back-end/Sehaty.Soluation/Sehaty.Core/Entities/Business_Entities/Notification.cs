@@ -4,12 +4,13 @@ namespace Sehaty.Core.Entites
 {
     public enum NotificationType
     {
-        Appointment,
+		    Appointment,
         Prescription,
         Payment,
         Result,
         General
-    }
+	  }
+    
     public class Notification : BaseEntity
     {
         public string Title { get; set; }
