@@ -46,8 +46,7 @@ namespace Sehaty.Infrastructure.Data.Configrations
                 .HasColumnType("datetime");
             builder.HasMany(u => u.Notifications)
                 .WithOne(n => n.User)
-                .HasForeignKey(n => n.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(n => n.UserId);
         }
     }
 }
