@@ -5,8 +5,8 @@ namespace Sehaty.Core.Entites
     public class DoctorAvailabilitySlot : BaseEntity
     {
         [ForeignKey(nameof(Doctor))]
-        [Column(TypeName = "nvarchar(10)")]
-        public string DoctorId { get; set; }
+        [Column(TypeName = "int")]
+        public int DoctorId { get; set; }
         public Doctor Doctor { get; set; }
         [Column(TypeName = "nvarchar(10)")]
         public string DayOfWeek { get; set; }

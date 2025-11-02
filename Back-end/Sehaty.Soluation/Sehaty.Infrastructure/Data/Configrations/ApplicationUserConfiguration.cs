@@ -1,12 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Sehaty.Core.Entites;
 using Sehaty.Core.Entities.User_Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sehaty.Infrastructure.Data.Configrations
 {
@@ -42,11 +36,17 @@ namespace Sehaty.Infrastructure.Data.Configrations
             builder.Property(n => n.CreatedAt)
                 .HasColumnType("datetime")
                 .HasDefaultValueSql("GETDATE()");
+
             builder.Property(n => n.LastLogin)
                 .HasColumnType("datetime");
             builder.HasMany(u => u.Notifications)
                 .WithOne(n => n.User)
                 .HasForeignKey(n => n.UserId);
+
+            builder.HasOne(U => U.Role)
+                .WithMany(R => R.Users)
+                .HasForeignKey(U => U.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
