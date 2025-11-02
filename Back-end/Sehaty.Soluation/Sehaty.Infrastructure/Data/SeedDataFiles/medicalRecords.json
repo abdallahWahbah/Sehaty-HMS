@@ -1,0 +1,50 @@
+[
+  {
+    "AppointmentId": 1,
+    "RecordDate": "2025-11-02T10:00:00Z",
+    "Symptoms": "Fever, cough, mild fatigue",
+    "Diagnosis": "Common Cold",
+    "TreatmentPlan": 1,
+    "BpSystolic": 120,
+    "BpDiastolic": 80,
+    "Temperature": 37.5,
+    "HeartRate": 78,
+    "Weight": 70.5,
+    "VitalBp": "120/80",
+    "Notes": "Patient advised rest and hydration",
+    "RecordType": "Diagnosis",
+    "CreatedAt": "2025-11-02T10:05:00Z"
+  },
+  {
+    "AppointmentId": 2,
+    "RecordDate": "2025-11-02T11:30:00Z",
+    "Symptoms": "Severe headache, dizziness",
+    "Diagnosis": "Migraine",
+    "TreatmentPlan": 2,
+    "BpSystolic": 130,
+    "BpDiastolic": 85,
+    "Temperature": 36.8,
+    "HeartRate": 72,
+    "Weight": 68.2,
+    "VitalBp": "130/85",
+    "Notes": "Prescribed migraine medication",
+    "RecordType": "Diagnosis",
+    "CreatedAt": "2025-11-02T11:35:00Z"
+  },
+  {
+    "AppointmentId": 3,
+    "RecordDate": "2025-11-02T12:15:00Z",
+    "Symptoms": "Abdominal pain, nausea",
+    "Diagnosis": "Gastritis",
+    "TreatmentPlan": 3,
+    "BpSystolic": 115,
+    "BpDiastolic": 75,
+    "Temperature": 37.0,
+    "HeartRate": 80,
+    "Weight": 72.0,
+    "VitalBp": "115/75",
+    "Notes": "Advised diet changes and antacids",
+    "RecordType": "Diagnosis",
+    "CreatedAt": "2025-11-02T12:20:00Z"
+  }
+]

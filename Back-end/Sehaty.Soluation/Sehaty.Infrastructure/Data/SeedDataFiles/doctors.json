@@ -1,0 +1,38 @@
+[
+  {
+    "FirstName": "Ali",
+    "LastName": "Hassan",
+    "Specialty": "Cardiologist",
+    "LicenseNumber": "LIC001",
+    "Qualifications": "MD",
+    "YearsOfExperience": 10,
+    "ProfilePhotoUrl": "",
+    "AvailabilityNotes": "",
+    "UserId": 1,
+    "DepartmentId": 1
+  },
+  {
+    "FirstName": "Sara",
+    "LastName": "Ibrahim",
+    "Specialty": "Neurologist",
+    "LicenseNumber": "LIC002",
+    "Qualifications": "MD",
+    "YearsOfExperience": 8,
+    "ProfilePhotoUrl": "",
+    "AvailabilityNotes": "",
+    "UserId": 2,
+    "DepartmentId": 2
+  },
+  {
+    "FirstName": "Hany",
+    "LastName": "Gamal",
+    "Specialty": "Pediatrician",
+    "LicenseNumber": "LIC003",
+    "Qualifications": "MD",
+    "YearsOfExperience": 5,
+    "ProfilePhotoUrl": "",
+    "AvailabilityNotes": "",
+    "UserId": 3,
+    "DepartmentId": 3
+  }
+]

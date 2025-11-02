@@ -6,7 +6,7 @@
         public int Rating { get; set; }
         public string Comments { get; set; }
         public bool IsAnonymous { get; set; }
-        public DateTime SubmittedAt { get; set; }
+        public DateTime SubmittedAt { get; set; } = DateTime.Now;
         public int AppointmentId { get; set; }
         public Appointment Appointment { get; set; }
     }

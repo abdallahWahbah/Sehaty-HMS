@@ -1,0 +1,32 @@
+[
+  {
+    "PatientId": 1,
+    "AppointmentId": 1,
+    "BillingDate": "2025-11-10T10:00:00",
+    "Amount": 200.0,
+    "Status": "Pending",
+    "PaymentMethod": "Cash",
+    "InvoiceNumber": "INV001",
+    "Notes": "First visit"
+  },
+  {
+    "PatientId": 2,
+    "AppointmentId": 2,
+    "BillingDate": "2025-11-11T12:00:00",
+    "Amount": 350.0,
+    "Status": "Pending",
+    "PaymentMethod": "Credit Card",
+    "InvoiceNumber": "INV002",
+    "Notes": "Migraine treatment"
+  },
+  {
+    "PatientId": 3,
+    "AppointmentId": 3,
+    "BillingDate": "2025-11-12T15:00:00",
+    "Amount": 150.0,
+    "Status": "Pending",
+    "PaymentMethod": "Cash",
+    "InvoiceNumber": "INV003",
+    "Notes": "Child checkup"
+  }
+]

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
 using Sehaty.Core.Entites;
 
 namespace Sehaty.Infrastructure.Data.Configrations
@@ -18,7 +13,6 @@ namespace Sehaty.Infrastructure.Data.Configrations
             builder.HasKey(b => b.Id);
 
             builder.Property(b => b.Id)
-                   .HasColumnName("Billing_ID")
                    .ValueGeneratedOnAdd();
 
             builder.Property(b => b.PatientId)
@@ -38,11 +32,12 @@ namespace Sehaty.Infrastructure.Data.Configrations
 
             builder.Property(b => b.Status)
                    .HasMaxLength(20)
-                   .HasDefaultValue("Pending")
+                   .HasConversion<string>()
                    .IsRequired();
 
             builder.Property(b => b.PaymentMethod)
                    .HasMaxLength(30)
+                   .HasConversion<string>()
                    .IsRequired(false);
 
             builder.Property(b => b.InvoiceNumber)
@@ -68,7 +63,7 @@ namespace Sehaty.Infrastructure.Data.Configrations
             // Indexes / Constraints 
             builder.HasIndex(b => b.AppointmentId)
                    .IsUnique()
-                   .HasDatabaseName("IX_Billing_AppointmentId_Unique"); 
+                   .HasDatabaseName("IX_Billing_AppointmentId_Unique");
 
             builder.HasIndex(b => b.InvoiceNumber)
                    .IsUnique()
