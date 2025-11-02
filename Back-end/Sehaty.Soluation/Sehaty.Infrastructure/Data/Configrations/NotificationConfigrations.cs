@@ -18,8 +18,8 @@ namespace Sehaty.Infrastructure.Data.Configrations
 			builder.Property(n => n.Id).ValueGeneratedOnAdd(); //identity
 			builder.Property(n => n.Title).IsRequired().HasMaxLength(200);
 			builder.Property(n => n.Message).IsRequired();
-			builder.Property(n => n.CreatedAt).IsRequired();
 			builder.Property(n => n.CreatedAt)
+				   .IsRequired()
 				   .HasDefaultValueSql("GETDATE()");
 			builder.HasOne(n => n.User)
 				   .WithMany(u => u.Notification)
