@@ -1,7 +1,6 @@
 [
   {
     "UserId": 4,
-    "Name": "Omar Ali",
     "MRN": "MRN001",
     "FirstName": "Omar",
     "LastName": "Ali",
@@ -19,7 +18,6 @@
   },
   {
     "UserId": 5,
-    "Name": "Fatima Hassan",
     "MRN": "MRN002",
     "FirstName": "Fatima",
     "LastName": "Hassan",
@@ -37,7 +35,6 @@
   },
   {
     "UserId": 6,
-    "Name": "Mohamed Ali",
     "MRN": "MRN003",
     "FirstName": "Mohamed",
     "LastName": "Ali",
