@@ -1,14 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Sehaty.Core.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sehaty.Core.Entities.User_Entities
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser<int>
     {
         public enum LanguagePreferenceEnum
         {
@@ -27,6 +22,9 @@ namespace Sehaty.Core.Entities.User_Entities
 
         public DateTime LastLogin { get; set; }
 
-        public List<Notification> Notifications { get; set; } = new();
+        public List<Notification> Notifications { get; set; }
+        public int RoleId { get; set; }
+        public ApplicationRole Role { get; set; }
+
     }
 }

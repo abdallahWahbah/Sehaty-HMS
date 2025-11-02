@@ -7,7 +7,6 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="Specifications\" />
 		<Folder Include="Services.Contracts\" />
 	</ItemGroup>
 

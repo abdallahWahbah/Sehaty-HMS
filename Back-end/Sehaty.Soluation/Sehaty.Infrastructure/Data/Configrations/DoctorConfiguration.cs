@@ -13,8 +13,7 @@ namespace Sehaty.Infrastructure.Data.Configrations
             builder.Property(D => D.LastName).IsRequired().HasColumnType("nvarchar").HasMaxLength(50);
             builder.Property(D => D.Specialty).IsRequired().HasColumnType("nvarchar").HasMaxLength(100);
             builder.Property(D => D.LicenseNumber).IsRequired().HasColumnType("nvarchar").HasMaxLength(50);
-            builder.Property(D => D.Qualifications).HasColumnType("nvarchar");
-            builder.Property(D => D.Qualifications).HasColumnType("nvarchar");
+            builder.Property(D => D.Qualifications).HasColumnType("nvarchar(max)");
             builder.HasMany(D => D.DoctorAvailabilitySlots)
                 .WithOne(AS => AS.Doctor)
                 .HasForeignKey(As => As.DoctorId);

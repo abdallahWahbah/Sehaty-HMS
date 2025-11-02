@@ -1,0 +1,44 @@
+[
+  {
+    "Title": "Appointment Reminder",
+    "Message": "You have an appointment with Dr. Ali tomorrow at 09:00",
+    "CreatedAt": "2025-11-09T10:00:00",
+    "ReadAt": null,
+    "IsRead": false,
+    "Priority": "High",
+    "NotificationType": "Appointment",
+    "RelatedEntityType": "Appointment",
+    "RelatedEntityId": 1,
+    "SentViaEmail": true,
+    "SentViaSMS": false,
+    "UserId": 1
+  },
+  {
+    "Title": "Prescription Ready",
+    "Message": "Your prescription Ibuprofen is ready",
+    "CreatedAt": "2025-11-11T12:30:00",
+    "ReadAt": null,
+    "IsRead": false,
+    "Priority": "Medium",
+    "NotificationType": "Prescription",
+    "RelatedEntityType": "Prescription",
+    "RelatedEntityId": 2,
+    "SentViaEmail": true,
+    "SentViaSMS": false,
+    "UserId": 2
+  },
+  {
+    "Title": "Billing Due",
+    "Message": "Your billing INV003 is due",
+    "CreatedAt": "2025-11-12T15:45:00",
+    "ReadAt": null,
+    "IsRead": false,
+    "Priority": "High",
+    "NotificationType": "Payment",
+    "RelatedEntityType": "Billing",
+    "RelatedEntityId": 3,
+    "SentViaEmail": true,
+    "SentViaSMS": true,
+    "UserId": 3
+  }
+]

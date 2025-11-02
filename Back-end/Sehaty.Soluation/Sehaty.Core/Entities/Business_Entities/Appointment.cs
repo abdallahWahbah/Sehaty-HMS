@@ -4,16 +4,16 @@ namespace Sehaty.Core.Entites
 {
     public class Appointment : BaseEntity
     {
-        public int PatientId { get; set; }              
-        public int DoctorId { get; set; }               
+        public int PatientId { get; set; }
+        public int DoctorId { get; set; }
         public DateTime AppointmentDateTime { get; set; }
         public int DurationMinutes { get; set; }
         public string ReasonForVisit { get; set; }
         public string Status { get; set; }
-        public DateOnly ScheduledDate { get; set; }
-        public TimeOnly ScheduledTime { get; set; }
-        public DateTime BookingDateTime { get; set; }
-        public DateTime ConfirmationDateTime { get; set; }
+        public DateOnly? ScheduledDate { get; set; }
+        public TimeOnly? ScheduledTime { get; set; }
+        public DateTime? BookingDateTime { get; set; }
+        public DateTime? ConfirmationDateTime { get; set; }
         public string CancellationReason { get; set; }
 
 
