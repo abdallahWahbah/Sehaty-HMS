@@ -22,7 +22,7 @@ namespace Sehaty.Infrastructure.Data.Configrations
 				   .IsRequired()
 				   .HasDefaultValueSql("GETDATE()");
 			builder.HasOne(n => n.User)
-				   .WithMany(u => u.Notification)
+				   .WithMany(u => u.Notifications)
 				   .HasForeignKey(n => n.UserId)
 				   .OnDelete(DeleteBehavior.Cascade);
 			builder.Property(n => n.NotificationType)
