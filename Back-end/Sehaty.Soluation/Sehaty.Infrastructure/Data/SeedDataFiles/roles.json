@@ -6,22 +6,22 @@
   },
   {
     "Name": "Doctor",
-    "NormalizedName": "ADMIN",
+    "NormalizedName": "DOCTOR",
     "Description": "Can manage appointments, patients, prescriptions, and medical records"
   },
   {
     "Name": "Patient",
-    "NormalizedName": "ADMIN",
+    "NormalizedName": "PATIENT",
     "Description": "Can view own appointments, prescriptions, and notifications"
   },
   {
     "Name": "Nurse",
-    "NormalizedName": "ADMIN",
+    "NormalizedName": "NURSE",
     "Description": "Assists doctors and manages patient care"
   },
   {
     "Name": "Reception",
-    "NormalizedName": "ADMIN",
+    "NormalizedName": "RECEPTION",
     "Description": "Handles appointment scheduling and patient registration"
   }
 ]

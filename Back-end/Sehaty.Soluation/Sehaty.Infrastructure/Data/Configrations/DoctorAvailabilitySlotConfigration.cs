@@ -20,6 +20,18 @@ namespace Sehaty.Infrastructure.Data.Configrations
                    .WithMany(doc => doc.DoctorAvailabilitySlots)
                    .HasForeignKey(d => d.DoctorId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Property(d => d.DayOfWeek)
+                .HasConversion(
+                WD => WD.ToString(), // to DB
+                WD => (WeekDays)Enum.Parse(typeof(WeekDays), WD))
+                .HasMaxLength(100)
+                .HasColumnName("WeekDays")
+                .IsRequired();
+
+            builder.HasIndex(d => new { d.DoctorId, d.Date, d.StartTime })
+                   .IsUnique();
         }
     }
 }

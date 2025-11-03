@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sehaty.Core.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sehaty.Infrastructure.Data.Configrations
 {
@@ -20,10 +15,10 @@ namespace Sehaty.Infrastructure.Data.Configrations
             builder.Property(n => n.Message).IsRequired();
 
             builder.Property(n => n.Priority)
-                   .HasConversion<string>() // store enum as string
-                   .HasMaxLength(10)
+                   .IsRequired()
                    .HasDefaultValue(NotificationPriority.Normal)
-                   .IsRequired();
+                   .HasMaxLength(10)
+                   .HasConversion<string>(); // store enum as string
 
             builder.Property(n => n.IsRead)
                    .HasDefaultValue(false)
@@ -59,6 +54,6 @@ namespace Sehaty.Infrastructure.Data.Configrations
                    .HasConversion<string>()
                    .IsRequired();
 
-        }
-    }
+		}
+	}
 }

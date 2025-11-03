@@ -13,7 +13,9 @@ namespace Sehaty.Infrastructure.Data.Configrations
                 .HasColumnType("nvarchar")
                 .HasMaxLength(50)
                 .IsRequired();
+
             builder.HasIndex(n => n.Name).IsUnique();
+
             builder.Property(n => n.Description)
                 .HasColumnType("nvarchar(max)");
 

@@ -25,9 +25,9 @@ namespace Sehaty.Core.Entites
         public DateTime CreatedAt { get; set; }
         public DateTime? ReadAt { get; set; }//how we would track if notification is read or not????
         public bool IsRead { get; set; } //how we would track if notification is read or not????
-        public NotificationPriority Priority { get; set; }
-        public NotificationType NotificationType { get; set; }
-        public string? RelatedEntityType { get; set; }//what is this???
+        public NotificationPriority? Priority { get; set; }
+        public NotificationType? NotificationType { get; set; }
+        public string RelatedEntityType { get; set; }//what is this???
         public int? RelatedEntityId { get; set; }//what is this???  is it fk???
         public bool SentViaEmail { get; set; }
         public bool SentViaSMS { get; set; }

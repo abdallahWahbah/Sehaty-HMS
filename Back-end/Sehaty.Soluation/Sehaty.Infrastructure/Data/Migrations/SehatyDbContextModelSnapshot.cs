@@ -136,7 +136,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Property<DateTime>("AppointmentDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("BookingDateTime")
+                    b.Property<DateTime?>("BookingDateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -145,7 +145,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("ConfirmationDateTime")
+                    b.Property<DateTime?>("ConfirmationDateTime")
                         .HasColumnType("datetime");
 
                     b.Property<int>("DoctorId")
@@ -162,10 +162,10 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Property<string>("ReasonForVisit")
                         .HasColumnType("varchar(max)");
 
-                    b.Property<DateOnly>("ScheduledDate")
+                    b.Property<DateOnly?>("ScheduledDate")
                         .HasColumnType("date");
 
-                    b.Property<TimeOnly>("ScheduledTime")
+                    b.Property<TimeOnly?>("ScheduledTime")
                         .HasColumnType("time");
 
                     b.Property<string>("Status")
@@ -195,29 +195,42 @@ namespace Sehaty.Infrastructure.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("Billing_ID");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("AppointmentId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("BillingDate")
+                    b.Property<DateTime>("BillDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<string>("InvoiceNumber")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<decimal?>("CommissionApplied")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(10,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<string>("ItemsDetail")
+                        .HasColumnType("varchar(max)");
+
+                    b.Property<decimal?>("NetAmount")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("Notes")
                         .HasColumnType("varchar(max)");
+
+                    b.Property<decimal>("PaidAmount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(10,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("datetime");
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
@@ -228,10 +241,25 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasDefaultValue("Pending");
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal>("Subtotal")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(10,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<decimal>("TaxAmount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(10,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("TransactionId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -239,18 +267,9 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Billing_AppointmentId_Unique");
 
-                    b.HasIndex("InvoiceNumber")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Billing_InvoiceNumber_Unique");
-
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Billing", null, t =>
-                        {
-                            t.HasCheckConstraint("CK_Billing_Amount_Positive", "[Amount] > 0");
-
-                            t.HasCheckConstraint("CK_Billing_Status_Valid", "[Status] IN ('Pending','Paid','Overdue','Cancelled')");
-                        });
+                    b.ToTable("Billing", (string)null);
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entites.Department", b =>
@@ -262,7 +281,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -270,7 +288,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NameLocal")
-                        .IsRequired()
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
@@ -348,7 +365,10 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("DayOfWeek")
-                        .HasColumnType("nvarchar(10)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("WeekDays");
 
                     b.Property<int>("DoctorId")
                         .HasColumnType("int");
@@ -364,7 +384,8 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DoctorId");
+                    b.HasIndex("DoctorId", "Date", "StartTime")
+                        .IsUnique();
 
                     b.ToTable("DoctorAvailabilitySlots");
                 });
@@ -449,11 +470,10 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("VitalBp")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<decimal?>("Weight")
-                        .HasColumnType("decimal(4,1)");
+                        .HasColumnType("decimal(5,1)");
 
                     b.HasKey("Id");
 
@@ -473,10 +493,12 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Message")
                         .IsRequired()
@@ -487,27 +509,37 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Priority")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasDefaultValue("Normal");
 
                     b.Property<DateTime?>("ReadAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("RelatedEntityId")
+                    b.Property<int?>("RelatedEntityId")
+                        .HasMaxLength(50)
                         .HasColumnType("int");
 
                     b.Property<string>("RelatedEntityType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("SentViaEmail")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("SentViaSMS")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -563,9 +595,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Property<string>("MRN")
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("NationalId")
                         .HasColumnType("nvarchar(14)");
 
@@ -619,6 +648,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Frequency")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -639,7 +669,9 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Active");
 
                     b.HasKey("Id");
 

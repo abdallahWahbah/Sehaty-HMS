@@ -1,6 +1,4 @@
 ﻿using Sehaty.Core.Entities.Business_Entities;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sehaty.Core.Entites
 {
