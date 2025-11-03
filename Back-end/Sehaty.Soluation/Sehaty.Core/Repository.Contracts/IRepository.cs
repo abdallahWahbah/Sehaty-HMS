@@ -14,6 +14,5 @@ namespace Sehaty.Core.Repository.Contracts
         void Update(T entity);
         void Delete(T entity);
         Task Add(T entity);
-        Task<int> SaveAsync();
     }
 }

@@ -42,8 +42,7 @@ namespace Sehaty.Infrastructure.Repositories
             => Set.Remove(entity);
         public void Update(T entity)
             => Set.Update(entity);
-        public async Task<int> SaveAsync()
-            => await context.SaveChangesAsync();
+
 
         IQueryable<T> GenerateSpec(ISpecefication<T> spec) => SpecificationEvaluator<T>.GetQuery(Set, spec);
     }
