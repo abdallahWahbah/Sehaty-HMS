@@ -10,6 +10,13 @@ namespace Sehaty.Core.Entites
         Result,
         General
     }
+    public enum NotificationPriority
+    {
+        Low,
+        Normal,
+        High,
+        Urgent
+    }
 
     public class Notification : BaseEntity
     {
