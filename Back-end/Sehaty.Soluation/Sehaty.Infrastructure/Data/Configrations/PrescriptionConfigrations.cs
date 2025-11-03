@@ -29,16 +29,14 @@ namespace Sehaty.Infrastructure.Data.Configrations
                    .IsRequired();
 
             builder.Property(p => p.Duration)
-                   .HasMaxLength(100)
-                   .IsRequired();
-
+                   .HasMaxLength(100);
             builder.Property(p => p.DigitalSignature)
                    .HasMaxLength(255);
 
             builder.Property(p => p.SpecialInstructions)
                    .HasMaxLength(200);
-
             builder.Property(p => p.DateIssued)
+                  .IsRequired()
                   .HasDefaultValueSql("GETDATE()"); //set default value to current date
 
             builder.HasOne(p => p.Appointment) //set foreign key to appointment
