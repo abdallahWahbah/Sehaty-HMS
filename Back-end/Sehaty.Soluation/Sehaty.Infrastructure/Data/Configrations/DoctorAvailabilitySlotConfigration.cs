@@ -14,8 +14,8 @@ namespace Sehaty.Infrastructure.Data.Configrations
         public void Configure(EntityTypeBuilder<DoctorAvailabilitySlot> builder)
         {
             builder.Property(d => d.Id).UseIdentityColumn(1, 1);
-            builder.Property(d => d.Start_Time).HasColumnType("time");
-            builder.Property(d => d.End_Time).HasColumnType("time");
+            builder.Property(d => d.StartTime).HasColumnType("time");
+            builder.Property(d => d.EndTime).HasColumnType("time");
             builder.Property(d => d.Date).HasColumnType("date");
         }
     }
