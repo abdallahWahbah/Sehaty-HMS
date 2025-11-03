@@ -1,12 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sehaty.Core.Entities.User_Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sehaty.Infrastructure.Data.Configrations
 {
@@ -22,6 +16,9 @@ namespace Sehaty.Infrastructure.Data.Configrations
             builder.HasIndex(n => n.Name).IsUnique();
             builder.Property(n => n.Description)
                 .HasColumnType("nvarchar(max)");
+
+            builder.HasMany(R => R.Users).WithOne()
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

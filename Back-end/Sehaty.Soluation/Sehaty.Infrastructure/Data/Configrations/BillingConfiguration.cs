@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
 using Sehaty.Core.Entites;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System;
 
 namespace Sehaty.Infrastructure.Data.Configrations
 {
@@ -15,43 +12,85 @@ namespace Sehaty.Infrastructure.Data.Configrations
         {
             builder.ToTable("Billing");
 
+            // Primary Key
             builder.HasKey(b => b.Id);
-
             builder.Property(b => b.Id)
-                   .HasColumnName("Billing_ID")
                    .ValueGeneratedOnAdd();
 
+            // Basic Columns
             builder.Property(b => b.PatientId)
                    .IsRequired();
 
             builder.Property(b => b.AppointmentId)
                    .IsRequired();
 
-            builder.Property(b => b.BillingDate)
+            builder.Property(b => b.BillDate)
                    .HasColumnType("datetime")
                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
                    .IsRequired();
 
-            builder.Property(b => b.Amount)
+            builder.Property(b => b.Subtotal)
+                   .HasColumnType("decimal(10,2)")
+                   .HasDefaultValue(0)
+                   .IsRequired();
+
+            builder.Property(b => b.TaxAmount)
+                   .HasColumnType("decimal(10,2)")
+                   .HasDefaultValue(0)
+                   .IsRequired();
+
+            builder.Property(b => b.DiscountAmount)
+                   .HasColumnType("decimal(10,2)")
+                   .HasDefaultValue(0)
+                   .IsRequired();
+
+            builder.Property(b => b.TotalAmount)
                    .HasColumnType("decimal(10,2)")
                    .IsRequired();
 
+
+            // Enum Conversions
             builder.Property(b => b.Status)
                    .HasMaxLength(20)
-                   .HasDefaultValue("Pending")
+                   .HasConversion(new EnumToStringConverter<BillingStatus>())
                    .IsRequired();
 
             builder.Property(b => b.PaymentMethod)
                    .HasMaxLength(30)
+                   .HasConversion(new EnumToStringConverter<PaymentMethod>())
                    .IsRequired(false);
 
-            builder.Property(b => b.InvoiceNumber)
-                   .HasMaxLength(50)
+
+            // Nullable Fields
+            builder.Property(b => b.PaidAmount)
+                   .HasColumnType("decimal(10,2)")
+                   .HasDefaultValue(0)
                    .IsRequired();
+
+            builder.Property(b => b.PaidAt)
+                   .HasColumnType("datetime")
+                   .IsRequired(false);
+
+            builder.Property(b => b.ItemsDetail)
+                   .HasColumnType("varchar(max)")
+                   .IsRequired(false);
+
+            builder.Property(b => b.TransactionId)
+                   .HasMaxLength(100)
+                   .IsRequired(false);
+
+            builder.Property(b => b.CommissionApplied)
+                   .HasColumnType("decimal(5,2)")
+                   .IsRequired(false);
+
+            builder.Property(b => b.NetAmount)
+                   .HasColumnType("decimal(10,2)")
+                   .IsRequired(false);
 
             builder.Property(b => b.Notes)
                    .HasColumnType("varchar(max)")
                    .IsRequired(false);
+
 
             // Relationships
             builder.HasOne(b => b.Patient)
@@ -64,25 +103,11 @@ namespace Sehaty.Infrastructure.Data.Configrations
                    .HasForeignKey(b => b.AppointmentId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-
-            // Indexes / Constraints 
+            // Each appointment has exactly one billing record ? 
             builder.HasIndex(b => b.AppointmentId)
                    .IsUnique()
-                   .HasDatabaseName("IX_Billing_AppointmentId_Unique"); 
+                   .HasDatabaseName("IX_Billing_AppointmentId_Unique");
 
-            builder.HasIndex(b => b.InvoiceNumber)
-                   .IsUnique()
-                   .HasDatabaseName("IX_Billing_InvoiceNumber_Unique");
-
-            builder.HasCheckConstraint(
-                "CK_Billing_Status_Valid",
-                "[Status] IN ('Pending','Paid','Overdue','Cancelled')"
-            );
-
-            builder.HasCheckConstraint(
-                "CK_Billing_Amount_Positive",
-                "[Amount] > 0"
-            );
         }
     }
 }

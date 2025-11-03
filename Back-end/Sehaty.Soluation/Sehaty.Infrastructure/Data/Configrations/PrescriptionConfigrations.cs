@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Sehaty.Core.Entites;
 using Sehaty.Core.Entities.Business_Entities;
 
 namespace Sehaty.Infrastructure.Data.Configrations
@@ -46,8 +45,8 @@ namespace Sehaty.Infrastructure.Data.Configrations
 
             builder.HasOne(p => p.MedicalRecord) //set foreign key to medical record
                   .WithMany(mr => mr.Prescriptions)
-                  .HasForeignKey(p => p.RecordId);
-            builder.Property(p => p.RecordId)
+                  .HasForeignKey(p => p.MedicalRecordId);
+            builder.Property(p => p.MedicalRecordId)
                   .IsRequired(false);
 
             builder.HasOne(p => p.Patient) //set foreign key to patient

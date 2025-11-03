@@ -1,0 +1,53 @@
+[
+  {
+    "UserId": 4,
+    "MRN": "MRN001",
+    "FirstName": "Omar",
+    "LastName": "Ali",
+    "DateOfBirth": "1990-01-01T00:00:00",
+    "Gender": "Male",
+    "NationalId": "12345678901234",
+    "BloodType": "O+",
+    "Allergies": "None",
+    "ChrinicConditions": "None",
+    "Address": "123 Cairo St",
+    "EmergencyContactName": "Ahmed Ali",
+    "EmergencyContactPhone": "01012345678",
+    "Status": "Active",
+    "RegistrationDate": "2025-11-02T00:00:00"
+  },
+  {
+    "UserId": 5,
+    "MRN": "MRN002",
+    "FirstName": "Fatima",
+    "LastName": "Hassan",
+    "DateOfBirth": "1985-05-15T00:00:00",
+    "Gender": "Female",
+    "NationalId": "23456789012345",
+    "BloodType": "A+",
+    "Allergies": "Penicillin",
+    "ChrinicConditions": "Diabetes",
+    "Address": "45 Giza Rd",
+    "EmergencyContactName": "Hassan Ahmed",
+    "EmergencyContactPhone": "01023456789",
+    "Status": "Active",
+    "RegistrationDate": "2025-11-02T00:00:00"
+  },
+  {
+    "UserId": 6,
+    "MRN": "MRN003",
+    "FirstName": "Mohamed",
+    "LastName": "Ali",
+    "DateOfBirth": "1995-08-20T00:00:00",
+    "Gender": "Male",
+    "NationalId": "34567890123456",
+    "BloodType": "B+",
+    "Allergies": "None",
+    "ChrinicConditions": "Asthma",
+    "Address": "78 Alexandria Ave",
+    "EmergencyContactName": "Salma Ali",
+    "EmergencyContactPhone": "01034567890",
+    "Status": "Active",
+    "RegistrationDate": "2025-11-02T00:00:00"
+  }
+]

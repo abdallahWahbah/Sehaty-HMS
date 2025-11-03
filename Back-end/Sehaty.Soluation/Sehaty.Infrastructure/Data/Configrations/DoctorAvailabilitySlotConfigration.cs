@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sehaty.Core.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sehaty.Infrastructure.Data.Configrations
 {
@@ -17,6 +12,14 @@ namespace Sehaty.Infrastructure.Data.Configrations
             builder.Property(d => d.StartTime).HasColumnType("time");
             builder.Property(d => d.EndTime).HasColumnType("time");
             builder.Property(d => d.Date).HasColumnType("date");
+            builder.Property(d => d.DayOfWeek)
+                   .HasConversion<int>();
+            builder.HasIndex(d => new { d.DoctorId, d.Date, d.StartTime })
+                .IsUnique();
+            builder.HasOne(d => d.Doctor)
+                   .WithMany(doc => doc.DoctorAvailabilitySlots)
+                   .HasForeignKey(d => d.DoctorId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

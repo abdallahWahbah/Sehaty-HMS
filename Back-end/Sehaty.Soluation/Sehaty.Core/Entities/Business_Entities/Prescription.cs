@@ -20,7 +20,7 @@ namespace Sehaty.Core.Entities.Business_Entities
         public DateTime DateIssued { get; set; }
         public int AppointmentId { get; set; } // Foreign key to Appointment
         public Appointment Appointment { get; set; }
-        public int? RecordId { get; set; } // Foreign key to MedicalRecord
+        public int? MedicalRecordId { get; set; } // Foreign key to MedicalRecord
         public MedicalRecord MedicalRecord { get; set; }
         public int? PatientId { get; set; } // Foreign key to patient
         public Patient Patient { get; set; }

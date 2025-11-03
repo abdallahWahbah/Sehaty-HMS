@@ -1,11 +1,6 @@
 ﻿using Sehaty.Core.Entities.Business_Entities;
 using Sehaty.Core.Entities.User_Entities;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sehaty.Core.Entites
 {
@@ -17,7 +12,6 @@ namespace Sehaty.Core.Entites
     }
     public class Patient : BaseEntity
     {
-        public string Name { get; set; }
         public string MRN { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -30,12 +24,12 @@ namespace Sehaty.Core.Entites
         public string Address { get; set; }
         public string EmergencyContactName { get; set; }
         public string EmergencyContactPhone { get; set; }
-        public string Status { get; set; }
+        public PatientStatus Status { get; set; }
         public DateTime RegistrationDate { get; set; }
 
         // NAVIGATION PROPERTIES
 
-        [ForeignKey("ApplicationUser")]
+        [ForeignKey("User")]
         public int UserId { get; set; }
         public ApplicationUser User { get; set; }
         public List<Appointment> Appointments { get; set; }
