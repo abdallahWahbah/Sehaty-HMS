@@ -1,6 +1,7 @@
 [
   {
     "Name": "Admin",
+    "NormalizedName": "ADMIN",
     "Description": "Full access to all system features and settings"
   },
   {
