@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sehaty.Core.Entities.Business_Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -45,5 +46,9 @@ namespace Sehaty.Core.Entites
         [EnumDataType(typeof(RecordType))]
         public RecordType Record_Type { get; set; } = RecordType.Diagnosis;
         public DateTime? Created_At { get; set; }
+
+        // Navigation Property to Prescriptions
+        public ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
+
     }
 }

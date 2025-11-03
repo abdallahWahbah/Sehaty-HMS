@@ -4,13 +4,20 @@ namespace Sehaty.Core.Entites
 {
     public enum NotificationType
     {
-		    Appointment,
+        Appointment,
         Prescription,
         Payment,
         Result,
         General
-	  }
-    
+    }
+    public enum NotificationPriority
+    {
+        Low,
+        Normal,
+        High,
+        Urgent
+    }
+
     public class Notification : BaseEntity
     {
         public string Title { get; set; }
@@ -18,10 +25,10 @@ namespace Sehaty.Core.Entites
         public DateTime CreatedAt { get; set; }
         public DateTime? ReadAt { get; set; }//how we would track if notification is read or not????
         public bool IsRead { get; set; } //how we would track if notification is read or not????
-        public string Priority { get; set; }
+        public NotificationPriority Priority { get; set; }
         public NotificationType NotificationType { get; set; }
-        public string RelatedEntityType { get; set; }//what is this???
-        public int RelatedEntityId { get; set; }//what is this???  is it fk???
+        public string? RelatedEntityType { get; set; }//what is this???
+        public int? RelatedEntityId { get; set; }//what is this???  is it fk???
         public bool SentViaEmail { get; set; }
         public bool SentViaSMS { get; set; }
         public int UserId { get; set; } // Foreign key to User
