@@ -1,0 +1,95 @@
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Sehaty.Core.Entites;
+using Sehaty.Core.Entities.Business_Entities;
+using Sehaty.Core.Entities.User_Entities;
+using System.Reflection;
+
+namespace Sehaty.Infrastructure.Data.Contexts
+{
+    // It Will Be Modefied To Inherit From IdentityDbContext<ApplicationUser,IdentityRole> To Add Auth Tables 
+    public class SehatyDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
+    {
+        // Main Constructor To Enable Dependancy Injection
+        public SehatyDbContext(DbContextOptions<SehatyDbContext> options) : base(options) { }
+
+
+        #region Database Tables
+
+        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Patient> Patients { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Billing> Billings { get; set; }
+        public DbSet<DoctorAvailabilitySlot> DoctorAvailabilitySlots { get; set; }
+        public DbSet<Prescription> Prescriptions { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<MedicalRecord> MedicalRecords { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
+
+        #endregion
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // --------------------------
+            // Identity tables configuration without UserRoles
+            // --------------------------
+
+            // User claims
+            modelBuilder.Entity<IdentityUserClaim<int>>(b =>
+            {
+                b.HasKey(c => c.Id);
+                b.HasOne<ApplicationUser>()
+                 .WithMany()
+                 .HasForeignKey(c => c.UserId)
+                 .OnDelete(DeleteBehavior.Restrict); // منع cascade conflicts
+            });
+
+            // User logins
+            modelBuilder.Entity<IdentityUserLogin<int>>(b =>
+            {
+                b.HasKey(l => new { l.LoginProvider, l.ProviderKey });
+                b.HasOne<ApplicationUser>()
+                 .WithMany()
+                 .HasForeignKey(l => l.UserId)
+                 .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Role claims
+            modelBuilder.Entity<IdentityRoleClaim<int>>(b =>
+            {
+                b.HasKey(rc => rc.Id);
+                b.HasOne<ApplicationRole>()
+                 .WithMany()
+                 .HasForeignKey(rc => rc.RoleId)
+                 .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // User tokens
+            modelBuilder.Entity<IdentityUserToken<int>>(b =>
+            {
+                b.HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
+                b.HasOne<ApplicationUser>()
+                 .WithMany()
+                 .HasForeignKey(t => t.UserId)
+                 .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // --------------------------
+            // Custom User -> Role one-to-many
+            // --------------------------
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(u => u.Role)
+                .WithMany(r => r.Users)
+                .HasForeignKey(u => u.RoleId)
+                .OnDelete(DeleteBehavior.Restrict); // كل يوزر له رول واحد فقط
+
+            // --------------------------
+            // Apply your configurations from separate configuration classes
+            // --------------------------
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
+    }
+}

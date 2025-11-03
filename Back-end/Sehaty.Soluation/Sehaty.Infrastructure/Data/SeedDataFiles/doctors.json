@@ -1,0 +1,38 @@
+[
+  {
+    "FirstName": "Ali",
+    "LastName": "Hassan",
+    "Specialty": "Cardiologist",
+    "LicenseNumber": "LIC001",
+    "Qualifications": "MD",
+    "YearsOfExperience": 10,
+    "ProfilePhotoUrl": "images/doctors/ali_hassan.jpg",
+    "AvailabilityNotes": "Available on weekdays 9AM - 3PM",
+    "UserId": 1,
+    "DepartmentId": 1
+  },
+  {
+    "FirstName": "Sara",
+    "LastName": "Ibrahim",
+    "Specialty": "Neurologist",
+    "LicenseNumber": "LIC002",
+    "Qualifications": "MD",
+    "YearsOfExperience": 8,
+    "ProfilePhotoUrl": "images/doctors/sara_ibrahim.jpg",
+    "AvailabilityNotes": "Available on Mondays, Wednesdays, Fridays",
+    "UserId": 2,
+    "DepartmentId": 2
+  },
+  {
+    "FirstName": "Hany",
+    "LastName": "Gamal",
+    "Specialty": "Pediatrician",
+    "LicenseNumber": "LIC003",
+    "Qualifications": "MD",
+    "YearsOfExperience": 5,
+    "ProfilePhotoUrl": "images/doctors/hany_gamal.jpg",
+    "AvailabilityNotes": "Available daily 10AM - 2PM",
+    "UserId": 3,
+    "DepartmentId": 3
+  }
+]

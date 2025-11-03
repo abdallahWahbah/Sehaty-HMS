@@ -1,0 +1,44 @@
+[
+  {
+    "MedicationName": "Aspirin",
+    "Dosage": "100mg",
+    "Frequency": "Once daily",
+    "Duration": "7 days",
+    "Status": "Active",
+    "DigitalSignature": "Dr. Ali",
+    "SpecialInstructions": "Take after meals",
+    "DateIssued": "2025-11-10T09:30:00",
+    "AppointmentId": 1,
+    "MedicalRecordId": 1,
+    "PatientId": 1,
+    "DoctorId": 1
+  },
+  {
+    "MedicationName": "Ibuprofen",
+    "Dosage": "200mg",
+    "Frequency": "Twice daily",
+    "Duration": "5 days",
+    "Status": "Active",
+    "DigitalSignature": "Dr. Sara",
+    "SpecialInstructions": "Avoid alcohol",
+    "DateIssued": "2025-11-11T11:45:00",
+    "AppointmentId": 2,
+    "MedicalRecordId": 2,
+    "PatientId": 2,
+    "DoctorId": 2
+  },
+  {
+    "MedicationName": "Paracetamol",
+    "Dosage": "250mg",
+    "Frequency": "Three times daily",
+    "Duration": "3 days",
+    "Status": "Active",
+    "DigitalSignature": "Dr. Hany",
+    "SpecialInstructions": "Keep hydrated",
+    "DateIssued": "2025-11-12T14:30:00",
+    "AppointmentId": 3,
+    "MedicalRecordId": 3,
+    "PatientId": 3,
+    "DoctorId": 3
+  }
+]

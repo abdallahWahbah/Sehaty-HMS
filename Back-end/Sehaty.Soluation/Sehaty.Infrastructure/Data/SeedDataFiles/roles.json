@@ -1,0 +1,27 @@
+[
+  {
+    "Name": "Admin",
+    "NormalizedName": "ADMIN",
+    "Description": "Full access to all system features and settings"
+  },
+  {
+    "Name": "Doctor",
+    "NormalizedName": "DOCTOR",
+    "Description": "Can manage appointments, patients, prescriptions, and medical records"
+  },
+  {
+    "Name": "Patient",
+    "NormalizedName": "PATIENT",
+    "Description": "Can view own appointments, prescriptions, and notifications"
+  },
+  {
+    "Name": "Nurse",
+    "NormalizedName": "NURSE",
+    "Description": "Assists doctors and manages patient care"
+  },
+  {
+    "Name": "Reception",
+    "NormalizedName": "RECEPTION",
+    "Description": "Handles appointment scheduling and patient registration"
+  }
+]

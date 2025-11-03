@@ -1,0 +1,23 @@
+[
+  {
+    "Rating": 5,
+    "Comments": "Excellent service",
+    "IsAnonymous": false,
+    "SubmittedAt": "2025-11-10T10:30:00",
+    "AppointmentId": 1
+  },
+  {
+    "Rating": 4,
+    "Comments": "Good consultation",
+    "IsAnonymous": true,
+    "SubmittedAt": "2025-11-11T12:15:00",
+    "AppointmentId": 2
+  },
+  {
+    "Rating": 5,
+    "Comments": "Very caring doctor",
+    "IsAnonymous": false,
+    "SubmittedAt": "2025-11-12T15:30:00",
+    "AppointmentId": 3
+  }
+]

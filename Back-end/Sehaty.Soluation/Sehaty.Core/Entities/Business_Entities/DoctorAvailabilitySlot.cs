@@ -1,25 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sehaty.Core.Entites
+﻿namespace Sehaty.Core.Entites
 {
+    [Flags]
+    public enum WeekDays
+    {
+        None = 0,
+        Saturday = 1 << 0, // 1
+        Sunday = 1 << 1, // 2
+        Monday = 1 << 2, // 4
+        Tuesday = 1 << 3, // 8
+        Wednesday = 1 << 4, // 16
+        Thursday = 1 << 5, // 32
+        Friday = 1 << 6  // 64
+    }
+
     public class DoctorAvailabilitySlot : BaseEntity
     {
-        [ForeignKey(nameof(Doctors))]
-        [Column(TypeName = "nvarchar(10)")]
-        public string Doctor_ID { get; set; }
-        public Doctor Doctors { get; set; }
-        [Column(TypeName = "nvarchar(10)")]
-
-        public string? Day_of_Week { get; set; }
-        public TimeOnly Start_Time { get; set; }
-        public TimeOnly End_Time { get; set; }
-        public bool Is_Recurring { get; set; }
-        public DateOnly? Date { get; set; }
-        public bool Available_Flag { get; set; }
+        public int DoctorId { get; set; }
+        public Doctor Doctor { get; set; }
+        public WeekDays DayOfWeek { get; set; }
+        public TimeOnly StartTime { get; set; }
+        public TimeOnly EndTime { get; set; }
+        public bool IsRecurring { get; set; }
+        public DateOnly Date { get; set; }
+        public bool AvailableFlag { get; set; }
     }
 }
