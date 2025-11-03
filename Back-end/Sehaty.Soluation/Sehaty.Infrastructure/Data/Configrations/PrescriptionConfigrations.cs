@@ -12,17 +12,20 @@ namespace Sehaty.Infrastructure.Data.Configrations
             builder.HasKey(n => n.Id); //primary key
             builder.Property(n => n.Id).ValueGeneratedOnAdd(); //identity
             builder.Property(p => p.Status)//store in db as string
-                   .HasConversion<string>()
-                   .IsRequired();
+                   .HasDefaultValue(PrescriptionStatus.Active)
+                   .HasConversion<string>();
+
             builder.Property(p => p.MedicationName)
                    .IsRequired()
                    .HasMaxLength(200);
+
             builder.Property(p => p.Dosage)
                    .IsRequired()
                    .HasMaxLength(100);
 
             builder.Property(p => p.Frequency)
-                   .HasMaxLength(100);
+                   .HasMaxLength(100)
+                   .IsRequired();
 
             builder.Property(p => p.Duration)
                    .HasMaxLength(100);
