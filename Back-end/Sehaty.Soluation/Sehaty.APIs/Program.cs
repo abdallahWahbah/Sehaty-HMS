@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Sehaty.Application.MappingProfiles;
 using Sehaty.Core.Entities.User_Entities;
 using Sehaty.Core.UnitOfWork.Contract;
 using Sehaty.Infrastructure.Data.Contexts;
 using Sehaty.Infrastructure.Data.SeedClass;
-using Sehaty.Infrastructure.MapConfig;
 using Sehaty.Infrastructure.UnitOfWork;
 
 namespace Sehaty.APIs
@@ -36,7 +36,20 @@ namespace Sehaty.APIs
 
             // Add UnitOfWork Class Injection
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddAutoMapper(typeof(MapConfiguration));
+
+            // Add AutoMapper Profiles Injection
+            // To Add Every Profile Automatically
+            builder.Services.AddAutoMapper(cfg => { }, typeof(DoctorProfile).Assembly);
+
+            // Instead Of Writeing Every Profile Like This :
+
+            //builder.Services.AddAutoMapper(cfg =>
+            //{
+            //    cfg.AddProfile<MedicalRecordProfile>();
+            //    cfg.AddProfile<DoctorProfile>();
+
+            //}, typeof(MedicalRecordProfile).Assembly);
+
             #endregion
 
             var app = builder.Build();

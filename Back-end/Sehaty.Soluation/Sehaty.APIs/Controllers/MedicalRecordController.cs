@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Sehaty.Application.Dtos;
 using Sehaty.Core.Entites;
 using Sehaty.Core.UnitOfWork.Contract;
-using Sehaty.Infrastructure.Dtos;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Sehaty.APIs.Controllers
 {
@@ -17,7 +13,7 @@ namespace Sehaty.APIs.Controllers
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper map;
 
-        public MedicalRecordController(IUnitOfWork unitOfWork , IMapper map)
+        public MedicalRecordController(IUnitOfWork unitOfWork, IMapper map)
         {
             this.unitOfWork = unitOfWork;
             this.map = map;
@@ -37,16 +33,13 @@ namespace Sehaty.APIs.Controllers
             if (model is null) return NotFound();
             var Data = map.Map<MedicalRecordDto>(model);
             return Ok(Data);
-               
+
         }
         //[HttpPost]
         //public async Task<IActionResult> AddMedicalRecordByDoctor(MedicalRecordDto model)
         //{
         //    if (ModelState.IsValid) return BadRequest();
         //    var Data = map.Map<MedicalRecord>(model);
-
-           
-
         //}
     }
 }
