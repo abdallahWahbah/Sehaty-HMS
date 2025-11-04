@@ -1,10 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Sehaty.Application.MappingProfiles;
+using Sehaty.Application.Shared.AuthShared;
 using Sehaty.Core.Entities.User_Entities;
 using Sehaty.Core.UnitOfWork.Contract;
 using Sehaty.Infrastructure.Data.Contexts;
 using Sehaty.Infrastructure.Data.SeedClass;
 using Sehaty.Infrastructure.UnitOfWork;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Sehaty.Application.Services.Contract.AuthService.Contract;
+using Sehaty.Application.Services.IdentityService;
+
 
 namespace Sehaty.APIs
 {
@@ -20,6 +27,9 @@ namespace Sehaty.APIs
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IRoleManagementService, RoleManagementService>();
 
             #region Add Services
             // Add DbContext Class Injection
@@ -50,6 +60,27 @@ namespace Sehaty.APIs
 
             //}, typeof(MedicalRecordProfile).Assembly);
 
+            //Add Jwt Authentication
+            var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidAudience = jwtOptions.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key))
+                };
+            });
+
+
             #endregion
 
             var app = builder.Build();
@@ -78,6 +109,7 @@ namespace Sehaty.APIs
             }
             app.UseStaticFiles();
             app.UseHttpsRedirection();
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

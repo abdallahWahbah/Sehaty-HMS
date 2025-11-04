@@ -20,7 +20,7 @@ namespace Sehaty.Core.Entities.User_Entities
 
         public DateTime CreatedAt { get; set; }
 
-        public DateTime LastLogin { get; set; }
+        public DateTime? LastLogin { get; set; }
 
         public List<Notification> Notifications { get; set; }
         public int RoleId { get; set; }
