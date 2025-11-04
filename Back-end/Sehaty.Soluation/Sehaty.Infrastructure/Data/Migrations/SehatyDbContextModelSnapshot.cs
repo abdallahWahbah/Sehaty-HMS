@@ -171,8 +171,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("Pending");
 
                     b.HasKey("Id");
@@ -186,8 +185,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.ToTable("Appointments", null, t =>
                         {
                             t.HasCheckConstraint("CK_Appointments_DurationMinutes_Positive", "[DurationMinutes] > 0");
-
-                            t.HasCheckConstraint("CK_Appointments_Status_Valid", "[Status] IN ('Pending','Confirmed','In Progress','Completed','Canceled','No-Show','Emergency')");
                         });
                 });
 
@@ -466,8 +463,8 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Property<decimal?>("Temperature")
                         .HasColumnType("decimal(4,1)");
 
-                    b.Property<int>("TreatmentPlan")
-                        .HasColumnType("int");
+                    b.Property<string>("TreatmentPlan")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("VitalBp")
                         .HasColumnType("nvarchar(20)");
