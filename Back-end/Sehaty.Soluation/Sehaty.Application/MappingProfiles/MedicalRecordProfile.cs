@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Sehaty.Application.Dtos;
 using Sehaty.Core.Entites;
+using Sehaty.Infrastructure.Dtos;
 
 namespace Sehaty.Application.MappingProfiles
 {
@@ -8,7 +8,9 @@ namespace Sehaty.Application.MappingProfiles
     {
         public MedicalRecordProfile()
         {
-            CreateMap<MedicalRecord, MedicalRecordDto>().ReverseMap();
+            CreateMap<MedicalRecord, MedicalRecordDoctorDto>().ReverseMap();
+            CreateMap<MedicalRecord, MedicalRecordNurseDto>().ReverseMap();
+
         }
     }
 }

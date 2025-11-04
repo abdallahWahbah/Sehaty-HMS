@@ -38,7 +38,8 @@ namespace Sehaty.Infrastructure.Data.Configrations
                 .HasDefaultValueSql("GETDATE()");
 
             builder.Property(n => n.LastLogin)
-                .HasColumnType("datetime");
+                .HasColumnType("datetime")
+                .HasDefaultValueSql("GETDATE()");
             builder.HasMany(u => u.Notifications)
                 .WithOne(n => n.User)
                 .HasForeignKey(n => n.UserId);
