@@ -36,6 +36,7 @@ namespace Sehaty.Infrastructure.Data.SeedClass
                 foreach (var user in users!)
                 {
                     user.PasswordHash = passwordHasher.HashPassword(user, "P@ssw0rd");
+                    user.SecurityStamp = Guid.NewGuid().ToString();
                 }
                 context.Users.AddRange(users!);
                 await context.SaveChangesAsync();
