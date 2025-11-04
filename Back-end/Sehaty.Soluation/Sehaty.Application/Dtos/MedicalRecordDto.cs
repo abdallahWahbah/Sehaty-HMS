@@ -1,12 +1,6 @@
 ﻿using Sehaty.Core.Entites;
-using Sehaty.Core.Entities.Business_Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Sehaty.Infrastructure.Dtos
+namespace Sehaty.Application.Dtos
 {
     public class MedicalRecordDto
     {
@@ -14,7 +8,7 @@ namespace Sehaty.Infrastructure.Dtos
         public DateTime RecordDate { get; set; } = DateTime.UtcNow;
         public string Symptoms { get; set; }
         public string Diagnosis { get; set; }
-        public string TreatmentPlan { get; set; } 
+        public string TreatmentPlan { get; set; }
         public int? BpSystolic { get; set; }
         public int? BpDiastolic { get; set; }
         public decimal? Temperature { get; set; }
