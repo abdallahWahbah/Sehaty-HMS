@@ -2,14 +2,25 @@
 
 namespace Sehaty.Core.Entites
 {
+    public enum AppointmentStatus
+    {
+        Pending,
+        Confirmed,
+        InProgress,
+        Completed,
+        Canceled,
+        NoShow,
+        Emergency
+    }
+
     public class Appointment : BaseEntity
     {
         public int PatientId { get; set; }
         public int DoctorId { get; set; }
-        public DateTime AppointmentDateTime { get; set; }
+        public DateTime AppointmentDateTime { get; set; } 
         public int DurationMinutes { get; set; }
         public string ReasonForVisit { get; set; }
-        public string Status { get; set; }
+        public AppointmentStatus Status { get; set; }= AppointmentStatus.Pending;
         public DateOnly? ScheduledDate { get; set; }
         public TimeOnly? ScheduledTime { get; set; }
         public DateTime? BookingDateTime { get; set; }
