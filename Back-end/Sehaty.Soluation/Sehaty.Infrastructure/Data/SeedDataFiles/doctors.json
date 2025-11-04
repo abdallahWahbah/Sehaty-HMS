@@ -8,7 +8,7 @@
     "YearsOfExperience": 10,
     "ProfilePhotoUrl": "images/doctors/ali_hassan.jpg",
     "AvailabilityNotes": "Available on weekdays 9AM - 3PM",
-    "UserId": 1,
+    "UserId": 4,
     "DepartmentId": 1
   },
   {
@@ -20,7 +20,7 @@
     "YearsOfExperience": 8,
     "ProfilePhotoUrl": "images/doctors/sara_ibrahim.jpg",
     "AvailabilityNotes": "Available on Mondays, Wednesdays, Fridays",
-    "UserId": 2,
+    "UserId": 5,
     "DepartmentId": 2
   },
   {
@@ -32,7 +32,7 @@
     "YearsOfExperience": 5,
     "ProfilePhotoUrl": "images/doctors/hany_gamal.jpg",
     "AvailabilityNotes": "Available daily 10AM - 2PM",
-    "UserId": 3,
+    "UserId": 6,
     "DepartmentId": 3
   }
 ]

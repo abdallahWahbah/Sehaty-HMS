@@ -36,7 +36,7 @@ namespace Sehaty.Infrastructure.Repositories
         }
         public async Task<IEnumerable<T>> FindByAsync(Expression<Func<T, bool>> predicate)
             => await Set.Where(predicate).ToListAsync();
-        public async Task Add(T entity)
+        public async Task AddAsync(T entity)
             => await Set.AddAsync(entity);
         public void Delete(T entity)
             => Set.Remove(entity);

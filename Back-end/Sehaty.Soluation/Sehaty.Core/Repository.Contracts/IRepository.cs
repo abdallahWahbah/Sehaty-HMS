@@ -13,6 +13,6 @@ namespace Sehaty.Core.Repository.Contracts
         Task<IEnumerable<T>> FindByAsync(Expression<Func<T, bool>> predicate);
         void Update(T entity);
         void Delete(T entity);
-        Task Add(T entity);
+        Task AddAsync(T entity);
     }
 }
