@@ -1,22 +1,19 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Sehaty.Application.Dtos;
 using Sehaty.Application.Dtos.PrescriptionsDTOs;
 using Sehaty.Core.Entities.Business_Entities;
-using Sehaty.Core.Specefications;
 using Sehaty.Core.Specifications.Prescription_Specs;
 using Sehaty.Core.UnitOfWork.Contract;
 
 namespace Sehaty.APIs.Controllers
 {
-   
+
     public class PrescriptionsController : ApiBaseController
     {
         private readonly IUnitOfWork unit;
         private readonly IMapper map;
 
-        public PrescriptionsController(IUnitOfWork unit,IMapper map)
+        public PrescriptionsController(IUnitOfWork unit, IMapper map)
         {
             this.unit = unit;
             this.map = map;
@@ -24,29 +21,29 @@ namespace Sehaty.APIs.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var spec = new PrescriptionSpecifications(); 
-            var prescriptions =  await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
-            if (prescriptions != null) 
-            return Ok(map.Map<IEnumerable<GetPrescriptionsDto>>(prescriptions));
+            var spec = new PrescriptionSpecifications();
+            var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
+            if (prescriptions != null)
+                return Ok(map.Map<IEnumerable<GetPrescriptionsDto>>(prescriptions));
             return NotFound();
-        } 
+        }
         //get prescription by its id
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var spec = new PrescriptionSpecifications(id); 
-            var prescription = await  unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
-            if (prescription != null) 
-            return Ok(map.Map<GetPrescriptionsDto>(prescription));
+            var spec = new PrescriptionSpecifications(id);
+            var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
+            if (prescription != null)
+                return Ok(map.Map<GetPrescriptionsDto>(prescription));
             return NotFound();
         }
         [HttpGet("/GetByDoctorId/{id}")]
         public async Task<IActionResult> GetByDoctorId(int id)
         {
-            var spec = new PrescriptionSpecifications(P=>P.DoctorId==id); 
-          var prescription = await  unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
-            if (prescription != null) 
-            return Ok(map.Map<GetPrescriptionsDto>(prescription));
+            var spec = new PrescriptionSpecifications(P => P.DoctorId == id);
+            var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
+            if (prescription != null)
+                return Ok(map.Map<GetPrescriptionsDto>(prescription));
             return NotFound();
         }
 
@@ -60,19 +57,19 @@ namespace Sehaty.APIs.Controllers
             return NotFound();
         }
         [HttpPost]
-        public async Task<IActionResult> CreatePrescription([FromBody]CreatePrescriptionsDto model)
+        public async Task<IActionResult> CreatePrescription([FromBody] CreatePrescriptionsDto model)
         {
             if (ModelState.IsValid)
             {
                 var prescription = map.Map<Prescription>(model);
-                await unit.Repository<Prescription>().Add(prescription);
+                await unit.Repository<Prescription>().AddAsync(prescription);
                 await unit.CommitAsync();
                 return Ok(prescription);
             }
             return BadRequest(model);
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePrescription(int id,[FromBody] CreatePrescriptionsDto model)
+        public async Task<IActionResult> UpdatePrescription(int id, [FromBody] CreatePrescriptionsDto model)
         {
             if (ModelState.IsValid)
             {

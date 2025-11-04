@@ -7,11 +7,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Sehaty.Core\Sehaty.Core.csproj" />
+	  <Compile Remove="Identity\**" />
+	  <EmbeddedResource Remove="Identity\**" />
+	  <None Remove="Identity\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Identity\" />
+		<ProjectReference Include="..\Sehaty.Core\Sehaty.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
