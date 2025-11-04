@@ -1,4 +1,5 @@
-﻿using Sehaty.Core.Entites;
+﻿using Microsoft.AspNetCore.Identity;
+using Sehaty.Core.Entites;
 using Sehaty.Core.Entities.Business_Entities;
 using Sehaty.Core.Entities.User_Entities;
 using Sehaty.Infrastructure.Data.Contexts;
@@ -31,6 +32,11 @@ namespace Sehaty.Infrastructure.Data.SeedClass
             {
                 var usersData = File.ReadAllText("../Sehaty.Infrastructure/Data/SeedDataFiles/Users.json");
                 var users = JsonSerializer.Deserialize<List<ApplicationUser>>(usersData, options);
+                var passwordHasher = new PasswordHasher<ApplicationUser>();
+                foreach (var user in users!)
+                {
+                    user.PasswordHash = passwordHasher.HashPassword(user, "P@ssw0rd");
+                }
                 context.Users.AddRange(users!);
                 await context.SaveChangesAsync();
             }
