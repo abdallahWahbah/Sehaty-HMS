@@ -1,23 +1,20 @@
-﻿using Sehaty.Core.Entities.Business_Entities;
+﻿using Sehaty.Core.Entites;
+using Sehaty.Core.Entities.Business_Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Sehaty.Core.Entites
+namespace Sehaty.Infrastructure.Dtos
 {
-    public enum RecordType
-    {
-        Diagnosis,
-        LabResult,
-        Imaging,
-        FollowUp,
-        Procedure
-    }
-    public class MedicalRecord : BaseEntity
+    public class MedicalRecordDto
     {
         public int AppointmentId { get; set; }
-        public Appointment Appointment { get; set; }
         public DateTime RecordDate { get; set; } = DateTime.UtcNow;
         public string Symptoms { get; set; }
         public string Diagnosis { get; set; }
-        public String TreatmentPlan { get; set; }
+        public string TreatmentPlan { get; set; } 
         public int? BpSystolic { get; set; }
         public int? BpDiastolic { get; set; }
         public decimal? Temperature { get; set; }
@@ -27,9 +24,5 @@ namespace Sehaty.Core.Entites
         public string Notes { get; set; }
         public RecordType RecordType { get; set; } = RecordType.Diagnosis;
         public DateTime? CreatedAt { get; set; }
-
-        // Navigation Property to Prescriptions
-        public ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
-
     }
 }
