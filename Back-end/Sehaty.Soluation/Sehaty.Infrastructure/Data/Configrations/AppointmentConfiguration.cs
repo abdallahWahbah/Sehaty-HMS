@@ -26,10 +26,10 @@ namespace Sehaty.Infrastructure.Data.Configrations
             builder.Property(a => a.ReasonForVisit)
                    .HasColumnType("varchar(max)");
 
-            builder.Property(a => a.Status)
-                   .IsRequired()
-                   .HasMaxLength(20)
-                   .HasDefaultValue("Pending");
+            //builder.Property(a => a.Status)
+            //       .IsRequired()
+            //       .HasMaxLength(20)
+            //       .HasDefaultValue("Pending");
 
             builder.Property(a => a.ScheduledDate)
                    .HasColumnType("date");
@@ -65,10 +65,14 @@ namespace Sehaty.Infrastructure.Data.Configrations
 
             builder.HasCheckConstraint("CK_Appointments_DurationMinutes_Positive", "[DurationMinutes] > 0");
 
-            builder.HasCheckConstraint(
-                "CK_Appointments_Status_Valid",
-                "[Status] IN ('Pending','Confirmed','In Progress','Completed','Canceled','No-Show','Emergency')"
-            );
+            //builder.HasCheckConstraint(
+            //    "CK_Appointments_Status_Valid",
+            //    "[Status] IN ('Pending','Confirmed','In Progress','Completed','Canceled','No-Show','Emergency')"
+            //);
+            builder.Property(A => A.Status)
+               .HasConversion<string>()
+               .HasDefaultValue(AppointmentStatus.Pending)
+               .HasColumnType("nvarchar(max)");
         }
     }
 }

@@ -3,6 +3,7 @@ using Sehaty.Core.Entities.User_Entities;
 using Sehaty.Core.UnitOfWork.Contract;
 using Sehaty.Infrastructure.Data.Contexts;
 using Sehaty.Infrastructure.Data.SeedClass;
+using Sehaty.Infrastructure.MapConfig;
 using Sehaty.Infrastructure.UnitOfWork;
 
 namespace Sehaty.APIs
@@ -35,6 +36,7 @@ namespace Sehaty.APIs
 
             // Add UnitOfWork Class Injection
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddAutoMapper(typeof(MapConfiguration));
             #endregion
 
             var app = builder.Build();
