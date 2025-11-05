@@ -11,6 +11,7 @@ Release/
 **/Release/
 **/net8.0/
 
+
  
 # ============================
 # Visual Studio
@@ -20,7 +21,6 @@ Release/
 *.suo
 *.slnx/
 *.vscode/
-**/Migrations/
  
 # ============================
 # Logs and temporary files

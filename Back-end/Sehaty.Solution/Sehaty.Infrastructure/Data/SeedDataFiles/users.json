@@ -1,0 +1,110 @@
+[
+  {
+    "UserName": "Abdullah",
+    "FirstName": "Abdullah",
+    "LastName": "Muhammad",
+    "Email": "Abdullah@example.com",
+    "PhoneNumber": "01000000001",
+    "LanguagePreference": "English",
+    "IsActive": true,
+    "CreatedAt": "2025-11-02T20:00:00",
+    "LastLogin": "2025-11-02T20:00:00",
+    "RoleId": 1
+  },
+  {
+    "UserName": "Wahbah",
+    "FirstName": "Abdallah",
+    "LastName": "Wahbah",
+    "Email": "Wahbah@example.com",
+    "PhoneNumber": "01000000002",
+    "LanguagePreference": "English",
+    "IsActive": true,
+    "CreatedAt": "2025-11-02T20:00:00",
+    "LastLogin": "2025-11-02T20:00:00",
+    "RoleId": 1
+  },
+  {
+    "UserName": "Gendy",
+    "FirstName": "Ahmed",
+    "LastName": "Algendy",
+    "Email": "Gengy@example.com",
+    "PhoneNumber": "01000000003",
+    "LanguagePreference": "English",
+    "IsActive": true,
+    "CreatedAt": "2025-11-02T20:00:00",
+    "LastLogin": "2025-11-02T20:00:00",
+    "RoleId": 1
+  },
+  {
+    "UserName": "Ibrahim",
+    "FirstName": "Ibrahim",
+    "LastName": "Mohamed",
+    "Email": "Ibrahim@example.com",
+    "PhoneNumber": "01000000004",
+    "LanguagePreference": "English",
+    "IsActive": true,
+    "CreatedAt": "2025-11-02T20:00:00",
+    "LastLogin": "2025-11-02T20:00:00",
+    "RoleId": 1
+  },
+  {
+    "UserName": "Abdelraheem",
+    "FirstName": "Ahmed",
+    "LastName": "Abdelraheem",
+    "Email": "Abdelraheem@example.com",
+    "PhoneNumber": "01000000005",
+    "LanguagePreference": "English",
+    "IsActive": true,
+    "CreatedAt": "2025-11-02T20:00:00",
+    "LastLogin": "2025-11-02T20:00:00",
+    "RoleId": 1
+  },
+  {
+    "UserName": "Hanaa",
+    "FirstName": "Hanaa",
+    "LastName": "Elagami",
+    "Email": "Hanaa@example.com",
+    "PhoneNumber": "01000000006",
+    "LanguagePreference": "English",
+    "IsActive": true,
+    "CreatedAt": "2025-11-02T20:00:00",
+    "LastLogin": "2025-11-02T20:00:00",
+    "RoleId": 1
+  },
+  {
+    "UserName": "ali.hassan",
+    "FirstName": "Ali",
+    "LastName": "Hassan",
+    "Email": "ali.hassan@example.com",
+    "PhoneNumber": "01000000007",
+    "LanguagePreference": "English",
+    "IsActive": true,
+    "CreatedAt": "2025-11-02T20:00:00",
+    "LastLogin": "2025-11-02T20:00:00",
+    "RoleId": 2
+  },
+  {
+    "UserName": "sara.ibrahim",
+    "FirstName": "Sara",
+    "LastName": "Ibrahim",
+    "Email": "sara.ibrahim@example.com",
+    "PhoneNumber": "01000000008",
+    "LanguagePreference": "English",
+    "IsActive": true,
+    "CreatedAt": "2025-11-02T20:00:00",
+    "LastLogin": "2025-11-02T20:00:00",
+    "RoleId": 2
+  },
+  {
+    "UserName": "hany.gamal",
+    "FirstName": "Hany",
+    "LastName": "Gamal",
+    "Email": "hany.gamal@example.com",
+    "PhoneNumber": "01000000009",
+    "LanguagePreference": "English",
+    "IsActive": true,
+    "CreatedAt": "2025-11-02T20:00:00",
+    "LastLogin": "2025-11-02T20:00:00",
+    "RoleId": 2
+  }
+]
