@@ -1,0 +1,104 @@
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Sehaty.Application.Dtos.AppointmentDTOs;
+using Sehaty.Core.Entites;
+using Sehaty.Core.UnitOfWork.Contract;
+
+namespace Sehaty.APIs.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AppointmentsController : ControllerBase
+    {
+        private readonly IUnitOfWork _unit;
+        private readonly IMapper _mapper;
+
+        public AppointmentsController(IUnitOfWork unit, IMapper mapper)
+        {
+            _unit = unit;
+            _mapper = mapper;
+        }
+
+        // GET: api/Appointments <<works great>>
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetAllAppointments()
+        {
+            var appointments = await _unit.Repository<Appointment>().GetAllAsync();
+            if (appointments == null || !appointments.Any())
+                return NotFound("No appointments found.");
+
+            return Ok(appointments);
+        }
+
+        // GET: api/Appointments/5 <<works great>>
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
+        {
+            if (id <= 0)
+                return BadRequest("Invalid appointment ID.");
+
+            var appointment = await _unit.Repository<Appointment>().GetByIdAsync(id, asNoTracking: true);
+            if (appointment == null)
+                return NotFound($"Appointment with ID {id} not found.");
+
+            return Ok(appointment);
+        }
+
+        // POST: api/Appointments
+        [HttpPost]
+        public async Task<ActionResult> CreateAppointment([FromBody] AppointmentCreateDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (dto.AppointmentDateTime < DateTime.Now)
+                return BadRequest("Appointment date cannot be in the past.");
+
+            var appointment = _mapper.Map<Appointment>(dto);
+
+            await _unit.Repository<Appointment>().AddAsync(appointment);
+            await _unit.CommitAsync();
+
+            return CreatedAtAction(nameof(GetAppointmentById), new { id = appointment.Id }, appointment);
+        }
+
+        // PUT: api/Appointments/5 <<works great>>
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> UpdateAppointment(int id, [FromBody] AppointmentUpdateDto dto)
+        {
+            if (id <= 0)
+                return BadRequest("Invalid appointment ID.");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var existing = await _unit.Repository<Appointment>().GetByIdAsync(id);
+            if (existing == null)
+                return NotFound($"Appointment with ID {id} not found.");
+
+            _mapper.Map(dto, existing);
+
+            _unit.Repository<Appointment>().Update(existing);
+            await _unit.CommitAsync();
+
+            return Ok(existing);
+        }
+
+        // DELETE: api/Appointments/5
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteAppointment(int id)
+        {
+            if (id <= 0)
+                return BadRequest("Invalid appointment ID.");
+
+            var appointment = await _unit.Repository<Appointment>().GetByIdAsync(id);
+            if (appointment == null)
+                return NotFound($"Appointment with ID {id} not found.");
+
+            _unit.Repository<Appointment>().Delete(appointment);
+            await _unit.CommitAsync();
+
+            return Ok($"Appointment with ID {id} deleted successfully.");
+        }
+    }
+}
