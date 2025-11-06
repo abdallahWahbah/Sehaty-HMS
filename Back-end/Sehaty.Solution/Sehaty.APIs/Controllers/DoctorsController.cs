@@ -66,7 +66,7 @@ namespace Sehaty.APIs.Controllers
                 var doctor = mapper.Map<Doctor>(dto);
                 await unit.Repository<Doctor>().AddAsync(doctor);
                 await unit.CommitAsync();
-                return CreatedAtAction(nameof(GetDoctorById), new { id = doctor.Id }, doctor);
+                return CreatedAtAction(nameof(GetDoctorById), new { id = doctor.Id }, mapper.Map<GetDoctorDto>(doctor));
             }
             return BadRequest(ModelState);
         }

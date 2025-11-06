@@ -21,6 +21,11 @@ namespace Sehaty.Core.Specifications.DoctorSpec
 
         void AddIncludes()
         {
+            Includes.Add(D => D.User);
+            Includes.Add(D => D.Department);
+        }
+        void AddIncludesWithLists()
+        {
             Includes.Add(D => D.Appointments);
             Includes.Add(D => D.Prescriptions);
             Includes.Add(D => D.User);
