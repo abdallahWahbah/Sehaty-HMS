@@ -33,10 +33,10 @@ namespace Sehaty.APIs.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeletePatient(int id)
         {
-            var patient = await unit.Repository<Patient>().GetByIdAsync(id);
-            if (patient is null)
+            var patientToDelete = await unit.Repository<Patient>().GetByIdAsync(id);
+            if (patientToDelete is null)
                 return NotFound();
-            unit.Repository<Patient>().Delete(patient);
+            unit.Repository<Patient>().Delete(patientToDelete);
             await unit.CommitAsync();
             return NoContent();
         }
@@ -46,11 +46,11 @@ namespace Sehaty.APIs.Controllers
         {
             if (ModelState.IsValid)
             {
-                var patient = await unit.Repository<Patient>().GetByIdAsync(id);
-                if (patient is null)
+                var patientToEdit = await unit.Repository<Patient>().GetByIdAsync(id);
+                if (patientToEdit is null)
                     return NotFound();
-                mapper.Map(dto, patient);
-                unit.Repository<Patient>().Update(patient);
+                mapper.Map(dto, patientToEdit);
+                unit.Repository<Patient>().Update(patientToEdit);
                 await unit.CommitAsync();
                 return NoContent();
             }
@@ -62,10 +62,10 @@ namespace Sehaty.APIs.Controllers
         {
             if (ModelState.IsValid)
             {
-                var patient = mapper.Map<Patient>(dto);
-                await unit.Repository<Patient>().AddAsync(patient);
+                var patientToAdd = mapper.Map<Patient>(dto);
+                await unit.Repository<Patient>().AddAsync(patientToAdd);
                 await unit.CommitAsync();
-                return CreatedAtAction(nameof(GetPatientById), new { id = patient.Id }, mapper.Map<GetPatientDto>(patient));
+                return CreatedAtAction(nameof(GetPatientById), new { id = patientToAdd.Id }, mapper.Map<GetPatientDto>(patientToAdd));
             }
             return BadRequest(ModelState);
         }
