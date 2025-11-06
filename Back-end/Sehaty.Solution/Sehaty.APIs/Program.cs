@@ -87,6 +87,8 @@ namespace Sehaty.APIs
             // Add AutoMapper Profiles Injection
             // To Add Every Profile Automatically
             builder.Services.AddAutoMapper(cfg => { }, typeof(DoctorProfile).Assembly);
+            builder.Services.AddAutoMapper(cfg => { }, typeof(DoctorAvailabilitySlotProfile).Assembly);
+
 
             //builder.Services.AddAutoMapper(cfg => { }, typeof(AppointmentProfile).Assembly);
 
