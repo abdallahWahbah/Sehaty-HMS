@@ -51,7 +51,7 @@ namespace Sehaty.APIs.Controllers
                 var feedbackToAdd = mapper.Map<Feedback>(feedbackDto);
                 await unit.Repository<Feedback>().AddAsync(feedbackToAdd);
                 await unit.CommitAsync();
-                return CreatedAtAction(nameof(GetFeedbackById), new { id = feedbackToAdd.Id }, feedbackToAdd);
+                return CreatedAtAction(nameof(GetFeedbackById), new { id = feedbackToAdd.Id }, mapper.Map<GetFeedbackDto>(feedbackToAdd));
             }
             return BadRequest(ModelState);
         }
