@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Sehaty.APIs/Sehaty.APIs.csproj" />
+  <Project Path="Sehaty.Application/Sehaty.Application.csproj" />
+  <Project Path="Sehaty.Core/Sehaty.Core.csproj" />
+  <Project Path="Sehaty.Infrastructure/Sehaty.Infrastructure.csproj" />
+</Solution>
