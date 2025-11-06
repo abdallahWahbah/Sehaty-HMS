@@ -1,0 +1,73 @@
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Sehaty.Application.Dtos.PatientDto;
+using Sehaty.Core.Entites;
+using Sehaty.Core.Specifications.PatientSpec;
+using Sehaty.Core.UnitOfWork.Contract;
+
+namespace Sehaty.APIs.Controllers
+{
+
+    public class PatientsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
+    {
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<GetPatientDto>>> GetAllPatients()
+        {
+            var spec = new PatientSpecifications();
+            var patients = await unit.Repository<Patient>().GetAllWithSpecAsync(spec);
+            if (patients is null)
+                return NotFound();
+            return Ok(mapper.Map<IEnumerable<GetPatientDto>>(patients));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GetPatientDto>> GetPatientById(int id)
+        {
+            var spec = new PatientSpecifications(id);
+            var patient = await unit.Repository<Patient>().GetByIdWithSpecAsync(spec);
+            if (patient is null)
+                return NotFound();
+            return Ok(mapper.Map<GetPatientDto>(patient));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeletePatient(int id)
+        {
+            var patient = await unit.Repository<Patient>().GetByIdAsync(id);
+            if (patient is null)
+                return NotFound();
+            unit.Repository<Patient>().Delete(patient);
+            await unit.CommitAsync();
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdatePatient(int id, [FromBody] PatientAddUpdateDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                var patient = await unit.Repository<Patient>().GetByIdAsync(id);
+                if (patient is null)
+                    return NotFound();
+                mapper.Map(dto, patient);
+                unit.Repository<Patient>().Update(patient);
+                await unit.CommitAsync();
+                return NoContent();
+            }
+            return BadRequest(ModelState);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddPatient([FromBody] PatientAddUpdateDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                var patient = mapper.Map<Patient>(dto);
+                await unit.Repository<Patient>().AddAsync(patient);
+                await unit.CommitAsync();
+                return CreatedAtAction(nameof(GetPatientById), new { id = patient.Id }, mapper.Map<GetPatientDto>(patient));
+            }
+            return BadRequest(ModelState);
+        }
+    }
+}
