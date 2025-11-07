@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace Sehaty.Application.Dtos.AppointmentDTOs
 {
-    public class AppointmentUpdateDto
+    public class AppointmentAddOrUpdateDto
     {
+        public int PatientId { get; set; }
+        public int DoctorId { get; set; }
         public DateTime AppointmentDateTime { get; set; }
         public int DurationMinutes { get; set; }
         public string ReasonForVisit { get; set; }
@@ -17,5 +19,7 @@ namespace Sehaty.Application.Dtos.AppointmentDTOs
         public TimeSpan ScheduledTime { get; set; }
         public DateTime? ConfirmationDateTime { get; set; }
         public string CancellationReason { get; set; }
+
+
     }
 }

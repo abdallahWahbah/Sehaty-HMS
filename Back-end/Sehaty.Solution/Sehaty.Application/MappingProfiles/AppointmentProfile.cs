@@ -21,7 +21,7 @@ namespace Sehaty.Application.MappingProfiles
 
 
             // Create 
-            CreateMap<AppointmentCreateDto, Appointment>()
+            CreateMap<AppointmentAddOrUpdateDto, Appointment>()
                 .ForMember(dest => dest.ScheduledDate,
                     opt => opt.MapFrom(src => DateOnly.FromDateTime(src.ScheduledDate)))
                 .ForMember(dest => dest.ScheduledTime,
@@ -39,7 +39,7 @@ namespace Sehaty.Application.MappingProfiles
                 });
 
             // Update 
-            CreateMap<AppointmentUpdateDto, Appointment>()
+            CreateMap<AppointmentAddOrUpdateDto, Appointment>()
                 .ForMember(dest => dest.ScheduledDate,
                     opt => opt.MapFrom(src => DateOnly.FromDateTime(src.ScheduledDate)))
                 .ForMember(dest => dest.ScheduledTime,
@@ -53,7 +53,7 @@ namespace Sehaty.Application.MappingProfiles
                 });
 
             // Return
-            CreateMap<Appointment, AppointmentCreateDto>()
+            CreateMap<Appointment, AppointmentAddOrUpdateDto>()
                 .ForMember(dest => dest.ScheduledDate,
                     opt => opt.MapFrom(src => src.ScheduledDate.HasValue
                         ? src.ScheduledDate.Value.ToDateTime(TimeOnly.MinValue)
@@ -65,5 +65,7 @@ namespace Sehaty.Application.MappingProfiles
                 .ForMember(dest => dest.Status,
                     opt => opt.MapFrom(src => src.Status.ToString()));
         }
+
+
     }
 }

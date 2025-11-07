@@ -8,91 +8,68 @@ using Sehaty.Core.UnitOfWork.Contract;
 namespace Sehaty.APIs.Controllers
 {
 
-    public class AppointmentsController : ApiBaseController
+    public class AppointmentsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
     {
-        private readonly IUnitOfWork _unit;
-        private readonly IMapper _mapper;
-
-        public AppointmentsController(IUnitOfWork unit, IMapper mapper)
-        {
-            _unit = unit;
-            _mapper = mapper;
-        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AppointmentReadDto>>> GetAllAppointments()
         {
-            var specs = new AppointmentSpecifications();
-            var model = await _unit.Repository<Appointment>().GetAllWithSpecAsync(specs);
-            var data = _mapper.Map<List<AppointmentReadDto>>(model);
-            return Ok(data);
+            var spec = new AppointmentSpecifications();
+            var appointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(spec);
+            return Ok(mapper.Map<List<AppointmentReadDto>>(appointments));
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("GetAppointmentById{id}")]
         public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
         {
             var specs = new AppointmentSpecifications(D => D.Id == id);
-            var model = await _unit.Repository<Appointment>().GetByIdWithSpecAsync(specs);
-            var data = _mapper.Map<AppointmentReadDto>(model);
-            return Ok(data);
+            var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(specs);
+            return Ok(mapper.Map<AppointmentReadDto>(appointment));
 
         }
 
         // POST: api/Appointments
         [HttpPost]
-        public async Task<ActionResult> CreateAppointment([FromBody] AppointmentCreateDto dto)
+        public async Task<ActionResult> CreateAppointment([FromBody] AppointmentAddOrUpdateDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
             if (dto.AppointmentDateTime < DateTime.Now)
                 return BadRequest("Appointment date cannot be in the past.");
-
-            var appointment = _mapper.Map<Appointment>(dto);
-
-            await _unit.Repository<Appointment>().AddAsync(appointment);
-            await _unit.CommitAsync();
-
+            var appointment = mapper.Map<Appointment>(dto);
+            await unit.Repository<Appointment>().AddAsync(appointment);
+            await unit.CommitAsync();
             return CreatedAtAction(nameof(GetAppointmentById), new { id = appointment.Id }, appointment);
         }
 
         // PUT: api/Appointments/5 <<works great>>
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult> UpdateAppointment(int id, [FromBody] AppointmentUpdateDto dto)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateAppointment(int? id, [FromBody] AppointmentAddOrUpdateDto dto)
         {
-            if (id <= 0)
-                return BadRequest("Invalid appointment ID.");
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var existing = await _unit.Repository<Appointment>().GetByIdAsync(id);
-            if (existing == null)
-                return NotFound($"Appointment with ID {id} not found.");
-
-            _mapper.Map(dto, existing);
-
-            _unit.Repository<Appointment>().Update(existing);
-            await _unit.CommitAsync();
-
-            return Ok(existing);
+            if (id is null) return BadRequest();
+            if (ModelState.IsValid)
+            {
+                var updateAppointment = await unit.Repository<Appointment>().GetByIdAsync(id.Value);
+                if (updateAppointment is null)
+                    return NotFound();
+                mapper.Map(dto, updateAppointment);
+                unit.Repository<Appointment>().Update(updateAppointment);
+                await unit.CommitAsync();
+                return NoContent();
+            }
+            return BadRequest(ModelState);
         }
 
         // DELETE: api/Appointments/5
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> DeleteAppointment(int id)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteAppointment(int? id)
         {
-            if (id <= 0)
-                return BadRequest("Invalid appointment ID.");
-
-            var appointment = await _unit.Repository<Appointment>().GetByIdAsync(id);
-            if (appointment == null)
-                return NotFound($"Appointment with ID {id} not found.");
-
-            _unit.Repository<Appointment>().Delete(appointment);
-            await _unit.CommitAsync();
-
-            return Ok($"Appointment with ID {id} deleted successfully.");
+            if (id is null) return BadRequest();
+            var appointment = await unit.Repository<Appointment>().GetByIdAsync(id.Value);
+            if (appointment is null) return NotFound();
+            unit.Repository<Appointment>().Delete(appointment);
+            var RowAffected = await unit.CommitAsync();
+            return RowAffected > 0 ? NoContent() : BadRequest(ModelState);
         }
     }
 }

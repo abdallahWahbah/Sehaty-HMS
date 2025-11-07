@@ -11,8 +11,8 @@ namespace Sehaty.Application.MappingProfiles
         {
             CreateMap<MedicalRecord, MedicalRecordAddOrUpdateByDoctorDto>().ReverseMap();
             CreateMap<MedicalRecord, MedicalRecordAddOrUpdateByNurseDto>().ReverseMap();
-            CreateMap<MedicalRecord, MedicalRecordReadDto>().ReverseMap();
-
+            CreateMap<MedicalRecord, MedicalRecordReadDto>().AfterMap((src, dest) => { dest.RecordType = src.RecordType.ToString(); })
+             .ReverseMap();
         }
     }
 }
