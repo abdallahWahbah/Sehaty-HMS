@@ -12,8 +12,8 @@ using Sehaty.Infrastructure.Data.Contexts;
 namespace Sehaty.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(SehatyDbContext))]
-    [Migration("20251104232307_InitDatabase")]
-    partial class InitDatabase
+    [Migration("20251107195630_InitSehatyDatabase")]
+    partial class InitSehatyDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -615,6 +615,24 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.ToTable("Patients");
                 });
 
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Medication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Medications", (string)null);
+                });
+
             modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Prescription", b =>
                 {
                     b.Property<int>("Id")
@@ -638,27 +656,8 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Property<int?>("DoctorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Dosage")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Duration")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Frequency")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<int?>("MedicalRecordId")
                         .HasColumnType("int");
-
-                    b.Property<string>("MedicationName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int?>("PatientId")
                         .HasColumnType("int");
@@ -684,6 +683,45 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("Prescriptions", (string)null);
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.PrescriptionMedications", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Dosage")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Duration")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Frequency")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("MedicationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrescriptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicationId");
+
+                    b.HasIndex("PrescriptionId", "MedicationId")
+                        .IsUnique();
+
+                    b.ToTable("PrescriptionMedications");
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.ApplicationRole", b =>
@@ -833,6 +871,105 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.AuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IpAdress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLogs");
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.PasswordResetCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CodeHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RequestedFromIp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PasswordResetCodes");
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("CreatedByIp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -1026,6 +1163,25 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.PrescriptionMedications", b =>
+                {
+                    b.HasOne("Sehaty.Core.Entities.Business_Entities.Medication", "Medication")
+                        .WithMany("Prescriptions")
+                        .HasForeignKey("MedicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Sehaty.Core.Entities.Business_Entities.Prescription", "Prescription")
+                        .WithMany("Medications")
+                        .HasForeignKey("PrescriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Medication");
+
+                    b.Navigation("Prescription");
+                });
+
             modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.ApplicationUser", b =>
                 {
                     b.HasOne("Sehaty.Core.Entities.User_Entities.ApplicationRole", "Role")
@@ -1035,6 +1191,28 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.PasswordResetCode", b =>
+                {
+                    b.HasOne("Sehaty.Core.Entities.User_Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.RefreshToken", b =>
+                {
+                    b.HasOne("Sehaty.Core.Entities.User_Entities.ApplicationUser", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entites.Appointment", b =>
@@ -1076,6 +1254,16 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Navigation("Prescriptions");
                 });
 
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Medication", b =>
+                {
+                    b.Navigation("Prescriptions");
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Prescription", b =>
+                {
+                    b.Navigation("Medications");
+                });
+
             modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.ApplicationRole", b =>
                 {
                     b.Navigation("Users");
@@ -1084,6 +1272,8 @@ namespace Sehaty.Infrastructure.Data.Migrations
             modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.ApplicationUser", b =>
                 {
                     b.Navigation("Notifications");
+
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

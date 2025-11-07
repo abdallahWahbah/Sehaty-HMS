@@ -82,6 +82,14 @@ namespace Sehaty.Infrastructure.Data.SeedClass
                 await context.SaveChangesAsync();
             }
 
+            if (context.Medications.Count() == 0)
+            {
+                var medicationsData = File.ReadAllText("../Sehaty.Infrastructure/Data/SeedDataFiles/Medications.json");
+                var medications = JsonSerializer.Deserialize<List<Medication>>(medicationsData, options);
+                context.Medications.AddRange(medications!);
+                await context.SaveChangesAsync();
+            }
+
             if (context.Prescriptions.Count() == 0)
             {
                 var prescriptionsData = File.ReadAllText("../Sehaty.Infrastructure/Data/SeedDataFiles/Prescriptions.json");
@@ -121,13 +129,7 @@ namespace Sehaty.Infrastructure.Data.SeedClass
                 context.Notifications.AddRange(notifications!);
                 await context.SaveChangesAsync();
             }
-            if (context.Medications.Count() == 0)
-            {
-                var medicationsData = File.ReadAllText("../Sehaty.Infrastructure/Data/SeedDataFiles/Medications.json");
-                var medications = JsonSerializer.Deserialize<List<Medication>>(medicationsData, options);
-                context.Medications.AddRange(medications!);
-                await context.SaveChangesAsync();
-            }
+
             if (context.PrescriptionMedications.Count() == 0)
             {
                 var prescriptionMedicationsData = File.ReadAllText("../Sehaty.Infrastructure/Data/SeedDataFiles/PrescriptionMedications.json");

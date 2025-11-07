@@ -1,6 +1,5 @@
 [
   {
-    "Id": 1,
     "Status": "Active",
     "DigitalSignature": "DrAhmedSignature123",
     "SpecialInstructions": "Take medicines after meals",
@@ -11,7 +10,6 @@
     "DoctorId": 1
   },
   {
-    "Id": 2,
     "Status": "Completed",
     "DigitalSignature": "DrSaraSignature456",
     "SpecialInstructions": "Avoid dairy with this medication",
@@ -22,7 +20,6 @@
     "DoctorId": 2
   },
   {
-    "Id": 3,
     "Status": "Active",
     "DigitalSignature": "DrOmarSignature789",
     "SpecialInstructions": "Drink plenty of water",

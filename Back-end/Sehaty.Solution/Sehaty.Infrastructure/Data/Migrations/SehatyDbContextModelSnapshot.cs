@@ -612,6 +612,24 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.ToTable("Patients");
                 });
 
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Medication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Medications", (string)null);
+                });
+
             modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Prescription", b =>
                 {
                     b.Property<int>("Id")
@@ -635,27 +653,8 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Property<int?>("DoctorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Dosage")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Duration")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Frequency")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<int?>("MedicalRecordId")
                         .HasColumnType("int");
-
-                    b.Property<string>("MedicationName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int?>("PatientId")
                         .HasColumnType("int");
@@ -681,6 +680,45 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("Prescriptions", (string)null);
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.PrescriptionMedications", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Dosage")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Duration")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Frequency")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("MedicationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrescriptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicationId");
+
+                    b.HasIndex("PrescriptionId", "MedicationId")
+                        .IsUnique();
+
+                    b.ToTable("PrescriptionMedications");
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.ApplicationRole", b =>
@@ -1122,6 +1160,25 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.PrescriptionMedications", b =>
+                {
+                    b.HasOne("Sehaty.Core.Entities.Business_Entities.Medication", "Medication")
+                        .WithMany("Prescriptions")
+                        .HasForeignKey("MedicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Sehaty.Core.Entities.Business_Entities.Prescription", "Prescription")
+                        .WithMany("Medications")
+                        .HasForeignKey("PrescriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Medication");
+
+                    b.Navigation("Prescription");
+                });
+
             modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.ApplicationUser", b =>
                 {
                     b.HasOne("Sehaty.Core.Entities.User_Entities.ApplicationRole", "Role")
@@ -1192,6 +1249,16 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Navigation("Billings");
 
                     b.Navigation("Prescriptions");
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Medication", b =>
+                {
+                    b.Navigation("Prescriptions");
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Prescription", b =>
+                {
+                    b.Navigation("Medications");
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.ApplicationRole", b =>
