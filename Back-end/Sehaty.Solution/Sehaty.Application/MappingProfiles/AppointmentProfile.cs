@@ -8,6 +8,18 @@ namespace Sehaty.Application.MappingProfiles
     {
         public AppointmentProfile()
         {
+            //Read
+            CreateMap<Appointment, AppointmentReadDto>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor != null
+                    ? src.Doctor.FirstName + " " + src.Doctor.LastName
+                    : "Unknown Doctor"))
+                .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient != null
+                    ? src.Patient.FirstName + " " + src.Patient.LastName
+                    : "Unknown Patient"));
+
+
+
             // Create 
             CreateMap<AppointmentCreateDto, Appointment>()
                 .ForMember(dest => dest.ScheduledDate,
