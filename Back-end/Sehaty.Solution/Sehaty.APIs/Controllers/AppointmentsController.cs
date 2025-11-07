@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Sehaty.Application.Dtos.AppointmentDTOs;
 using Sehaty.Core.Entites;
+using Sehaty.Core.Specifications.Appointment_Specs;
 using Sehaty.Core.UnitOfWork.Contract;
 
 namespace Sehaty.APIs.Controllers
@@ -48,7 +49,7 @@ namespace Sehaty.APIs.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Appointment>>> GetAllAppointments()
+        public async Task<ActionResult<IEnumerable<AppointmentReadDto>>> GetAllAppointments()
         {
             var specs = new AppointmentSpecifications();
             var model = await _unit.Repository<Appointment>().GetAllWithSpecAsync(specs);
@@ -56,19 +57,16 @@ namespace Sehaty.APIs.Controllers
             return Ok(data);
         }
 
-        // GET: api/Appointments/5 <<works great>>
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
         {
-            if (id <= 0)
-                return BadRequest("Invalid appointment ID.");
+            var specs = new AppointmentSpecifications(D => D.Id == id);
+            var model = await _unit.Repository<Appointment>().GetByIdWithSpecAsync(specs);
+            var data = _mapper.Map<AppointmentReadDto>(model);
+            return Ok(data);
 
-            var appointment = await _unit.Repository<Appointment>().GetByIdAsync(id, asNoTracking: true);
-            if (appointment == null)
-                return NotFound($"Appointment with ID {id} not found.");
-
-            return Ok(appointment);
         }
+
 
         // POST: api/Appointments
         [HttpPost]
