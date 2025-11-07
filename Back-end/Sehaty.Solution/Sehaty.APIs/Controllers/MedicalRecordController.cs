@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sehaty.Application.Dtos.DoctorDtos;
+using Sehaty.Application.Dtos.MedicalRecordDto;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Specifications.MedicalReord;
 using Sehaty.Core.UnitOfWork.Contract;
@@ -8,44 +10,35 @@ using Sehaty.Infrastructure.Dtos;
 
 namespace Sehaty.APIs.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class MedicalRecordController : ControllerBase
-    {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly IMapper map;
 
-        public MedicalRecordController(IUnitOfWork unitOfWork, IMapper map)
-        {
-            this.unitOfWork = unitOfWork;
-            this.map = map;
-        }
+    public class MedicalRecordController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
+    {
+
         [EndpointSummary("Get all medical records")]
         [EndpointDescription("Retrieves all medical records from the database and maps them to doctor DTOs")]
-        [ProducesResponseType(typeof(List<MedicalRecordDoctorDto>), 200)]
+        [ProducesResponseType(typeof(List<MedicalRecordReadDto>), 200)]
         [ProducesResponseType(404)]
         [HttpGet]
         public async Task<IActionResult> GetAllMedicalRecord()
         {
-            var models = await unitOfWork.Repository<MedicalRecord>().GetAllAsync();
-            if (models is null) return NotFound();
-            var Data = map.Map<List<MedicalRecordDoctorDto>>(models);
-            return Ok(Data);
+            var spec = new MedicalRecordSpec();
+            var medicalRecords = await unit.Repository<MedicalRecord>().GetAllWithSpecAsync(spec);
+            if (medicalRecords is null) return NotFound();
+            return Ok(mapper.Map<List<MedicalRecordReadDto>>(medicalRecords));
         }
 
         //Get Specific
         [EndpointSummary("Get a specific medical record")]
         [EndpointDescription("Retrieves a medical record by its ID")]
-        [ProducesResponseType(typeof(MedicalRecordDoctorDto), 200)]
+        [ProducesResponseType(typeof(MedicalRecordReadDto), 200)]
         [ProducesResponseType(404)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMedicalRecordById(int id)
         {
-            var model = await unitOfWork.Repository<MedicalRecord>().GetByIdAsync(id);
-            if (model is null) return NotFound();
-            var Data = map.Map<MedicalRecordDoctorDto>(model);
-            return Ok(Data);
-
+            var spec = new MedicalRecordSpec(m => m.Id == id);
+            var medicalReord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
+            if (medicalReord is null) return NotFound();
+            return Ok(mapper.Map<MedicalRecordReadDto>(medicalReord));
         }
 
 
@@ -55,46 +48,35 @@ namespace Sehaty.APIs.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        //[Authorize(Roles ="Doctor")]
+        [Authorize(Roles = "Doctor")]
         [HttpPost("AddByDoctor")]
-        public async Task<IActionResult> AddMedicalRecordByDoctor([FromBody] MedicalRecordDoctorDto model)
+        public async Task<IActionResult> AddMedicalRecordByDoctor([FromBody] MedicalRecordAddOrUpdateByDoctorDto model)
         {
             // Validate appointment existence
-            var appointment = await unitOfWork.Repository<Appointment>().GetByIdAsync(model.AppointmentId);
+            var appointment = await unit.Repository<Appointment>().GetByIdAsync(model.AppointmentId);
             if (appointment is null) return NotFound();
 
             // Prevent editing completed records
-            if (appointment.Status == AppointmentStatus.Completed)
-            {
-                return BadRequest("Can't Modify completed Record");
-            }
+            if (appointment.Status == AppointmentStatus.Completed) return BadRequest("Can't Modify completed Record");
+
             if (!ModelState.IsValid) return BadRequest();
 
-            // Create or update record
-            if (model.Id == 0)
-            {
-                var Data = map.Map<MedicalRecord>(model);
-                await unitOfWork.Repository<MedicalRecord>().AddAsync(Data);
-            }
-            else
-            {
-                var record = await unitOfWork.Repository<MedicalRecord>().GetByIdAsync(model.Id);
-                if (record is null) return NotFound();
-                var Data = map.Map<MedicalRecord>(model);
-                unitOfWork.Repository<MedicalRecord>().Update(Data);
+            // Create record
+            var addMedicalRecord = mapper.Map<MedicalRecord>(model);
+            await unit.Repository<MedicalRecord>().AddAsync(addMedicalRecord);
+            await unit.CommitAsync();
 
-            }
             // Finalize appointment if requested
             if (model.IsFinialize == true)
             {
                 appointment.Status = AppointmentStatus.Completed;
-                unitOfWork.Repository<Appointment>().Update(appointment);
+                unit.Repository<Appointment>().Update(appointment);
             }
-            var RowAffected = await unitOfWork.CommitAsync();
-            return RowAffected > 0 ? Ok(model) : BadRequest();
-
+            var RowAffected = await unit.CommitAsync();
+            return RowAffected > 0 ? CreatedAtAction(nameof(GetMedicalRecordById),
+                new { id = addMedicalRecord.Id }, mapper.Map<MedicalRecordReadDto>(addMedicalRecord))
+                  : BadRequest();
         }
-
 
         //Add By Nurse
         [EndpointSummary("Add or update vital signs by nurse")]
@@ -102,12 +84,12 @@ namespace Sehaty.APIs.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        //[Authorize(Roles = "Nurse")]
+        [Authorize(Roles = "Nurse")]
         [HttpPost("AddByNurse")]
-        public async Task<IActionResult> AddMedicalRecordByNurse([FromBody] MedicalRecordNurseDto model)
+        public async Task<IActionResult> AddOrUpdateMedicalRecordByNurse([FromBody] MedicalRecordAddOrUpdateByNurseDto model)
         {
             if (!ModelState.IsValid) return BadRequest();
-            var record = await unitOfWork.Repository<MedicalRecord>().GetByIdAsync(model.Id);
+            var record = await unit.Repository<MedicalRecord>().GetByIdAsync(model.AppointmentId);
             if (record is null) return NotFound();
             if (record.Appointment?.Status == AppointmentStatus.Completed) return BadRequest("Cann't modify completed record");
 
@@ -118,47 +100,60 @@ namespace Sehaty.APIs.Controllers
             record.Temperature = model.Temperature;
             record.HeartRate = model.HeartRate;
             record.Weight = model.Weight;
-            unitOfWork.Repository<MedicalRecord>().Update(record);
-            var RowAffected = await unitOfWork.CommitAsync();
-            return RowAffected > 0 ? Ok(model) : BadRequest();
+            unit.Repository<MedicalRecord>().Update(record);
+            var RowAffected = await unit.CommitAsync();
+            return RowAffected > 0 ? CreatedAtAction(nameof(GetMedicalRecordById),
+                new { id = record.Id }, mapper.Map<MedicalRecordReadDto>(record))
+                  : BadRequest();
         }
-
-
         //Update Record
         [EndpointSummary("Update a medical record by ID")]
         [EndpointDescription("Allows a doctor to update an existing medical record using its ID.")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        // [Authorize(Roles ="Doctor")]
+        [Authorize(Roles = "Doctor")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMedicalRecord(int? id, [FromBody] MedicalRecordDoctorDto model)
+        public async Task<IActionResult> UpdateMedicalRecordByDoctor(int? id, [FromBody] MedicalRecordAddOrUpdateByDoctorDto model)
         {
             if (id is null) return BadRequest();
-            if (id != model.Id) return NotFound();
-            if (!ModelState.IsValid) return BadRequest();
-            var Data = map.Map<MedicalRecord>(model);
-            unitOfWork.Repository<MedicalRecord>().Update(Data);
-            var RowAffected = await unitOfWork.CommitAsync();
-            if (RowAffected > 0)
+
+            if (ModelState.IsValid)
             {
-                return Ok(model);
+                var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdAsync(id.Value);
+                if (medicalRecord is null) return NotFound();
+
+                mapper.Map(model, medicalRecord);
+                unit.Repository<MedicalRecord>().Update(medicalRecord);
+                await unit.CommitAsync();
+                return NoContent();
             }
-            else return BadRequest();
+            return BadRequest(ModelState);
 
         }
         [Authorize(Roles = "Doctor")]
         [HttpGet("getByName{FullName}")]
-        public async Task<IActionResult> GetByName(string FullName)
+        public async Task<IActionResult> GetByPatientName(string FullName)
         {
             var spec = new MedicalRecordSpec(d =>
             (d.Appointment.Patient.FirstName + "" + d.Appointment.Patient.LastName).Contains(FullName));
-            var slot = await unitOfWork.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
+            var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
 
-            if (slot != null)
-                return Ok(map.Map<MedicalRecordDoctorDto>(slot));
+            if (medicalRecord != null)
+                return Ok(mapper.Map<MedicalRecordReadDto>(medicalRecord));
 
             return NotFound();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMedicalRecord(int? id)
+        {
+            if (id is null) return BadRequest();
+            var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdAsync(id.Value);
+            if (medicalRecord is null) return NotFound();
+            unit.Repository<MedicalRecord>().Delete(medicalRecord);
+            var RowAffected = await unit.CommitAsync();
+            return RowAffected > 0 ? NoContent() : BadRequest(ModelState);
         }
 
     }
