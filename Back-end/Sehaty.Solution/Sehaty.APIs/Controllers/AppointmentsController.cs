@@ -19,35 +19,6 @@ namespace Sehaty.APIs.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/Appointments <<works great>>
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<AppointmentReadDto>>> GetAllAppointments()
-        //{
-        //    var appointments = await _unit.Repository<Appointment>().GetAllAsync();
-
-        //    if (appointments == null || !appointments.Any())
-        //        return NotFound("No appointments found.");
-
-        //    var result = _mapper.Map<IEnumerable<AppointmentReadDto>>(appointments);
-
-        //    return Ok(result);
-        //}
-
-        // GET: api/Appointments/5 <<works great>>
-        //[HttpGet("{id:int}")]
-        //public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
-        //{
-        //    if (id <= 0)
-        //        return BadRequest("Invalid appointment ID.");
-
-        //    var appointment = await _unit.Repository<Appointment>().GetByIdAsync(id, asNoTracking: true);
-        //    if (appointment == null)
-        //        return NotFound($"Appointment with ID {id} not found.");
-
-        //    return Ok(appointment);
-        //}
-
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AppointmentReadDto>>> GetAllAppointments()
         {
@@ -66,7 +37,6 @@ namespace Sehaty.APIs.Controllers
             return Ok(data);
 
         }
-
 
         // POST: api/Appointments
         [HttpPost]
