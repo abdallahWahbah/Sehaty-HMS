@@ -7,9 +7,8 @@ using Sehaty.Core.UnitOfWork.Contract;
 
 namespace Sehaty.APIs.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AppointmentsController : ControllerBase
+
+    public class AppointmentsController : ApiBaseController
     {
         private readonly IUnitOfWork _unit;
         private readonly IMapper _mapper;
@@ -54,7 +53,7 @@ namespace Sehaty.APIs.Controllers
         {
             var specs = new AppointmentSpecifications();
             var model = await _unit.Repository<Appointment>().GetAllWithSpecAsync(specs);
-            var data  = _mapper.Map<List<AppointmentReadDto>>(model);
+            var data = _mapper.Map<List<AppointmentReadDto>>(model);
             return Ok(data);
         }
 
