@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Entities.Business_Entities;
 using Sehaty.Core.Entities.User_Entities;
+using Sehaty.Infrastructure.Data.Configrations;
 using System.Reflection;
 
 namespace Sehaty.Infrastructure.Data.Contexts
@@ -27,7 +28,9 @@ namespace Sehaty.Infrastructure.Data.Contexts
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
-
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -90,6 +93,9 @@ namespace Sehaty.Infrastructure.Data.Contexts
             // Apply your configurations from separate configuration classes
             // --------------------------
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+            modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
+
         }
     }
 }

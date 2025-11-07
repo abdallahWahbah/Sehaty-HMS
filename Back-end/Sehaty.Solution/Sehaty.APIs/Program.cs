@@ -10,6 +10,7 @@ using Sehaty.Core.Entities.User_Entities;
 using Sehaty.Core.UnitOfWork.Contract;
 using Sehaty.Infrastructure.Data.Contexts;
 using Sehaty.Infrastructure.Data.SeedClass;
+using Sehaty.Infrastructure.Service.Email;
 using Sehaty.Infrastructure.UnitOfWork;
 using System.Text;
 
@@ -30,6 +31,8 @@ namespace Sehaty.APIs
             builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IRoleManagementService, RoleManagementService>();
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+
 
             #region Swagger Setting
             builder.Services.AddSwaggerGen(swagger =>
@@ -112,7 +115,8 @@ namespace Sehaty.APIs
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jwtOptions.Issuer,
                     ValidAudience = jwtOptions.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 
@@ -144,6 +148,7 @@ namespace Sehaty.APIs
                 app.UseSwaggerUI();
             }
             app.UseStaticFiles();
+            app.UseHttpsRedirection();
             app.UseHttpsRedirection();
             app.UseAuthentication();
 
