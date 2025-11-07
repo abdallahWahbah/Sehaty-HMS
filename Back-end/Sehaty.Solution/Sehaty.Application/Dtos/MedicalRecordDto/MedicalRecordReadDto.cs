@@ -22,7 +22,7 @@ namespace Sehaty.Application.Dtos.MedicalRecordDto
         public decimal? Weight { get; set; }
         public string VitalBp { get; set; }
         public string Notes { get; set; }
-        public RecordType RecordType { get; set; } = RecordType.Diagnosis;
+        public string RecordType { get; set; }
         public DateTime? CreatedAt { get; set; }
         public bool? IsFinialize { get; set; }
     }
