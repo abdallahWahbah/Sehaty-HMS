@@ -49,3 +49,5 @@ _ReSharper*/
 !appsettings.Development.json
 # - C# code files
 !*.cs
+
+!*Sehaty.Infrastructure.AssemblyInfo.cs
