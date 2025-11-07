@@ -31,6 +31,9 @@ namespace Sehaty.Infrastructure.Data.Contexts
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
+        public DbSet<Medication> Medications { get; set; }
+        public DbSet<PrescriptionMedications> PrescriptionMedications { get; set; }
+
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

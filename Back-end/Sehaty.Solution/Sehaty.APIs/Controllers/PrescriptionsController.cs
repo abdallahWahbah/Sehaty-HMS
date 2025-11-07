@@ -9,16 +9,9 @@ using Sehaty.Core.UnitOfWork.Contract;
 namespace Sehaty.APIs.Controllers
 {
 
-    public class PrescriptionsController : ApiBaseController
+    public class PrescriptionsController(IUnitOfWork unit, IMapper map) : ApiBaseController
     {
-        private readonly IUnitOfWork unit;
-        private readonly IMapper map;
-
-        public PrescriptionsController(IUnitOfWork unit, IMapper map)
-        {
-            this.unit = unit;
-            this.map = map;
-        }
+        
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

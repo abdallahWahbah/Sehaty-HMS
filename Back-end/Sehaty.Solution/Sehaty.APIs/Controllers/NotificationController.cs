@@ -8,16 +8,9 @@ using Sehaty.Core.UnitOfWork.Contract;
 namespace Sehaty.APIs.Controllers
 {
 
-    public class NotificationController : ApiBaseController
+    public class NotificationController(IUnitOfWork unit, IMapper map) : ApiBaseController
     {
-        private readonly IUnitOfWork unit;
-        private readonly IMapper map;
-
-        public NotificationController(IUnitOfWork unit, IMapper map)
-        {
-            this.unit = unit;
-            this.map = map;
-        }
+        
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

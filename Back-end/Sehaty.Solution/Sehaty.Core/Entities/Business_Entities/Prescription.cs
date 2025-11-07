@@ -10,10 +10,6 @@ namespace Sehaty.Core.Entities.Business_Entities
 
     public class Prescription : BaseEntity
     {
-        public string MedicationName { get; set; }
-        public string Dosage { get; set; }
-        public string Frequency { get; set; }
-        public string Duration { get; set; }
         public PrescriptionStatus Status { get; set; }
         public string DigitalSignature { get; set; }
         public string SpecialInstructions { get; set; }
@@ -26,5 +22,6 @@ namespace Sehaty.Core.Entities.Business_Entities
         public Patient Patient { get; set; }
         public int? DoctorId { get; set; } // Foreign key to doctor
         public Doctor Doctor { get; set; }
+        public List<PrescriptionMedications> Medications { get; set; }
     }
 }
