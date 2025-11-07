@@ -15,20 +15,6 @@ namespace Sehaty.Infrastructure.Data.Configrations
                    .HasDefaultValue(PrescriptionStatus.Active)
                    .HasConversion<string>();
 
-            builder.Property(p => p.MedicationName)
-                   .IsRequired()
-                   .HasMaxLength(200);
-
-            builder.Property(p => p.Dosage)
-                   .IsRequired()
-                   .HasMaxLength(100);
-
-            builder.Property(p => p.Frequency)
-                   .HasMaxLength(100)
-                   .IsRequired();
-
-            builder.Property(p => p.Duration)
-                   .HasMaxLength(100);
             builder.Property(p => p.DigitalSignature)
                    .HasMaxLength(255);
 
@@ -41,11 +27,12 @@ namespace Sehaty.Infrastructure.Data.Configrations
             builder.HasOne(p => p.Appointment) //set foreign key to appointment
                    .WithMany(a => a.Prescriptions)
                    .HasForeignKey(p => p.AppointmentId)
-                   .OnDelete(DeleteBehavior.Cascade);// Cascade on delete
+                   .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(p => p.MedicalRecord) //set foreign key to medical record
                   .WithMany(mr => mr.Prescriptions)
                   .HasForeignKey(p => p.MedicalRecordId);
+
             builder.Property(p => p.MedicalRecordId)
                   .IsRequired(false);
 
