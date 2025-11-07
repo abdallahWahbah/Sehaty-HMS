@@ -1,6 +1,5 @@
 [
   {
-    "Id": 1,
     "Dosage": "500 mg",
     "Frequency": "Twice daily",
     "Duration": "7 days",
@@ -8,7 +7,6 @@
     "MedicationId": 1
   },
   {
-    "Id": 2,
     "Dosage": "1 tablet",
     "Frequency": "Every 8 hours",
     "Duration": "5 days",
@@ -16,7 +14,6 @@
     "MedicationId": 2
   },
   {
-    "Id": 3,
     "Dosage": "200 mg",
     "Frequency": "Once daily",
     "Duration": "10 days",
@@ -24,7 +21,6 @@
     "MedicationId": 3
   },
   {
-    "Id": 4,
     "Dosage": "Apply thin layer",
     "Frequency": "Twice daily",
     "Duration": "14 days",
@@ -32,7 +28,6 @@
     "MedicationId": 4
   },
   {
-    "Id": 5,
     "Dosage": "625 mg",
     "Frequency": "Twice daily",
     "Duration": "7 days",

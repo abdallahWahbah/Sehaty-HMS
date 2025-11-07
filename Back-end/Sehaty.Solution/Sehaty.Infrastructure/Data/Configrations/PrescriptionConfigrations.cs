@@ -26,8 +26,9 @@ namespace Sehaty.Infrastructure.Data.Configrations
 
             builder.HasOne(p => p.Appointment) //set foreign key to appointment
                    .WithMany(a => a.Prescriptions)
-                   .HasForeignKey(p => p.AppointmentId)
-                   .OnDelete(DeleteBehavior.SetNull);
+                   .HasForeignKey(p => p.AppointmentId);
+
+            //.OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(p => p.MedicalRecord) //set foreign key to medical record
                   .WithMany(mr => mr.Prescriptions)

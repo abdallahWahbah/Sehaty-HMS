@@ -1,22 +1,17 @@
 [
   {
-    "Id": 1,
     "Name": "Amoxicillin"
   },
   {
-    "Id": 2,
     "Name": "Paracetamol"
   },
   {
-    "Id": 3,
     "Name": "Ibuprofen"
   },
   {
-    "Id": 4,
     "Name": "Fucicort"
   },
   {
-    "Id": 5,
     "Name": "Augmentin"
   }
 ]
