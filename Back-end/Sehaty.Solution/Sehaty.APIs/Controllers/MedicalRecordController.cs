@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sehaty.Core.Entites;
+using Sehaty.Core.Specifications.MedicalReord;
 using Sehaty.Core.UnitOfWork.Contract;
 using Sehaty.Infrastructure.Dtos;
 
@@ -144,6 +146,19 @@ namespace Sehaty.APIs.Controllers
             }
             else return BadRequest();
 
+        }
+        [Authorize(Roles = "Doctor")]
+        [HttpGet("getByName{FullName}")]
+        public async Task<IActionResult> GetByName(string FullName)
+        {
+            var spec = new MedicalRecordSpec(d =>
+            (d.Appointment.Patient.FirstName + "" + d.Appointment.Patient.LastName).Contains(FullName));
+            var slot = await unitOfWork.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
+
+            if (slot != null)
+                return Ok(map.Map<MedicalRecordDoctorDto>(slot));
+
+            return NotFound();
         }
 
     }

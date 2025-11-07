@@ -34,10 +34,10 @@ namespace Sehaty.APIs.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteDoctor(int id)
         {
-            var doctor = await unit.Repository<Doctor>().GetByIdAsync(id);
-            if (doctor is null)
+            var doctorToDelete = await unit.Repository<Doctor>().GetByIdAsync(id);
+            if (doctorToDelete is null)
                 return NotFound();
-            unit.Repository<Doctor>().Delete(doctor);
+            unit.Repository<Doctor>().Delete(doctorToDelete);
             await unit.CommitAsync();
             return NoContent();
         }
@@ -47,11 +47,11 @@ namespace Sehaty.APIs.Controllers
         {
             if (ModelState.IsValid)
             {
-                var doctor = await unit.Repository<Doctor>().GetByIdAsync(id);
-                if (doctor is null)
+                var doctorToEdit = await unit.Repository<Doctor>().GetByIdAsync(id);
+                if (doctorToEdit is null)
                     return NotFound();
-                mapper.Map(dto, doctor);
-                unit.Repository<Doctor>().Update(doctor);
+                mapper.Map(dto, doctorToEdit);
+                unit.Repository<Doctor>().Update(doctorToEdit);
                 await unit.CommitAsync();
                 return NoContent();
             }
@@ -63,10 +63,10 @@ namespace Sehaty.APIs.Controllers
         {
             if (ModelState.IsValid)
             {
-                var doctor = mapper.Map<Doctor>(dto);
-                await unit.Repository<Doctor>().AddAsync(doctor);
+                var doctorToAdd = mapper.Map<Doctor>(dto);
+                await unit.Repository<Doctor>().AddAsync(doctorToAdd);
                 await unit.CommitAsync();
-                return CreatedAtAction(nameof(GetDoctorById), new { id = doctor.Id }, doctor);
+                return CreatedAtAction(nameof(GetDoctorById), new { id = doctorToAdd.Id }, mapper.Map<GetDoctorDto>(doctorToAdd));
             }
             return BadRequest(ModelState);
         }
