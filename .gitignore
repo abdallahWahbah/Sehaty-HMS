@@ -50,4 +50,7 @@ _ReSharper*/
 # - C# code files
 !*.cs
 
-!*Sehaty.Infrastructure.AssemblyInfo.cs
+
+
+!Sehaty.Solution/Sehaty.Infrastructure/obj/Debug/net8.0/Sehaty.Infrastructure.AssemblyInfo.cs
+
