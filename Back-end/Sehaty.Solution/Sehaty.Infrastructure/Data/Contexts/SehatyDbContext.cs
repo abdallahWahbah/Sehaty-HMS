@@ -39,49 +39,7 @@ namespace Sehaty.Infrastructure.Data.Contexts
         {
             base.OnModelCreating(modelBuilder);
 
-            // --------------------------
-            // Identity tables configuration without UserRoles
-            // --------------------------
-
-            // User claims
-            modelBuilder.Entity<IdentityUserClaim<int>>(b =>
-            {
-                b.HasKey(c => c.Id);
-                b.HasOne<ApplicationUser>()
-                 .WithMany()
-                 .HasForeignKey(c => c.UserId)
-                 .OnDelete(DeleteBehavior.Restrict); // منع cascade conflicts
-            });
-
-            // User logins
-            modelBuilder.Entity<IdentityUserLogin<int>>(b =>
-            {
-                b.HasKey(l => new { l.LoginProvider, l.ProviderKey });
-                b.HasOne<ApplicationUser>()
-                 .WithMany()
-                 .HasForeignKey(l => l.UserId)
-                 .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            // Role claims
-            modelBuilder.Entity<IdentityRoleClaim<int>>(b =>
-            {
-                b.HasKey(rc => rc.Id);
-                b.HasOne<ApplicationRole>()
-                 .WithMany()
-                 .HasForeignKey(rc => rc.RoleId)
-                 .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            // User tokens
-            modelBuilder.Entity<IdentityUserToken<int>>(b =>
-            {
-                b.HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
-                b.HasOne<ApplicationUser>()
-                 .WithMany()
-                 .HasForeignKey(t => t.UserId)
-                 .OnDelete(DeleteBehavior.Restrict);
-            });
+            modelBuilder.Ignore<IdentityUserRole<int>>();
 
             // --------------------------
             // Custom User -> Role one-to-many
