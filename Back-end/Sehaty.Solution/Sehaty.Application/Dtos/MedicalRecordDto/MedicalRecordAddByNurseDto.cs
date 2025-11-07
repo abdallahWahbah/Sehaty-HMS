@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Sehaty.Infrastructure.Dtos
 {
-    public class MedicalRecordNurseDto
+    public class MedicalRecordAddOrUpdateByNurseDto
     {
-        public int Id { get; set; }
         public int AppointmentId { get; set; }
         public int? BpSystolic { get; set; }
         public int? BpDiastolic { get; set; }

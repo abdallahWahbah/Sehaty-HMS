@@ -11,93 +11,82 @@ using Sehaty.Core.UnitOfWork.Contract;
 
 namespace Sehaty.APIs.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class DoctorAvailabilitySlotController : ControllerBase
+    public class DoctorAvailabilitySlotController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
     {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly IMapper map;
-
-        public DoctorAvailabilitySlotController(IUnitOfWork unitOfWork, IMapper map)
-        {
-            this.unitOfWork = unitOfWork;
-            this.map = map;
-        }
-
         //GetAll
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllDoctorAvailability()
         {
-            var models = await unitOfWork.Repository<DoctorAvailabilitySlot>().GetAllAsync();
-            var Data = map.Map<List<DoctorAvailabilitySlotDto>>(models);
-            return Ok(Data);
+            var spec = new DoctorAvailabilitySlotSpec();
+            var doctorAvailability = await unit.Repository<DoctorAvailabilitySlot>().GetAllWithSpecAsync(spec);
+            return Ok(mapper.Map<List<DoctorAvailabilityReadDto>>(doctorAvailability));
         }
         //Get By Id
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int? id) 
+        public async Task<IActionResult> GetDoctorAvailabilityById(int? id)
         {
-            if (id is null) return BadRequest();
-            var model = await unitOfWork.Repository<DoctorAvailabilitySlot>().GetByIdAsync(id.Value);
-            if (model is null) return NotFound();
-           return Ok(model);
+            var spec = new DoctorAvailabilitySlotSpec(d => d.Id == id);
+            var doctorAvailability = await unit.Repository<DoctorAvailabilitySlot>().GetByIdWithSpecAsync(spec);
+            return Ok(mapper.Map<DoctorAvailabilityReadDto>(doctorAvailability));
         }
 
         [HttpGet("getByName{FullName}")]
-        public async Task<IActionResult> GetByName(string FullName)
+        public async Task<IActionResult> GetByDoctorName(string FullName)
         {
-            var spec = new DoctorAvailabilitySlotSpec(d=>
-            (d.Doctor.FirstName + ""+ d.Doctor.LastName).Contains(FullName));
-            var slot = await unitOfWork.Repository<DoctorAvailabilitySlot>().GetByIdWithSpecAsync(spec);
+            var spec = new DoctorAvailabilitySlotSpec(d =>
+            (d.Doctor.FirstName + "" + d.Doctor.LastName).Contains(FullName));
+            var doctorAvailability = await unit.Repository<DoctorAvailabilitySlot>().GetByIdWithSpecAsync(spec);
 
-            if (slot != null)
-                return Ok(map.Map<DoctorAvailabilitySlotDto>(slot));
+            if (doctorAvailability != null)
+                return Ok(mapper.Map<DoctorAvailabilityReadDto>(doctorAvailability));
 
             return NotFound();
         }
 
         // PostData
         [HttpPost]
-        public async Task<IActionResult> AddData(DoctorAvailabilitySlotDto model) 
+        public async Task<IActionResult> AddDoctorAvailability(DoctorAvailabilityAddOrUpdateDto model)
         {
             if (!ModelState.IsValid) return BadRequest();
-            if (model.Id == 0)
-            {
-                var Data = map.Map<DoctorAvailabilitySlot>(model);
-                await unitOfWork.Repository<DoctorAvailabilitySlot>().AddAsync(Data);
-            }
-            else
-            {
-                var record = await unitOfWork.Repository<DoctorAvailabilitySlot>().GetByIdAsync(model.Id);
-                if (record is null) return NotFound();
-                var Data = map.Map<DoctorAvailabilitySlot>(model);
-                unitOfWork.Repository<DoctorAvailabilitySlot>().Update(Data);
+            var AddDoctorAvailability = mapper.Map<DoctorAvailabilitySlot>(model);
+            await unit.Repository<DoctorAvailabilitySlot>().AddAsync(AddDoctorAvailability);
+            var RowAffected = await unit.CommitAsync();
+            return RowAffected > 0 ? CreatedAtAction(nameof(GetDoctorAvailabilityById),
+                new { id = AddDoctorAvailability.Id }, mapper.Map<DoctorAvailabilityReadDto>(AddDoctorAvailability))
+                : BadRequest();
+        }
 
+        //UpdateData
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateDoctorAvailability(int? id, [FromBody] DoctorAvailabilityAddOrUpdateDto model)
+        {
+
+            if (id is null) return BadRequest();
+            if (ModelState.IsValid)
+            {
+                var updateDoctorAvailability = await unit.Repository<DoctorAvailabilitySlot>().GetByIdAsync(id.Value);
+                if (updateDoctorAvailability is null)
+                    return NotFound();
+                mapper.Map(model, updateDoctorAvailability);
+                unit.Repository<DoctorAvailabilitySlot>().Update(updateDoctorAvailability);
+                await unit.CommitAsync();
+                return NoContent();
             }
-             var RowAffected = await unitOfWork.CommitAsync();
-            return RowAffected>0 ? Ok(model) : BadRequest();
+            return BadRequest(ModelState);
         }
-        [HttpPut]
-        public async Task<IActionResult> UpdateData(int? id,[FromBody]DoctorAvailabilitySlotDto model)
+
+        //DeleteData
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteDoctorAvailability(int? id)
         {
             if (id is null) return BadRequest();
-            if (id != model.Id) return NotFound();
-            if (!ModelState.IsValid) return BadRequest();
-            var Data = map.Map<DoctorAvailabilitySlot>(model);
-            unitOfWork.Repository<DoctorAvailabilitySlot>().Update(Data);
-            var RowAffected = await unitOfWork.CommitAsync();
-            return RowAffected > 0 ? Ok(model) : BadRequest();
+            var doctorAvailability = await unit.Repository<DoctorAvailabilitySlot>().GetByIdAsync(id.Value);
+            if (doctorAvailability is null) return NotFound();
+            unit.Repository<DoctorAvailabilitySlot>().Delete(doctorAvailability);
+            var RowAffected = await unit.CommitAsync();
+            return RowAffected > 0 ? NoContent() : BadRequest(ModelState);
         }
-        [HttpDelete]
-        public async Task<IActionResult> DeleteData(int? id)
-        {
-            if (id is null) return BadRequest();
-            var model = await unitOfWork.Repository<DoctorAvailabilitySlot>().GetByIdAsync(id.Value);
-            if(model is null) return NotFound();
-             unitOfWork.Repository<DoctorAvailabilitySlot>().Delete(model);
-            var RowAffected = await unitOfWork.CommitAsync();
-            return RowAffected > 0 ? Ok(model) : BadRequest();
-        }
-       
+
 
     }
 }
