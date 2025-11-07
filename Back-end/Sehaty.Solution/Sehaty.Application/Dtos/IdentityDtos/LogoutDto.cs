@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace Sehaty.Application.Dtos.IdentityDtos
 {
-    public class LoginDto
+    public class LogoutDto
     {
-        public string UserName { get; set; }
-
-        public string Password { get; set; }
-
-        public string IpAddress { get; set; }
-
+        public string RefreshToken { get; set; }
     }
 }

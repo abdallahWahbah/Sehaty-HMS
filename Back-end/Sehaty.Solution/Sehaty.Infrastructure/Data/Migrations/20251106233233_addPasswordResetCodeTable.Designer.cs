@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sehaty.Infrastructure.Data.Contexts;
 
@@ -11,9 +12,11 @@ using Sehaty.Infrastructure.Data.Contexts;
 namespace Sehaty.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(SehatyDbContext))]
-    partial class SehatyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251106233233_addPasswordResetCodeTable")]
+    partial class addPasswordResetCodeTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

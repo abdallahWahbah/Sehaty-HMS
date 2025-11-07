@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sehaty.Application.Dtos.PrescriptionsDTOs;
 using Sehaty.Core.Entities.Business_Entities;
@@ -56,6 +57,7 @@ namespace Sehaty.APIs.Controllers
                 return Ok(map.Map<GetPrescriptionsDto>(prescription));
             return NotFound();
         }
+        [Authorize(Roles = "Doctor")]
         [HttpPost]
         public async Task<IActionResult> CreatePrescription([FromBody] CreatePrescriptionsDto model)
         {

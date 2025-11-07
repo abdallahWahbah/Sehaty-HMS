@@ -12,8 +12,8 @@ using Sehaty.Infrastructure.Data.Contexts;
 namespace Sehaty.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(SehatyDbContext))]
-    [Migration("20251104121705_latestcreationofdb")]
-    partial class latestcreationofdb
+    [Migration("20251106164416_AddAuditLogTable")]
+    partial class AddAuditLogTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -764,8 +764,10 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastLogin")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("LastLogin")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -831,6 +833,69 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.AuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IpAdress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLogs");
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("CreatedByIp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -1035,6 +1100,17 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.RefreshToken", b =>
+                {
+                    b.HasOne("Sehaty.Core.Entities.User_Entities.ApplicationUser", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Sehaty.Core.Entites.Appointment", b =>
                 {
                     b.Navigation("Billings");
@@ -1082,6 +1158,8 @@ namespace Sehaty.Infrastructure.Data.Migrations
             modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.ApplicationUser", b =>
                 {
                     b.Navigation("Notifications");
+
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

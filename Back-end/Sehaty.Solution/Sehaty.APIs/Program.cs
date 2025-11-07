@@ -1,7 +1,5 @@
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Sehaty.Application.MappingProfiles;
@@ -12,7 +10,10 @@ using Sehaty.Core.Entities.User_Entities;
 using Sehaty.Core.UnitOfWork.Contract;
 using Sehaty.Infrastructure.Data.Contexts;
 using Sehaty.Infrastructure.Data.SeedClass;
+using Sehaty.Infrastructure.Service.Email;
 using Sehaty.Infrastructure.UnitOfWork;
+using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace Sehaty.APIs
@@ -25,12 +26,19 @@ namespace Sehaty.APIs
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                // Allows enum values to be read/written as strings instead of numbers
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IRoleManagementService, RoleManagementService>();
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+
 
             #region Swagger Setting
             builder.Services.AddSwaggerGen(swagger =>
@@ -87,6 +95,9 @@ namespace Sehaty.APIs
             // Add AutoMapper Profiles Injection
             // To Add Every Profile Automatically
             builder.Services.AddAutoMapper(cfg => { }, typeof(DoctorProfile).Assembly);
+            builder.Services.AddAutoMapper(cfg => { }, typeof(DoctorAvailabilitySlotProfile).Assembly);
+
+
             //builder.Services.AddAutoMapper(cfg => { }, typeof(AppointmentProfile).Assembly);
 
             // Instead Of Writeing Every Profile Like This :
@@ -114,7 +125,8 @@ namespace Sehaty.APIs
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jwtOptions.Issuer,
                     ValidAudience = jwtOptions.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 
@@ -146,6 +158,7 @@ namespace Sehaty.APIs
                 app.UseSwaggerUI();
             }
             app.UseStaticFiles();
+            app.UseHttpsRedirection();
             app.UseHttpsRedirection();
             app.UseAuthentication();
 
