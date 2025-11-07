@@ -58,5 +58,34 @@ namespace Sehaty.APIs.Controllers
             }
             return BadRequest(ModelState);
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateNotification(int id, [FromBody] CreateNotificationDto updateNotificationDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var spec = new NotificationSpecifications(id);
+                var notification = await unit.Repository<Notification>().GetByIdWithSpecAsync(spec);
+                if (notification == null)
+                    return NotFound();
+
+                map.Map(updateNotificationDto, notification);
+                unit.Repository<Notification>().Update(notification);
+                await unit.CommitAsync();
+                return NoContent();
+            }
+            return BadRequest(ModelState);
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteNotification(int id)
+        {
+            var spec = new NotificationSpecifications(id);
+            var notification = await unit.Repository<Notification>().GetByIdWithSpecAsync(spec);
+            if (notification == null)
+                return NotFound();
+
+            unit.Repository<Notification>().Delete(notification);
+            await unit.CommitAsync();
+            return NoContent();
+        }
     }
 }
