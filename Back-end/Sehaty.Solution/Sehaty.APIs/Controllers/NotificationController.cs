@@ -1,17 +1,13 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Sehaty.Application.Dtos.NotificationsDTOs;
-using Sehaty.Application.Dtos.PrescriptionsDTOs;
 using Sehaty.Core.Entites;
-using Sehaty.Core.Entities.Business_Entities;
 using Sehaty.Core.Specifications.Notifications_Specs;
 using Sehaty.Core.UnitOfWork.Contract;
-using System.Collections.Generic;
 
 namespace Sehaty.APIs.Controllers
 {
-   
+
     public class NotificationController : ApiBaseController
     {
         private readonly IUnitOfWork unit;
@@ -46,17 +42,21 @@ namespace Sehaty.APIs.Controllers
             var spec = new NotificationSpecifications(N => N.UserId == id);
             var notifications = await unit.Repository<Notification>().GetAllWithSpecAsync(spec);
             if (notifications != null)
-                return Ok(map.Map< IEnumerable < AllNotificationsDto >> (notifications));
+                return Ok(map.Map<IEnumerable<AllNotificationsDto>>(notifications));
             return NotFound();
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNotification(CreateNotificationDto createNotificationDto)
+        public async Task<IActionResult> CreateNotification([FromBody] CreateNotificationDto createNotificationDto)
         {
-            var notification = map.Map<Notification>(createNotificationDto);
-            await unit.Repository<Notification>().AddAsync(notification);
-            await unit.CommitAsync();
-            return Ok();
+            if (ModelState.IsValid)
+            {
+                var notification = map.Map<Notification>(createNotificationDto);
+                await unit.Repository<Notification>().AddAsync(notification);
+                await unit.CommitAsync();
+                return CreatedAtAction(nameof(GetById), new { id = notification.Id }, map.Map<AllNotificationsDto>(notification));
+            }
+            return BadRequest(ModelState);
         }
-        }
+    }
 }

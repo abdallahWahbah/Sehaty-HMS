@@ -1,7 +1,5 @@
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Sehaty.Application.MappingProfiles;
@@ -14,6 +12,8 @@ using Sehaty.Infrastructure.Data.Contexts;
 using Sehaty.Infrastructure.Data.SeedClass;
 using Sehaty.Infrastructure.Service.Email;
 using Sehaty.Infrastructure.UnitOfWork;
+using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace Sehaty.APIs
@@ -26,7 +26,12 @@ namespace Sehaty.APIs
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                // Allows enum values to be read/written as strings instead of numbers
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
