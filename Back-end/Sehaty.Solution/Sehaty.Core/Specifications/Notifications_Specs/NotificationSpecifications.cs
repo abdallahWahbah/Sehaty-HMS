@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace Sehaty.Core.Specifications.Notifications_Specs
 {
-    public class NotificationSpecifications: BaseSpecefication<Notification>
+    public class NotificationSpecifications : BaseSpecefication<Notification>
     {
         public NotificationSpecifications()
         {
             AddIncludes();
         }
-        public NotificationSpecifications(int id):base(N=>N.Id==id)
+        public NotificationSpecifications(int id) : base(N => N.Id == id)
         {
             AddIncludes();
         }
@@ -27,7 +27,7 @@ namespace Sehaty.Core.Specifications.Notifications_Specs
         void AddIncludes()
         {
             Includes.Add(P => P.User);
-           
+
         }
     }
 }

@@ -41,7 +41,7 @@ namespace Sehaty.Infrastructure.Data.SeedClass
                 context.Users.AddRange(users!);
                 await context.SaveChangesAsync();
             }
-            if(context.UserRoles.Count() == 0)
+            if (context.UserRoles.Count() == 0)
             {
                 var userRolesData = File.ReadAllText("../Sehaty.Infrastructure/Data/SeedDataFiles/UserRoles.json");
                 var userRoles = JsonSerializer.Deserialize<List<IdentityUserRole<int>>>(userRolesData, options);

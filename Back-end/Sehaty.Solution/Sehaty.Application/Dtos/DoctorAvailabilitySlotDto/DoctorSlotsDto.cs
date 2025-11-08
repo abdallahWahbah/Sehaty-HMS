@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Sehaty.Application.Dtos.DoctorAvailabilitySlotDto
 {
-   
+
     public class DoctorSlotsDto
     {
         public int DoctorId { get; set; }

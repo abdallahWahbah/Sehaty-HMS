@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.PrescriptionsDTOs;
+using Sehaty.Application.Services.PDFservice;
 using Sehaty.Core.Entities.Business_Entities;
 using Sehaty.Core.Specifications.Prescription_Specs;
 using Sehaty.Core.UnitOfWork.Contract;
@@ -10,7 +12,7 @@ using System.Security.Claims;
 namespace Sehaty.APIs.Controllers
 {
 
-    public class PrescriptionsController(IUnitOfWork unit, IMapper map) : ApiBaseController
+    public class PrescriptionsController(IUnitOfWork unit, IMapper map, PrescriptionPdfService pdfService) : ApiBaseController
     {
 
         [HttpGet]
@@ -108,6 +110,21 @@ namespace Sehaty.APIs.Controllers
             unit.Repository<Prescription>().Delete(prescription);
             await unit.CommitAsync();
             return NoContent();
+        }
+        [Authorize(Roles = "Patient,Doctor")]
+        [HttpGet("prescriptions/{id}/download")]
+        public async Task<IActionResult> DownloadPrescription(int id)
+        {
+            PrescriptionSpecifications spec = new PrescriptionSpecifications(p => p.Id == id);
+            var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
+            if (prescription is null) return NotFound(new ApiResponse(400));
+            else
+            {
+                var pdfBytes = pdfService.GeneratePrescriptionPdf(prescription);
+
+                return File(pdfBytes, "application/pdf", $"Prescription_{id}.pdf");
+            }
+
         }
     }
 

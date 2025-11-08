@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Sehaty.Core.Specifications.MedicalReord
 {
-    public class MedicalRecordSpec :BaseSpecefication<MedicalRecord>
+    public class MedicalRecordSpec : BaseSpecefication<MedicalRecord>
     {
         public MedicalRecordSpec()
         {
@@ -23,7 +23,7 @@ namespace Sehaty.Core.Specifications.MedicalReord
 
         private void AddIncludes()
         {
-            Includes.Add(m=>m.Appointment);
+            Includes.Add(m => m.Appointment);
             Includes.Add(m => m.Prescriptions);
         }
     }

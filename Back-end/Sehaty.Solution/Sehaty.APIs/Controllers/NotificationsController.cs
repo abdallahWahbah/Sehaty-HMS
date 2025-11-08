@@ -10,7 +10,7 @@ namespace Sehaty.APIs.Controllers
 
     public class NotificationsController(IUnitOfWork unit, IMapper map) : ApiBaseController
     {
-        
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

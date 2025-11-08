@@ -8,6 +8,7 @@ using Sehaty.APIs.Middlewares;
 using Sehaty.Application.MappingProfiles;
 using Sehaty.Application.Services.Contract.AuthService.Contract;
 using Sehaty.Application.Services.IdentityService;
+using Sehaty.Application.Services.PDFservice;
 using Sehaty.Application.Shared.AuthShared;
 using Sehaty.Core.Entities.User_Entities;
 using Sehaty.Core.UnitOfWork.Contract;
@@ -41,6 +42,7 @@ namespace Sehaty.APIs
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IRoleManagementService, RoleManagementService>();
             builder.Services.AddTransient<IEmailSender, EmailSender>();
+            builder.Services.AddScoped<PrescriptionPdfService>();
 
 
             #region Swagger Setting
