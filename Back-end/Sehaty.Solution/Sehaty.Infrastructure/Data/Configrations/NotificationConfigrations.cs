@@ -54,6 +54,6 @@ namespace Sehaty.Infrastructure.Data.Configrations
                    .HasConversion<string>()
                    .IsRequired();
 
-		}
-	}
+        }
+    }
 }

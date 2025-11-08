@@ -16,7 +16,7 @@ namespace Sehaty.APIs.Controllers
         public async Task<IActionResult> Register(RegisterDto model)
         {
             try
-            { 
+            {
                 var result = await authService.RegisterAsync(model);
                 return Ok(result);
             }
