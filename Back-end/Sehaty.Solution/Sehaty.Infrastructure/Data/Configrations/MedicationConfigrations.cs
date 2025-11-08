@@ -19,7 +19,7 @@ namespace Sehaty.Infrastructure.Data.Configrations
             // Primary key
             builder.HasKey(m => m.Id);
 
-            // Columns configuration
+
             builder.Property(m => m.Name)
                    .IsRequired()
                    .HasMaxLength(100);

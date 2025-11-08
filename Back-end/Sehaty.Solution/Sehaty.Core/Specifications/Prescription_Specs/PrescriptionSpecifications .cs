@@ -16,11 +16,11 @@ namespace Sehaty.Core.Specifications.Prescription_Specs
         {
             AddIncludes();
         }
-        public PrescriptionSpecifications(int id):base(P=>P.Id==id)
+        public PrescriptionSpecifications(int id) : base(P => P.Id == id)
         {
             AddIncludes();
-        }  
-        public PrescriptionSpecifications(Expression<Func<Prescription,bool>> criteria):base(criteria)
+        }
+        public PrescriptionSpecifications(Expression<Func<Prescription, bool>> criteria) : base(criteria)
         {
             AddIncludes();
         }
@@ -33,6 +33,7 @@ namespace Sehaty.Core.Specifications.Prescription_Specs
             Includes.Add(P => P.Patient);
             Includes.Add(P => P.Doctor);
             Includes.Add(P => P.MedicalRecord);
+            Includes.Add(P => P.Medications);
         }
     }
 }

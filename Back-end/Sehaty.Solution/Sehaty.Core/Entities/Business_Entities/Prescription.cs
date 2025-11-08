@@ -13,7 +13,7 @@ namespace Sehaty.Core.Entities.Business_Entities
         public PrescriptionStatus Status { get; set; }
         public string DigitalSignature { get; set; }
         public string SpecialInstructions { get; set; }
-        public DateTime DateIssued { get; set; }
+        public DateTime DateIssued { get; set; } = DateTime.UtcNow;
         public int AppointmentId { get; set; } // Foreign key to Appointment
         public Appointment Appointment { get; set; }
         public int? MedicalRecordId { get; set; } // Foreign key to MedicalRecord
@@ -22,6 +22,6 @@ namespace Sehaty.Core.Entities.Business_Entities
         public Patient Patient { get; set; }
         public int? DoctorId { get; set; } // Foreign key to doctor
         public Doctor Doctor { get; set; }
-        public List<PrescriptionMedications> Medications { get; set; }
+        public ICollection<PrescriptionMedications> Medications { get; set; } = new List<PrescriptionMedications>();
     }
 }
