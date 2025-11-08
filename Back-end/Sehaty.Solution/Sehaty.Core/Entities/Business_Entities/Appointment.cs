@@ -17,15 +17,16 @@ namespace Sehaty.Core.Entites
     {
         public int PatientId { get; set; }
         public int DoctorId { get; set; }
-        public DateTime AppointmentDateTime { get; set; } 
+        public DateTime AppointmentDateTime { get; set; }
         public int DurationMinutes { get; set; }
         public string ReasonForVisit { get; set; }
-        public AppointmentStatus Status { get; set; }= AppointmentStatus.Pending;
+        public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending;
         public DateOnly? ScheduledDate { get; set; }
         public TimeOnly? ScheduledTime { get; set; }
         public DateTime? BookingDateTime { get; set; }
         public DateTime? ConfirmationDateTime { get; set; }
         public string CancellationReason { get; set; }
+        public DateTime? NoShowTimestamp { get; set; }
 
 
         // Navigation Properties

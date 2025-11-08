@@ -132,7 +132,7 @@ namespace Sehaty.APIs.Controllers
 
         }
         [Authorize(Roles = "Doctor")]
-        [HttpGet("getByName{FullName}")]
+        [HttpGet("getByName/{FullName}")]
         public async Task<IActionResult> GetByPatientName(string FullName)
         {
             var spec = new MedicalRecordSpec(d =>

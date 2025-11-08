@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sehaty.Application.Dtos.AppointmentDTOs;
 using Sehaty.Core.Entites;
@@ -19,7 +20,7 @@ namespace Sehaty.APIs.Controllers
             return Ok(mapper.Map<List<AppointmentReadDto>>(appointments));
         }
 
-        [HttpGet("GetAppointmentById{id}")]
+        [HttpGet("GetAppointmentById/{id}")]
         public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
         {
             var specs = new AppointmentSpecifications(D => D.Id == id);
@@ -68,8 +69,63 @@ namespace Sehaty.APIs.Controllers
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(id.Value);
             if (appointment is null) return NotFound();
             unit.Repository<Appointment>().Delete(appointment);
-            var RowAffected = await unit.CommitAsync();
-            return RowAffected > 0 ? NoContent() : BadRequest(ModelState);
+            var rowsAffected = await unit.CommitAsync();
+            return rowsAffected > 0 ? NoContent() : BadRequest(ModelState);
         }
+
+
+        // Change AppointmentStatus To No Show if the currentTime has passed the AppointmentTime
+        [Authorize(Roles = "Admin,Reception")]
+        [HttpPost("NoShow/{id}")]
+        public async Task<IActionResult> MarkedStatusAsNoShow(int id, [FromBody] DateTime currentDateTime)
+        {
+            var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
+            if (appointment is null) return NotFound();
+            if (currentDateTime <= appointment.AppointmentDateTime)
+            {
+                return BadRequest("Cann't mark as No Show before Appointment time");
+            }
+            if (appointment.Status == AppointmentStatus.InProgress ||
+                appointment.Status == AppointmentStatus.NoShow ||
+                appointment.Status == AppointmentStatus.Completed ||
+                appointment.Status == AppointmentStatus.Canceled)
+            {
+                return BadRequest("AppointmentStatus cann't be marked as No Show.");
+            }
+            appointment.Status = AppointmentStatus.NoShow;
+            appointment.NoShowTimestamp = currentDateTime;
+            unit.Repository<Appointment>().Update(appointment);
+            var rowsAffected = await unit.CommitAsync();
+            return rowsAffected > 0 ? Ok("Status changed successfully") : BadRequest("Failed");
+        }
+
+
+        // Change the status to InProgress after receptionist checkIn the patient
+        [Authorize(Roles = "Admin,Reception")]
+        [HttpPost("CheckIn/{id}")]
+        public async Task<IActionResult> CheckInAppointment(int id)
+        {
+            var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
+            if (appointment is null) return NotFound();
+            if (appointment.Status != AppointmentStatus.Confirmed)
+            {
+                return BadRequest("only confirmed Appointments can be checkedIn");
+            }
+            appointment.Status = AppointmentStatus.InProgress;
+            unit.Repository<Appointment>().Update(appointment);
+            var rowsAffected = await unit.CommitAsync();
+            return rowsAffected > 0 ? Ok("Patient checkedIn successfully") : BadRequest("Failed");
+
+        }
+
+
+
+        //
+        //[Authorize(Roles = "Patient,Reception")]
+        //[HttpPost("CancelAppointment/{id}")]
+        //public async Task<IActionResult> CancelAppointment(int id, [FromBody] DateTime requestTime)
+        //{
+        //    var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
+        //}
     }
 }
