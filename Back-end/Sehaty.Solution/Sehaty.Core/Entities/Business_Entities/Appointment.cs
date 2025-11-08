@@ -26,7 +26,7 @@ namespace Sehaty.Core.Entites
         public DateTime? BookingDateTime { get; set; }
         public DateTime? ConfirmationDateTime { get; set; }
         public string CancellationReason { get; set; }
-        public DateTime? NoShowTimestamp { get; set; }
+        //public DateTime? NoShowTimestamp { get; set; }
 
 
         // Navigation Properties

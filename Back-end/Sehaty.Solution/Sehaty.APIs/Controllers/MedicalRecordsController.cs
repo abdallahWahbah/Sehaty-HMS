@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.DoctorDtos;
 using Sehaty.Application.Dtos.MedicalRecordDto;
 using Sehaty.Core.Entites;
@@ -23,7 +24,7 @@ namespace Sehaty.APIs.Controllers
         {
             var spec = new MedicalRecordSpec();
             var medicalRecords = await unit.Repository<MedicalRecord>().GetAllWithSpecAsync(spec);
-            if (medicalRecords is null) return NotFound();
+            if (medicalRecords is null) return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<List<MedicalRecordReadDto>>(medicalRecords));
         }
 
@@ -37,7 +38,7 @@ namespace Sehaty.APIs.Controllers
         {
             var spec = new MedicalRecordSpec(m => m.Id == id);
             var medicalReord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
-            if (medicalReord is null) return NotFound();
+            if (medicalReord is null) return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<MedicalRecordReadDto>(medicalReord));
         }
 
@@ -54,12 +55,12 @@ namespace Sehaty.APIs.Controllers
         {
             // Validate appointment existence
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(model.AppointmentId);
-            if (appointment is null) return NotFound();
+            if (appointment is null) return NotFound(new ApiResponse(404));
 
             // Prevent editing completed records
-            if (appointment.Status == AppointmentStatus.Completed) return BadRequest("Can't Modify completed Record");
+            if (appointment.Status == AppointmentStatus.Completed) return BadRequest(new ApiResponse(400, "Can't Modify completed Record"));
 
-            if (!ModelState.IsValid) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest(new ApiResponse(400));
 
             // Create record
             var addMedicalRecord = mapper.Map<MedicalRecord>(model);
@@ -75,7 +76,7 @@ namespace Sehaty.APIs.Controllers
             var RowAffected = await unit.CommitAsync();
             return RowAffected > 0 ? CreatedAtAction(nameof(GetMedicalRecordById),
                 new { id = addMedicalRecord.Id }, mapper.Map<MedicalRecordReadDto>(addMedicalRecord))
-                  : BadRequest();
+                  : BadRequest(new ApiResponse(400));
         }
 
         //Add By Nurse
@@ -88,10 +89,10 @@ namespace Sehaty.APIs.Controllers
         [HttpPost("AddByNurse")]
         public async Task<IActionResult> AddOrUpdateMedicalRecordByNurse([FromBody] MedicalRecordAddOrUpdateByNurseDto model)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest(new ApiResponse(400));
             var record = await unit.Repository<MedicalRecord>().GetByIdAsync(model.AppointmentId);
-            if (record is null) return NotFound();
-            if (record.Appointment?.Status == AppointmentStatus.Completed) return BadRequest("Cann't modify completed record");
+            if (record is null) return NotFound(new ApiResponse(404));
+            if (record.Appointment?.Status == AppointmentStatus.Completed) return BadRequest(new ApiResponse(400, "Cann't modify completed record"));
 
             // Update nurse-allowed fields only
 
@@ -104,7 +105,7 @@ namespace Sehaty.APIs.Controllers
             var RowAffected = await unit.CommitAsync();
             return RowAffected > 0 ? CreatedAtAction(nameof(GetMedicalRecordById),
                 new { id = record.Id }, mapper.Map<MedicalRecordReadDto>(record))
-                  : BadRequest();
+                  : BadRequest(new ApiResponse(400));
         }
         //Update Record
         [EndpointSummary("Update a medical record by ID")]
@@ -116,19 +117,19 @@ namespace Sehaty.APIs.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMedicalRecordByDoctor(int? id, [FromBody] MedicalRecordAddOrUpdateByDoctorDto model)
         {
-            if (id is null) return BadRequest();
+            if (id is null) return BadRequest(new ApiResponse(400));
 
             if (ModelState.IsValid)
             {
                 var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdAsync(id.Value);
-                if (medicalRecord is null) return NotFound();
+                if (medicalRecord is null) return NotFound(new ApiResponse(404));
 
                 mapper.Map(model, medicalRecord);
                 unit.Repository<MedicalRecord>().Update(medicalRecord);
                 await unit.CommitAsync();
-                return NoContent();
+                return Ok(new ApiResponse(200, "Updated SucessFully"));
             }
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse(400));
 
         }
         [Authorize(Roles = "Doctor")]
@@ -142,18 +143,18 @@ namespace Sehaty.APIs.Controllers
             if (medicalRecord != null)
                 return Ok(mapper.Map<MedicalRecordReadDto>(medicalRecord));
 
-            return NotFound();
+            return NotFound(new ApiResponse(404));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMedicalRecord(int? id)
         {
-            if (id is null) return BadRequest();
+            if (id is null) return BadRequest(new ApiResponse(400));
             var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdAsync(id.Value);
-            if (medicalRecord is null) return NotFound();
+            if (medicalRecord is null) return NotFound(new ApiResponse(404));
             unit.Repository<MedicalRecord>().Delete(medicalRecord);
             var RowAffected = await unit.CommitAsync();
-            return RowAffected > 0 ? NoContent() : BadRequest(ModelState);
+            return RowAffected > 0 ? Ok(new ApiResponse(200, "Updated SucessFully")) : BadRequest(new ApiResponse(400));
         }
 
     }

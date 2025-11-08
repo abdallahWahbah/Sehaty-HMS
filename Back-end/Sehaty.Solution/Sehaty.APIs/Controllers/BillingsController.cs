@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.BillngDto;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Specifications.BillingSpec;
@@ -39,9 +40,9 @@ namespace Sehaty.APIs.Controllers
                 var billing = mapper.Map<Billing>(model);
                 await unit.Repository<Billing>().AddAsync(billing);
                 var rowAffected = await unit.CommitAsync();
-                return rowAffected > 0 ? Ok(mapper.Map<BillingReadDto>(billing)) : BadRequest(ModelState);
+                return rowAffected > 0 ? Ok(mapper.Map<BillingReadDto>(billing)) : BadRequest(new ApiResponse(400));
             }
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse(400));
         }
 
         [HttpPost("PayBilling")]
@@ -52,7 +53,7 @@ namespace Sehaty.APIs.Controllers
                 var spec = new BillingSpec(b => b.Id == model.BillingId);
                 var billing = await unit.Repository<Billing>().GetByIdWithSpecAsync(spec);
                 if (billing is null) return NotFound();
-                if (billing.Status == BillingStatus.Paid) return BadRequest("Billing is Already Paid");
+                if (billing.Status == BillingStatus.Paid) return BadRequest(new ApiResponse(400, "Billing is Already Paid"));
                 billing.Status = BillingStatus.Paid;
                 billing.PaidAmount = model.PaidAmount;
                 billing.PaymentMethod = model.PaymentMethod;
@@ -60,40 +61,40 @@ namespace Sehaty.APIs.Controllers
                 billing.PaidAt = DateTime.Now;
                 unit.Repository<Billing>().Update(billing);
                 var rowAffected = await unit.CommitAsync();
-                return rowAffected > 0 ? Ok(mapper.Map<BillingReadDto>(billing)) : BadRequest(ModelState);
+                return rowAffected > 0 ? Ok(mapper.Map<BillingReadDto>(billing)) : BadRequest(new ApiResponse(400));
 
             }
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse(400));
         }
 
         //Update
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBilling(int? id, [FromBody] BillingUpdateDto model)
         {
-            if (id is null) return BadRequest();
+            if (id is null) return BadRequest(new ApiResponse(400));
             if (ModelState.IsValid)
             {
                 var billingData = await unit.Repository<Billing>().GetByIdAsync(id.Value);
                 if (billingData is null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
                 mapper.Map(model, billingData);
                 unit.Repository<Billing>().Update(billingData);
                 await unit.CommitAsync();
-                return NoContent();
+                return Ok(new ApiResponse(200, "Updated successfully"));
             }
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse(400));
         }
 
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBilling(int? id)
         {
-            if (id is null) return BadRequest();
+            if (id is null) return BadRequest(new ApiResponse(400));
             var billingData = await unit.Repository<Billing>().GetByIdAsync(id.Value);
-            if (billingData is null) return NotFound();
+            if (billingData is null) return NotFound(new ApiResponse(404));
             unit.Repository<Billing>().Delete(billingData);
             var RowAffected = await unit.CommitAsync();
-            return RowAffected > 0 ? NoContent() : BadRequest(ModelState);
+            return RowAffected > 0 ? Ok(new ApiResponse(200, "Deleted successfully")) : BadRequest(new ApiResponse(400));
         }
     }
 }
