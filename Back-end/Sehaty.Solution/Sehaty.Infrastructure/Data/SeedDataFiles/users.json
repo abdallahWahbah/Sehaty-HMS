@@ -9,7 +9,6 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 1
   },
   {
     "UserName": "Wahbah",
@@ -21,7 +20,6 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 1
   },
   {
     "UserName": "Gendy",
@@ -33,7 +31,6 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 1
   },
   {
     "UserName": "Ibrahim",
@@ -45,7 +42,6 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 1
   },
   {
     "UserName": "Abdelraheem",
@@ -57,7 +53,6 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 1
   },
   {
     "UserName": "Hanaa",
@@ -69,7 +64,6 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 1
   },
   {
     "UserName": "ali.hassan",
@@ -81,7 +75,6 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 2
   },
   {
     "UserName": "sara.ibrahim",
@@ -93,7 +86,6 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 2
   },
   {
     "UserName": "hany.gamal",
@@ -105,7 +97,6 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 2
   },
   {
     "UserName": "noha.salem",
@@ -117,7 +108,6 @@
     "IsActive": true,
     "CreatedAt": "2025-11-07T20:00:00",
     "LastLogin": "2025-11-07T20:00:00",
-    "RoleId": 3
   },
   {
     "UserName": "youssef.mostafa",
@@ -129,7 +119,6 @@
     "IsActive": true,
     "CreatedAt": "2025-11-07T20:00:00",
     "LastLogin": "2025-11-07T20:00:00",
-    "RoleId": 3
   },
   {
     "UserName": "mariam.khaled",
@@ -141,6 +130,5 @@
     "IsActive": true,
     "CreatedAt": "2025-11-07T20:00:00",
     "LastLogin": "2025-11-07T20:00:00",
-    "RoleId": 3
   }
 ]

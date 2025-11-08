@@ -14,28 +14,34 @@ namespace Sehaty.Application.Services.IdentityService
     {
         public async Task<string> ChangeUserRoleAsync(int userId, int newRoleId)
         {
-            var user = await userManager.Users.Include(r => r.Role).FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
             if (user is null)
                 throw new Exception("User not found");
             var newRole = await roleManager.FindByIdAsync(newRoleId.ToString());
             if (newRole is null)
                 throw new Exception("Role not found");
-            user.RoleId = newRole.Id;
-            var resultChangeRole =await userManager.UpdateAsync(user);
-            if (!resultChangeRole.Succeeded)
+            var currentRole = await userManager.GetRolesAsync(user);
+            if (currentRole.Any())
             {
-                var errors = string.Join(", ", resultChangeRole.Errors.Select(e => e.Description));
-                throw new Exception($"Role Change Failed: {errors}");
+                await userManager.RemoveFromRolesAsync(user, currentRole);
             }
-            return newRole.Name;
+            var addRoleResult = await userManager.AddToRoleAsync(user, newRole.Name);
+            if (!addRoleResult.Succeeded)
+            {
+                var errors = string.Join(", ", addRoleResult.Errors.Select(e => e.Description));
+                throw new Exception($"Role Assignment Failed: {errors}");
+            }
+            var roles = await userManager.GetRolesAsync(user);
+            return roles.FirstOrDefault() ?? string.Empty;
         }
 
         public async Task<string> GetUserRoleAsync(int userId)
         {
-            var user = await userManager.Users.Include(r => r.Role).FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await userManager.FindByIdAsync(userId.ToString());
             if (user is null)
                 throw new Exception("User not found!");
-            return user.Role.Name;
+            var roles = await userManager.GetRolesAsync(user);
+            return roles.FirstOrDefault() ?? string.Empty;
         }
     }
 }

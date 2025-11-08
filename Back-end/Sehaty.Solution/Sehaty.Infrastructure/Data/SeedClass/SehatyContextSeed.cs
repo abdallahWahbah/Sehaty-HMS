@@ -41,7 +41,13 @@ namespace Sehaty.Infrastructure.Data.SeedClass
                 context.Users.AddRange(users!);
                 await context.SaveChangesAsync();
             }
-
+            if(context.UserRoles.Count() == 0)
+            {
+                var userRolesData = File.ReadAllText("../Sehaty.Infrastructure/Data/SeedDataFiles/UserRoles.json");
+                var userRoles = JsonSerializer.Deserialize<List<IdentityUserRole<int>>>(userRolesData, options);
+                context.UserRoles.AddRange(userRoles!);
+                await context.SaveChangesAsync();
+            }
             if (context.Departments.Count() == 0)
             {
                 var departmentsData = File.ReadAllText("../Sehaty.Infrastructure/Data/SeedDataFiles/Departments.json");
