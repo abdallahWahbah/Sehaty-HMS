@@ -28,18 +28,20 @@ namespace Sehaty.Application.Services.IdentityService
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto)
         {
             if (registerDto.Password != registerDto.ConfirmPassword)
-            {
                 throw new Exception("Password And Confirm Password Do Not Match");
-            }
+
             var existingEmail = await userManager.FindByEmailAsync(registerDto.Email);
             if (existingEmail is not null)
                 throw new Exception("Email already exists");
+
             var existingUserName = await userManager.FindByNameAsync(registerDto.UserName);
             if (existingUserName != null)
                 throw new Exception("Username already exists");
+
             var defaultRole = await roleManager.FindByNameAsync("Patient");
             if (defaultRole is null)
                 throw new Exception("Default Role 'Patient' not found. Please seed roles.");
+
             var user = new ApplicationUser
             {
                 UserName = registerDto.UserName,
@@ -48,19 +50,34 @@ namespace Sehaty.Application.Services.IdentityService
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
                 LanguagePreference = registerDto.LanguagePreference,
-                RoleId = defaultRole.Id,
                 CreatedAt = DateTime.UtcNow,
                 LastLogin = DateTime.UtcNow,
             };
+
             var result = await userManager.CreateAsync(user, registerDto.Password);
             if (!result.Succeeded)
             {
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
                 throw new Exception($"User Registration Failed: {errors}");
             }
+
+            // إزالة أي أدوار موجودة (إذا كان فيه أي رول سابق)
+            var currentRoles = await userManager.GetRolesAsync(user);
+            if (currentRoles.Any())
+            {
+                await userManager.RemoveFromRolesAsync(user, currentRoles);
+            }
+
+            // إضافة الدور الافتراضي
             await userManager.AddToRoleAsync(user, defaultRole.Name);
-            var token = await GenerateJwtTokenAsync(user, defaultRole.Name);
+
+            // جلب الدور الحالي بعد الإضافة
+            var userRole = (await userManager.GetRolesAsync(user)).FirstOrDefault() ?? defaultRole.Name;
+
+            // إنشاء JWT
+            var token = await GenerateJwtTokenAsync(user, userRole);
             var jwtOptions = options.Value;
+
             return new AuthResponseDto
             {
                 Token = token,
@@ -68,12 +85,13 @@ namespace Sehaty.Application.Services.IdentityService
                 UserId = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
-                Role = defaultRole.Name,
+                Role = userRole,
             };
         }
+
         public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
         {
-            var user = await userManager.Users.Include(r=> r.Role).Include(r=> r.RefreshTokens).FirstOrDefaultAsync(u => u.UserName == loginDto.UserName);
+            var user = await userManager.Users.Include(r=> r.RefreshTokens).FirstOrDefaultAsync(u => u.UserName == loginDto.UserName);
             if (user is null || !await userManager.CheckPasswordAsync(user, loginDto.Password))
             {
                 throw new Exception("Invalid UserName Or Password");
@@ -81,7 +99,9 @@ namespace Sehaty.Application.Services.IdentityService
             user.LastLogin = DateTime.Now;
             await userManager.UpdateAsync(user);
 
-            var token = await GenerateJwtTokenAsync(user, user.Role.Name);
+            var roles = await userManager.GetRolesAsync(user);
+            var userRole = roles.FirstOrDefault() ?? "Patient";
+            var token = await GenerateJwtTokenAsync(user, userRole);
 
             var refreshToken = await AddRefreshTokenAsync(user, loginDto.IpAddress);
             var jwtOptions = options.Value;
@@ -92,7 +112,7 @@ namespace Sehaty.Application.Services.IdentityService
                 UserId = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
-                Role = user.Role.Name,
+                Role = userRole,
                 RefreshToken = refreshToken.Token,
                 RefreshTokenExpiration = refreshToken.Expires,
 
@@ -141,7 +161,7 @@ namespace Sehaty.Application.Services.IdentityService
         }
         public async Task<AuthResponseDto> RefreshTokenAsync(string token, string refreshToken, string? ipAdrees)
         {
-            var user = await userManager.Users.Include(r => r.Role).Include(r => r.RefreshTokens)
+            var user = await userManager.Users.Include(r => r.RefreshTokens)
                 .FirstOrDefaultAsync(u=> u.RefreshTokens.Any(t=> t.Token == refreshToken));
             if (user is null)
             {
@@ -154,11 +174,13 @@ namespace Sehaty.Application.Services.IdentityService
                 throw new Exception("Invalid or Expired Refresh Token");
             }
             existingRefreshToken.IsRevoked = true;
-
-            var newAccessToken = await GenerateJwtTokenAsync(user, user.Role.Name);
+            var roles = await userManager.GetRolesAsync(user);
+            var userRole = roles.FirstOrDefault() ?? "Patient";
+            var newAccessToken = await GenerateJwtTokenAsync(user, userRole);
 
             var newRefreshToken =  CreateRefreshToken(ipAdrees);
             user.RefreshTokens.Add(newRefreshToken);
+            await userManager.UpdateAsync(user);
 
             return new AuthResponseDto
             {
@@ -167,7 +189,7 @@ namespace Sehaty.Application.Services.IdentityService
                 UserId = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
-                Role = user.Role.Name,
+                Role = userRole,
                 RefreshToken = newRefreshToken.Token,
                 RefreshTokenExpiration = newRefreshToken.Expires
             };

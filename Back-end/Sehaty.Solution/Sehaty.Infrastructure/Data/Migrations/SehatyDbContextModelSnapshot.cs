@@ -91,6 +91,21 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
                     b.Property<int>("UserId")
@@ -819,9 +834,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -846,8 +858,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("RoleId");
 
                     b.HasIndex("UserName")
                         .IsUnique();
@@ -974,6 +984,21 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
+                    b.HasOne("Sehaty.Core.Entities.User_Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.HasOne("Sehaty.Core.Entities.User_Entities.ApplicationRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Sehaty.Core.Entities.User_Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -1149,17 +1174,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Navigation("Prescription");
                 });
 
-            modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.ApplicationUser", b =>
-                {
-                    b.HasOne("Sehaty.Core.Entities.User_Entities.ApplicationRole", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-                });
-
             modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.PasswordResetCode", b =>
                 {
                     b.HasOne("Sehaty.Core.Entities.User_Entities.ApplicationUser", "User")
@@ -1229,11 +1243,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
             modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Prescription", b =>
                 {
                     b.Navigation("Medications");
-                });
-
-            modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.ApplicationRole", b =>
-                {
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.ApplicationUser", b =>

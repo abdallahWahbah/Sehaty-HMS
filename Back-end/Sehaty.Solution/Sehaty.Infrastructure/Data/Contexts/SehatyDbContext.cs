@@ -39,16 +39,16 @@ namespace Sehaty.Infrastructure.Data.Contexts
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Ignore<IdentityUserRole<int>>();
+            //modelBuilder.Ignore<IdentityUserRole<int>>();
 
             // --------------------------
             // Custom User -> Role one-to-many
             // --------------------------
-            modelBuilder.Entity<ApplicationUser>()
-                .HasOne(u => u.Role)
-                .WithMany(r => r.Users)
-                .HasForeignKey(u => u.RoleId)
-                .OnDelete(DeleteBehavior.Restrict); // كل يوزر له رول واحد فقط
+            //modelBuilder.Entity<ApplicationUser>()
+            //    .HasOne(u => u.Role)
+            //    .WithMany(r => r.Users)
+            //    .HasForeignKey(u => u.RoleId)
+            //    .OnDelete(DeleteBehavior.Restrict); // كل يوزر له رول واحد فقط
 
             // --------------------------
             // Apply your configurations from separate configuration classes

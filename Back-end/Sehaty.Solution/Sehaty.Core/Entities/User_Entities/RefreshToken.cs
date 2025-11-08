@@ -19,6 +19,6 @@ namespace Sehaty.Core.Entities.User_Entities
         public string? CreatedByIp { get; set; }
         public int UserId { get; set; }
 
-        public ApplicationUser User { get; set; } = new();
+        public ApplicationUser? User { get; set; }
     }
 }

@@ -6,6 +6,6 @@ namespace Sehaty.Core.Entities.User_Entities
     {
         public string Description { get; set; }
 
-        public List<ApplicationUser> Users { get; set; }
+        //public List<ApplicationUser> Users { get; set; }
     }
 }

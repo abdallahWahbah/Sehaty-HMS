@@ -9,7 +9,7 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 1
+    "RoleName": "Admin"
   },
   {
     "UserName": "Wahbah",
@@ -21,7 +21,7 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 1
+    "RoleName": "Admin"
   },
   {
     "UserName": "Gendy",
@@ -33,7 +33,7 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 1
+    "RoleName": "Admin"
   },
   {
     "UserName": "Ibrahim",
@@ -45,7 +45,7 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 1
+    "RoleName": "Admin"
   },
   {
     "UserName": "Abdelraheem",
@@ -57,7 +57,7 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 1
+    "RoleName": "Admin"
   },
   {
     "UserName": "Hanaa",
@@ -69,7 +69,7 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 1
+    "RoleName": "Admin"
   },
   {
     "UserName": "ali.hassan",
@@ -81,7 +81,7 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 2
+    "RoleName": "Doctor"
   },
   {
     "UserName": "sara.ibrahim",
@@ -93,7 +93,7 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 2
+    "RoleName": "Doctor"
   },
   {
     "UserName": "hany.gamal",
@@ -105,7 +105,7 @@
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00",
-    "RoleId": 2
+    "RoleName": "Doctor"
   },
   {
     "UserName": "noha.salem",
@@ -117,7 +117,7 @@
     "IsActive": true,
     "CreatedAt": "2025-11-07T20:00:00",
     "LastLogin": "2025-11-07T20:00:00",
-    "RoleId": 3
+    "RoleName": "Patient"
   },
   {
     "UserName": "youssef.mostafa",
@@ -129,7 +129,7 @@
     "IsActive": true,
     "CreatedAt": "2025-11-07T20:00:00",
     "LastLogin": "2025-11-07T20:00:00",
-    "RoleId": 3
+    "RoleName": "Patient"
   },
   {
     "UserName": "mariam.khaled",
@@ -141,6 +141,6 @@
     "IsActive": true,
     "CreatedAt": "2025-11-07T20:00:00",
     "LastLogin": "2025-11-07T20:00:00",
-    "RoleId": 3
+    "RoleName": "Patient"
   }
 ]

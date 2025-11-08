@@ -19,9 +19,9 @@ namespace Sehaty.Infrastructure.Data.Configrations
             builder.Property(n => n.Description)
                 .HasColumnType("nvarchar(max)");
 
-            builder.HasMany(R => R.Users).WithOne(r=> r.Role)
-                .HasForeignKey(r=> r.RoleId)
-                .OnDelete(DeleteBehavior.Restrict);
+            //builder.HasMany(R => R.Users).WithOne(r=> r.Role)
+            //    .HasForeignKey(r=> r.RoleId)
+            //    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
