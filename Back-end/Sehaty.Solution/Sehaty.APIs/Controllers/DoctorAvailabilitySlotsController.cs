@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.DoctorAvailabilitySlotDto;
 using Sehaty.Application.Dtos.PrescriptionsDTOs;
 using Sehaty.Core.Entites;
@@ -40,20 +41,20 @@ namespace Sehaty.APIs.Controllers
             if (doctorAvailability != null)
                 return Ok(mapper.Map<DoctorAvailabilityReadDto>(doctorAvailability));
 
-            return NotFound();
+            return NotFound(new ApiResponse(404));
         }
 
         // PostData
         [HttpPost]
         public async Task<IActionResult> AddDoctorAvailability(DoctorAvailabilityAddOrUpdateDto model)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest(new ApiResponse(400));
             var AddDoctorAvailability = mapper.Map<DoctorAvailabilitySlot>(model);
             await unit.Repository<DoctorAvailabilitySlot>().AddAsync(AddDoctorAvailability);
             var RowAffected = await unit.CommitAsync();
             return RowAffected > 0 ? CreatedAtAction(nameof(GetDoctorAvailabilityById),
                 new { id = AddDoctorAvailability.Id }, mapper.Map<DoctorAvailabilityReadDto>(AddDoctorAvailability))
-                : BadRequest();
+                : BadRequest(new ApiResponse(400));
         }
 
         //UpdateData
@@ -61,30 +62,30 @@ namespace Sehaty.APIs.Controllers
         public async Task<IActionResult> UpdateDoctorAvailability(int? id, [FromBody] DoctorAvailabilityAddOrUpdateDto model)
         {
 
-            if (id is null) return BadRequest();
+            if (id is null) return BadRequest(new ApiResponse(400));
             if (ModelState.IsValid)
             {
                 var updateDoctorAvailability = await unit.Repository<DoctorAvailabilitySlot>().GetByIdAsync(id.Value);
                 if (updateDoctorAvailability is null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
                 mapper.Map(model, updateDoctorAvailability);
                 unit.Repository<DoctorAvailabilitySlot>().Update(updateDoctorAvailability);
                 await unit.CommitAsync();
-                return NoContent();
+                return Ok(new ApiResponse(200, "Updated successfully"));
             }
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse(400));
         }
 
         //DeleteData
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDoctorAvailability(int? id)
         {
-            if (id is null) return BadRequest();
+            if (id is null) return BadRequest(new ApiResponse(400));
             var doctorAvailability = await unit.Repository<DoctorAvailabilitySlot>().GetByIdAsync(id.Value);
-            if (doctorAvailability is null) return NotFound();
+            if (doctorAvailability is null) return NotFound(new ApiResponse(404));
             unit.Repository<DoctorAvailabilitySlot>().Delete(doctorAvailability);
             var RowAffected = await unit.CommitAsync();
-            return RowAffected > 0 ? NoContent() : BadRequest(ModelState);
+            return RowAffected > 0 ? Ok(new ApiResponse(200, "Deleted successfully")) : BadRequest(new ApiResponse(400));
         }
 
 
