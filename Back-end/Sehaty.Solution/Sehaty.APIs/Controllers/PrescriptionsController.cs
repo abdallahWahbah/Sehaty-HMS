@@ -36,7 +36,7 @@ namespace Sehaty.APIs.Controllers
         [HttpGet("doctorprescriptions")]
         public async Task<IActionResult> GetByDoctorId()
         {
-            var doctorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var doctorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var spec = new PrescriptionSpecifications(P => P.DoctorId == doctorId);
             var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
             var sortedprescriptions = prescriptions.OrderByDescending(p => p.DateIssued).ToList();
@@ -48,7 +48,7 @@ namespace Sehaty.APIs.Controllers
         [HttpGet("doctorprescriptions/{id}")]
         public async Task<IActionResult> GetPrescriptionDetails(int id)
         {
-            var doctorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var doctorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var spec = new PrescriptionSpecifications(p => p.Id == id && p.DoctorId == doctorId);
             var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
             if (prescription == null)
@@ -59,7 +59,7 @@ namespace Sehaty.APIs.Controllers
         [HttpGet("patientprescriptions")]
         public async Task<IActionResult> GetByPatientId()
         {
-            var patientId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var patientId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             var spec = new PrescriptionSpecifications(P => P.PatientId == patientId);
             var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
@@ -79,7 +79,7 @@ namespace Sehaty.APIs.Controllers
             {
                 var prescription = map.Map<Prescription>(model);
                 var doctorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                prescription.DoctorId = int.Parse(doctorId);
+                prescription.DoctorId = int.Parse(doctorId!);
                 await unit.Repository<Prescription>().AddAsync(prescription);
                 await unit.CommitAsync();
                 return Ok(new { message = "Prescription created successfully", prescriptionId = prescription.Id });

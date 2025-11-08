@@ -8,7 +8,7 @@ using Sehaty.Core.UnitOfWork.Contract;
 namespace Sehaty.APIs.Controllers
 {
 
-    public class NotificationController(IUnitOfWork unit, IMapper map) : ApiBaseController
+    public class NotificationsController(IUnitOfWork unit, IMapper map) : ApiBaseController
     {
         
         [HttpGet]

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
 using Sehaty.Core.Entites;
 
 namespace Sehaty.Infrastructure.Data.Configrations
@@ -13,7 +8,8 @@ namespace Sehaty.Infrastructure.Data.Configrations
     {
         public void Configure(EntityTypeBuilder<Appointment> builder)
         {
-            builder.ToTable("Appointments");
+            builder.ToTable("Appointments", T =>
+            T.HasCheckConstraint("CK_Appointments_DurationMinutes_Positive", "[DurationMinutes] > 0"));
 
             builder.Property(a => a.PatientId).IsRequired();
             builder.Property(a => a.DoctorId).IsRequired();
@@ -63,7 +59,6 @@ namespace Sehaty.Infrastructure.Data.Configrations
                    .IsUnique()
                    .HasDatabaseName("IX_Doctor_AppointmentDateTime");
 
-            builder.HasCheckConstraint("CK_Appointments_DurationMinutes_Positive", "[DurationMinutes] > 0");
 
             //builder.HasCheckConstraint(
             //    "CK_Appointments_Status_Valid",

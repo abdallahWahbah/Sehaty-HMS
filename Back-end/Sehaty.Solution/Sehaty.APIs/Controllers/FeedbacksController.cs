@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.FeedbackDtos;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Specifications.FeedbackSpec;
@@ -15,7 +16,7 @@ namespace Sehaty.APIs.Controllers
         {
             var spec = new FeedbackSpecification();
             var feedbacks = await unit.Repository<Feedback>().GetAllWithSpecAsync(spec);
-            if (feedbacks is null) return NotFound();
+            if (feedbacks is null) return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<IEnumerable<GetFeedbackDto>>(feedbacks));
         }
         [HttpGet("GetById/{id}")]
@@ -23,7 +24,7 @@ namespace Sehaty.APIs.Controllers
         {
             var spec = new FeedbackSpecification(id);
             var feedback = await unit.Repository<Feedback>().GetByIdWithSpecAsync(spec);
-            if (feedback is null) return NotFound();
+            if (feedback is null) return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<GetFeedbackDto>(feedback));
         }
 
@@ -31,7 +32,7 @@ namespace Sehaty.APIs.Controllers
         public async Task<ActionResult> UpdateFeedback(int id, [FromBody] FeedbackAddUpdateDto feedbackDto)
         {
             var feedbackToEdit = await unit.Repository<Feedback>().GetByIdAsync(id);
-            if (feedbackToEdit is null) return NotFound();
+            if (feedbackToEdit is null) return NotFound(new ApiResponse(404));
             if (ModelState.IsValid)
             {
                 mapper.Map(feedbackDto, feedbackToEdit);
@@ -59,7 +60,7 @@ namespace Sehaty.APIs.Controllers
         public async Task<ActionResult> DeleteFeedback(int id)
         {
             var feedbackToDelete = await unit.Repository<Feedback>().GetByIdAsync(id);
-            if (feedbackToDelete is null) return NotFound();
+            if (feedbackToDelete is null) return NotFound(new ApiResponse(404));
             unit.Repository<Feedback>().Delete(feedbackToDelete);
             await unit.CommitAsync();
             return NoContent();

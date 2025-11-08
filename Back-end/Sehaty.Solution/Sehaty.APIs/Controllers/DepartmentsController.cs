@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.DepartmentDtos;
 using Sehaty.Core.Entites;
 using Sehaty.Core.UnitOfWork.Contract;
@@ -12,14 +13,14 @@ namespace Sehaty.APIs.Controllers
         public async Task<ActionResult<IEnumerable<GetDepartmentDto>>> GetAllDepartments()
         {
             var departments = await unit.Repository<Department>().GetAllAsync();
-            if (departments is null) return NotFound();
+            if (departments is null) return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<IEnumerable<GetDepartmentDto>>(departments));
         }
-        [HttpGet("GetById/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<GetDepartmentDto>> GetDepartmentById(int id)
         {
             var department = await unit.Repository<Department>().GetByIdAsync(id);
-            if (department is null) return NotFound();
+            if (department is null) return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<GetDepartmentDto>(department));
         }
 
@@ -27,7 +28,7 @@ namespace Sehaty.APIs.Controllers
         public async Task<ActionResult> UpdateDepartment(int id, [FromBody] DepartmentAddUpdateDto departmentDto)
         {
             var departmentToEdit = await unit.Repository<Department>().GetByIdAsync(id);
-            if (departmentToEdit is null) return NotFound();
+            if (departmentToEdit is null) return NotFound(new ApiResponse(404));
             if (ModelState.IsValid)
             {
                 mapper.Map(departmentDto, departmentToEdit);
@@ -55,7 +56,7 @@ namespace Sehaty.APIs.Controllers
         public async Task<ActionResult> DeleteDepartment(int id)
         {
             var departmentToDelete = await unit.Repository<Department>().GetByIdAsync(id);
-            if (departmentToDelete is null) return NotFound();
+            if (departmentToDelete is null) return NotFound(new ApiResponse(404));
             unit.Repository<Department>().Delete(departmentToDelete);
             await unit.CommitAsync();
             return NoContent();

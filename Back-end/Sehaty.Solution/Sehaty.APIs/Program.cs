@@ -113,7 +113,7 @@ namespace Sehaty.APIs
             //}, typeof(MedicalRecordProfile).Assembly);
 
             //Add Jwt Authentication
-            var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
+            var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()!;
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

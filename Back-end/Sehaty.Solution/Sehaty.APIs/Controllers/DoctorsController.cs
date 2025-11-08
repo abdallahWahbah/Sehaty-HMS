@@ -18,7 +18,7 @@ namespace Sehaty.APIs.Controllers
             var spec = new DoctorSpecifications();
             var doctors = await unit.Repository<Doctor>().GetAllWithSpecAsync(spec);
             if (doctors is null)
-                return NotFound();
+                return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<IEnumerable<GetDoctorDto>>(doctors));
         }
 
@@ -26,9 +26,10 @@ namespace Sehaty.APIs.Controllers
         public async Task<ActionResult<GetDoctorDto>> GetDoctorById(int id)
         {
             var spec = new DoctorSpecifications(id);
+            int s = 10 / id;
             var doctor = await unit.Repository<Doctor>().GetByIdWithSpecAsync(spec);
             if (doctor is null)
-                return NotFound(new ApiResponse(400));
+                return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<GetDoctorDto>(doctor));
         }
 
@@ -37,7 +38,7 @@ namespace Sehaty.APIs.Controllers
         {
             var doctorToDelete = await unit.Repository<Doctor>().GetByIdAsync(id);
             if (doctorToDelete is null)
-                return NotFound();
+                return NotFound(new ApiResponse(404));
             unit.Repository<Doctor>().Delete(doctorToDelete);
             await unit.CommitAsync();
             return NoContent();
@@ -50,7 +51,7 @@ namespace Sehaty.APIs.Controllers
             {
                 var doctorToEdit = await unit.Repository<Doctor>().GetByIdAsync(id);
                 if (doctorToEdit is null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
                 mapper.Map(dto, doctorToEdit);
                 unit.Repository<Doctor>().Update(doctorToEdit);
                 await unit.CommitAsync();

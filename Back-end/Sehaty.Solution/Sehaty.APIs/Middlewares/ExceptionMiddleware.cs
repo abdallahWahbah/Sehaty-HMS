@@ -32,7 +32,7 @@ namespace Sehaty.APIs.Middlewares
                 context.Response.ContentType = "application/json";
 
                 var response = env.IsDevelopment()
-                    ? new ApiExceptionResponse(StatusCodes.Status500InternalServerError, ex.Message, ex.StackTrace.ToString())
+                    ? new ApiExceptionResponse(StatusCodes.Status500InternalServerError, ex.Message, ex.StackTrace!.ToString())
                     : new ApiExceptionResponse(StatusCodes.Status500InternalServerError);
 
                 var options = new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };

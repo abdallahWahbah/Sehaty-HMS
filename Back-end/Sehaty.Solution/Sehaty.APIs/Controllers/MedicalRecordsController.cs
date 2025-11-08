@@ -11,7 +11,7 @@ using Sehaty.Infrastructure.Dtos;
 namespace Sehaty.APIs.Controllers
 {
 
-    public class MedicalRecordController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
+    public class MedicalRecordsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
     {
 
         [EndpointSummary("Get all medical records")]
