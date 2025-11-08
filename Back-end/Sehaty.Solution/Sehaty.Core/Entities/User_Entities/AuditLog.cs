@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sehaty.Core.Entities.User_Entities
+﻿namespace Sehaty.Core.Entities.User_Entities
 {
     public class AuditLog
     {
@@ -14,7 +8,7 @@ namespace Sehaty.Core.Entities.User_Entities
 
         public string Action { get; set; } = null!;
 
-        public string? IpAdress { get; set; }
+        public string IpAdress { get; set; }
 
         public DateTime CreatAt { get; set; } = DateTime.UtcNow;
     }
