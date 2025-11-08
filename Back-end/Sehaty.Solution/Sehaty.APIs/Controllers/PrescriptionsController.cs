@@ -33,34 +33,42 @@ namespace Sehaty.APIs.Controllers
             return NotFound();
         }
         [Authorize(Roles = "Doctor")]
-        [HttpGet("doctor/prescriptions")]
+        [HttpGet("doctorprescriptions")]
         public async Task<IActionResult> GetByDoctorId()
         {
             var doctorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var spec = new PrescriptionSpecifications(P => P.DoctorId == doctorId);
             var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
             var sortedprescriptions = prescriptions.OrderByDescending(p => p.DateIssued).ToList();
-            if (sortedprescriptions != null)
+            if (sortedprescriptions.Any())
                 return Ok(map.Map<IEnumerable<DoctorPrescriptionsDto>>(sortedprescriptions));
             return NotFound();
         }
-        [HttpGet("doctor/prescriptionsDetails/{id}")]
+        [Authorize(Roles = "Doctor")]
+        [HttpGet("doctorprescriptions/{id}")]
         public async Task<IActionResult> GetPrescriptionDetails(int id)
         {
-            var doctorId = 1;// int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var doctorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var spec = new PrescriptionSpecifications(p => p.Id == id && p.DoctorId == doctorId);
             var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
             if (prescription == null)
                 return NotFound();
             return Ok(map.Map<GetPrescriptionsDto>(prescription));
         }
-        [HttpGet("/GetByPatientId/{id}")]
-        public async Task<IActionResult> GetByPatientId(int id)
+        [Authorize(Roles = "Patient")]
+        [HttpGet("patientprescriptions")]
+        public async Task<IActionResult> GetByPatientId()
         {
-            var spec = new PrescriptionSpecifications(P => P.PatientId == id);
-            var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
-            if (prescription != null)
-                return Ok(map.Map<GetPrescriptionsDto>(prescription));
+            var patientId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var spec = new PrescriptionSpecifications(P => P.PatientId == patientId);
+            var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
+            var sortedprescriptions = prescriptions
+                        .OrderByDescending(p => p.Status == PrescriptionStatus.Active)
+                        .ThenByDescending(p => p.DateIssued)
+                        .ToList();
+            if (prescriptions != null)
+                return Ok(map.Map<IEnumerable<PatientPrescriptionsDto>>(sortedprescriptions));
             return NotFound();
         }
         [Authorize(Roles = "Doctor")]
