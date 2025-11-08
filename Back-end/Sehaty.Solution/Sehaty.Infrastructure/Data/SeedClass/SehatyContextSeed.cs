@@ -19,9 +19,6 @@ namespace Sehaty.Infrastructure.Data.SeedClass
             };
             if (context.Roles.Count() == 0)
             {
-                //F:\ITI Intensive Program/Graduation_Project/Sehaty-HMS/Back-end/Sehaty.Soluation/Sehaty.Infrastructure/Data/SeedDataFiles/roles.json
-                //'F:\ITI Intensive Program\Graduation_Project\Sehaty-HMS\Back-end\Sehaty.Soluation\Data\SeedDataFiles\Roles.json'.'
-
                 var rolesData = File.ReadAllText("../Sehaty.Infrastructure/Data/SeedDataFiles/Roles.json");
                 var roles = JsonSerializer.Deserialize<List<ApplicationRole>>(rolesData, options);
                 context.Roles.AddRange(roles!);
@@ -41,6 +38,7 @@ namespace Sehaty.Infrastructure.Data.SeedClass
                 context.Users.AddRange(users!);
                 await context.SaveChangesAsync();
             }
+
             if (context.UserRoles.Count() == 0)
             {
                 var userRolesData = File.ReadAllText("../Sehaty.Infrastructure/Data/SeedDataFiles/UserRoles.json");
@@ -48,6 +46,7 @@ namespace Sehaty.Infrastructure.Data.SeedClass
                 context.UserRoles.AddRange(userRoles!);
                 await context.SaveChangesAsync();
             }
+
             if (context.Departments.Count() == 0)
             {
                 var departmentsData = File.ReadAllText("../Sehaty.Infrastructure/Data/SeedDataFiles/Departments.json");
