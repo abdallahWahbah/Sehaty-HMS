@@ -289,7 +289,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entites.Doctor", b =>
@@ -344,7 +344,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctors", (string)null);
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entites.DoctorAvailabilitySlot", b =>
@@ -384,7 +384,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasIndex("DoctorId", "Date", "StartTime")
                         .IsUnique();
 
-                    b.ToTable("DoctorAvailabilitySlots");
+                    b.ToTable("DoctorAvailabilitySlots", (string)null);
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entites.Feedback", b =>
@@ -415,7 +415,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     b.HasIndex("AppointmentId");
 
-                    b.ToTable("Feedbacks");
+                    b.ToTable("Feedbacks", (string)null);
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entites.MedicalRecord", b =>
@@ -476,7 +476,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     b.HasIndex("AppointmentId");
 
-                    b.ToTable("MedicalRecords");
+                    b.ToTable("MedicalRecords", (string)null);
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entites.Notification", b =>
@@ -609,7 +609,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Patients");
+                    b.ToTable("Patients", (string)null);
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Medication", b =>
@@ -718,7 +718,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasIndex("PrescriptionId", "MedicationId")
                         .IsUnique();
 
-                    b.ToTable("PrescriptionMedications");
+                    b.ToTable("PrescriptionMedications", (string)null);
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.ApplicationRole", b =>
@@ -887,7 +887,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.PasswordResetCode", b =>
@@ -923,7 +923,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PasswordResetCodes");
+                    b.ToTable("PasswordResetCodes", (string)null);
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entities.User_Entities.RefreshToken", b =>
