@@ -44,8 +44,3 @@ _ReSharper*/
 !appsettings.json
 !appsettings.Development.json
 !*.cs
-
-# ============================
-# Track only AssemblyInfo.cs file in obj/Debug/net8.0
-# ============================
-!Back-end/Sehaty.Solution/Sehaty.Infrastructure/obj/Debug/net8.0/Sehaty.Infrastructure.AssemblyInfo.cs

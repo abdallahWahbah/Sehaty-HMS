@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Sehaty.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+24948c2804ca2d522328eec3b30d97953e1c7424")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ea17ed1fe3b299ea694687db088c1f5d0c3daa1e")]
 [assembly: System.Reflection.AssemblyProductAttribute("Sehaty.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Sehaty.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
