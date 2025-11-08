@@ -33,7 +33,8 @@ namespace Sehaty.Application.MappingProfiles
                        {
                            Name = src.MedicationName
                        }
-            ));
+            )).ReverseMap();
+
 
 
             CreateMap<Prescription, DoctorPrescriptionsDto>()
@@ -47,12 +48,18 @@ namespace Sehaty.Application.MappingProfiles
                           opt => opt.MapFrom(src => src.Status));
 
 
-            CreateMap<PrescriptionMedications, MedicationDto>()
-                .ForMember(dest => dest.MedicationName,
-                            opt => opt.MapFrom(src => src.Medication.Name))
-                .ForMember(dest => dest.Dosage, opt => opt.MapFrom(src => src.Dosage))
-                .ForMember(dest => dest.Frequency, opt => opt.MapFrom(src => src.Frequency))
-                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Duration));
+
+            CreateMap<Prescription, PatientPrescriptionsDto>()
+                .ForMember(dest => dest.PrescriptionId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.DoctorName,
+                           opt => opt.MapFrom(src => src.Doctor.FirstName + " " + src.Doctor.LastName))
+                //.ForMember(dest => dest.Status,
+                //           opt => opt.MapFrom(src => src.Status.ToString()))
+                .ForMember(dest => dest.DoctorNotes,
+                           opt => opt.MapFrom(src => src.SpecialInstructions))
+                .ForMember(dest => dest.Medications,
+                           opt => opt.MapFrom(src => src.Medications));
+
 
         }
     }

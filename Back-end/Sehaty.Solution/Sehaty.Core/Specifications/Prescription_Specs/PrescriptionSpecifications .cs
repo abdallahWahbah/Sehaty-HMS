@@ -34,6 +34,8 @@ namespace Sehaty.Core.Specifications.Prescription_Specs
             Includes.Add(P => P.Doctor);
             Includes.Add(P => P.MedicalRecord);
             Includes.Add(P => P.Medications);
+            IncludeStrings.Add("Medications.Medication");
+
         }
     }
 }

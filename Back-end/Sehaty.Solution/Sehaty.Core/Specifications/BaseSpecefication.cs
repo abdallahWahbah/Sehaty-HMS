@@ -15,5 +15,7 @@ namespace Sehaty.Core.Specefications
         }
         public Expression<Func<T, bool>> Criteria { get; set; } = null;
         public List<Expression<Func<T, object>>> Includes { get; set; } = new List<Expression<Func<T, object>>>();
+        public List<string> IncludeStrings { get; set; } = new List<string>();
+
     }
 }
