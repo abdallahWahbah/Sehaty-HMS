@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.DoctorDtos;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Specifications.DoctorSpec;
@@ -27,7 +28,7 @@ namespace Sehaty.APIs.Controllers
             var spec = new DoctorSpecifications(id);
             var doctor = await unit.Repository<Doctor>().GetByIdWithSpecAsync(spec);
             if (doctor is null)
-                return NotFound();
+                return NotFound(new ApiResponse(400));
             return Ok(mapper.Map<GetDoctorDto>(doctor));
         }
 
