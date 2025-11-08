@@ -30,7 +30,7 @@ namespace Sehaty.APIs.Controllers
             return Ok(mapper.Map<DoctorAvailabilityReadDto>(doctorAvailability));
         }
 
-        [HttpGet("getByName{FullName}")]
+        [HttpGet("getByName/{FullName}")]
         public async Task<IActionResult> GetByDoctorName(string FullName)
         {
             var spec = new DoctorAvailabilitySlotSpec(d =>

@@ -21,7 +21,8 @@ namespace Sehaty.Application.MappingProfiles
             CreateMap<BillingAddDto, Billing>()
            .ForMember(dest => dest.BillDate, B => B.MapFrom(_ => DateTime.Now))
            .ForMember(dest => dest.Status, B => B.MapFrom(_ => BillingStatus.Pending))
-           .ForMember(dest => dest.PaidAmount, B => B.MapFrom(_ => 0m));
+            .ForMember(dest => dest.PaidAmount, B => B.MapFrom(_ => 0m));
+
 
 
             CreateMap<BillingUpdateDto, Billing>()
