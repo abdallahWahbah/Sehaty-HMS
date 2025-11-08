@@ -1,4 +1,5 @@
-﻿using Sehaty.Core.Entities.Business_Entities;
+﻿using Sehaty.Application.Dtos.MedicationDTOs;
+using Sehaty.Core.Entities.Business_Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,27 +11,21 @@ namespace Sehaty.Application.Dtos.PrescriptionsDTOs
 {
     public class CreatePrescriptionsDto
     {
-        
-        [Required]
-        [MaxLength(200)]
-        public string MedicationName { get; set; }
-        [Required]
-        [MaxLength(100)]
-        public string Dosage { get; set; }
-        [Required]
-        [MaxLength(100)]
-        public string Frequency { get; set; }
-        [MaxLength(100)]
-        public string Duration { get; set; }
         public PrescriptionStatus Status { get; set; }
-        [MaxLength(255)]
-        public string DigitalSignature { get; set; }
+        [Required]
+        public int PatientId { get; set; }
+
+        [Required]
+        public int AppointmentId { get; set; }
+
+        public int? MedicalRecordId { get; set; }
+
         [MaxLength(200)]
         public string SpecialInstructions { get; set; }
-        public DateTime DateIssued { get; set; }
-        public int AppointmentId { get; set; }
-        public int? MedicalRecordId { get; set; }
-        public int? PatientId { get; set; }
-        public int? DoctorId { get; set; }
+        public string DigitalSignature { get; set; }
+
+
+        [Required]
+        public List<MedicationDto> Medications { get; set; }
     }
 }
