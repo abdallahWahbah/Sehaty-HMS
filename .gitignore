@@ -11,8 +11,6 @@ Release/
 **/Release/
 **/net8.0/
 
-
- 
 # ============================
 # Visual Studio
 # ============================
@@ -21,7 +19,7 @@ Release/
 *.suo
 *.slnx/
 *.vscode/
- 
+
 # ============================
 # Logs and temporary files
 # ============================
@@ -30,26 +28,24 @@ Release/
 *.temp
 *.swp
 *.pid
- 
+
 # ============================
 # Resharper, Rider, etc.
 # ============================
 _ReSharper*/
 *.DotSettings.user
- 
+
 # ============================
 # Keep config and code
 # ============================
 # Do NOT ignore these:
-# - Solution & project files
 !*.sln
 !*.csproj
-# - Config files (only the main ones, exclude secrets)
 !appsettings.json
 !appsettings.Development.json
-# - C# code files
 !*.cs
 
-
-# Allow tracking of this specific AssemblyInfo file
+# ============================
+# Track only AssemblyInfo.cs file in obj/Debug/net8.0
+# ============================
 !Back-end/Sehaty.Solution/Sehaty.Infrastructure/obj/Debug/net8.0/Sehaty.Infrastructure.AssemblyInfo.cs

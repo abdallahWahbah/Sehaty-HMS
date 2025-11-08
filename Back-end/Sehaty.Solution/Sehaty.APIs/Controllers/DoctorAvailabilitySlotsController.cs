@@ -11,7 +11,7 @@ using Sehaty.Core.UnitOfWork.Contract;
 
 namespace Sehaty.APIs.Controllers
 {
-    public class DoctorAvailabilitySlotController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
+    public class DoctorAvailabilitySlotsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
     {
         //GetAll
         [HttpGet]

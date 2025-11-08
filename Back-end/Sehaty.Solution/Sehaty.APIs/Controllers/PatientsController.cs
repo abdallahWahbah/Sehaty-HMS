@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.PatientDto;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Specifications.PatientSpec;
@@ -16,7 +17,7 @@ namespace Sehaty.APIs.Controllers
             var spec = new PatientSpecifications();
             var patients = await unit.Repository<Patient>().GetAllWithSpecAsync(spec);
             if (patients is null)
-                return NotFound();
+                return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<IEnumerable<GetPatientDto>>(patients));
         }
 
@@ -26,7 +27,7 @@ namespace Sehaty.APIs.Controllers
             var spec = new PatientSpecifications(id);
             var patient = await unit.Repository<Patient>().GetByIdWithSpecAsync(spec);
             if (patient is null)
-                return NotFound();
+                return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<GetPatientDto>(patient));
         }
 
@@ -35,7 +36,7 @@ namespace Sehaty.APIs.Controllers
         {
             var patientToDelete = await unit.Repository<Patient>().GetByIdAsync(id);
             if (patientToDelete is null)
-                return NotFound();
+                return NotFound(new ApiResponse(404));
             unit.Repository<Patient>().Delete(patientToDelete);
             await unit.CommitAsync();
             return NoContent();
@@ -48,7 +49,7 @@ namespace Sehaty.APIs.Controllers
             {
                 var patientToEdit = await unit.Repository<Patient>().GetByIdAsync(id);
                 if (patientToEdit is null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
                 mapper.Map(dto, patientToEdit);
                 unit.Repository<Patient>().Update(patientToEdit);
                 await unit.CommitAsync();

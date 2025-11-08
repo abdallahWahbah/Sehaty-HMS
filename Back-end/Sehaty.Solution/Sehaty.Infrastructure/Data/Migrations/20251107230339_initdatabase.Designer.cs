@@ -13,7 +13,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(SehatyDbContext))]
     [Migration("20251107230339_initdatabase")]
-    partial class initdatabase
+    partial class initDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

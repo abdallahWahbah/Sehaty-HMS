@@ -8,7 +8,7 @@ using Sehaty.Core.UnitOfWork.Contract;
 
 namespace Sehaty.APIs.Controllers
 {
-    public class BillingController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
+    public class BillingsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
     {
         //GetAllData
         [HttpGet]

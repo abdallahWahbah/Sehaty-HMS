@@ -36,7 +36,7 @@ namespace Sehaty.APIs.Controllers
         [HttpGet("doctor/prescriptions")]
         public async Task<IActionResult> GetByDoctorId()
         {
-            var doctorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var doctorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var spec = new PrescriptionSpecifications(P => P.DoctorId == doctorId);
             var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
             var sortedprescriptions = prescriptions.OrderByDescending(p => p.DateIssued).ToList();
@@ -71,7 +71,7 @@ namespace Sehaty.APIs.Controllers
             {
                 var prescription = map.Map<Prescription>(model);
                 var doctorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                prescription.DoctorId = int.Parse(doctorId);
+                prescription.DoctorId = int.Parse(doctorId!);
                 await unit.Repository<Prescription>().AddAsync(prescription);
                 await unit.CommitAsync();
                 return Ok(new { message = "Prescription created successfully", prescriptionId = prescription.Id });

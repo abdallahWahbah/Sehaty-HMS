@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Sehaty.Application.Dtos.IdentityDtos;
@@ -9,16 +8,11 @@ using Sehaty.Application.Shared.AuthShared;
 using Sehaty.Core.Entities.User_Entities;
 using Sehaty.Infrastructure.Data.Contexts;
 using Sehaty.Infrastructure.Service.Email;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Sehaty.Application.Services.IdentityService
 {
@@ -91,7 +85,7 @@ namespace Sehaty.Application.Services.IdentityService
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
         {
-            var user = await userManager.Users.Include(r=> r.RefreshTokens).FirstOrDefaultAsync(u => u.UserName == loginDto.UserName);
+            var user = await userManager.Users.Include(r => r.RefreshTokens).FirstOrDefaultAsync(u => u.UserName == loginDto.UserName);
             if (user is null || !await userManager.CheckPasswordAsync(user, loginDto.Password))
             {
                 throw new Exception("Invalid UserName Or Password");
@@ -139,7 +133,7 @@ namespace Sehaty.Application.Services.IdentityService
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        private RefreshToken CreateRefreshToken(string? createByIp = null)
+        private RefreshToken CreateRefreshToken(string createByIp = null)
         {
             var randomBytes = RandomNumberGenerator.GetBytes(64);
             var jwtOptions = options.Value;
@@ -152,24 +146,24 @@ namespace Sehaty.Application.Services.IdentityService
                 IsRevoked = false
             };
         }
-        private async Task<RefreshToken> AddRefreshTokenAsync(ApplicationUser user, string? ipAddress)
+        private async Task<RefreshToken> AddRefreshTokenAsync(ApplicationUser user, string ipAddress)
         {
             var refreshToken = CreateRefreshToken(ipAddress);
             user.RefreshTokens.Add(refreshToken);
             await userManager.UpdateAsync(user);
             return refreshToken;
         }
-        public async Task<AuthResponseDto> RefreshTokenAsync(string token, string refreshToken, string? ipAdrees)
+        public async Task<AuthResponseDto> RefreshTokenAsync(string token, string refreshToken, string ipAdrees)
         {
             var user = await userManager.Users.Include(r => r.RefreshTokens)
-                .FirstOrDefaultAsync(u=> u.RefreshTokens.Any(t=> t.Token == refreshToken));
+                .FirstOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == refreshToken));
             if (user is null)
             {
                 throw new Exception("Invalid Refresh Token");
             }
             var existingRefreshToken = user.RefreshTokens.FirstOrDefault(t => t.Token == refreshToken);
 
-            if(existingRefreshToken is null || existingRefreshToken.IsRevoked || existingRefreshToken.Expires <= DateTime.UtcNow)
+            if (existingRefreshToken is null || existingRefreshToken.IsRevoked || existingRefreshToken.Expires <= DateTime.UtcNow)
             {
                 throw new Exception("Invalid or Expired Refresh Token");
             }
@@ -178,7 +172,7 @@ namespace Sehaty.Application.Services.IdentityService
             var userRole = roles.FirstOrDefault() ?? "Patient";
             var newAccessToken = await GenerateJwtTokenAsync(user, userRole);
 
-            var newRefreshToken =  CreateRefreshToken(ipAdrees);
+            var newRefreshToken = CreateRefreshToken(ipAdrees);
             user.RefreshTokens.Add(newRefreshToken);
             await userManager.UpdateAsync(user);
 
@@ -200,12 +194,12 @@ namespace Sehaty.Application.Services.IdentityService
             var user = await userManager.Users
                 .Include(u => u.RefreshTokens)
                 .FirstOrDefaultAsync(u => u.Id == userId);
-            if (user is null) 
-            { 
+            if (user is null)
+            {
                 throw new Exception("User Not Found");
             }
             var existingRefreshToken = user.RefreshTokens.FirstOrDefault(t => t.Token == refreshToken);
-            if(existingRefreshToken is null)
+            if (existingRefreshToken is null)
             {
                 throw new Exception("Invalid refresh token");
             }
@@ -213,7 +207,7 @@ namespace Sehaty.Application.Services.IdentityService
             existingRefreshToken.RevokedAt = DateTime.UtcNow;
             await userManager.UpdateAsync(user);
         }
-        public async Task ChangePasswordAsync(int userId, ChangePasswordDto dto, string? ipAddress)
+        public async Task ChangePasswordAsync(int userId, ChangePasswordDto dto, string ipAddress)
         {
             var user = await userManager.FindByIdAsync(userId.ToString());
             if (user is null)
@@ -246,7 +240,7 @@ namespace Sehaty.Application.Services.IdentityService
         public async Task RequestResetPasswordAsync(string email)
         {
             var user = await userManager.FindByEmailAsync(email);
-            if(user is null)
+            if (user is null)
             {
                 throw new Exception("User Not Found");
             }
@@ -296,10 +290,10 @@ namespace Sehaty.Application.Services.IdentityService
     </div>
     ");
         }
-        public async Task<bool> VerifyOptAsync(string email, string code) 
+        public async Task<bool> VerifyOptAsync(string email, string code)
         {
             var user = await userManager.FindByEmailAsync(email);
-            if(user is null)
+            if (user is null)
             {
                 return false;
             }
@@ -307,7 +301,7 @@ namespace Sehaty.Application.Services.IdentityService
                 .Where(u => u.UserId == user.Id && u.CodeHash == code && !u.IsUsed)
                 .OrderByDescending(u => u.CreatedAt)
                 .FirstOrDefaultAsync();
-            if(otpEntry is null || otpEntry.ExpiresAt < DateTime.UtcNow)
+            if (otpEntry is null || otpEntry.ExpiresAt < DateTime.UtcNow)
             {
                 return false;
             }
@@ -316,7 +310,7 @@ namespace Sehaty.Application.Services.IdentityService
         public async Task ResetPasswordAsync(string email, string otp, string newPassword)
         {
             var user = await userManager.FindByEmailAsync(email);
-            if(user is null)
+            if (user is null)
             {
                 throw new Exception("Invaild Request!");
             }
@@ -331,7 +325,7 @@ namespace Sehaty.Application.Services.IdentityService
             var remove = await userManager.RemovePasswordAsync(user);
             if (!remove.Succeeded)
             {
-               
+
                 throw new Exception($"Faild to reset Password");
             }
             var add = await userManager.AddPasswordAsync(user, newPassword);
@@ -360,7 +354,7 @@ namespace Sehaty.Application.Services.IdentityService
                 .Where(u => u.UserId == user.Id)
                 .OrderByDescending(u => u.CreatedAt)
                 .FirstOrDefaultAsync();
-            if(lastOtp != null && (DateTime.UtcNow - lastOtp.CreatedAt).TotalMinutes < 1)
+            if (lastOtp != null && (DateTime.UtcNow - lastOtp.CreatedAt).TotalMinutes < 1)
             {
                 throw new Exception("Please wait before requesting a new OTP.");
             }
