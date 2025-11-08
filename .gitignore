@@ -51,4 +51,5 @@ _ReSharper*/
 !*.cs
 
 
-!Sehaty.Solution/Sehaty.Infrastructure/obj/Debug/net8.0/Sehaty.Infrastructure.AssemblyInfo.cs
+# Allow tracking of this specific AssemblyInfo file
+!Back-end/Sehaty.Solution/Sehaty.Infrastructure/obj/Debug/net8.0/Sehaty.Infrastructure.AssemblyInfo.cs
