@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Sehaty.APIs.Errors;
+using Sehaty.APIs.Middlewares;
 using Sehaty.Application.MappingProfiles;
 using Sehaty.Application.Services.Contract.AuthService.Contract;
 using Sehaty.Application.Services.IdentityService;
@@ -76,6 +79,7 @@ namespace Sehaty.APIs
                     });
             });
             #endregion
+
             #region Add Services
             // Add DbContext Class Injection
             builder.Services.AddDbContext<SehatyDbContext>(options =>
@@ -132,7 +136,29 @@ namespace Sehaty.APIs
 
             #endregion
 
+
+            #region Validation Error Configuration
+            builder.Services.Configure<ApiBehaviorOptions>(cfg =>
+            {
+                cfg.InvalidModelStateResponseFactory = (context) =>
+                {
+                    var errors = context.ModelState
+                    .Where(P => P.Value!.Errors.Count > 0)
+                    .SelectMany(P => P.Value!.Errors)
+                    .Select(E => E.ErrorMessage);
+
+                    var response = new ApiValidationErrorResponse()
+                    {
+                        Errors = errors
+                    };
+
+                    return new BadRequestObjectResult(response);
+                };
+            });
+            #endregion
+
             var app = builder.Build();
+
             #region Seed Data In Data Base
             using var scoped = app.Services.CreateScope();
             var services = scoped.ServiceProvider;
@@ -150,6 +176,10 @@ namespace Sehaty.APIs
             }
 
             #endregion
+
+            // To Add Exception Our Custom Middleware To Handle Server Errors
+            app.UseMiddleware<ExceptionMiddleware>();
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

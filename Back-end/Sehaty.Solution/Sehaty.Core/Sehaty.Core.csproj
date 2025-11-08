@@ -6,9 +6,11 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
-	<ItemGroup>
-		<Folder Include="Services.Contracts\" />
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Services.Contracts\**" />
+    <EmbeddedResource Remove="Services.Contracts\**" />
+    <None Remove="Services.Contracts\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.15" />
