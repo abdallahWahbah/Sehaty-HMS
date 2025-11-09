@@ -25,7 +25,7 @@ namespace Sehaty.Core.Entites
         public string EmergencyContactName { get; set; }
         public string EmergencyContactPhone { get; set; }
         public PatientStatus Status { get; set; }
-        public DateTime RegistrationDate { get; set; }
+        public DateTime RegistrationDate { get; set; } = DateTime.Now;
 
         // NAVIGATION PROPERTIES
 

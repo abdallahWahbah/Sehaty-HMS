@@ -10,7 +10,11 @@ namespace Sehaty.Application.MappingProfiles
         {
             CreateMap<Patient, GetPatientDto>()
                 .ForMember(P => P.User, O => O.MapFrom(S => S.User.UserName));
-            CreateMap<PatientAddUpdateDto, Patient>();
+            CreateMap<PatientAddDto, Patient>()
+                .ForMember(D => D.RegistrationDate, O => O.Ignore());
+
+            CreateMap<PatientUpdateByStaffDto, Patient>();
+            CreateMap<PatientUpdateDto, Patient>();
         }
     }
 }

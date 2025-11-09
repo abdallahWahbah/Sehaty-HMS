@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Sehaty.Application.Dtos.PatientDto
 {
-    public class PatientAddUpdateDto
+    public class PatientAddDto
     {
         public string MRN { get; set; }
         [Required, MaxLength(50)]
@@ -15,7 +15,6 @@ namespace Sehaty.Application.Dtos.PatientDto
         [Required]
         [DataType(DataType.DateTime)]
         public DateTime DateOfBirth { get; set; }
-
         [Required]
         public string Gender { get; set; }
         public string NationalId { get; set; }
@@ -28,9 +27,6 @@ namespace Sehaty.Application.Dtos.PatientDto
 
         [EnumDataType(typeof(PatientStatus))]
         public PatientStatus Status { get; set; } = PatientStatus.Active;
-
-        [DataType(DataType.DateTime)]
-        public DateTime RegistrationDate { get; set; }
         public int UserId { get; set; }
     }
 }
