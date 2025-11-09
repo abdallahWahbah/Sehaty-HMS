@@ -85,8 +85,8 @@ namespace Sehaty.APIs.Controllers
             if (ModelState.IsValid)
             {
                 var prescription = map.Map<Prescription>(model);
-                var doctorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                prescription.DoctorId = int.Parse(doctorId!);
+                var doctorId = 1;// User.FindFirstValue(ClaimTypes.NameIdentifier);
+                prescription.DoctorId = 1;// int.Parse(doctorId);
                 await unit.Repository<Prescription>().AddAsync(prescription);
                 await unit.CommitAsync();
                 return Ok(new { message = "Prescription created successfully", prescriptionId = prescription.Id });
@@ -119,7 +119,7 @@ namespace Sehaty.APIs.Controllers
             return NoContent();
         }
 
-        //[Authorize(Roles = "Admin,Patient,Doctor")]
+        [Authorize(Roles = "Admin,Patient,Doctor")]
         [HttpGet("prescriptions/{id}/download")]
         public async Task<IActionResult> DownloadPrescription(int id)
         {
@@ -131,6 +131,24 @@ namespace Sehaty.APIs.Controllers
             var pdfBytes = pdfService.GeneratePrescriptionPdf(prescription);
             return File(pdfBytes, "application/pdf", $"Prescription_{id}.pdf");
         }
+
+        //[Authorize(Roles = "Doctor,Admin")]
+        [HttpGet("patient/{patientId}/history")]
+        public async Task<IActionResult> GetPrescriptionHistoryForPatient(int patientId)
+        {
+            var spec = new PrescriptionSpecifications(P => P.PatientId == patientId);
+            var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
+            if (prescriptions is not null && prescriptions.Any())
+            {
+                var sortedprescriptions = prescriptions
+                       .OrderByDescending(p => p.DateIssued)
+                       .ToList();
+                return Ok(map.Map<IEnumerable<PrescriptionHistoryDto>>(sortedprescriptions));
+            }
+            return NotFound(new ApiResponse(404));
+        }
+
+
     }
 
 }
