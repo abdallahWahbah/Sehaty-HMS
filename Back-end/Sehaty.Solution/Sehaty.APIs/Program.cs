@@ -20,11 +20,9 @@ namespace Sehaty.APIs
             });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddScoped<PrescriptionPdfService>();
-
 
             // Extension Method To Add All Services Needed To Run Application
-            builder.Services.AddAppServices(builder.Configuration);
+            builder.Services.AddApplicationServices(builder.Configuration);
 
             var app = builder.Build();
 

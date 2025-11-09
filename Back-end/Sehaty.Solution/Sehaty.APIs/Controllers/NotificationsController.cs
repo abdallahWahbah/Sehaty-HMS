@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.NotificationsDTOs;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Specifications.Notifications_Specs;
@@ -18,8 +19,9 @@ namespace Sehaty.APIs.Controllers
             var notifications = await unit.Repository<Notification>().GetAllWithSpecAsync(spec);
             if (notifications != null)
                 return Ok(map.Map<IEnumerable<AllNotificationsDto>>(notifications));
-            return NotFound();
+            return NotFound(new ApiResponse(404));
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -27,8 +29,9 @@ namespace Sehaty.APIs.Controllers
             var notification = await unit.Repository<Notification>().GetByIdWithSpecAsync(spec);
             if (notification != null)
                 return Ok(map.Map<AllNotificationsDto>(notification));
-            return NotFound();
+            return NotFound(new ApiResponse(404));
         }
+
         [HttpGet("GetByPatientId/{id}")]
         public async Task<ActionResult<IEnumerable<AllNotificationsDto>>> GetByPatientId(int id)
         {
@@ -36,7 +39,7 @@ namespace Sehaty.APIs.Controllers
             var notifications = await unit.Repository<Notification>().GetAllWithSpecAsync(spec);
             if (notifications != null)
                 return Ok(map.Map<IEnumerable<AllNotificationsDto>>(notifications));
-            return NotFound();
+            return NotFound(new ApiResponse(404));
         }
 
         [HttpPost]
@@ -51,6 +54,7 @@ namespace Sehaty.APIs.Controllers
             }
             return BadRequest(ModelState);
         }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateNotification(int id, [FromBody] CreateNotificationDto updateNotificationDto)
         {
@@ -59,7 +63,7 @@ namespace Sehaty.APIs.Controllers
                 var spec = new NotificationSpecifications(id);
                 var notification = await unit.Repository<Notification>().GetByIdWithSpecAsync(spec);
                 if (notification == null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
 
                 map.Map(updateNotificationDto, notification);
                 unit.Repository<Notification>().Update(notification);
@@ -68,13 +72,14 @@ namespace Sehaty.APIs.Controllers
             }
             return BadRequest(ModelState);
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteNotification(int id)
         {
             var spec = new NotificationSpecifications(id);
             var notification = await unit.Repository<Notification>().GetByIdWithSpecAsync(spec);
             if (notification == null)
-                return NotFound();
+                return NotFound(new ApiResponse(404));
 
             unit.Repository<Notification>().Delete(notification);
             await unit.CommitAsync();

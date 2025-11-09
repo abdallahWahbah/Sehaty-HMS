@@ -1,13 +1,6 @@
-﻿using Sehaty.Core.Entities.Business_Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-using QuestPDF.Fluent;
-using Sehaty.Core.Entites;
+﻿using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
+using Sehaty.Core.Entities.Business_Entities;
 
 namespace Sehaty.Application.Services.PDFservice
 {

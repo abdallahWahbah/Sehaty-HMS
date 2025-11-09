@@ -22,8 +22,9 @@ namespace Sehaty.APIs.Controllers
             var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
             if (prescriptions != null)
                 return Ok(map.Map<IEnumerable<GetPrescriptionsDto>>(prescriptions));
-            return NotFound();
+            return NotFound(new ApiResponse(404));
         }
+
         //get prescription by its id
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -32,8 +33,9 @@ namespace Sehaty.APIs.Controllers
             var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
             if (prescription != null)
                 return Ok(map.Map<GetPrescriptionsDto>(prescription));
-            return NotFound();
+            return NotFound(new ApiResponse(404));
         }
+
         [Authorize(Roles = "Doctor")]
         [HttpGet("doctorprescriptions")]
         public async Task<IActionResult> GetByDoctorId()
@@ -44,8 +46,9 @@ namespace Sehaty.APIs.Controllers
             var sortedprescriptions = prescriptions.OrderByDescending(p => p.DateIssued).ToList();
             if (sortedprescriptions.Any())
                 return Ok(map.Map<IEnumerable<DoctorPrescriptionsDto>>(sortedprescriptions));
-            return NotFound();
+            return NotFound(new ApiResponse(404));
         }
+
         [Authorize(Roles = "Doctor")]
         [HttpGet("doctorprescriptions/{id}")]
         public async Task<IActionResult> GetPrescriptionDetails(int id)
@@ -54,9 +57,10 @@ namespace Sehaty.APIs.Controllers
             var spec = new PrescriptionSpecifications(p => p.Id == id && p.DoctorId == doctorId);
             var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
             if (prescription == null)
-                return NotFound();
+                return NotFound(new ApiResponse(404));
             return Ok(map.Map<GetPrescriptionsDto>(prescription));
         }
+
         [Authorize(Roles = "Patient")]
         [HttpGet("patientprescriptions")]
         public async Task<IActionResult> GetByPatientId()
@@ -71,8 +75,9 @@ namespace Sehaty.APIs.Controllers
                         .ToList();
             if (prescriptions != null)
                 return Ok(map.Map<IEnumerable<PatientPrescriptionsDto>>(sortedprescriptions));
-            return NotFound();
+            return NotFound(new ApiResponse(404));
         }
+
         [Authorize(Roles = "Doctor")]
         [HttpPost]
         public async Task<IActionResult> CreatePrescription([FromBody] CreatePrescriptionsDto model)
@@ -88,13 +93,14 @@ namespace Sehaty.APIs.Controllers
             }
             return BadRequest(ModelState);
         }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePrescription(int id, [FromBody] CreatePrescriptionsDto model)
         {
             if (ModelState.IsValid)
             {
                 var prescription = await unit.Repository<Prescription>().GetByIdAsync(id);
-                if (prescription == null) return NotFound();
+                if (prescription == null) return NotFound(new ApiResponse(404));
                 map.Map(model, prescription);
                 unit.Repository<Prescription>().Update(prescription);
                 await unit.CommitAsync();
@@ -102,29 +108,28 @@ namespace Sehaty.APIs.Controllers
             }
             return BadRequest(model);
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePrescription(int id)
         {
             var prescription = await unit.Repository<Prescription>().GetByIdAsync(id);
-            if (prescription == null) return NotFound();
+            if (prescription == null) return NotFound(new ApiResponse(404));
             unit.Repository<Prescription>().Delete(prescription);
             await unit.CommitAsync();
             return NoContent();
         }
-        [Authorize(Roles = "Patient,Doctor")]
+
+        //[Authorize(Roles = "Admin,Patient,Doctor")]
         [HttpGet("prescriptions/{id}/download")]
         public async Task<IActionResult> DownloadPrescription(int id)
         {
-            PrescriptionSpecifications spec = new PrescriptionSpecifications(p => p.Id == id);
+            PrescriptionSpecifications spec = new PrescriptionSpecifications(id);
             var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
-            if (prescription is null) return NotFound(new ApiResponse(400));
-            else
-            {
-                var pdfBytes = pdfService.GeneratePrescriptionPdf(prescription);
+            if (prescription is null)
+                return NotFound(new ApiResponse(404));
 
-                return File(pdfBytes, "application/pdf", $"Prescription_{id}.pdf");
-            }
-
+            var pdfBytes = pdfService.GeneratePrescriptionPdf(prescription);
+            return File(pdfBytes, "application/pdf", $"Prescription_{id}.pdf");
         }
     }
 
