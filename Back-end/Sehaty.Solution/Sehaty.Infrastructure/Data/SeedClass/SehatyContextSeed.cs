@@ -32,8 +32,10 @@ namespace Sehaty.Infrastructure.Data.SeedClass
                 var passwordHasher = new PasswordHasher<ApplicationUser>();
                 foreach (var user in users!)
                 {
-                    user.PasswordHash = passwordHasher.HashPassword(user, "P@ssw0rd");
+                    user.NormalizedUserName = user.UserName.ToUpper();
+                    user.NormalizedEmail = user.Email.ToUpper();
                     user.SecurityStamp = Guid.NewGuid().ToString();
+                    user.PasswordHash = passwordHasher.HashPassword(user, "P@ssw0rd");
                 }
                 context.Users.AddRange(users!);
                 await context.SaveChangesAsync();

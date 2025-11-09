@@ -20,8 +20,8 @@
     "Description": "Assists doctors and manages patient care"
   },
   {
-    "Name": "Reception",
-    "NormalizedName": "RECEPTION",
+    "Name": "Receptionist",
+    "NormalizedName": "RECEPTIONIST",
     "Description": "Handles appointment scheduling and patient registration"
   }
 ]

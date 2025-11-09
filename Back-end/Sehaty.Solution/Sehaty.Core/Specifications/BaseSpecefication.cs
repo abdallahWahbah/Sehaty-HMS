@@ -16,6 +16,25 @@ namespace Sehaty.Core.Specefications
         public Expression<Func<T, bool>> Criteria { get; set; } = null;
         public List<Expression<Func<T, object>>> Includes { get; set; } = new List<Expression<Func<T, object>>>();
         public List<string> IncludeStrings { get; set; } = new List<string>();
+        public Expression<Func<T, object>> OrderBy { get; set; }
+        public Expression<Func<T, object>> OrderByDesc { get; set; }
+        public int Take { get; set; }
+        public int Skip { get; set; }
+        public bool HasPagination { get; set; }
 
+
+        protected void AddOrderBy(Expression<Func<T, object>> expression)
+            => OrderBy = expression;
+        protected void AddOrderByDesc(Expression<Func<T, object>> expression)
+            => OrderByDesc = expression;
+
+        protected void AddPagination(int skip, int take)
+        {
+            HasPagination = true;
+            Skip = skip;
+            Take = take;
+        }
     }
 }
+
+
