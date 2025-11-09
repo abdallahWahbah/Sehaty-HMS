@@ -7,6 +7,7 @@ using Sehaty.APIs.Errors;
 using Sehaty.Application.MappingProfiles;
 using Sehaty.Application.Services.Contract.AuthService.Contract;
 using Sehaty.Application.Services.IdentityService;
+using Sehaty.Application.Services.PDFservice;
 using Sehaty.Application.Shared.AuthShared;
 using Sehaty.Core.Entities.User_Entities;
 using Sehaty.Core.UnitOfWork.Contract;
@@ -19,14 +20,27 @@ namespace Sehaty.APIs.Extensions
 {
     public static class AppServicesExtension
     {
-        public static IServiceCollection AddAppServices(this IServiceCollection services, ConfigurationManager configuration)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, ConfigurationManager configuration)
         {
+
+            // Add DbContext Class Injection
+            services.AddDbContext<SehatyDbContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("Sehaty"));
+            });
+
+
             #region Add Authentications Services
 
             services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IRoleManagementService, RoleManagementService>();
             services.AddTransient<IEmailSender, EmailSender>();
+            // Add Identity Class Injection
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<SehatyDbContext>();
 
             #endregion
 
@@ -70,36 +84,22 @@ namespace Sehaty.APIs.Extensions
             #endregion
 
             #region Add Services
+
+            // Add UnitOfWork Class Injection
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            // Inject Service For Prescription To Dowmload Prescription
+            services.AddScoped<PrescriptionPdfService>();
+
             // Add DbContext Class Injection
             services.AddDbContext<SehatyDbContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("Sehaty"));
             });
 
-            // Add Identity Class Injection
-            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-            {
-                options.User.RequireUniqueEmail = true;
-            }).AddEntityFrameworkStores<SehatyDbContext>();
-
-            // Add UnitOfWork Class Injection
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
             // Add AutoMapper Profiles Injection
             // To Add Every Profile Automatically
             services.AddAutoMapper(cfg => { }, typeof(DoctorProfile).Assembly);
-
-
-            //services.AddAutoMapper(cfg => { }, typeof(AppointmentProfile).Assembly);
-
-            // Instead Of Writeing Every Profile Like This :
-            //services.AddAutoMapper(cfg =>
-            //{
-            //    cfg.AddProfile<MedicalRecordProfile>();
-            //    cfg.AddProfile<DoctorProfile>();
-
-            //}, typeof(MedicalRecordProfile).Assembly);
-
 
             //Add Jwt Authentication
             var jwtOptions = configuration.GetSection("Jwt").Get<JwtOptions>()!;
