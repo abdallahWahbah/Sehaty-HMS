@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.AppointmentDTOs;
 using Sehaty.Core.Entites;
+using Sehaty.Core.Entities.Business_Entities;
 using Sehaty.Core.Specifications.Appointment_Specs;
 using Sehaty.Core.UnitOfWork.Contract;
+using System.Security.Claims;
 
 namespace Sehaty.APIs.Controllers
 {
@@ -26,6 +28,8 @@ namespace Sehaty.APIs.Controllers
         {
             var specs = new AppointmentSpecifications(D => D.Id == id);
             var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(specs);
+            if (appointment is null)
+                return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<AppointmentReadDto>(appointment));
 
         }
@@ -41,12 +45,12 @@ namespace Sehaty.APIs.Controllers
             var appointment = mapper.Map<Appointment>(dto);
             await unit.Repository<Appointment>().AddAsync(appointment);
             await unit.CommitAsync();
-            return CreatedAtAction(nameof(GetAppointmentById), new { id = appointment.Id }, appointment);
+            return CreatedAtAction(nameof(GetAppointmentById), new { id = appointment.Id }, dto);
         }
 
         // PUT: api/Appointments/5 <<works great>>
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateAppointment(int? id, [FromBody] AppointmentAddOrUpdateDto dto)
+        public async Task<ActionResult> UpdateAppointment(int? id, AppointmentAddOrUpdateDto dto)
         {
             if (id is null) return BadRequest(new ApiResponse(400));
             if (ModelState.IsValid)
@@ -78,11 +82,11 @@ namespace Sehaty.APIs.Controllers
         // Change AppointmentStatus To No Show if the currentTime has passed the AppointmentTime
         [Authorize(Roles = "Admin,Reception")]
         [HttpPost("NoShow/{id}")]
-        public async Task<IActionResult> MarkedStatusAsNoShow(int id, [FromBody] DateTime currentDateTime)
+        public async Task<IActionResult> MarkedStatusAsNoShow(int id, [FromQuery] DateTime currentDateTime)
         {
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
             if (appointment is null) return NotFound(new ApiResponse(404));
-            if (currentDateTime <= appointment.AppointmentDateTime)
+            if (currentDateTime < appointment.AppointmentDateTime)
             {
                 return BadRequest(new ApiResponse(400, "Cann't mark as No Show before Appointment time"));
             }
@@ -94,7 +98,7 @@ namespace Sehaty.APIs.Controllers
                 return BadRequest(new ApiResponse(400, "AppointmentStatus cann't be marked as No Show."));
             }
             appointment.Status = AppointmentStatus.NoShow;
-            //appointment.NoShowTimestamp = currentDateTime;
+            appointment.NoShowTimestamp = currentDateTime;
             unit.Repository<Appointment>().Update(appointment);
             var rowsAffected = await unit.CommitAsync();
             return rowsAffected > 0 ? Ok(new ApiResponse(200, "Status changed successfully")) : BadRequest(new ApiResponse(400, "Failed"));
@@ -102,7 +106,7 @@ namespace Sehaty.APIs.Controllers
 
 
         // Change the status to InProgress after receptionist checkIn the patient
-        [Authorize(Roles = "Admin,Reception")]
+        //[Authorize(Roles = "Admin,Reception")]
         [HttpPost("CheckIn/{id}")]
         public async Task<IActionResult> CheckInAppointment(int id)
         {
@@ -143,10 +147,10 @@ namespace Sehaty.APIs.Controllers
             }
 
         }
-
+        [Authorize(Roles = "Patient,Reception")]
         //RescheduleAppointment
         [HttpPut("RescheduleAppointment/{id}")]
-        public async Task<IActionResult> RescheduleAppointment(int id, [FromBody] DateTime newDate)
+        public async Task<IActionResult> RescheduleAppointment(int id, [FromQuery] DateTime newDate)
         {
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
             if (appointment is null) return NotFound(new ApiResponse(404));
@@ -159,6 +163,24 @@ namespace Sehaty.APIs.Controllers
             }
             var oldDateTime = appointment.AppointmentDateTime;
             appointment.AppointmentDateTime = newDate;
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "Admin";
+            var changedBy = userRole switch
+            {
+                "Patient" => ChangedByRole.Patient,
+                "Reception" => ChangedByRole.Reception,
+                _ => ChangedByRole.Admin
+            };
+
+            var auditLog = new AppointmentAuditLog
+            {
+                AppointmentId = appointment.Id,
+                Action = AuditAction.Rescheduled,
+                OldDate = oldDateTime,
+                NewDate = newDate,
+                ChangedAt = DateTime.UtcNow,
+                ChangedBy = changedBy,
+            };
+            await unit.Repository<AppointmentAuditLog>().AddAsync(auditLog);
             unit.Repository<Appointment>().Update(appointment);
             var rowsAffected = await unit.CommitAsync();
             return rowsAffected > 0 ? Ok(new ApiResponse(200, "Appointment rescheduled successfully")) : BadRequest(new ApiResponse(400, "Failed to reschedule appointment"));

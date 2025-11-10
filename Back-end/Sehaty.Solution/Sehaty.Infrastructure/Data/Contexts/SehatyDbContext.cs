@@ -33,6 +33,7 @@ namespace Sehaty.Infrastructure.Data.Contexts
         public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
         public DbSet<Medication> Medications { get; set; }
         public DbSet<PrescriptionMedications> PrescriptionMedications { get; set; }
+        public DbSet<AppointmentAuditLog> AppointmentAuditLogs { get; set; }
 
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)

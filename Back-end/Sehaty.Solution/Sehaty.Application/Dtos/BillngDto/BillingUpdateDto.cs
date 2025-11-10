@@ -8,7 +8,6 @@ namespace Sehaty.Application.Dtos.BillngDto
 {
     public class BillingUpdateDto
     {
-        public int Id { get; set; }
         public decimal Subtotal { get; set; }
         public decimal TaxAmount { get; set; }
         public decimal DiscountAmount { get; set; }

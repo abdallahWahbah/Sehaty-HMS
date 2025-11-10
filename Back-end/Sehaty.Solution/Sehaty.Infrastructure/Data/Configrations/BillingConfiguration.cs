@@ -26,7 +26,7 @@ namespace Sehaty.Infrastructure.Data.Configrations
 
             builder.Property(b => b.BillDate)
                    .HasColumnType("datetime")
-                   .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                   .HasDefaultValueSql("GETDATE()")
                    .IsRequired();
 
             builder.Property(b => b.Subtotal)
