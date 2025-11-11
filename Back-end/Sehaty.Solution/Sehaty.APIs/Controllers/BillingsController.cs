@@ -33,14 +33,18 @@ namespace Sehaty.APIs.Controllers
 
         //AddData
         [HttpPost("AddBiliing")]
-        public async Task<IActionResult> AddBilling([FromBody] BillingAddDto model)
+        public async Task<IActionResult> AddBilling(BillingAddDto model)
         {
             if (ModelState.IsValid)
             {
                 var billing = mapper.Map<Billing>(model);
                 await unit.Repository<Billing>().AddAsync(billing);
                 var rowAffected = await unit.CommitAsync();
-                return rowAffected > 0 ? Ok(mapper.Map<BillingReadDto>(billing)) : BadRequest(new ApiResponse(400));
+                var spec = new BillingSpec(b => b.Id == billing.Id);
+                var billing2 = await unit.Repository<Billing>().GetByIdWithSpecAsync(spec);
+                var billingReadDto = mapper.Map<BillingReadDto>(billing2);
+
+                return rowAffected > 0 ? Ok(billingReadDto) : BadRequest(new ApiResponse(400));
             }
             return BadRequest(new ApiResponse(400));
         }

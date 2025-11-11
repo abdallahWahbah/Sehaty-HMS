@@ -65,7 +65,6 @@ namespace Sehaty.APIs.Controllers
             // Create record
             var addMedicalRecord = mapper.Map<MedicalRecord>(model);
             await unit.Repository<MedicalRecord>().AddAsync(addMedicalRecord);
-            await unit.CommitAsync();
 
             // Finalize appointment if requested
             if (model.IsFinialize == true)
@@ -90,7 +89,8 @@ namespace Sehaty.APIs.Controllers
         public async Task<IActionResult> AddOrUpdateMedicalRecordByNurse([FromBody] MedicalRecordAddOrUpdateByNurseDto model)
         {
             if (!ModelState.IsValid) return BadRequest(new ApiResponse(400));
-            var record = await unit.Repository<MedicalRecord>().GetByIdAsync(model.AppointmentId);
+            var spec = new MedicalRecordSpec(m => m.AppointmentId == model.AppointmentId);
+            var record = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
             if (record is null) return NotFound(new ApiResponse(404));
             if (record.Appointment?.Status == AppointmentStatus.Completed) return BadRequest(new ApiResponse(400, "Cann't modify completed record"));
 
@@ -107,6 +107,8 @@ namespace Sehaty.APIs.Controllers
                 new { id = record.Id }, mapper.Map<MedicalRecordReadDto>(record))
                   : BadRequest(new ApiResponse(400));
         }
+
+
         //Update Record
         [EndpointSummary("Update a medical record by ID")]
         [EndpointDescription("Allows a doctor to update an existing medical record using its ID.")]
@@ -154,7 +156,7 @@ namespace Sehaty.APIs.Controllers
             if (medicalRecord is null) return NotFound(new ApiResponse(404));
             unit.Repository<MedicalRecord>().Delete(medicalRecord);
             var RowAffected = await unit.CommitAsync();
-            return RowAffected > 0 ? Ok(new ApiResponse(200, "Updated SucessFully")) : BadRequest(new ApiResponse(400));
+            return RowAffected > 0 ? Ok(new ApiResponse(200, "Deleted SucessFully")) : BadRequest(new ApiResponse(400));
         }
 
     }
