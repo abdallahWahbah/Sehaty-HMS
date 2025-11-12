@@ -16,5 +16,7 @@ namespace Sehaty.Application.Dtos.AppointmentDTOs
         // Nested related info
         public string DoctorName { get; set; }
         public string PatientName { get; set; }
+        public string Notes { get; set; }
+
     }
 }
