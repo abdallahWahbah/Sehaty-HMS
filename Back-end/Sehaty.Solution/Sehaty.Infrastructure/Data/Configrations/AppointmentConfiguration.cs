@@ -22,10 +22,6 @@ namespace Sehaty.Infrastructure.Data.Configrations
             builder.Property(a => a.ReasonForVisit)
                    .HasColumnType("varchar(max)");
 
-            //builder.Property(a => a.Status)
-            //       .IsRequired()
-            //       .HasMaxLength(20)
-            //       .HasDefaultValue("Pending");
 
             builder.Property(a => a.ScheduledDate)
                    .HasColumnType("date");
@@ -60,10 +56,7 @@ namespace Sehaty.Infrastructure.Data.Configrations
                    .HasDatabaseName("IX_Doctor_AppointmentDateTime");
 
 
-            //builder.HasCheckConstraint(
-            //    "CK_Appointments_Status_Valid",
-            //    "[Status] IN ('Pending','Confirmed','In Progress','Completed','Canceled','No-Show','Emergency')"
-            //);
+
             builder.Property(A => A.Status)
                .HasConversion<string>()
                .HasDefaultValue(AppointmentStatus.Pending)

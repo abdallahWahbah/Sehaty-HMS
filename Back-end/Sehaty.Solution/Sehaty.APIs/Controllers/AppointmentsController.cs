@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.AppointmentDTOs;
+using Sehaty.Application.Dtos.BillngDto;
+using Sehaty.Application.Dtos.NotificationsDTOs;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Entities.Business_Entities;
 using Sehaty.Core.Specifications.Appointment_Specs;
+using Sehaty.Core.Specifications.MedicalReord;
 using Sehaty.Core.UnitOfWork.Contract;
 using System.Security.Claims;
 
@@ -34,6 +37,7 @@ namespace Sehaty.APIs.Controllers
 
         }
 
+
         // POST: api/Appointments
         [HttpPost]
         public async Task<ActionResult> CreateAppointment([FromBody] AppointmentAddOrUpdateDto dto)
@@ -42,8 +46,42 @@ namespace Sehaty.APIs.Controllers
                 return BadRequest(new ApiResponse(400));
             if (dto.AppointmentDateTime < DateTime.Now)
                 return BadRequest(new ApiResponse(400, "Appointment date cannot be in the past"));
+
+            //  Check if the doctor already has an appointment at the same time
+            var spec = new AppointmentSpecifications(a =>
+                a.DoctorId == dto.DoctorId && a.AppointmentDateTime == dto.AppointmentDateTime);
+            var existingAppointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(spec);
+            if (existingAppointments.Any())
+                return BadRequest(new ApiResponse(400, "Doctor already has an appointment at this time"));
             var appointment = mapper.Map<Appointment>(dto);
             await unit.Repository<Appointment>().AddAsync(appointment);
+            await unit.CommitAsync();
+            var patient = await unit.Repository<Patient>().GetByIdAsync(dto.PatientId);
+            if (patient is null)
+                return NotFound(new ApiResponse(404, "Patient not found"));
+
+            var specappointemnet = new AppointmentSpecifications(a => a.Id == appointment.Id);
+            appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(specappointemnet);
+            string message = $"تم حجز موعدك مع الطبيب {appointment.Doctor.FirstName + " " + appointment.Doctor.LastName} بتاريخ {appointment.AppointmentDateTime}";
+
+            //Create a DTO for the notification
+
+
+            var notificationDto = new CreateNotificationDto
+            {
+                UserId = dto.PatientId,
+                Title = "Appointment Booked",
+                Message = message,
+                Priority = NotificationPriority.High,
+                RelatedEntityType = "Appointment",
+                RelatedEntityId = appointment.Id,
+                SentViaEmail = true,
+                IsRead = false,
+                NotificationType = NotificationType.Appointment,
+                SentViaSMS = false
+            };
+            var notification = mapper.Map<Notification>(notificationDto);
+            await unit.Repository<Notification>().AddAsync(notification);
             await unit.CommitAsync();
             return CreatedAtAction(nameof(GetAppointmentById), new { id = appointment.Id }, dto);
         }
@@ -187,5 +225,7 @@ namespace Sehaty.APIs.Controllers
 
 
         }
+
+
     }
 }

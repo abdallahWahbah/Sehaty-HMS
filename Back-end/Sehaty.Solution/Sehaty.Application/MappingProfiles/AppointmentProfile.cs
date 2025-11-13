@@ -64,6 +64,7 @@ namespace Sehaty.Application.MappingProfiles
                         : TimeSpan.Zero))
                 .ForMember(dest => dest.Status,
                     opt => opt.MapFrom(src => src.Status.ToString()));
+
         }
 
 
