@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Entities.Business_Entities;
+using Sehaty.Core.Entities.Business_Entities.Appointments;
+using Sehaty.Core.Entities.Business_Entities.MedicalRecords;
 using Sehaty.Core.Entities.User_Entities;
 using Sehaty.Infrastructure.Data.Contexts;
 using System.Text.Json;

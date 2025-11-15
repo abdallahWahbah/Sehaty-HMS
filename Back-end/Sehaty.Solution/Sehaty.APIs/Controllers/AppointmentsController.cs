@@ -6,7 +6,7 @@ using Sehaty.Application.Dtos.AppointmentDTOs;
 using Sehaty.Application.Dtos.BillngDto;
 using Sehaty.Application.Dtos.NotificationsDTOs;
 using Sehaty.Core.Entites;
-using Sehaty.Core.Entities.Business_Entities;
+using Sehaty.Core.Entities.Business_Entities.Appointments;
 using Sehaty.Core.Specifications.Appointment_Specs;
 using Sehaty.Core.Specifications.MedicalReord;
 using Sehaty.Core.UnitOfWork.Contract;

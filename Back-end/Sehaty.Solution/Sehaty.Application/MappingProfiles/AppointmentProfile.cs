@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Sehaty.Application.Dtos.AppointmentDTOs;
-using Sehaty.Core.Entites;
+using Sehaty.Core.Entities.Business_Entities.Appointments;
 
 namespace Sehaty.Application.MappingProfiles
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Sehaty.Core.Entites;
+using Sehaty.Core.Entities.Business_Entities.MedicalRecords;
 
 namespace Sehaty.Infrastructure.Data.Configrations
 {

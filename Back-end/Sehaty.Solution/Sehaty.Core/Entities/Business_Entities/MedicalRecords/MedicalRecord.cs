@@ -1,6 +1,7 @@
-﻿using Sehaty.Core.Entities.Business_Entities;
+﻿using Sehaty.Core.Entites;
+using Sehaty.Core.Entities.Business_Entities.Appointments;
 
-namespace Sehaty.Core.Entites
+namespace Sehaty.Core.Entities.Business_Entities.MedicalRecords
 {
     public enum RecordType
     {
@@ -17,7 +18,7 @@ namespace Sehaty.Core.Entites
         public DateTime RecordDate { get; set; } = DateTime.UtcNow;
         public string Symptoms { get; set; }
         public string Diagnosis { get; set; }
-        public String TreatmentPlan { get; set; }
+        public string TreatmentPlan { get; set; }
         public int? BpSystolic { get; set; }
         public int? BpDiastolic { get; set; }
         public decimal? Temperature { get; set; }
