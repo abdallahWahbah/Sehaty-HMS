@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Entities.Business_Entities;
+using Sehaty.Core.Entities.Business_Entities.Appointments;
+using Sehaty.Core.Entities.Business_Entities.MedicalRecords;
 using Sehaty.Core.Entities.User_Entities;
 using Sehaty.Infrastructure.Data.Configrations;
 using System.Reflection;
@@ -34,6 +36,7 @@ namespace Sehaty.Infrastructure.Data.Contexts
         public DbSet<Medication> Medications { get; set; }
         public DbSet<PrescriptionMedications> PrescriptionMedications { get; set; }
         public DbSet<AppointmentAuditLog> AppointmentAuditLogs { get; set; }
+        public DbSet<MedicalRecordAuditLog> MedicalRecordAuditLogs { get; set; }
 
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)

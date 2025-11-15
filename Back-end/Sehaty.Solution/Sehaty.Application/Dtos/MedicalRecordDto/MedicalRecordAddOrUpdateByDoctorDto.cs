@@ -1,5 +1,5 @@
-﻿using Sehaty.Core.Entites;
-using Sehaty.Core.Entities.Business_Entities;
+﻿using Sehaty.Core.Entities.Business_Entities;
+using Sehaty.Core.Entities.Business_Entities.MedicalRecords;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,12 +9,15 @@ using System.Threading.Tasks;
 
 namespace Sehaty.Infrastructure.Dtos
 {
-    public class MedicalRecordAddOrUpdateByDoctorDto
+    public class MedicalRecordAddByDoctorDto
     {
         public int AppointmentId { get; set; }
         public DateTime RecordDate { get; set; } = DateTime.UtcNow;
         public string Symptoms { get; set; }
+        [Required(ErrorMessage = "Diagnosis Plan IsRequired")]
+
         public string Diagnosis { get; set; }
+        [Required(ErrorMessage = "Treatment Plan IsRequired")]
         public string TreatmentPlan { get; set; }
         public int? BpSystolic { get; set; }
         public int? BpDiastolic { get; set; }

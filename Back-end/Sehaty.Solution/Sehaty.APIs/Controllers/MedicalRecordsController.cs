@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.DoctorDtos;
 using Sehaty.Application.Dtos.MedicalRecordDto;
-using Sehaty.Core.Entites;
+using Sehaty.Core.Entities.Business_Entities.Appointments;
+using Sehaty.Core.Entities.Business_Entities.MedicalRecords;
 using Sehaty.Core.Specifications.MedicalReord;
 using Sehaty.Core.UnitOfWork.Contract;
 using Sehaty.Infrastructure.Dtos;
@@ -15,10 +16,7 @@ namespace Sehaty.APIs.Controllers
     public class MedicalRecordsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
     {
 
-        [EndpointSummary("Get all medical records")]
-        [EndpointDescription("Retrieves all medical records from the database and maps them to doctor DTOs")]
-        [ProducesResponseType(typeof(List<MedicalRecordReadDto>), 200)]
-        [ProducesResponseType(404)]
+
         [HttpGet]
         public async Task<IActionResult> GetAllMedicalRecord()
         {
@@ -29,10 +27,7 @@ namespace Sehaty.APIs.Controllers
         }
 
         //Get Specific
-        [EndpointSummary("Get a specific medical record")]
-        [EndpointDescription("Retrieves a medical record by its ID")]
-        [ProducesResponseType(typeof(MedicalRecordReadDto), 200)]
-        [ProducesResponseType(404)]
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMedicalRecordById(int id)
         {
@@ -44,14 +39,10 @@ namespace Sehaty.APIs.Controllers
 
 
         // Add Record
-        [EndpointSummary("Add or update a medical record by a doctor")]
-        [EndpointDescription("Allows a doctor to create or update a medical record and finalize the appointment if needed.")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+
         [Authorize(Roles = "Doctor")]
         [HttpPost("AddByDoctor")]
-        public async Task<IActionResult> AddMedicalRecordByDoctor([FromBody] MedicalRecordAddOrUpdateByDoctorDto model)
+        public async Task<IActionResult> AddMedicalRecordByDoctor([FromBody] MedicalRecordAddByDoctorDto model)
         {
             // Validate appointment existence
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(model.AppointmentId);
@@ -79,11 +70,6 @@ namespace Sehaty.APIs.Controllers
         }
 
         //Add By Nurse
-        [EndpointSummary("Add or update vital signs by nurse")]
-        [EndpointDescription("Allows a nurse to record vital signs such as BP, temperature, and heart rate for a medical record.")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
         [Authorize(Roles = "Nurse")]
         [HttpPost("AddByNurse")]
         public async Task<IActionResult> AddOrUpdateMedicalRecordByNurse([FromBody] MedicalRecordAddOrUpdateByNurseDto model)
@@ -109,31 +95,52 @@ namespace Sehaty.APIs.Controllers
         }
 
 
-        //Update Record
-        [EndpointSummary("Update a medical record by ID")]
-        [EndpointDescription("Allows a doctor to update an existing medical record using its ID.")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
         [Authorize(Roles = "Doctor")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMedicalRecordByDoctor(int? id, [FromBody] MedicalRecordAddOrUpdateByDoctorDto model)
+        [HttpPut("UpdateByDoctor/{id}")]
+        public async Task<IActionResult> Update(int id, MedicalRecordUpdateDto model)
         {
-            if (id is null) return BadRequest(new ApiResponse(400));
+            var spec = new MedicalRecordSpec(m => m.Id == id);
+            var record = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
+            if (record == null) return NotFound(new ApiResponse(404));
 
-            if (ModelState.IsValid)
+            bool isSameDayUpdate = record.CreatedAt?.Date == DateTime.UtcNow.Date;
+
+            if (isSameDayUpdate)
             {
-                var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdAsync(id.Value);
-                if (medicalRecord is null) return NotFound(new ApiResponse(404));
+                var auditEntries = new List<MedicalRecordAuditLog>();
+                var props = typeof(MedicalRecordUpdateDto).GetProperties();
 
-                mapper.Map(model, medicalRecord);
-                unit.Repository<MedicalRecord>().Update(medicalRecord);
-                await unit.CommitAsync();
-                return Ok(new ApiResponse(200, "Updated SucessFully"));
+                foreach (var prop in props)
+                {
+                    var newValue = prop.GetValue(model)?.ToString();
+                    var oldValue = record.GetType().GetProperty(prop.Name)?.GetValue(record)?.ToString();
+
+                    if (newValue != oldValue)
+                    {
+                        auditEntries.Add(new MedicalRecordAuditLog
+                        {
+                            MedicalRecordId = record.Id,
+                            FieldName = prop.Name,
+                            OldValue = oldValue,
+                            NewValue = newValue,
+                            UpdatedByDoctorId = record.Appointment.DoctorId
+                        });
+                    }
+                }
+
+                foreach (var entry in auditEntries)
+                    await unit.Repository<MedicalRecordAuditLog>().AddAsync(entry);
             }
-            return BadRequest(new ApiResponse(400));
 
+            mapper.Map(model, record);
+            unit.Repository<MedicalRecord>().Update(record);
+
+            await unit.CommitAsync();
+            return Ok(new ApiResponse(200, " Added Changing To MedicalRecord Audit log Table"));
         }
+
+
+
         [Authorize(Roles = "Doctor")]
         [HttpGet("getByName/{FullName}")]
         public async Task<IActionResult> GetByPatientName(string FullName)
@@ -147,6 +154,9 @@ namespace Sehaty.APIs.Controllers
 
             return NotFound(new ApiResponse(404));
         }
+
+
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMedicalRecord(int? id)

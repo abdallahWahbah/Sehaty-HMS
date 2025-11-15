@@ -1,4 +1,6 @@
-﻿namespace Sehaty.Core.Entites
+﻿using Sehaty.Core.Entities.Business_Entities.Appointments;
+
+namespace Sehaty.Core.Entites
 {
     public enum BillingStatus
     {

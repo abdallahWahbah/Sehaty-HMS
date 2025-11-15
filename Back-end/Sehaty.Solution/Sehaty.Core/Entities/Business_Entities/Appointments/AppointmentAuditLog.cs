@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sehaty.Core.Entities.Business_Entities
+namespace Sehaty.Core.Entities.Business_Entities.Appointments
 {
     public enum AuditAction
     {

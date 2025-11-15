@@ -4,8 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Entities.Business_Entities;
+using Sehaty.Core.Entities.Business_Entities.Appointments;
 using Sehaty.Core.Specefications;
 
 namespace Sehaty.Core.Specifications.Appointment_Specs
