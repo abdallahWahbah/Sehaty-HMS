@@ -9,13 +9,11 @@ using Sehaty.Core.Entities.Business_Entities.MedicalRecords;
 using Sehaty.Core.Specifications.MedicalReord;
 using Sehaty.Core.UnitOfWork.Contract;
 using Sehaty.Infrastructure.Dtos;
-
 namespace Sehaty.APIs.Controllers
 {
 
     public class MedicalRecordsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
     {
-
 
         [HttpGet]
         public async Task<IActionResult> GetAllMedicalRecord()
@@ -26,16 +24,62 @@ namespace Sehaty.APIs.Controllers
             return Ok(mapper.Map<List<MedicalRecordReadDto>>(medicalRecords));
         }
 
-        //Get Specific
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetMedicalRecordById(int id)
+
+        [HttpGet("GetMedicalRecordForPatient/{id}")]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> GetMedicalRecordForPatient(int id)
         {
             var spec = new MedicalRecordSpec(m => m.Id == id);
-            var medicalReord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
-            if (medicalReord is null) return NotFound(new ApiResponse(404));
-            return Ok(mapper.Map<MedicalRecordReadDto>(medicalReord));
+            var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
+
+            if (medicalRecord is null)
+                return NotFound(new ApiResponse(404));
+
+            var userId = User.FindFirst("uid")?.Value;
+            if (medicalRecord.Appointment.PatientId.ToString() != userId)
+                return Unauthorized(new ApiResponse(401, "You are not allowed to view this record"));
+
+            return Ok(mapper.Map<MedicalRecordReadDto>(medicalRecord));
         }
+
+
+        [HttpGet("GetMedicalRecordForDoctor/{id}")]
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> GetMedicalRecordForDoctor(int id)
+        {
+            var spec = new MedicalRecordSpec(m => m.Id == id);
+            var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
+
+            if (medicalRecord is null)
+                return NotFound(new ApiResponse(404));
+
+            var userId = User.FindFirst("uid")?.Value;
+            if (medicalRecord.Appointment.DoctorId.ToString() != userId)
+                return Unauthorized(new ApiResponse(401, "You are not allowed to view this record"));
+
+            return Ok(mapper.Map<MedicalRecordReadDto>(medicalRecord));
+        }
+
+
+        [HttpGet("GetMedicalRecordForNurse/{id}")]
+        [Authorize(Roles = "Nurse")]
+        public async Task<IActionResult> GetMedicalRecordForNurse(int id)
+        {
+            var spec = new MedicalRecordSpec(m => m.Id == id);
+            var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
+
+            if (medicalRecord is null)
+                return NotFound(new ApiResponse(404));
+
+            var today = DateTime.Now;
+            if (medicalRecord.Appointment.AppointmentDateTime < today.AddDays(-7) || medicalRecord.Appointment.AppointmentDateTime > today.AddDays(7))
+                return Unauthorized(new ApiResponse(401, "You are not allowed to view this record"));
+
+            return Ok(mapper.Map<MedicalRecordReadDto>(medicalRecord));
+        }
+
+
 
 
         // Add Record
@@ -64,7 +108,7 @@ namespace Sehaty.APIs.Controllers
                 unit.Repository<Appointment>().Update(appointment);
             }
             var RowAffected = await unit.CommitAsync();
-            return RowAffected > 0 ? CreatedAtAction(nameof(GetMedicalRecordById),
+            return RowAffected > 0 ? CreatedAtAction(nameof(GetMedicalRecordForDoctor),
                 new { id = addMedicalRecord.Id }, mapper.Map<MedicalRecordReadDto>(addMedicalRecord))
                   : BadRequest(new ApiResponse(400));
         }
@@ -89,7 +133,7 @@ namespace Sehaty.APIs.Controllers
             record.Weight = model.Weight;
             unit.Repository<MedicalRecord>().Update(record);
             var RowAffected = await unit.CommitAsync();
-            return RowAffected > 0 ? CreatedAtAction(nameof(GetMedicalRecordById),
+            return RowAffected > 0 ? CreatedAtAction(nameof(GetMedicalRecordForDoctor),
                 new { id = record.Id }, mapper.Map<MedicalRecordReadDto>(record))
                   : BadRequest(new ApiResponse(400));
         }
@@ -136,7 +180,7 @@ namespace Sehaty.APIs.Controllers
             unit.Repository<MedicalRecord>().Update(record);
 
             await unit.CommitAsync();
-            return Ok(new ApiResponse(200, " Added Changing To MedicalRecord Audit log Table"));
+            return Ok(new ApiResponse(200, "Updated SuccessFully"));
         }
 
 
