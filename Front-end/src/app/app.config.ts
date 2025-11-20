@@ -6,6 +6,8 @@ import Aura from '@primeuix/themes/aura';
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
+import { TokenInterceptor } from './core/interceptors/token.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,5 +19,11 @@ export const appConfig: ApplicationConfig = {
                 preset: Aura
             }
     }),
+    provideHttpClient(),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
   ]
 };
