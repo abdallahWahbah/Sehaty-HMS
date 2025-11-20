@@ -6,11 +6,20 @@ import { PasswordModule } from 'primeng/password';
 import { Checkbox } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../core/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [FloatLabelModule, InputTextModule, FormsModule, PasswordModule, Checkbox, ButtonModule, ReactiveFormsModule],
+  imports: [
+    FloatLabelModule, 
+    InputTextModule, 
+    FormsModule, 
+    PasswordModule, 
+    Checkbox, 
+    ButtonModule, 
+    ReactiveFormsModule,
+    RouterModule
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
