@@ -30,6 +30,7 @@ namespace Sehaty.Core.Specifications.Appointment_Specs
         {
             Includes.Add(P => P.Patient);
             Includes.Add(P => P.Doctor);
+            IncludeStrings.Add("Patient.User");
         }
     }
 }
