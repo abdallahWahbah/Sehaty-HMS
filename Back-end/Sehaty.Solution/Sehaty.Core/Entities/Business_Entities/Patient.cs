@@ -13,6 +13,7 @@ namespace Sehaty.Core.Entites
     }
     public class Patient : BaseEntity
     {
+        public string PatientId { get; set; }
         public string MRN { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

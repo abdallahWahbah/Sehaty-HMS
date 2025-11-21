@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.PatientDto;
+using Sehaty.Application.Services.Contract.BusinessServices.Contract;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Specifications.PatientSpec;
 using Sehaty.Core.UnitOfWork.Contract;
@@ -10,7 +11,7 @@ using Sehaty.Core.UnitOfWork.Contract;
 namespace Sehaty.APIs.Controllers
 {
 
-    public class PatientsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
+    public class PatientsController(IUnitOfWork unit, IMapper mapper, IPatientService patientService) : ApiBaseController
     {
 
         [HttpGet]
@@ -105,18 +106,14 @@ namespace Sehaty.APIs.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Patient,Receptionist")]
+        //[Authorize(Roles = "Patient,Receptionist")]
         public async Task<ActionResult> AddPatient([FromBody] PatientAddDto dto)
         {
-            if (ModelState.IsValid)
-            {
-                var patientToAdd = mapper.Map<Patient>(dto);
-                //patientToAdd.UserId = int.Parse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)!.Value);
-                await unit.Repository<Patient>().AddAsync(patientToAdd);
-                await unit.CommitAsync();
-                return CreatedAtAction(nameof(GetPatientById), new { id = patientToAdd.Id }, mapper.Map<GetPatientDto>(patientToAdd));
-            }
-            return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var patientToAdd = await patientService.AddPatientAsync(dto);
+            return CreatedAtAction(nameof(GetPatientById), new { id = patientToAdd.Id }, mapper.Map<GetPatientDto>(patientToAdd));
+
         }
 
     }
