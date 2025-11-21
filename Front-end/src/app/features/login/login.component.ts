@@ -30,11 +30,10 @@ export class LoginComponent {
   serverError: string = '';
 
   loginForm = new FormGroup({
-    username: new FormControl('abdallah', [
+    username: new FormControl('', [ // user credentials: abdallah2
       Validators.required,
-      // Validators.email
     ]),
-    password: new FormControl('asdASD!@#123', [ // example: asdASD!@#213
+    password: new FormControl('', [ // user credentials: asdASD!@#123
       Validators.required,
       Validators.minLength(6),
       Validators.pattern(/^(?=.*[a-z]).*$/),     // at least 1 lowercase

@@ -1,19 +1,19 @@
-<div class="login">
-    <div class="login__logo">
-        <img src="/images/logo.png" alt="main logo" class="login__logo--image">
+<div class="auth">
+    <div class="auth__logo">
+        <img src="/images/logo.png" alt="main logo" class="auth__logo--image">
     </div>
-    <div class="login__main--container">
-        <div class="login__content">
+    <div class="auth__main--container">
+        <div class="auth__content">
             @if(serverError){
                 <div class="server-error">
                     <span>{{ serverError }}</span>
                 </div>
             }
-            <h3 class="login__header">Login</h3>
-            <p class="login__sub--header">Login to access your account</p>
+            <h3 class="auth__header">Login</h3>
+            <p class="auth__sub--header">Login to access your account</p>
 
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-                <p-floatlabel variant="on" class="login__input--container">
+                <p-floatlabel variant="on" class="auth__input--container">
                     <input 
                         pInputText 
                         id="username" 
@@ -30,7 +30,7 @@
                     </div>
                 }
     
-                <p-floatlabel variant="on" class="login__input--container">
+                <p-floatlabel variant="on" class="auth__input--container">
                     <p-password 
                         formControlName="password"
                         inputId="password" 
@@ -63,7 +63,7 @@
                         </div>
                     }
     
-                <div class="login__check--forget-container">
+                <div class="auth__check--forget-container">
                     <div class="flex items-center">
                         <p-checkbox 
                             formControlName="rememberMe"
@@ -71,22 +71,24 @@
                         />
                         <label for="ingredient1" class="ml-2" class="checkbox__label"> Remember Me </label>
                     </div>
-                    <p class="login__forget--text">Forgot password</p>
+                     <p class="auth__forget--text">
+                        <a routerLink="/forgetPassword">Forgot password</a>
+                    </p>
                 </div>
     
-                <div class="card flex justify-center login__button--container">
+                <div class="card flex justify-center auth__button--container">
                     <p-button type="submit" label="Login" />
                 </div>
     
-                <div class="login__no--account-container">
+                <div class="auth__no--account-container">
                     <span>Don't have an account?</span>
                     <span> <a routerLink="/signup"> Sign up</a></span>
                 </div>
             </form>
 
         </div>
-        <div class="login__image--container">
-            <img src="/images/login.jpg" alt="" class="login__image">
+        <div class="auth__image--container">
+            <img src="/images/login.jpg" alt="" class="auth__image">
         </div>
     </div>
 </div>

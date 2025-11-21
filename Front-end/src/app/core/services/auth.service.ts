@@ -32,24 +32,28 @@ export class AuthService {
     );
   }
   
-  register(
-    userName: string, 
-    email: string, 
-    phoneNumber: string, 
-    firstName: string, 
-    lastName: string, 
-    password: string,
-    confirmPassword: string,
-    ) {
-    return this._http.post<any>(this.baseUrl + 'register', {
-      userName,
-      email,
-      phoneNumber,
-      firstName,
-      lastName,
-      password,
-      confirmPassword,
-      languagePreference: 'Arabic'
+  register(newUser: any) {
+    return this._http.post<any>(this.baseUrl + 'register', newUser);
+  }
+
+  requestPasswordReset(email: string){
+    return this._http.post<any>(this.baseUrl + 'request-password-reset', {
+      email
     });
+  }
+
+  verifyOtp(email: string, otp: string){
+    return this._http.post<any>(this.baseUrl + 'verify-otp', {
+      email, 
+      otp
+    })
+  }
+
+  setNewPassword(email: string, otp: string, password: string){
+    return this._http.post<any>(this.baseUrl + 'reset-password', {
+      email,
+      otp,
+      newPassword: password
+    })
   }
 }
