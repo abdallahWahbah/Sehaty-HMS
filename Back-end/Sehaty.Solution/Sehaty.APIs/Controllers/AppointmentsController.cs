@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using QuestPDF.Infrastructure;
 using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.AppointmentDTOs;
 using Sehaty.Application.Dtos.BillngDto;
@@ -10,12 +11,14 @@ using Sehaty.Core.Entities.Business_Entities.Appointments;
 using Sehaty.Core.Specifications.Appointment_Specs;
 using Sehaty.Core.Specifications.MedicalReord;
 using Sehaty.Core.UnitOfWork.Contract;
+using Sehaty.Infrastructure.Service.Email;
+using Sehaty.Infrastructure.Service.SMS;
 using System.Security.Claims;
 
 namespace Sehaty.APIs.Controllers
 {
 
-    public class AppointmentsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
+    public class AppointmentsController(IUnitOfWork unit, IMapper mapper, IEmailSender emailSender, ISmsSender smsSender) : ApiBaseController
     {
 
         [HttpGet]
@@ -75,13 +78,26 @@ namespace Sehaty.APIs.Controllers
                 Priority = NotificationPriority.High,
                 RelatedEntityType = "Appointment",
                 RelatedEntityId = appointment.Id,
-                SentViaEmail = true,
+                SentViaEmail = false,
                 IsRead = false,
                 NotificationType = NotificationType.Appointment,
                 SentViaSMS = false
             };
             var notification = mapper.Map<Notification>(notificationDto);
             await unit.Repository<Notification>().AddAsync(notification);
+            await unit.CommitAsync();
+            if (!string.IsNullOrEmpty(patient.User.Email))
+            {
+                await emailSender.SendEmailAsync(patient.User.Email, notificationDto.Title, message);
+                notification.SentViaEmail = true;
+            }
+
+            if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
+            {
+                smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
+                notification.SentViaSMS = true;
+            }
+
             await unit.CommitAsync();
             return CreatedAtAction(nameof(GetAppointmentById), new { id = appointment.Id }, dto);
         }
