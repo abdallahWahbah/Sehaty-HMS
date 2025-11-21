@@ -48,6 +48,7 @@ namespace Sehaty.APIs.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin,Doctor,Receptionist")]
         public async Task<ActionResult<GetPatientDto>> GetPatientById(int id)
         {
             var spec = new PatientSpecifications(id);
@@ -58,6 +59,7 @@ namespace Sehaty.APIs.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Receptionist")]
         public async Task<ActionResult> DeletePatient(int id)
         {
             var patientToDelete = await unit.Repository<Patient>().GetByIdAsync(id);
@@ -103,7 +105,7 @@ namespace Sehaty.APIs.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Patient")]
+        [Authorize(Roles = "Patient,Receptionist")]
         public async Task<ActionResult> AddPatient([FromBody] PatientAddDto dto)
         {
             if (ModelState.IsValid)

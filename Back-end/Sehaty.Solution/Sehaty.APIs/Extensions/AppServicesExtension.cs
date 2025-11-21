@@ -5,10 +5,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Sehaty.APIs.Errors;
 using Sehaty.Application.MappingProfiles;
+using Sehaty.Application.Services;
+using Sehaty.Application.Services.Contract;
 using Sehaty.Application.Services.Contract.AuthService.Contract;
+using Sehaty.Application.Services.Contract.BusinessServices.Contract;
+using Sehaty.Application.Services.DoctorService;
 using Sehaty.Application.Services.IdentityService;
 using Sehaty.Application.Services.PDFservice;
 using Sehaty.Application.Shared.AuthShared;
+using Sehaty.Core.Entites;
 using Sehaty.Core.Entities.User_Entities;
 using Sehaty.Core.UnitOfWork.Contract;
 using Sehaty.Infrastructure.Data.Contexts;
@@ -90,6 +95,12 @@ namespace Sehaty.APIs.Extensions
 
             // Inject Service For Prescription To Dowmload Prescription
             services.AddScoped<PrescriptionPdfService>();
+
+            // Inject Service For Doctor To Add And Manage Doctors
+            services.AddScoped<IDoctorService, DoctorService>();
+
+            // Inject Service For Doctor To Add And Manage Doctors
+            services.AddScoped<IFileService, FileService>();
 
             // Add DbContext Class Injection
             services.AddDbContext<SehatyDbContext>(options =>
