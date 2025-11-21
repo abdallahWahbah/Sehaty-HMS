@@ -11,7 +11,7 @@ using Sehaty.Core.UnitOfWork.Contract;
 
 namespace Sehaty.APIs.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class DoctorsController(IUnitOfWork unit, IMapper mapper, IDoctorService doctorService) : ApiBaseController
     {
 

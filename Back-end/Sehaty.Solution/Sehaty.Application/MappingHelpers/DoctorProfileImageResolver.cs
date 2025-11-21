@@ -15,9 +15,9 @@ namespace Sehaty.Application.MappingHelpers
         }
         public string Resolve(Doctor source, GetDoctorDto destination, string destMember, ResolutionContext context)
         {
-            if (!string.IsNullOrWhiteSpace(source.ProfilePhotoUrl))
+            if (!string.IsNullOrWhiteSpace(source.ProfilePhoto))
             {
-                destination.ProfilePhotoUrl = $"{configuration["SehatyBaseUlr"]}/images/doctors/{source.ProfilePhotoUrl}";
+                destination.ProfilePhotoUrl = $"{configuration["SehatyBaseUlr"]}/images/doctors/{source.ProfilePhoto}";
                 return destination.ProfilePhotoUrl;
             }
 

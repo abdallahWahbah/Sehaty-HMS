@@ -25,10 +25,10 @@ namespace Sehaty.Application.Services.DoctorService
             try
             {
                 // Upload image if exists
-                if (dto.ProfilePhotoUrl != null)
+                if (dto.ProfilePhoto != null)
                 {
-                    uploadedImage = await fileService.UploadDoctorImageAsync(dto.ProfilePhotoUrl);
-                    doctor.ProfilePhotoUrl = uploadedImage;
+                    uploadedImage = await fileService.UploadDoctorImageAsync(dto.ProfilePhoto);
+                    doctor.ProfilePhoto = uploadedImage;
                 }
 
                 await unit.Repository<Doctor>().AddAsync(doctor);
@@ -52,7 +52,7 @@ namespace Sehaty.Application.Services.DoctorService
             if (doctor == null)
                 return false;
 
-            string oldImage = doctor.ProfilePhotoUrl;
+            string oldImage = doctor.ProfilePhoto;
 
 
             unit.Repository<Doctor>().Delete(doctor);
@@ -73,16 +73,16 @@ namespace Sehaty.Application.Services.DoctorService
 
             mapper.Map(dto, doctor);
 
-            string oldImage = doctor.ProfilePhotoUrl;
+            string oldImage = doctor.ProfilePhoto;
             string newUploaded = null;
 
             try
             {
 
-                if (dto.ProfilePhotoUrl != null)
+                if (dto.ProfilePhoto != null)
                 {
-                    newUploaded = await fileService.UploadDoctorImageAsync(dto.ProfilePhotoUrl);
-                    doctor.ProfilePhotoUrl = newUploaded;
+                    newUploaded = await fileService.UploadDoctorImageAsync(dto.ProfilePhoto);
+                    doctor.ProfilePhoto = newUploaded;
                 }
 
 
