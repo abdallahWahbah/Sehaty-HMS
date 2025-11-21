@@ -1,24 +1,24 @@
-<div class="login">
-  <div class="login__logo">
-    <img src="/images/logo.png" alt="main logo" class="login__logo--image">
+<div class="auth">
+  <div class="auth__logo">
+    <img src="/images/logo.png" alt="main logo" class="auth__logo--image">
   </div>
 
-  <div class="login__main--container">
-    <div class="login__content">
+  <div class="auth__main--container">
+    <div class="auth__content">
         @if(serverError){
             <div class="server-error">
                 <span>{{ serverError }}</span>
             </div>
         }
-        <h3 class="login__header">Sign up</h3>
-        <p class="login__sub--header">Let’s get you all st up so you can access your personal account.</p>
+        <h3 class="auth__header">Sign up</h3>
+        <p class="auth__sub--header">Let’s get you all st up so you can access your personal account.</p>
 
         <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
 
             <!-- First Name + Last Name -->
             <div class="d-flex justify-content-between gap-2">
                 <div class="col-6">
-                    <p-floatlabel variant="on" class="login__input--container">
+                    <p-floatlabel variant="on" class="auth__input--container">
                         <input 
                             pInputText 
                             id="firstName"
@@ -37,7 +37,7 @@
                 </div>
                 
                 <div class="col-6">
-                    <p-floatlabel variant="on" class="login__input--container">
+                    <p-floatlabel variant="on" class="auth__input--container">
                         <input 
                             pInputText 
                             formControlName="lastName" 
@@ -58,7 +58,7 @@
             <!-- Email + Phone -->
             <div class="d-flex justify-content-between gap-2">
                 <div class="col-6">
-                    <p-floatlabel variant="on" class="login__input--container">
+                    <p-floatlabel variant="on" class="auth__input--container">
                         <input 
                             pInputText 
                             formControlName="email" 
@@ -84,7 +84,7 @@
                 </div>
 
                 <div class="col-6">
-                    <p-floatlabel variant="on" class="login__input--container">
+                    <p-floatlabel variant="on" class="auth__input--container">
                         <input 
                             pInputText 
                             formControlName="phoneNumber" 
@@ -104,7 +104,7 @@
             </div>
 
             <div class="flex gap-2">
-                <p-floatlabel variant="on" class="login__input--container">
+                <p-floatlabel variant="on" class="auth__input--container">
                     <input 
                         pInputText 
                         formControlName="userName" 
@@ -120,7 +120,7 @@
                     </div>
                 }
 
-                <p-floatlabel variant="on" class="login__input--container">
+                <p-floatlabel variant="on" class="auth__input--container">
                     <p-password 
                         formControlName="password" 
                         [toggleMask]="true"></p-password>
@@ -153,7 +153,7 @@
             </div>
 
             <div class="flex gap-2">
-                <p-floatlabel variant="on" class="login__input--container flex-1">
+                <p-floatlabel variant="on" class="auth__input--container flex-1">
                     <p-password 
                         formControlName="confirmPassword" 
                         [toggleMask]="true"></p-password
@@ -184,19 +184,19 @@
                 }
             </div>
 
-            <div class="card flex justify-center login__button--container mt-3">
+            <div class="card flex justify-center auth__button--container mt-3">
             <p-button type="submit" label="Create Account"></p-button>
             </div>
 
-            <div class="login__no--account-container">
+            <div class="auth__no--account-container">
                     <span>Don't have an account?</span>
                     <span> <a routerLink="/login"> Login</a></span>
                 </div>
         </form>
     </div>
 
-    <div class="login__image--container signup__image--container">
-      <img src="/images/login.jpg" alt="" class="login__image">
+    <div class="auth__image--container signup__image--container">
+      <img src="/images/login.jpg" alt="" class="auth__image">
     </div>
   </div>
 </div>

@@ -63,7 +63,9 @@ export class SignupComponent {
     const password = this.signupForm.get('password')?.value as string;
     const confirmPassword = this.signupForm.get('confirmPassword')?.value as string;
 
-    this._authService.register(userName, email, phoneNumber, firstName, lastName, password, confirmPassword).subscribe({
+    const newUser = {userName, email, phoneNumber, firstName, lastName, password, confirmPassword, languagePreference: 'Arabic'}
+
+    this._authService.register(newUser).subscribe({
       next: data => {
         this.router.navigate(['login']);
       },
