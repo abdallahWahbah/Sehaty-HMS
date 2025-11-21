@@ -17,7 +17,7 @@ namespace Sehaty.Application.MappingHelpers
         {
             if (!string.IsNullOrWhiteSpace(source.ProfilePhotoUrl))
             {
-                destination.ProfilePhotoUrl = $"{configuration["SehatyBaseUlr"]}/{source.ProfilePhotoUrl}";
+                destination.ProfilePhotoUrl = $"{configuration["SehatyBaseUlr"]}/images/doctors/{source.ProfilePhotoUrl}";
                 return destination.ProfilePhotoUrl;
             }
 

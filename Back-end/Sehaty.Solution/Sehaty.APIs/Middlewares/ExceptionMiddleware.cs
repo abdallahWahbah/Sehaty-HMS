@@ -22,7 +22,6 @@ namespace Sehaty.APIs.Middlewares
             try
             {
                 await next.Invoke(context);
-
             }
             catch (Exception ex)
             {
