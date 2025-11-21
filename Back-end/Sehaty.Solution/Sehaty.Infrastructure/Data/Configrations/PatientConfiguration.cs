@@ -9,6 +9,8 @@ namespace Sehaty.Infrastructure.Data.Configrations
         public void Configure(EntityTypeBuilder<Patient> builder)
         {
             builder.HasKey(p => p.Id);
+            builder.Property(p => p.PatientId).IsRequired().HasColumnType("nvarchar(20)");
+            builder.HasIndex(p => p.PatientId).IsUnique();
             builder.Property(p => p.MRN).HasColumnType("nvarchar(20)");
             builder.Property(p => p.FirstName).IsRequired().HasColumnType("nvarchar(50)");
             builder.Property(p => p.LastName).IsRequired().HasColumnType("nvarchar(50)");
