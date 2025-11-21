@@ -11,6 +11,7 @@ using Sehaty.Application.Services.Contract.AuthService.Contract;
 using Sehaty.Application.Services.Contract.BusinessServices.Contract;
 using Sehaty.Application.Services.DoctorService;
 using Sehaty.Application.Services.IdentityService;
+using Sehaty.Application.Services.PatientService;
 using Sehaty.Application.Services.PDFservice;
 using Sehaty.Application.Shared.AuthShared;
 using Sehaty.Core.Entites;
@@ -100,6 +101,9 @@ namespace Sehaty.APIs.Extensions
 
             // Inject Service For Doctor To Add And Manage Doctors
             services.AddScoped<IDoctorService, DoctorService>();
+
+            // Inject Service For Patient To Add And Manage Doctors
+            services.AddScoped<IPatientService, PatientService>();
 
             // Inject Service For Doctor To Add And Manage Doctors
             services.AddScoped<IFileService, FileService>();
