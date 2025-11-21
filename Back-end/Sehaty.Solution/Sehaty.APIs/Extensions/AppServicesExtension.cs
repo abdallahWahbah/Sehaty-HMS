@@ -13,7 +13,9 @@ using Sehaty.Core.Entities.User_Entities;
 using Sehaty.Core.UnitOfWork.Contract;
 using Sehaty.Infrastructure.Data.Contexts;
 using Sehaty.Infrastructure.Data.SeedClass;
+using Sehaty.Infrastructure.Helper;
 using Sehaty.Infrastructure.Service.Email;
+using Sehaty.Infrastructure.Service.SMS;
 using Sehaty.Infrastructure.UnitOfWork;
 using System.Text;
 namespace Sehaty.APIs.Extensions
@@ -121,8 +123,12 @@ namespace Sehaty.APIs.Extensions
                     ClockSkew = TimeSpan.Zero
                 };
             });
-
-
+            //Add email services
+            services.AddTransient<IEmailSender, EmailSender>();
+            //bind Twilio settings
+            services.Configure<TwilioSettings>(configuration.GetSection("TwilioSMSSetting"));
+            //Add SMS Service
+            services.AddTransient<ISmsSender, SmsSender>();
             #endregion
 
 
