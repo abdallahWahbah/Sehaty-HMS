@@ -225,6 +225,18 @@ namespace Sehaty.APIs.Controllers
 
 
         }
+        [HttpPost("ConfirmAppointment/{id}")]
+        public async Task<IActionResult> ConfirmAppointment(int id)
+        {
+            var spec = new AppointmentSpecifications(a => a.Id == id);
+            var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
+            if (appointment == null) return NotFound(new ApiResponse(404));
+            if (appointment.Status != AppointmentStatus.Pending) return BadRequest(new ApiResponse(400, "Appointment cannot be confirmed"));
+            appointment.Status = AppointmentStatus.Confirmed;
+            var rowsAffected = await unit.CommitAsync();
+            return rowsAffected > 0 ? Ok(new ApiResponse(200, "Appointment confirmed successfully")) : BadRequest(new ApiResponse(400, "Failed to Confirm appointment"));
+
+        }
 
 
     }

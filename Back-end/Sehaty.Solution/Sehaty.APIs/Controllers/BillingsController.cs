@@ -23,7 +23,7 @@ namespace Sehaty.APIs.Controllers
 
         //GetByAppoinmentId
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetByAppointmentId(int? id)
+        public async Task<IActionResult> GetBillingByAppointmentId(int? id)
         {
             var spec = new BillingSpec(b => b.AppointmentId == id);
             var billing = await unit.Repository<Billing>().GetByIdWithSpecAsync(spec);
