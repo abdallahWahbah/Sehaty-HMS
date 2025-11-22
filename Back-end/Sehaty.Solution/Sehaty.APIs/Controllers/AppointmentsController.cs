@@ -167,11 +167,12 @@ namespace Sehaty.APIs.Controllers
         }
 
         //Cancel Appointment With Policy
-        [Authorize(Roles = "Patient,Reception")]
+        //[Authorize(Roles = "Patient,Reception")]
         [HttpPost("CancelAppointment/{id}")]
         public async Task<IActionResult> CancelAppointment(int id)
         {
-            var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
+            var spec = new AppointmentSpecifications(a => a.Id == id);
+            var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
             if (appointment is null) return NotFound(new ApiResponse(404));
             var requestTime = DateTime.UtcNow;
             var timeBeforeCancel = appointment.AppointmentDateTime - requestTime;
@@ -180,15 +181,45 @@ namespace Sehaty.APIs.Controllers
                 appointment.Status = AppointmentStatus.Canceled;
                 unit.Repository<Appointment>().Update(appointment);
                 var rowsAffected = await unit.CommitAsync();
-                return rowsAffected > 0
-                    ? Ok(new ApiResponse(200, "Appointment canceled successfully"))
-                    : BadRequest(new ApiResponse(400, "Failed to cancel appointment"));
-            }
-            else
-            {
-                return BadRequest(new ApiResponse(400, "Cannot cancel appointment within 24 hours unless marked as Emergency"));
-            }
 
+                if (rowsAffected <= 0)
+                    return BadRequest(new ApiResponse(400, "Failed to cancel appointment"));
+                var patient = await unit.Repository<Patient>().GetByIdAsync(appointment.PatientId);
+                if (patient != null)
+                {
+                    string message = $"تم إلغاء موعدك مع الطبيب {appointment.Doctor.FirstName} {appointment.Doctor.LastName} بتاريخ {appointment.AppointmentDateTime}";
+
+                    var notificationDto = new CreateNotificationDto
+                    {
+                        UserId = appointment.PatientId,
+                        Title = "Appointment Canceled",
+                        Message = message,
+                        Priority = NotificationPriority.High,
+                        RelatedEntityType = "Appointment",
+                        RelatedEntityId = appointment.Id,
+                        SentViaEmail = false,
+                        SentViaSMS = false,
+                        NotificationType = NotificationType.Appointment,
+                        IsRead = false
+                    };
+                    var notification = mapper.Map<Notification>(notificationDto);
+                    await unit.Repository<Notification>().AddAsync(notification);
+                    await unit.CommitAsync();
+                    if (!string.IsNullOrEmpty(patient.User.Email))
+                    {
+                        await emailSender.SendEmailAsync(patient.User.Email, "تم إلغاء موعدك", message);
+                        notificationDto.SentViaEmail = true;
+                    }
+                    //if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
+                    //{
+                    //    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
+                    //    notificationDto.SentViaSMS = true;
+                    //}
+                    await unit.CommitAsync();
+                }
+
+            }
+            return Ok(new ApiResponse(200, "Appointment canceled successfully"));
         }
         [Authorize(Roles = "Patient,Reception")]
         //RescheduleAppointment
@@ -266,7 +297,7 @@ namespace Sehaty.APIs.Controllers
                 if (!string.IsNullOrEmpty(patient.User.Email))
                 {
                     await emailSender.SendEmailAsync(patient.User.Email, "تم تأكيد موعدك", message);
-                    notificationDto.SentViaEmail = false;
+                    notificationDto.SentViaEmail = true;
                 }
                 if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
                 {

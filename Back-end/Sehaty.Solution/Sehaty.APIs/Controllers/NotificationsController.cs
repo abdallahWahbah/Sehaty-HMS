@@ -52,7 +52,6 @@ namespace Sehaty.APIs.Controllers
                 var notification = map.Map<Notification>(createNotificationDto);
                 await unit.Repository<Notification>().AddAsync(notification);
                 await unit.CommitAsync();
-                emailSender.SendEmailAsync("hanaa.elagmi@gmail.com", "hello", "hhhh");
                 return CreatedAtAction(nameof(GetById), new { id = notification.Id }, map.Map<AllNotificationsDto>(notification));
             }
             return BadRequest(ModelState);
