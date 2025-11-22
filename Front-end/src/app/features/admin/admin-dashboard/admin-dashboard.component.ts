@@ -35,7 +35,6 @@ export class AdminDashboardComponent implements OnInit{
     this._appointmentService.getAll().subscribe({
       next: data => {
         this.todaysAppointments = data;
-        console.log(data);
         this.numOfTodaysAppointments = data.filter(item => {
           const appointmentDate = new Date(item.appointmentDateTime);
           const today = new Date();

@@ -1,5 +1,5 @@
-export enum PateintStatusEnum{
-    Active,
-    Discharged,
-    Readmitted
+export enum PateintStatusEnum {
+  Active = 'Active',
+  Discharged = 'Discharged',
+  Readmitted = 'Readmitted'
 }

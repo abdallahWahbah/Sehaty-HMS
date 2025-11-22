@@ -44,7 +44,6 @@ export class ForgetComponent {
 
     this._authService.requestPasswordReset(email).subscribe({
       next: data => {
-        console.log(data);
         this.router.navigate(['verifyOtp'], {state: {email}});
       },
       error: err => this.serverError = err.statusText

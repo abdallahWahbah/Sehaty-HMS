@@ -13,7 +13,6 @@ import { CommonModule } from '@angular/common';
 export class RecordComponent implements OnChanges {
 
   @Input() record: MedicalRecordModel | null = null;
-  @Input() visible!: boolean; 
 
   ngOnChanges(changes: SimpleChanges): void {
     
