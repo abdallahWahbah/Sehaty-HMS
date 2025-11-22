@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Sehaty.Core.Entites;
-
-namespace Sehaty.Core.Entities.User_Entities
+﻿namespace Sehaty.Core.Entities.User_Entities
 {
+    public enum LanguagePreferenceEnum
+    {
+        Arabic,
+        English
+    }
     public class ApplicationUser : IdentityUser<int>
     {
-        public enum LanguagePreferenceEnum
-        {
-            Arabic,
-            English
-        }
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }

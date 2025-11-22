@@ -1,9 +1,4 @@
-﻿using Sehaty.Core.Entities.Business_Entities;
-using Sehaty.Core.Entities.Business_Entities.Appointments;
-using Sehaty.Core.Entities.User_Entities;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Sehaty.Core.Entites
+﻿namespace Sehaty.Core.Entites
 {
     public enum PatientStatus
     {

@@ -1,14 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Sehaty.Infrastructure.Helper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Twilio;
-using Twilio.Rest.Api.V2010.Account;
-
-namespace Sehaty.Infrastructure.Service.SMS
+﻿namespace Sehaty.Application.Services
 {
     public class SmsSender : ISmsSender
     {

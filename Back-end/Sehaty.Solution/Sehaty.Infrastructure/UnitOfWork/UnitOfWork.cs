@@ -1,10 +1,4 @@
-﻿using Sehaty.Core.Entites;
-using Sehaty.Core.Repository.Contracts;
-using Sehaty.Core.UnitOfWork.Contract;
-using Sehaty.Infrastructure.Data.Contexts;
-using Sehaty.Infrastructure.Repositories;
-
-namespace Sehaty.Infrastructure.UnitOfWork
+﻿namespace Sehaty.Infrastructure.UnitOfWork
 {
 
     public class UnitOfWork : IUnitOfWork

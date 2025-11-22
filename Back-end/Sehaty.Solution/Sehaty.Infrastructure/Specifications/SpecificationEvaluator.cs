@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Specefications;
-
-
-namespace Sehaty.Infrastructure.Specifications
+﻿namespace Sehaty.Infrastructure.Specifications
 {
     internal static class SpecificationEvaluator<T> where T : BaseEntity
     {

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Sehaty.APIs.Errors;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
     [Route("error/{code}")]
     [ApiController]

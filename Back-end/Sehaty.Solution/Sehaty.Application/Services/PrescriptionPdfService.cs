@@ -1,9 +1,4 @@
-﻿using QuestPDF.Fluent;
-using QuestPDF.Infrastructure;
-using Sehaty.Application.Services.Contract.BusinessServices.Contract;
-using Sehaty.Core.Entities.Business_Entities;
-
-namespace Sehaty.Application.Services
+﻿namespace Sehaty.Application.Services
 {
     public class PrescriptionPdfService : IPrescriptionPdfService
     {

@@ -1,8 +1,4 @@
-﻿using Sehaty.Core.Entites;
-using Sehaty.Core.Specefications;
-using System.Linq.Expressions;
-
-namespace Sehaty.Core.Repository.Contracts
+﻿namespace Sehaty.Core.Repository.Contracts
 {
     public interface IRepository<T> where T : BaseEntity
     {

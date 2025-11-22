@@ -1,7 +1,4 @@
-﻿using Sehaty.Core.Entites;
-using System.Linq.Expressions;
-
-namespace Sehaty.Core.Specifications.PatientSpec
+﻿namespace Sehaty.Core.Specifications.PatientSpec
 {
     public class PatientSearchSpecification : PatientSpecifications
     {

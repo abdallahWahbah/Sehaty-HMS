@@ -1,14 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Sehaty.Application.Services.Contract.AuthService.Contract;
-using Sehaty.Core.Entities.User_Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sehaty.Application.Services.IdentityService
+﻿namespace Sehaty.Application.Services.IdentityService
 {
     public class RoleManagementService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager) : IRoleManagementService
     {

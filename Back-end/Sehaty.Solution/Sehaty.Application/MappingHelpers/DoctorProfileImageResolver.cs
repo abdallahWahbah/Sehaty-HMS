@@ -1,9 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.Configuration;
-using Sehaty.Application.Dtos.DoctorDtos;
-using Sehaty.Core.Entites;
-
-namespace Sehaty.Application.MappingHelpers
+﻿namespace Sehaty.Application.MappingHelpers
 {
     public class DoctorProfileImageResolver<TDestination> : IValueResolver<Doctor, TDestination, string>
     {

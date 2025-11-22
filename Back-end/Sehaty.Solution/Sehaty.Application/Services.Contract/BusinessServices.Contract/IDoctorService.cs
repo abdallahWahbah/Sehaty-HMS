@@ -1,12 +1,4 @@
-﻿using Sehaty.Application.Dtos.DoctorDtos;
-using Sehaty.Core.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sehaty.Application.Services.Contract.BusinessServices.Contract
+﻿namespace Sehaty.Application.Services.Contract.BusinessServices.Contract
 {
     public interface IDoctorService
     {

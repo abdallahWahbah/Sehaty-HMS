@@ -1,8 +1,4 @@
-﻿using Sehaty.Core.Entites;
-using Sehaty.Core.Entities.Business_Entities.Appointments;
-using Sehaty.Core.Entities.Business_Entities.MedicalRecords;
-
-namespace Sehaty.Core.Entities.Business_Entities
+﻿namespace Sehaty.Core.Entities.Business_Entities
 {
     public enum PrescriptionStatus
     {

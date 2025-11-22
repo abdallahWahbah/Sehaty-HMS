@@ -1,23 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using QuestPDF.Infrastructure;
-using Sehaty.APIs.Errors;
-using Sehaty.Application.Dtos.AppointmentDTOs;
-using Sehaty.Application.Dtos.BillngDto;
-using Sehaty.Application.Dtos.NotificationsDTOs;
-using Sehaty.Application.Services.Contract.BusinessServices.Contract;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Entities.Business_Entities.Appointments;
-using Sehaty.Core.Specifications.Appointment_Specs;
-using Sehaty.Core.Specifications.MedicalReord;
-using Sehaty.Core.UnitOfWork.Contract;
-using Sehaty.Infrastructure.Service.Email;
-using Sehaty.Infrastructure.Service.SMS;
-using System.Security.Claims;
-using Twilio.TwiML.Messaging;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
 
     public class AppointmentsController(IUnitOfWork unit, IMapper mapper, IEmailSender emailSender, ISmsSender smsSender) : ApiBaseController

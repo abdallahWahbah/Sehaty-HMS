@@ -1,8 +1,4 @@
-﻿using AutoMapper;
-using Sehaty.Application.Dtos.FeedbackDtos;
-using Sehaty.Core.Entites;
-
-namespace Sehaty.Application.MappingProfiles
+﻿namespace Sehaty.Application.MappingProfiles
 {
     public class FeedbackProfile : Profile
     {

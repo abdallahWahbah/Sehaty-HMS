@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations;
-
-namespace Sehaty.Application.Dtos.DoctorDtos
+﻿namespace Sehaty.Application.Dtos.DoctorDtos
 {
     public class DoctorAddUpdateDto
     {

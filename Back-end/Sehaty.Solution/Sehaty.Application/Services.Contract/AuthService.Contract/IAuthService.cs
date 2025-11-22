@@ -1,6 +1,4 @@
-﻿using Sehaty.Application.Dtos.IdentityDtos;
-
-namespace Sehaty.Application.Services.Contract.AuthService.Contract
+﻿namespace Sehaty.Application.Services.Contract.AuthService.Contract
 {
     public interface IAuthService
     {

@@ -1,13 +1,4 @@
-﻿using Sehaty.Core.Entities.Business_Entities.MedicalRecords;
-using Sehaty.Core.Specefications;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sehaty.Core.Specifications.MedicalReord
+﻿namespace Sehaty.Core.Specifications.MedicalReord
 {
     public class MedicalRecordSpec : BaseSpecefication<MedicalRecord>
     {
