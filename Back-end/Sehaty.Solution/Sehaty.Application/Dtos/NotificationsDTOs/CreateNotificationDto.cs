@@ -26,7 +26,7 @@ namespace Sehaty.Application.Dtos.NotificationsDTOs
         public bool SentViaEmail { get; set; }
         [Required]
         public bool SentViaSMS { get; set; }
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
 
     }
 }

@@ -12,8 +12,9 @@ namespace Sehaty.Application.MappingProfiles
             CreateMap<Doctor, GetDoctorDto>()
                 .ForMember(D => D.Department, O => O.MapFrom(S => S.Department.Name))
                 .ForMember(D => D.User, O => O.MapFrom(S => S.User.UserName))
-                .ForMember(D => D.ProfilePhotoUrl, O => O.MapFrom<DoctorProfileImageResolver>());
-            CreateMap<Doctor, DoctorAddUpdateDto>().ReverseMap();
+                .ForMember(D => D.ProfilePhotoUrl, O => O.MapFrom<DoctorProfileImageResolver<GetDoctorDto>>());
+            CreateMap<DoctorAddUpdateDto, Doctor>()
+                .ForMember(D => D.ProfilePhoto, O => O.Ignore());
         }
     }
 }

@@ -1,6 +1,7 @@
 [
   {
     "UserId": 7,
+    "PatientId": "PT-2025-0001",
     "MRN": "MRN004",
     "FirstName": "Noha",
     "LastName": "Salem",
@@ -18,6 +19,7 @@
   },
   {
     "UserId": 8,
+    "PatientId": "PT-2025-0002",
     "MRN": "MRN005",
     "FirstName": "Youssef",
     "LastName": "Mostafa",
@@ -35,6 +37,7 @@
   },
   {
     "UserId": 9,
+    "PatientId": "PT-2025-0003",
     "MRN": "MRN006",
     "FirstName": "Mariam",
     "LastName": "Khaled",

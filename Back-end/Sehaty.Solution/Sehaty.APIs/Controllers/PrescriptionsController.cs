@@ -1,18 +1,23 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Sehaty.APIs.Errors;
+using Sehaty.Application.Dtos.NotificationsDTOs;
 using Sehaty.Application.Dtos.PrescriptionsDTOs;
 using Sehaty.Application.Services.PDFservice;
+using Sehaty.Core.Entites;
 using Sehaty.Core.Entities.Business_Entities;
+using Sehaty.Core.Entities.Business_Entities.Appointments;
 using Sehaty.Core.Specifications.Prescription_Specs;
 using Sehaty.Core.UnitOfWork.Contract;
+using Sehaty.Infrastructure.Service.SMS;
 using System.Security.Claims;
 
 namespace Sehaty.APIs.Controllers
 {
 
-    public class PrescriptionsController(IUnitOfWork unit, IMapper map, PrescriptionPdfService pdfService) : ApiBaseController
+    public class PrescriptionsController(IUnitOfWork unit, IMapper map, PrescriptionPdfService pdfService, IEmailSender emailSender, ISmsSender smsSender) : ApiBaseController
     {
 
         [HttpGet]
@@ -78,17 +83,56 @@ namespace Sehaty.APIs.Controllers
             return NotFound(new ApiResponse(404));
         }
 
-        [Authorize(Roles = "Doctor")]
+        //[Authorize(Roles = "Doctor")]
         [HttpPost]
         public async Task<IActionResult> CreatePrescription([FromBody] CreatePrescriptionsDto model)
         {
             if (ModelState.IsValid)
             {
                 var prescription = map.Map<Prescription>(model);
-                var doctorId = 1;// User.FindFirstValue(ClaimTypes.NameIdentifier);
-                prescription.DoctorId = 1;// int.Parse(doctorId);
+                var doctorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                prescription.DoctorId = int.Parse(doctorId);
                 await unit.Repository<Prescription>().AddAsync(prescription);
                 await unit.CommitAsync();
+
+                if (prescription.PatientId.HasValue)
+                {
+                    var patient = await unit.Repository<Patient>().GetByIdAsync(prescription.PatientId.Value);
+                    if (patient != null)
+                    {
+                        string message = $"تم تجهيز الروشته مع الطبيب {prescription.Doctor.FirstName} {prescription.Doctor.LastName} بتاريخ {prescription.DateIssued}";
+
+                        var notificationDto = new CreateNotificationDto
+                        {
+                            UserId = prescription.PatientId,
+                            Title = "Prescription Completed",
+                            Message = message,
+                            Priority = NotificationPriority.High,
+                            RelatedEntityType = "Prescription",
+                            RelatedEntityId = prescription.Id,
+                            SentViaEmail = false,
+                            SentViaSMS = false,
+                            NotificationType = NotificationType.Prescription,
+                            IsRead = false
+                        };
+                        var notification = map.Map<Notification>(notificationDto);
+                        await unit.Repository<Notification>().AddAsync(notification);
+                        await unit.CommitAsync();
+                        if (!string.IsNullOrEmpty(patient.User.Email))
+                        {
+                            await emailSender.SendEmailAsync(patient.User.Email, "تم تجهيز الروشته", message);
+                            notificationDto.SentViaEmail = true;
+                        }
+                        if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
+                        {
+                            smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
+                            notificationDto.SentViaSMS = true;
+                        }
+                        await unit.CommitAsync();
+                    }
+                }
+
+
                 return Ok(new { message = "Prescription created successfully", prescriptionId = prescription.Id });
             }
             return BadRequest(ModelState);
@@ -132,7 +176,7 @@ namespace Sehaty.APIs.Controllers
             return File(pdfBytes, "application/pdf", $"Prescription_{id}.pdf");
         }
 
-        //[Authorize(Roles = "Doctor,Admin")]
+        [Authorize(Roles = "Doctor,Admin")]
         [HttpGet("patient/{patientId}/history")]
         public async Task<IActionResult> GetPrescriptionHistoryForPatient(int patientId)
         {

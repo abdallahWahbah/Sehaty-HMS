@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sehaty.Infrastructure.Data.Contexts;
 
@@ -11,9 +12,11 @@ using Sehaty.Infrastructure.Data.Contexts;
 namespace Sehaty.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(SehatyDbContext))]
-    partial class SehatyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251121201316_AddPatientIdColumn")]
+    partial class AddPatientIdColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -472,8 +475,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(14)");
 
                     b.Property<string>("PatientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
@@ -486,9 +488,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PatientId")
-                        .IsUnique();
 
                     b.HasIndex("UserId");
 
