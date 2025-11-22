@@ -35,3 +35,30 @@
     border: 1px solid red !important;
 }
 
+
+// FORMS
+
+label{
+    font-size: 1.2rem !important;
+
+}
+input {
+    padding: 1rem;
+    font-size: 1.4rem;
+    color: var(--color-black-1) !important;
+
+    &:enabled:focus{
+        border-color: var(--color-primary);
+    }
+    &:focus + label {
+        color: var(--color-primary) !important;
+        font-size: 1.2rem !important;
+    }
+}
+.p-password, input{
+    width: 100% !important;
+}
+input{
+    padding: 1rem !important;
+    font-size: 1.4rem !important;
+}

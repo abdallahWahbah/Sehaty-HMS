@@ -13,4 +13,18 @@ export class PatientsService {
   getAll(){
     return this._http.get<PatientResponseModel[]>(this.baseUrl);
   }
+  getById(id: number, token: string){
+    return this._http.get<PatientResponseModel>(this.baseUrl + id, { 
+      headers: { Authorization: `Bearer ${token}` }
+    });
+  }
+  editByStuff(id: number, patientToUpdate: any, token: string) {
+    return this._http.put<any>(
+      this.baseUrl + id, 
+      patientToUpdate, 
+      { 
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    )
+  }
 }

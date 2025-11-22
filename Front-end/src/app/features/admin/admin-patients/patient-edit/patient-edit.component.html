@@ -1,0 +1,54 @@
+<section id="dashboard" class="dashboard">
+  <div class="dashboard__title">
+    <h2 class="dashboard__title-main">Edit Patient: {{patient?.firstName}} {{patient?.lastName}}</h2>
+    <div class="patient-edit">
+      <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+    
+        <div class="patient-edit__grid">
+    
+          <!-- MRN -->
+          <p-floatlabel class="patient-edit__input">
+            <input pInputText formControlName="mrn" />
+            <label>MRN</label>
+          </p-floatlabel>
+    
+          <!-- Blood Type -->
+          <p-floatlabel class="patient-edit__input">
+            <input pInputText formControlName="bloodType" />
+            <label>Blood Type</label>
+          </p-floatlabel>
+    
+          <!-- Allergies -->
+          <p-floatlabel class="patient-edit__input">
+            <input pInputText formControlName="allergies" />
+            <label>Allergies</label>
+          </p-floatlabel>
+    
+          <!-- Chronic Conditions -->
+          <p-floatlabel class="patient-edit__input">
+            <input pInputText formControlName="chrinicConditions" />
+            <label>Chronic Conditions</label>
+          </p-floatlabel>
+        </div>
+        <div class="patient-edit__status">
+            <p-dropdown 
+                formControlName="status" 
+                [options]="[
+                    {label:'Active', value: statusEnum.Active}, 
+                    {label:'Discharged', value: statusEnum.Discharged},
+                    {label:'Readmitted', value: statusEnum.Readmitted}
+                ]" 
+                placeholder="Select Status"
+            ></p-dropdown>
+        </div>
+    
+        <div class="patient-edit__button-container">
+          <p-button type="submit" label="Update Patient"></p-button>
+        </div>
+    
+      </form>
+    </div>
+  </div>
+
+</section>
+

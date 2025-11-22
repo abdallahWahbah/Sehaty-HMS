@@ -19,6 +19,7 @@ import { PatientDetailsComponent } from './features/patient/patient-details/pati
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { AdminNavigationComponent } from './features/admin/admin-navigation/admin-navigation.component';
 import { AdminDepartmentDetailsComponent } from './features/admin/admin-department-details/admin-department-details.component';
+import { PatientEditComponent } from './features/admin/admin-patients/patient-edit/patient-edit.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -35,6 +36,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'patients', component: AdminPatientsComponent },
+      { path: 'patients/:id/edit', component: PatientEditComponent },
       { path: 'doctors', component: AdminDoctorsComponent },
       { path: 'appointments', component: AdminAppointmentsComponent },
       { path: 'medicalRecords', component: AdminMedicalRecordsComponent },
