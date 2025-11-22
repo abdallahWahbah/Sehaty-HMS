@@ -30,10 +30,12 @@ export class LoginComponent {
   serverError: string = '';
 
   loginForm = new FormGroup({
-    username: new FormControl('', [ // user credentials: abdallah2
+    // pateint credentials: abdallah2, asdASD!@#123  (✅gmail)
+    // admin credentials: Abdullah, P@ssw0rd
+    username: new FormControl('Abdullah', [ 
       Validators.required,
     ]),
-    password: new FormControl('', [ // user credentials: asdASD!@#123
+    password: new FormControl('P@ssw0rd', [ 
       Validators.required,
       Validators.minLength(6),
       Validators.pattern(/^(?=.*[a-z]).*$/),     // at least 1 lowercase
@@ -56,11 +58,19 @@ export class LoginComponent {
     const username = this.loginForm.get('username')?.value as string;
     const password = this.loginForm.get('password')?.value as string;
     this._authService.login(username, password).subscribe({
-      next: data => {
+      next: (data: any) => {
         localStorage.setItem("userData", JSON.stringify(data));
         localStorage.setItem("token", data['token']);
         localStorage.setItem("refreshToken", data['refreshToken']);
-        this.router.navigate(['home']);
+        switch(data['role']){
+          case "Admin":{
+            this.router.navigate(['admin/dashboard']);
+            break;
+          }
+          case "Patient":{
+            this.router.navigate(['patient/home']);
+          }
+        }
       },
       error: err => this.serverError = err.error?.message || 'Invalid username or password'
     });
