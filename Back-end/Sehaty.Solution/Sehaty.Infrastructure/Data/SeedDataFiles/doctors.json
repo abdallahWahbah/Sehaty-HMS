@@ -6,7 +6,7 @@
     "LicenseNumber": "LIC001",
     "Qualifications": "MD",
     "YearsOfExperience": 10,
-    "ProfilePhotoUrl": "images/doctors/ali_hassan.jpg",
+    "ProfilePhoto": "ali_hassan.jpg",
     "AvailabilityNotes": "Available on weekdays 9AM - 3PM",
     "UserId": 4,
     "DepartmentId": 1
@@ -18,7 +18,7 @@
     "LicenseNumber": "LIC002",
     "Qualifications": "MD",
     "YearsOfExperience": 8,
-    "ProfilePhotoUrl": "images/doctors/sara_ibrahim.jpg",
+    "ProfilePhoto": "sara_ibrahim.jpg",
     "AvailabilityNotes": "Available on Mondays, Wednesdays, Fridays",
     "UserId": 5,
     "DepartmentId": 2
@@ -30,7 +30,7 @@
     "LicenseNumber": "LIC003",
     "Qualifications": "MD",
     "YearsOfExperience": 5,
-    "ProfilePhotoUrl": "images/doctors/hany_gamal.jpg",
+    "ProfilePhoto": "hany_gamal.jpg",
     "AvailabilityNotes": "Available daily 10AM - 2PM",
     "UserId": 6,
     "DepartmentId": 3
