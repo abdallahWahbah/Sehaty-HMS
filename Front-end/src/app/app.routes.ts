@@ -18,38 +18,42 @@ import { PatientAppointmentsComponent } from './features/patient/patient-appoint
 import { PatientDetailsComponent } from './features/patient/patient-details/patient-details.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { AdminNavigationComponent } from './features/admin/admin-navigation/admin-navigation.component';
+import { AdminDepartmentDetailsComponent } from './features/admin/admin-department-details/admin-department-details.component';
 
 export const routes: Routes = [
-    {path: '', redirectTo: '/login', pathMatch: 'full'},
-    {path: 'login', component: LoginComponent},
-    {path: 'signup', component: SignupComponent},
-    {path: 'forgetPassword', component: ForgetComponent},
-    {path: 'verifyOtp', component: VerifyOtpComponent},
-    {path: 'setPassword', component: SetPasswordComponent},
-    {path: 'admin', 
-        canActivate: [adminGuard],
-        component: AdminNavigationComponent,
-        children: [
-            {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
-            {path: 'dashboard', component: AdminDashboardComponent },
-            {path: 'patients', component: AdminPatientsComponent},
-            {path: 'doctors', component: AdminDoctorsComponent},
-            {path: 'appointments', component: AdminAppointmentsComponent},
-            {path: 'medicalRecords', component: AdminMedicalRecordsComponent},
-            {path: 'departments', component: AdminDepartmentsComponent},
-        ]
-    },
-    {path: 'patient', 
-        // canActivate: [],
-        children: [
-            {path: '', component: PatientHomeComponent},
-            {path: 'home', component: PatientHomeComponent},
-            // {path: 'medicalRecords', component: PatientMedicalRecordsComponent},
-            // {path: 'appointments', component: PatientAppointmentsComponent},
-            // {path: 'details', component: PatientDetailsComponent},
-        ]
-    },
-    {path: 'home', component: HomeComponent},
-    {path: 'not-found', component: NotFoundComponent},
-    {path: '**', redirectTo: '/not-found'},
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
+  { path: 'signup', component: SignupComponent },
+  { path: 'forgetPassword', component: ForgetComponent },
+  { path: 'verifyOtp', component: VerifyOtpComponent },
+  { path: 'setPassword', component: SetPasswordComponent },
+  {
+    path: 'admin',
+    canActivate: [adminGuard],
+    component: AdminNavigationComponent,
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: AdminDashboardComponent },
+      { path: 'patients', component: AdminPatientsComponent },
+      { path: 'doctors', component: AdminDoctorsComponent },
+      { path: 'appointments', component: AdminAppointmentsComponent },
+      { path: 'medicalRecords', component: AdminMedicalRecordsComponent },
+      { path: 'departments', component: AdminDepartmentsComponent },
+      { path: 'departments/:id', component: AdminDepartmentDetailsComponent },
+    ],
+  },
+  {
+    path: 'patient',
+    // canActivate: [],
+    children: [
+      { path: '', component: PatientHomeComponent },
+      { path: 'home', component: PatientHomeComponent },
+      // {path: 'medicalRecords', component: PatientMedicalRecordsComponent},
+      // {path: 'appointments', component: PatientAppointmentsComponent},
+      // {path: 'details', component: PatientDetailsComponent},
+    ],
+  },
+  { path: 'home', component: HomeComponent },
+  { path: 'not-found', component: NotFoundComponent },
+  { path: '**', redirectTo: '/not-found' },
 ];

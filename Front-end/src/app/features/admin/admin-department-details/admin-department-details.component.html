@@ -1,0 +1,94 @@
+<div class="department-details" *ngIf="department">
+  <!-- Header Section -->
+  <div class="details-header">
+    <div class="header-content">
+      <div class="header-left">
+        <button class="btn-back" routerLink="/admin/departments">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <div>
+          <h1 class="page-title">{{ department?.en_Name }}</h1>
+          <p class="page-subtitle">{{ department?.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Department Details Card -->
+  <div class="details-container">
+    <div class="details-card">
+      <!-- Department Icon Section -->
+      <div class="icon-section">
+        <div class="department-icon-large mint">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <span class="status-badge available">Available</span>
+      </div>
+
+      <!-- Department Information -->
+      <div class="info-section">
+        <!-- English Name -->
+        <div class="info-field">
+          <label class="field-label">
+            <i class="fa-solid fa-language"></i>
+            English Name
+          </label>
+          <div class="field-value">
+            <h2 class="department-en-name">{{ department?.en_Name }}</h2>
+          </div>
+        </div>
+
+        <!-- Arabic Name -->
+        <div class="info-field">
+          <label class="field-label">
+            <i class="fa-solid fa-language"></i>
+            Arabic Name
+          </label>
+          <div class="field-value">
+            <h2 class="department-ar-name" dir="rtl">
+              {{ department?.ar_Name }}
+            </h2>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="info-field">
+          <label class="field-label">
+            <i class="fa-solid fa-file-lines"></i>
+            Description
+          </label>
+          <div class="field-value">
+            <p class="department-description">{{ department?.description }}</p>
+          </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="additional-info">
+          <div class="info-item">
+            <div class="info-icon teal">
+              <i class="fa-solid fa-user-doctor"></i>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Total Doctors</span>
+              <span class="info-value"
+                >{{ department?.doctors?.length || 0 }} Specialists</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="actions-section">
+        <button class="btn-update">
+          <i class="fa-solid fa-pen-to-square"></i>
+          Update Department
+        </button>
+        <button class="btn-delete" (click)="deleteDepartment()">
+          <i class="fa-solid fa-trash"></i>
+          Delete Department
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sehaty.Application.Services.PatientService
+namespace Sehaty.Application.Services
 {
     public class PatientService(IMapper mapper, IUnitOfWork unit) : IPatientService
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sehaty.Application.Services.PaymentService
+namespace Sehaty.Application.Services
 {
     public class BillingService : IBillingService
     {

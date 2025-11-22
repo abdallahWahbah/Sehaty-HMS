@@ -1,11 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-admin-appointments',
   imports: [],
   templateUrl: './admin-appointments.component.html',
-  styleUrl: './admin-appointments.component.scss'
+  styleUrl: './admin-appointments.component.scss',
 })
-export class AdminAppointmentsComponent {
-
-}
+export class AdminAppointmentsComponent {}
