@@ -1,23 +1,24 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.NotificationsDTOs;
 using Sehaty.Application.Dtos.PrescriptionsDTOs;
-using Sehaty.Application.Services.PDFservice;
+using Sehaty.Application.Services;
+using Sehaty.Application.Services.Contract.BusinessServices.Contract;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Entities.Business_Entities;
 using Sehaty.Core.Entities.Business_Entities.Appointments;
 using Sehaty.Core.Specifications.Prescription_Specs;
 using Sehaty.Core.UnitOfWork.Contract;
+using Sehaty.Infrastructure.Service.Email;
 using Sehaty.Infrastructure.Service.SMS;
 using System.Security.Claims;
 
 namespace Sehaty.APIs.Controllers
 {
 
-    public class PrescriptionsController(IUnitOfWork unit, IMapper map, PrescriptionPdfService pdfService, IEmailSender emailSender, ISmsSender smsSender) : ApiBaseController
+    public class PrescriptionsController(IUnitOfWork unit, IMapper map, IPrescriptionPdfService pdfService, IEmailSender emailSender, ISmsSender smsSender) : ApiBaseController
     {
 
         [HttpGet]
@@ -45,11 +46,13 @@ namespace Sehaty.APIs.Controllers
         [HttpGet("doctorprescriptions")]
         public async Task<IActionResult> GetByDoctorId()
         {
-            var doctorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var doctorUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var doctorId = unit.Repository<Doctor>().FindByAsync(D => D.UserId == doctorUserId).Select(D => D.Id).FirstOrDefault();
             var spec = new PrescriptionSpecifications(P => P.DoctorId == doctorId);
+
             var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
             var sortedprescriptions = prescriptions.OrderByDescending(p => p.DateIssued).ToList();
-            if (sortedprescriptions.Any())
+            if (sortedprescriptions.Count() > 0)
                 return Ok(map.Map<IEnumerable<DoctorPrescriptionsDto>>(sortedprescriptions));
             return NotFound(new ApiResponse(404));
         }
@@ -58,8 +61,9 @@ namespace Sehaty.APIs.Controllers
         [HttpGet("doctorprescriptions/{id}")]
         public async Task<IActionResult> GetPrescriptionDetails(int id)
         {
-            var doctorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var spec = new PrescriptionSpecifications(p => p.Id == id && p.DoctorId == doctorId);
+            var doctorUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var doctorId = unit.Repository<Doctor>().FindByAsync(D => D.UserId == doctorUserId).Select(D => D.Id).FirstOrDefault();
+            var spec = new PrescriptionSpecifications(P => P.Id == id && P.DoctorId == doctorId);
             var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
             if (prescription == null)
                 return NotFound(new ApiResponse(404));

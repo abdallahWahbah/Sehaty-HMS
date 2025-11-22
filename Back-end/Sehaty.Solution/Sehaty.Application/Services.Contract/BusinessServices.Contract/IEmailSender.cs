@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sehaty.Infrastructure.Service.Email
+namespace Sehaty.Application.Services.Contract.BusinessServices.Contract
 {
     public interface IEmailSender
     {
