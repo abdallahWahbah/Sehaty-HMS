@@ -2,15 +2,15 @@
   <div class="title_dashboard">
     <div>
       <h2>Medical Records</h2>
-      <p>View and manage patient medical records</p>
+      <p>View patients medical records</p>
     </div>
   </div>
-  <div class="searchbar_dashboard">
+  <!-- <div class="searchbar_dashboard">
     <div class="search_settings">
       <i class="fa-solid fa-magnifying-glass"></i>
       <input type="text" placeholder="Search records by patients, title or doctor ...." />
     </div>
-  </div>
+  </div> -->
     @if(records?.length){
         @for(rec of records; track rec.id){
             <div class="record">
