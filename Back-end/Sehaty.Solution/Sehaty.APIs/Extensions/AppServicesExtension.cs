@@ -1,27 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Sehaty.APIs.Errors;
-using Sehaty.Application.MappingProfiles;
-using Sehaty.Application.Services;
-using Sehaty.Application.Services.Contract;
-using Sehaty.Application.Services.Contract.AuthService.Contract;
-using Sehaty.Application.Services.Contract.BusinessServices.Contract;
-using Sehaty.Application.Services.IdentityService;
-using Sehaty.Application.Shared.AuthShared;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Entities.User_Entities;
-using Sehaty.Core.UnitOfWork.Contract;
-using Sehaty.Infrastructure.Data.Contexts;
-using Sehaty.Infrastructure.Data.SeedClass;
-using Sehaty.Infrastructure.Helper;
-using Sehaty.Infrastructure.Service.Email;
-using Sehaty.Infrastructure.Service.SMS;
-using Sehaty.Infrastructure.UnitOfWork;
-using System.Text;
-namespace Sehaty.APIs.Extensions
+﻿namespace Sehaty.APIs.Extensions
 {
     public static class AppServicesExtension
     {

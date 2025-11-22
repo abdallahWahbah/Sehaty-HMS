@@ -1,21 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Sehaty.APIs.Errors;
-using Sehaty.Application.Dtos.NotificationsDTOs;
-using Sehaty.Application.Dtos.PrescriptionsDTOs;
-using Sehaty.Application.Services;
-using Sehaty.Application.Services.Contract.BusinessServices.Contract;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Entities.Business_Entities;
-using Sehaty.Core.Entities.Business_Entities.Appointments;
-using Sehaty.Core.Specifications.Prescription_Specs;
-using Sehaty.Core.UnitOfWork.Contract;
-using Sehaty.Infrastructure.Service.Email;
-using Sehaty.Infrastructure.Service.SMS;
-using System.Security.Claims;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
 
     public class PrescriptionsController(IUnitOfWork unit, IMapper map, IPrescriptionPdfService pdfService, IEmailSender emailSender, ISmsSender smsSender) : ApiBaseController

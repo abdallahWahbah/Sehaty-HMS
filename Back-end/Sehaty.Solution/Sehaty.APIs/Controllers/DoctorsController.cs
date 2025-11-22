@@ -1,15 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using QuestPDF.Infrastructure;
-using Sehaty.APIs.Errors;
-using Sehaty.Application.Dtos.DoctorDtos;
-using Sehaty.Application.Services.Contract.BusinessServices.Contract;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Specifications.DoctorSpec;
-using Sehaty.Core.UnitOfWork.Contract;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
     //[Authorize(Roles = "Admin")]
     public class DoctorsController(IUnitOfWork unit, IMapper mapper, IDoctorService doctorService) : ApiBaseController

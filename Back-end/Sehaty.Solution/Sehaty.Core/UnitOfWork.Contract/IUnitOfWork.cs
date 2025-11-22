@@ -1,5 +1,4 @@
-﻿using Sehaty.Core.Entites;
-using Sehaty.Core.Repository.Contracts;
+﻿using Sehaty.Core.Repository.Contracts;
 
 namespace Sehaty.Core.UnitOfWork.Contract
 {

@@ -1,12 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Repository.Contracts;
-using Sehaty.Core.Specefications;
-using Sehaty.Infrastructure.Data.Contexts;
-using Sehaty.Infrastructure.Specifications;
-using System.Linq.Expressions;
-
-namespace Sehaty.Infrastructure.Repositories
+﻿namespace Sehaty.Infrastructure.Repositories
 {
     public class Repository<T> : IRepository<T> where T : BaseEntity
     {

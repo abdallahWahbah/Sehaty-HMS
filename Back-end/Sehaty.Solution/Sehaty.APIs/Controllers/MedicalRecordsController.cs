@@ -1,15 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Sehaty.APIs.Errors;
-using Sehaty.Application.Dtos.DoctorDtos;
-using Sehaty.Application.Dtos.MedicalRecordDto;
-using Sehaty.Core.Entities.Business_Entities.Appointments;
-using Sehaty.Core.Entities.Business_Entities.MedicalRecords;
-using Sehaty.Core.Specifications.MedicalReord;
-using Sehaty.Core.UnitOfWork.Contract;
-using Sehaty.Infrastructure.Dtos;
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
 
     public class MedicalRecordsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Sehaty.Application.Dtos.DepartmentDtos
+﻿namespace Sehaty.Application.Dtos.DepartmentDtos
 {
     public class DepartmentAddUpdateDto
     {

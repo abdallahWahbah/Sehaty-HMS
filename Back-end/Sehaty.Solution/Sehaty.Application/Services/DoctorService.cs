@@ -1,19 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using QuestPDF.Infrastructure;
-using Sehaty.Application.Dtos.DoctorDtos;
-using Sehaty.Application.Services.Contract;
-using Sehaty.Application.Services.Contract.BusinessServices.Contract;
-using Sehaty.Core.Entites;
-using Sehaty.Core.UnitOfWork.Contract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sehaty.Application.Services
+﻿namespace Sehaty.Application.Services
 {
     public class DoctorService(IUnitOfWork unit, IMapper mapper, IFileService fileService) : IDoctorService
     {

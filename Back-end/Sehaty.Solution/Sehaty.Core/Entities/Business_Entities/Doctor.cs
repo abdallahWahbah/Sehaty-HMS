@@ -1,8 +1,4 @@
-﻿using Sehaty.Core.Entities.Business_Entities;
-using Sehaty.Core.Entities.Business_Entities.Appointments;
-using Sehaty.Core.Entities.User_Entities;
-
-namespace Sehaty.Core.Entites
+﻿namespace Sehaty.Core.Entites
 {
     public class Doctor : BaseEntity
     {

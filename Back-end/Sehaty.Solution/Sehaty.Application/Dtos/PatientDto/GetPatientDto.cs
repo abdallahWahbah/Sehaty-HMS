@@ -1,6 +1,4 @@
-﻿using Sehaty.Core.Entites;
-
-namespace Sehaty.Application.Dtos.PatientDto
+﻿namespace Sehaty.Application.Dtos.PatientDto
 {
     public class GetPatientDto
     {

@@ -1,8 +1,4 @@
-﻿using Sehaty.Core.Entites;
-using Sehaty.Core.Specefications;
-using System.Linq.Expressions;
-
-namespace Sehaty.Core.Specifications.FeedbackSpec
+﻿namespace Sehaty.Core.Specifications.FeedbackSpec
 {
     public class FeedbackSpecification : BaseSpecefication<Feedback>
     {

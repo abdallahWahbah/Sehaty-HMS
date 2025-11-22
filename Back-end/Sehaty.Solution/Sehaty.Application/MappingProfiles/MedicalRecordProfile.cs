@@ -1,9 +1,4 @@
-﻿using AutoMapper;
-using Sehaty.Application.Dtos.MedicalRecordDto;
-using Sehaty.Core.Entities.Business_Entities.MedicalRecords;
-using Sehaty.Infrastructure.Dtos;
-
-namespace Sehaty.Application.MappingProfiles
+﻿namespace Sehaty.Application.MappingProfiles
 {
     public class MedicalRecordProfile : Profile
     {

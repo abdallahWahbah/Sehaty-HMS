@@ -1,11 +1,4 @@
-﻿using Sehaty.Core.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sehaty.Application.Dtos.DoctorAvailabilitySlotDto
+﻿namespace Sehaty.Application.Dtos.DoctorAvailabilitySlotDto
 {
     public class DoctorAvailabilityReadDto
     {

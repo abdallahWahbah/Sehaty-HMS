@@ -1,7 +1,4 @@
-﻿using Sehaty.APIs.Errors;
-using System.Text.Json;
-
-namespace Sehaty.APIs.Middlewares
+﻿namespace Sehaty.APIs.Middlewares
 {
     public class ExceptionMiddleware
     {

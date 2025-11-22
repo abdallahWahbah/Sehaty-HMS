@@ -1,12 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
-using Sehaty.Application.Dtos.IdentityDtos;
-using Sehaty.Application.Services.Contract.AuthService.Contract;
-using System.Security.Claims;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

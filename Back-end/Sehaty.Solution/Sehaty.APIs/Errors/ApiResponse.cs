@@ -4,14 +4,14 @@ namespace Sehaty.APIs.Errors
     public class ApiResponse
     {
         public int StatusCode { get; set; }
-        public string? Message { get; set; }
-        public ApiResponse(int statusCode, string? message = null)
+        public string Message { get; set; }
+        public ApiResponse(int statusCode, string message = null)
         {
             StatusCode = statusCode;
             Message = message ?? GetMessage(statusCode); ;
         }
 
-        private string? GetMessage(int statusCode)
+        private string GetMessage(int statusCode)
         => statusCode switch
         {
             400 => "Bad Request — The server could not process your request due to client error.",

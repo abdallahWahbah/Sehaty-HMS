@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Sehaty.Core.Entites;
-
-namespace Sehaty.Infrastructure.Data.Configrations
+﻿namespace Sehaty.Infrastructure.Data.Configrations
 {
     public class NotificationConfigrations : IEntityTypeConfiguration<Notification>
     {

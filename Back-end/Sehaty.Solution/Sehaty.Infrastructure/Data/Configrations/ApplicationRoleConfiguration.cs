@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Sehaty.Core.Entities.User_Entities;
-
-namespace Sehaty.Infrastructure.Data.Configrations
+﻿namespace Sehaty.Infrastructure.Data.Configrations
 {
     public class ApplicationRoleConfiguration : IEntityTypeConfiguration<ApplicationRole>
     {
