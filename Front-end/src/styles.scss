@@ -6,4 +6,8 @@
 @import './app/scss/base/base';
 @import './app/scss/base/typography';
 
-@import './app/scss/layout/_auth';
+@import './app/scss/layout/admin/adminAppointments';
+@import './app/scss/layout/admin/adminDashboard';
+@import './app/scss/layout/admin/adminDoctors';
+@import './app/scss/layout/auth';
+@import './app/scss/layout/dashboardSidebar';
