@@ -258,7 +258,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<string>("ProfilePhotoUrl")
+                    b.Property<string>("ProfilePhoto")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Qualifications")
@@ -471,6 +471,10 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Property<string>("NationalId")
                         .HasColumnType("nvarchar(14)");
 
+                    b.Property<string>("PatientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
 
@@ -482,6 +486,9 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PatientId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 

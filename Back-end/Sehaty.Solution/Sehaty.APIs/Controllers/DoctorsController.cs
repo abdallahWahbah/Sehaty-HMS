@@ -1,15 +1,18 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using QuestPDF.Infrastructure;
 using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.DoctorDtos;
+using Sehaty.Application.Services.Contract.BusinessServices.Contract;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Specifications.DoctorSpec;
 using Sehaty.Core.UnitOfWork.Contract;
 
 namespace Sehaty.APIs.Controllers
 {
-
-    public class DoctorsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
+    //[Authorize(Roles = "Admin")]
+    public class DoctorsController(IUnitOfWork unit, IMapper mapper, IDoctorService doctorService) : ApiBaseController
     {
 
         [HttpGet]
@@ -36,41 +39,37 @@ namespace Sehaty.APIs.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteDoctor(int id)
         {
-            var doctorToDelete = await unit.Repository<Doctor>().GetByIdAsync(id);
-            if (doctorToDelete is null)
+            var success = await doctorService.DeleteDoctorAsync(id);
+            if (!success)
                 return NotFound(new ApiResponse(404));
-            unit.Repository<Doctor>().Delete(doctorToDelete);
-            await unit.CommitAsync();
             return NoContent();
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateDoctor(int id, [FromBody] DoctorAddUpdateDto dto)
+        public async Task<ActionResult> UpdateDoctor(int id, [FromForm] DoctorAddUpdateDto dto)
         {
-            if (ModelState.IsValid)
-            {
-                var doctorToEdit = await unit.Repository<Doctor>().GetByIdAsync(id);
-                if (doctorToEdit is null)
-                    return NotFound(new ApiResponse(404));
-                mapper.Map(dto, doctorToEdit);
-                unit.Repository<Doctor>().Update(doctorToEdit);
-                await unit.CommitAsync();
-                return NoContent();
-            }
-            return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var doctor = await doctorService.UpdateDoctorAsync(id, dto);
+
+            if (doctor == null)
+                return NotFound(new ApiResponse(404));
+
+            return NoContent();
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddDoctor([FromBody] DoctorAddUpdateDto dto)
+        public async Task<ActionResult> AddDoctor([FromForm] DoctorAddUpdateDto dto)
         {
-            if (ModelState.IsValid)
-            {
-                var doctorToAdd = mapper.Map<Doctor>(dto);
-                await unit.Repository<Doctor>().AddAsync(doctorToAdd);
-                await unit.CommitAsync();
-                return CreatedAtAction(nameof(GetDoctorById), new { id = doctorToAdd.Id }, mapper.Map<GetDoctorDto>(doctorToAdd));
-            }
-            return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var doctor = await doctorService.AddDoctorAsync(dto);
+
+            return CreatedAtAction(nameof(GetDoctorById),
+                new { id = doctor.Id },
+                mapper.Map<GetDoctorDto>(doctor));
         }
     }
 }

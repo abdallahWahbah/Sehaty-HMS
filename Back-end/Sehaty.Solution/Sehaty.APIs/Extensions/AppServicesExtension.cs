@@ -5,15 +5,23 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Sehaty.APIs.Errors;
 using Sehaty.Application.MappingProfiles;
+using Sehaty.Application.Services;
+using Sehaty.Application.Services.Contract;
 using Sehaty.Application.Services.Contract.AuthService.Contract;
+using Sehaty.Application.Services.Contract.BusinessServices.Contract;
+using Sehaty.Application.Services.DoctorService;
 using Sehaty.Application.Services.IdentityService;
+using Sehaty.Application.Services.PatientService;
 using Sehaty.Application.Services.PDFservice;
 using Sehaty.Application.Shared.AuthShared;
+using Sehaty.Core.Entites;
 using Sehaty.Core.Entities.User_Entities;
 using Sehaty.Core.UnitOfWork.Contract;
 using Sehaty.Infrastructure.Data.Contexts;
 using Sehaty.Infrastructure.Data.SeedClass;
+using Sehaty.Infrastructure.Helper;
 using Sehaty.Infrastructure.Service.Email;
+using Sehaty.Infrastructure.Service.SMS;
 using Sehaty.Infrastructure.UnitOfWork;
 using System.Text;
 namespace Sehaty.APIs.Extensions
@@ -91,6 +99,15 @@ namespace Sehaty.APIs.Extensions
             // Inject Service For Prescription To Dowmload Prescription
             services.AddScoped<PrescriptionPdfService>();
 
+            // Inject Service For Doctor To Add And Manage Doctors
+            services.AddScoped<IDoctorService, DoctorService>();
+
+            // Inject Service For Patient To Add And Manage Doctors
+            services.AddScoped<IPatientService, PatientService>();
+
+            // Inject Service For Doctor To Add And Manage Doctors
+            services.AddScoped<IFileService, FileService>();
+
             // Add DbContext Class Injection
             services.AddDbContext<SehatyDbContext>(options =>
             {
@@ -121,8 +138,12 @@ namespace Sehaty.APIs.Extensions
                     ClockSkew = TimeSpan.Zero
                 };
             });
-
-
+            //Add email services
+            services.AddTransient<IEmailSender, EmailSender>();
+            //bind Twilio settings
+            services.Configure<TwilioSettings>(configuration.GetSection("TwilioSMSSetting"));
+            //Add SMS Service
+            services.AddTransient<ISmsSender, SmsSender>();
             #endregion
 
 

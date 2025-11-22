@@ -5,7 +5,7 @@ using Sehaty.Core.Entites;
 
 namespace Sehaty.Application.MappingHelpers
 {
-    public class DoctorProfileImageResolver : IValueResolver<Doctor, GetDoctorDto, string>
+    public class DoctorProfileImageResolver<TDestination> : IValueResolver<Doctor, TDestination, string>
     {
         private readonly IConfiguration configuration;
 
@@ -13,12 +13,11 @@ namespace Sehaty.Application.MappingHelpers
         {
             this.configuration = configuration;
         }
-        public string Resolve(Doctor source, GetDoctorDto destination, string destMember, ResolutionContext context)
+        public string Resolve(Doctor source, TDestination destination, string destMember, ResolutionContext context)
         {
-            if (!string.IsNullOrWhiteSpace(source.ProfilePhotoUrl))
+            if (!string.IsNullOrWhiteSpace(source.ProfilePhoto))
             {
-                destination.ProfilePhotoUrl = $"{configuration["SehatyBaseUlr"]}/{source.ProfilePhotoUrl}";
-                return destination.ProfilePhotoUrl;
+                return $"{configuration["SehatyBaseUlr"]}/images/doctors/{source.ProfilePhoto}";
             }
 
             return String.Empty;

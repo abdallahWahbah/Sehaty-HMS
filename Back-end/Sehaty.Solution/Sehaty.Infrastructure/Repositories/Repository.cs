@@ -34,8 +34,8 @@ namespace Sehaty.Infrastructure.Repositories
                 return await Set.AsNoTracking().FirstOrDefaultAsync(E => E.Id == id);
             return await Set.FindAsync(id);
         }
-        public async Task<IEnumerable<T>> FindByAsync(Expression<Func<T, bool>> predicate)
-            => await Set.Where(predicate).ToListAsync();
+        public IQueryable<T> FindByAsync(Expression<Func<T, bool>> predicate)
+            => Set.Where(predicate);
         public async Task AddAsync(T entity)
             => await Set.AddAsync(entity);
         public void Delete(T entity)

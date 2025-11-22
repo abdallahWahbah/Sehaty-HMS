@@ -5,11 +5,13 @@ using Sehaty.Application.Dtos.NotificationsDTOs;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Specifications.Notifications_Specs;
 using Sehaty.Core.UnitOfWork.Contract;
+using Sehaty.Infrastructure.Service.Email;
+using Sehaty.Infrastructure.Service.SMS;
 
 namespace Sehaty.APIs.Controllers
 {
 
-    public class NotificationsController(IUnitOfWork unit, IMapper map) : ApiBaseController
+    public class NotificationsController(IUnitOfWork unit, IMapper map, IEmailSender emailSender, ISmsSender smsSender) : ApiBaseController
     {
 
         [HttpGet]
@@ -85,5 +87,8 @@ namespace Sehaty.APIs.Controllers
             await unit.CommitAsync();
             return NoContent();
         }
+
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Sehaty.Application.Dtos.DoctorDtos
 {
@@ -21,7 +22,7 @@ namespace Sehaty.Application.Dtos.DoctorDtos
         public string LicenseNumber { get; set; }
         public string Qualifications { get; set; }
         public int YearsOfExperience { get; set; }
-        public string ProfilePhotoUrl { get; set; }
+        public IFormFile ProfilePhoto { get; set; }
         public string AvailabilityNotes { get; set; }
         public int UserId { get; set; }
         public int? DepartmentId { get; set; }

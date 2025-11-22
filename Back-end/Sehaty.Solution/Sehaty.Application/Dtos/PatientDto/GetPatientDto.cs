@@ -5,6 +5,7 @@ namespace Sehaty.Application.Dtos.PatientDto
     public class GetPatientDto
     {
         public int Id { get; set; }
+        public string PatientId { get; set; }
         public string MRN { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

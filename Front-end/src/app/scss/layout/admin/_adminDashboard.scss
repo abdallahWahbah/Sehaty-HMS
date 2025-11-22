@@ -1,0 +1,162 @@
+/* =====================
+   DASHBOARD
+===================== */
+.dashboard {
+  margin-right: 2rem;
+  &__title {
+    color: $color-primary;
+    margin-top: 3.5rem;
+    margin-left: 2rem;
+
+    &-main {
+      font-weight: 700;
+      font-size: 2.4rem;
+    }
+
+    &-sub {
+      font-size: 1.4rem;
+      font-weight: 400;
+    }
+  }
+
+  /* =====================
+     SECTION 1
+  ===================== */
+  &__stats {
+    display: flex;
+  }
+
+  &__card {
+    width: 27.6rem;
+    height: 10.8rem;
+    border: 0.1rem solid #00000040;
+    border-radius: 1rem;
+    margin-left: 2.1rem;
+    margin-top: 3.5rem;
+
+    &--header {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 2rem;
+
+      p {
+        font-size: 1.8rem;
+        color: $color-primary;
+        font-weight: 400;
+      }
+
+      i {
+        font-size: 1.8rem;
+        color: $color-primary;
+      }
+    }
+
+    &--info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin-left: 4.2rem;
+
+      p,
+      span {
+        font-size: 1.4rem;
+        font-weight: 400;
+        color: $color-primary;
+        margin: 0;
+        padding: 0;
+      }
+
+      span {
+        color: #46af05;
+      }
+    }
+  }
+
+  /* =====================
+     SECTION 2
+  ===================== */
+  &__appointments {
+    margin-left: 2.1rem;
+    margin-top: 3.5rem;
+    display: flex;
+    gap: 2.5rem;
+
+    &-card {
+      width: 100%;
+      // height: 32.6rem;
+      border: 0.1rem solid #00000040;
+      border-radius: 1rem;
+      padding-bottom: 2rem;
+    }
+
+    &-heading {
+      font-size: 1.6rem;
+      color: $color-primary;
+      margin-left: 2.1rem;
+      margin-top: 2.5rem;
+    }
+
+    &-item {
+      height: 6.6rem;
+      border: 0.1rem solid #00000040;
+      border-radius: 1rem;
+      margin: 2rem;
+      line-height: 0;
+      display: flex;
+      justify-content: space-between;
+      color: $color-primary;
+
+      &-info {
+        margin-left: 2rem;
+
+        p:first-child {
+          font-size: 1.6rem;
+          font-weight: 700;
+          margin-top: 2rem;
+        }
+
+        p:last-child {
+          font-size: 1.6rem;
+          font-weight: 400;
+          padding-top: .7rem;
+        }
+      }
+
+      &-time {
+        margin-right: 2rem;
+
+        p:first-child {
+          font-size: 1.6rem;
+          font-weight: 700;
+          margin-top: 2rem;
+        }
+      }
+
+      /* STATUS MODIFIERS */
+      &--confirmed,
+      &--delayed,
+      &--pending {
+        width: 6.9rem;
+        height: 2.2rem;
+        border-radius: 1rem;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: .7rem;
+      }
+
+      &--confirmed {
+        background-color: var(--color-green-1);
+      }
+
+      &--delayed {
+        background-color: #ff7c7ee0;
+      }
+
+      &--pending {
+        background-color: #f9b701;
+      }
+    }
+  }
+}

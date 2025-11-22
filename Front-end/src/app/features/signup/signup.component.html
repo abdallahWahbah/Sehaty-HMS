@@ -1,0 +1,202 @@
+<div class="auth">
+  <div class="auth__logo">
+    <img src="/images/logo.png" alt="main logo" class="auth__logo--image">
+  </div>
+
+  <div class="auth__main--container">
+    <div class="auth__content">
+        @if(serverError){
+            <div class="server-error">
+                <span>{{ serverError }}</span>
+            </div>
+        }
+        <h3 class="auth__header">Sign up</h3>
+        <p class="auth__sub--header">Let’s get you all st up so you can access your personal account.</p>
+
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+
+            <!-- First Name + Last Name -->
+            <div class="d-flex justify-content-between gap-2">
+                <div class="col-6">
+                    <p-floatlabel variant="on" class="auth__input--container">
+                        <input 
+                            pInputText 
+                            id="firstName"
+                            autocomplete="off" 
+                            formControlName="firstName" 
+                        />
+                        <label for="firstName">First Name</label>
+                    </p-floatlabel>
+                    @if(signupForm.get('firstName')?.touched && signupForm.get('firstName')?.invalid){
+                        <div class="error-text">
+                            @if(signupForm.get('firstName')?.errors?.['required']){
+                                <span>firstName is required</span>
+                            }
+                        </div>
+                    }
+                </div>
+                
+                <div class="col-6">
+                    <p-floatlabel variant="on" class="auth__input--container">
+                        <input 
+                            pInputText 
+                            formControlName="lastName" 
+                            autocomplete="off" 
+                        />
+                        <label>Last Name</label>
+                    </p-floatlabel>
+                    @if(signupForm.get('lastName')?.touched && signupForm.get('lastName')?.invalid){
+                        <div class="error-text">
+                            @if(signupForm.get('lastName')?.errors?.['required']){
+                                <span>lastName is required</span>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Email + Phone -->
+            <div class="d-flex justify-content-between gap-2">
+                <div class="col-6">
+                    <p-floatlabel variant="on" class="auth__input--container">
+                        <input 
+                            pInputText 
+                            formControlName="email" 
+                            autocomplete="off" 
+                            class="form-control" 
+                        />
+                        <label>Email</label>
+                    </p-floatlabel>
+                    @if(signupForm.get('email')?.touched && signupForm.get('email')?.invalid){
+                        <div class="error-text">
+                            @if(signupForm.get('email')?.errors?.['required']){
+                                <span>Email is required</span>
+                            }
+                        </div>
+                    }
+                    @if(signupForm.get('email')?.touched && signupForm.get('email')?.invalid){
+                        <div class="error-text">
+                            @if(signupForm.get('email')?.errors?.['email']){
+                                <span>Enter a valid email</span>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <div class="col-6">
+                    <p-floatlabel variant="on" class="auth__input--container">
+                        <input 
+                            pInputText 
+                            formControlName="phoneNumber" 
+                            autocomplete="off" 
+                            class="form-control" 
+                        />
+                        <label>Phone Number</label>
+                    </p-floatlabel>
+                    @if(signupForm.get('phoneNumber')?.touched && signupForm.get('phoneNumber')?.invalid){
+                        <div class="error-text">
+                            @if(signupForm.get('phoneNumber')?.errors?.['required']){
+                                <span>Phone Number is required</span>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <p-floatlabel variant="on" class="auth__input--container">
+                    <input 
+                        pInputText 
+                        formControlName="userName" 
+                        autocomplete="off" 
+                    />
+                    <label>Username</label>
+                </p-floatlabel>
+                @if(signupForm.get('userName')?.touched && signupForm.get('userName')?.invalid){
+                    <div class="error-text">
+                        @if(signupForm.get('userName')?.errors?.['required']){
+                            <span>userName is required</span>
+                        }
+                    </div>
+                }
+
+                <p-floatlabel variant="on" class="auth__input--container">
+                    <p-password 
+                        formControlName="password" 
+                        [toggleMask]="true"></p-password>
+                    <label>Password</label>
+                </p-floatlabel>
+                @if(signupForm.get('password')?.touched && signupForm.get('password')?.invalid){
+                        <div class="error-text">
+                            
+                            @if(signupForm.get('password')?.errors?.['required']){
+                            <span>Password is required</span>
+                            }
+
+                            @if(signupForm.get('password')?.errors?.['minlength']){
+                            <span>Minimum 6 characters</span>
+                            }
+
+                            @if(signupForm.get('password')?.errors?.['pattern']){
+                            <span>
+                                Must contain:
+                                <br>• Uppercase letter
+                                <br>• Lowercase letter
+                                <br>• Number
+                                <br>• Special character
+                                <br>• No spaces
+                            </span>
+                            }
+
+                        </div>
+                    }
+            </div>
+
+            <div class="flex gap-2">
+                <p-floatlabel variant="on" class="auth__input--container flex-1">
+                    <p-password 
+                        formControlName="confirmPassword" 
+                        [toggleMask]="true"></p-password
+                    >
+                    <label>Confirm Password</label>
+                </p-floatlabel>
+                @if(signupForm.get('confirmPassword')?.touched && signupForm.get('confirmPassword')?.invalid){
+                    <div class="error-text">
+                        @if(signupForm.get('confirmPassword')?.errors?.['required']){
+                            <span>Confirm Password is required</span>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="flex items-center mt-2">
+                <p-checkbox 
+                    formControlName="agreeTerms" 
+                    [binary]="true"></p-checkbox
+                >
+                <label class="ml-2 checkbox__label">I agree to the terms and conditions</label>
+                @if(signupForm.get('agreeTerms')?.touched && signupForm.get('agreeTerms')?.invalid){
+                    <div class="error-text error-text-mt">
+                        @if(signupForm.get('agreeTerms')?.errors?.['required']){
+                            <span>please accept terms and conditions</span>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="card flex justify-center auth__button--container mt-3">
+            <p-button type="submit" label="Create Account"></p-button>
+            </div>
+
+            <div class="auth__no--account-container">
+                    <span>Don't have an account?</span>
+                    <span> <a routerLink="/login"> Login</a></span>
+                </div>
+        </form>
+    </div>
+
+    <div class="auth__image--container signup__image--container">
+      <img src="/images/login.jpg" alt="" class="auth__image">
+    </div>
+  </div>
+</div>

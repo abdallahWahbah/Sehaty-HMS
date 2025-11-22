@@ -24,6 +24,16 @@ namespace Sehaty.APIs
             // Extension Method To Add All Services Needed To Run Application
             builder.Services.AddApplicationServices(builder.Configuration);
 
+            // allow cors
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngular", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
             var app = builder.Build();
 
             #region Update Database & Seed Data In Data Base 
@@ -50,6 +60,7 @@ namespace Sehaty.APIs
             app.UseAuthentication();
 
             app.UseAuthorization();
+            app.UseCors("AllowAngular");
 
 
             app.MapControllers();
