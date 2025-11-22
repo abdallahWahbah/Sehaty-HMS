@@ -167,7 +167,7 @@ namespace Sehaty.APIs.Controllers
         }
 
         //Cancel Appointment With Policy
-        //[Authorize(Roles = "Patient,Reception")]
+        [Authorize(Roles = "Patient,Reception")]
         [HttpPost("CancelAppointment/{id}")]
         public async Task<IActionResult> CancelAppointment(int id)
         {
@@ -210,11 +210,11 @@ namespace Sehaty.APIs.Controllers
                         await emailSender.SendEmailAsync(patient.User.Email, "تم إلغاء موعدك", message);
                         notificationDto.SentViaEmail = true;
                     }
-                    //if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
-                    //{
-                    //    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
-                    //    notificationDto.SentViaSMS = true;
-                    //}
+                    if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
+                    {
+                        smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
+                        notificationDto.SentViaSMS = true;
+                    }
                     await unit.CommitAsync();
                 }
 
