@@ -1,0 +1,34 @@
+.record-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); // 2 items per row
+  gap: 1rem;  // spacing between items
+}
+
+.record-item {
+  background: #fff;
+  padding: 10px 5px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.record-header {
+  font-weight: 700;        // bold
+  font-size: 1.2rem;       // bigger
+  margin-bottom: 3px;
+  color: var(--color-primary);
+}
+
+.record-value {
+  font-size: 0.95rem;
+  color: var(--color-primary);
+}
+
+:host ::ng-deep .p-dialog .p-dialog-header {
+  font-size: 1.8rem !important; 
+  font-weight: 600;
+}
+
+.p-dialog-title.ng-tns-c2196985156-0{
+    font-size: 2rem !important;
+    display: none !important;
+}
