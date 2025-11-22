@@ -472,7 +472,8 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(14)");
 
                     b.Property<string>("PatientId")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
@@ -485,6 +486,9 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PatientId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 

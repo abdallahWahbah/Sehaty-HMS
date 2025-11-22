@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.DepartmentDtos;
 using Sehaty.Core.Entites;
+using Sehaty.Core.Specefications;
+using Sehaty.Core.Specifications.DepartmentSpec;
 using Sehaty.Core.UnitOfWork.Contract;
 
 namespace Sehaty.APIs.Controllers
@@ -12,14 +14,16 @@ namespace Sehaty.APIs.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetDepartmentDto>>> GetAllDepartments()
         {
-            var departments = await unit.Repository<Department>().GetAllAsync();
+            var spec = new DepartmentSpecifications();
+            var departments = await unit.Repository<Department>().GetAllWithSpecAsync(spec);
             if (departments is null) return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<IEnumerable<GetDepartmentDto>>(departments));
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<GetDepartmentDto>> GetDepartmentById(int id)
         {
-            var department = await unit.Repository<Department>().GetByIdAsync(id);
+            var spec = new DepartmentSpecifications(id);
+            var department = await unit.Repository<Department>().GetByIdWithSpecAsync(spec);
             if (department is null) return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<GetDepartmentDto>(department));
         }
