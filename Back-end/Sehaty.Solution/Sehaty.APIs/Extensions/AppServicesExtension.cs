@@ -9,10 +9,7 @@ using Sehaty.Application.Services;
 using Sehaty.Application.Services.Contract;
 using Sehaty.Application.Services.Contract.AuthService.Contract;
 using Sehaty.Application.Services.Contract.BusinessServices.Contract;
-using Sehaty.Application.Services.DoctorService;
 using Sehaty.Application.Services.IdentityService;
-using Sehaty.Application.Services.PatientService;
-using Sehaty.Application.Services.PDFservice;
 using Sehaty.Application.Shared.AuthShared;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Entities.User_Entities;
@@ -60,32 +57,34 @@ namespace Sehaty.APIs.Extensions
                 swagger.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Sehaty Web Api",
-                    Description = "The Sehaty Medical Web API"
+                    Title = "Sehaty",
+                    Description = "Sehaty Medical Web API"
                 });
                 // To Enable authorization using Swagger (JWT)    
-                swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
+                    Type = SecuritySchemeType.Http,
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
+                    Description = "Enter your valid token in the text input below . \r\n\r\nExample: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
                 });
-                swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
+
+                swagger.AddSecurityRequirement(
+                    new OpenApiSecurityRequirement
                     {
-                    new OpenApiSecurityScheme
-                    {
-                    Reference = new OpenApiReference
-                    {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                    }
-                    },
-                    new string[] {}
-                    }
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                }
+                            },
+                            Array.Empty<string>()
+                        }
                     });
             });
 
@@ -97,7 +96,7 @@ namespace Sehaty.APIs.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // Inject Service For Prescription To Dowmload Prescription
-            services.AddScoped<PrescriptionPdfService>();
+            services.AddScoped<IPrescriptionPdfService, PrescriptionPdfService>();
 
             // Inject Service For Doctor To Add And Manage Doctors
             services.AddScoped<IDoctorService, DoctorService>();

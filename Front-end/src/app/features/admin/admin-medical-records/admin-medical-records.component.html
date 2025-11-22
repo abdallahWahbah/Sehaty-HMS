@@ -1,1 +1,63 @@
-<p>admin-medical-records works!</p>
+<section id="dashboard_medicalRecord">
+  <div class="title_dashboard">
+    <div>
+      <h2>Medical Records</h2>
+      <p>View patients medical records</p>
+    </div>
+  </div>
+  <!-- <div class="searchbar_dashboard">
+    <div class="search_settings">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" placeholder="Search records by patients, title or doctor ...." />
+    </div>
+  </div> -->
+    @if(records?.length){
+        @for(rec of records; track rec.id){
+            <div class="record">
+                <div class="record_info">
+                    <div class="info">
+                    <p><b>Diagnosis:</b> {{ rec.diagnosis }}</p>
+                    <p>
+                        <b> Patient: {{ rec.patientName || 'Unknown' }}</b> ({{ rec.appointmentId }})
+                    </p>
+                    </div>
+                </div>
+        
+                <div class="record_details_download">
+                    <div class="details">
+                        <p><b>Symptoms: </b>{{ rec.symptoms }}</p>
+                    </div>
+                    <div class="view_downlad">
+                        <div class="appointments__person-actions-edit" (click)="viewRecord(rec)">
+                          <i class="fa-solid fa-eye"></i>
+                          <p>View</p>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="time_attachment">
+                    <div class="time">
+                        <i class="fa-solid fa-calendar"></i>
+                        <p>{{ rec.appointmentDateTime | date : 'yyyy-MM-dd HH:mm' }}</p>
+                    </div>
+                    <div class="attachment">
+                        <i class="fa-regular fa-file"></i>
+                        <p>{{ rec.notes || 'No notes' }}</p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    <div class="card flex justify-center">
+      <p-dialog 
+      [modal]="true" [(visible)]="visible" 
+      [style]="{ width: '100rem', color: 'var(--color-primary)' }" 
+      [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+      >
+      <!-- header="{{ selectedRecord?.patientName }}"  -->
+        <app-record 
+          [record]="selectedRecord" 
+          [visible]="visible"></app-record>
+      </p-dialog>
+    </div>
+</section>
