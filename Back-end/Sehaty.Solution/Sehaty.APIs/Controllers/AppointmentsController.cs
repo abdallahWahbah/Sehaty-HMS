@@ -14,6 +14,7 @@ using Sehaty.Core.UnitOfWork.Contract;
 using Sehaty.Infrastructure.Service.Email;
 using Sehaty.Infrastructure.Service.SMS;
 using System.Security.Claims;
+using Twilio.TwiML.Messaging;
 
 namespace Sehaty.APIs.Controllers
 {
@@ -86,19 +87,7 @@ namespace Sehaty.APIs.Controllers
             var notification = mapper.Map<Notification>(notificationDto);
             await unit.Repository<Notification>().AddAsync(notification);
             await unit.CommitAsync();
-            if (!string.IsNullOrEmpty(patient.User.Email))
-            {
-                await emailSender.SendEmailAsync(patient.User.Email, notificationDto.Title, message);
-                notification.SentViaEmail = true;
-            }
 
-            if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
-            {
-                smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
-                notification.SentViaSMS = true;
-            }
-
-            await unit.CommitAsync();
             return CreatedAtAction(nameof(GetAppointmentById), new { id = appointment.Id }, dto);
         }
 
@@ -250,8 +239,44 @@ namespace Sehaty.APIs.Controllers
             if (appointment.Status != AppointmentStatus.Pending) return BadRequest(new ApiResponse(400, "Appointment cannot be confirmed"));
             appointment.Status = AppointmentStatus.Confirmed;
             var rowsAffected = await unit.CommitAsync();
-            return rowsAffected > 0 ? Ok(new ApiResponse(200, "Appointment confirmed successfully")) : BadRequest(new ApiResponse(400, "Failed to Confirm appointment"));
 
+            if (rowsAffected <= 0)
+                return BadRequest(new ApiResponse(400, "Failed to confirm appointment"));
+            var patient = await unit.Repository<Patient>().GetByIdAsync(appointment.PatientId);
+            if (patient != null)
+            {
+                string message = $"تم تأكيد موعدك مع الطبيب {appointment.Doctor.FirstName} {appointment.Doctor.LastName} بتاريخ {appointment.AppointmentDateTime}";
+
+                var notificationDto = new CreateNotificationDto
+                {
+                    UserId = appointment.PatientId,
+                    Title = "Appointment Confirmed",
+                    Message = message,
+                    Priority = NotificationPriority.High,
+                    RelatedEntityType = "Appointment",
+                    RelatedEntityId = appointment.Id,
+                    SentViaEmail = false,
+                    SentViaSMS = true,
+                    NotificationType = NotificationType.Appointment,
+                    IsRead = false
+                };
+                var notification = mapper.Map<Notification>(notificationDto);
+                await unit.Repository<Notification>().AddAsync(notification);
+                await unit.CommitAsync();
+                if (!string.IsNullOrEmpty(patient.User.Email))
+                {
+                    await emailSender.SendEmailAsync(patient.User.Email, "تم تأكيد موعدك", message);
+                    notificationDto.SentViaEmail = false;
+                }
+                if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
+                {
+                    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
+                    notificationDto.SentViaSMS = true;
+                }
+                await unit.CommitAsync();
+            }
+
+            return Ok(new ApiResponse(200, "Appointment confirmed successfully"));
         }
 
 
