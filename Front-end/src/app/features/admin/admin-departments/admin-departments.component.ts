@@ -1,11 +1,55 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { forkJoin } from 'rxjs';
+import { Department } from '../../../core/models/department-response.model';
+import { DepartmentService } from '../../../core/services/department.service';
+import { doctorService } from '../../../core/services/doctor.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin-departments',
-  imports: [],
+  imports: [CommonModule, RouterModule],
   templateUrl: './admin-departments.component.html',
-  styleUrl: './admin-departments.component.scss'
+  styleUrl: './admin-departments.component.scss',
 })
-export class AdminDepartmentsComponent {
+export class AdminDepartmentsComponent implements OnInit {
+  departments: Department[] = [];
+  totalDepartments: number = 0;
+  totalDoctors: number = 0;
+  monthlyAppointments: string = '5000+';
+  averageRating: string = '4.8';
+  constructor(
+    private deptService: DepartmentService,
+    private doctorService: doctorService,
+    private cdr: ChangeDetectorRef
+  ) {}
+  ngOnInit(): void {
+    this.loadData();
+  }
 
+  loadData() {
+    forkJoin({
+      departments: this.deptService.getAllDepartments(),
+      doctors: this.doctorService.getAllDoctors(),
+    }).subscribe({
+      next: ({ departments, doctors }) => {
+        this.departments = departments.map((dept) => ({
+          ...dept,
+          doctors: doctors.filter((doc) => doc.departmentId === dept.id),
+        }));
+
+        this.totalDepartments = this.departments.length;
+        this.totalDoctors = doctors.length;
+
+        console.log('Departments with doctors:', this.departments);
+
+        try {
+          this.cdr.detectChanges();
+        } catch (e) {
+          console.warn('Change detection detectChanges() failed', e);
+        }
+      },
+      error: (err) => console.error('ERROR loading data', err),
+    });
+  }
 }
