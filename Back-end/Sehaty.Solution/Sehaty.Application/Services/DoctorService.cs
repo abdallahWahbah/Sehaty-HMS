@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sehaty.Application.Services.DoctorService
+namespace Sehaty.Application.Services
 {
     public class DoctorService(IUnitOfWork unit, IMapper mapper, IFileService fileService) : IDoctorService
     {

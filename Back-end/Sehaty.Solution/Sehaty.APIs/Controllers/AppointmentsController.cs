@@ -6,6 +6,7 @@ using Sehaty.APIs.Errors;
 using Sehaty.Application.Dtos.AppointmentDTOs;
 using Sehaty.Application.Dtos.BillngDto;
 using Sehaty.Application.Dtos.NotificationsDTOs;
+using Sehaty.Application.Services.Contract.BusinessServices.Contract;
 using Sehaty.Core.Entites;
 using Sehaty.Core.Entities.Business_Entities.Appointments;
 using Sehaty.Core.Specifications.Appointment_Specs;
@@ -30,10 +31,10 @@ namespace Sehaty.APIs.Controllers
             return Ok(mapper.Map<List<AppointmentReadDto>>(appointments));
         }
 
-        [HttpGet("GetAppointmentById/{id}")]
-        public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AppointmentReadDto>> GetAppointmentById(int id)
         {
-            var specs = new AppointmentSpecifications(D => D.Id == id);
+            var specs = new AppointmentSpecifications(id);
             var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(specs);
             if (appointment is null)
                 return NotFound(new ApiResponse(404));
@@ -221,6 +222,7 @@ namespace Sehaty.APIs.Controllers
             }
             return Ok(new ApiResponse(200, "Appointment canceled successfully"));
         }
+
         [Authorize(Roles = "Patient,Reception")]
         //RescheduleAppointment
         [HttpPut("RescheduleAppointment/{id}")]
