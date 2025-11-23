@@ -1,0 +1,33 @@
+<div class="add-department-container">
+  <h2>Add Department</h2>
+  <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="en_Name">English Name</label>
+      <input
+        id="en_Name"
+        formControlName="en_Name"
+        placeholder="Enter English Name"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="ar_Name">Arabic Name</label>
+      <input
+        id="ar_Name"
+        formControlName="ar_Name"
+        placeholder="Enter Arabic Name"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        placeholder="Enter Description"
+      ></textarea>
+    </div>
+
+    <button type="submit" [disabled]="addForm.invalid">Add Department</button>
+  </form>
+</div>

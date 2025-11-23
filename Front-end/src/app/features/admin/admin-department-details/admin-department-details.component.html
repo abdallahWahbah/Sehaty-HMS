@@ -80,10 +80,14 @@
 
       <!-- Action Buttons -->
       <div class="actions-section">
-        <button class="btn-update">
+        <button
+          class="btn-update"
+          [routerLink]="['/admin/departments/update', department?.id]"
+        >
           <i class="fa-solid fa-pen-to-square"></i>
           Update Department
         </button>
+
         <button class="btn-delete" (click)="deleteDepartment()">
           <i class="fa-solid fa-trash"></i>
           Delete Department

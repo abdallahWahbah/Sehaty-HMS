@@ -21,9 +21,6 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
       theme: {
         preset: Aura,
-        options: {
-          darkModeSelector: '.no-dark-mode', // أي class مش موجود
-        },
       },
     }),
     provideHttpClient(),
