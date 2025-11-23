@@ -54,21 +54,7 @@
             <p-floatlabel class="patient-edit__input">
                 <input pInputText formControlName="departmentId" />
                 <label>Department Id</label>
-            </p-floatlabel>
-
-            <div class="patient-edit__input">
-                <label class="p-float-label">Profile Photo</label>
-                <p-fileUpload 
-                    mode="basic"
-                    name="profilePhoto"
-                    accept="image/*"
-                    auto="false"
-                    maxFileSize="5000000"
-                    (onSelect)="onFileSelected($event)"
-                    chooseLabel="Choose File">
-                </p-fileUpload>
-            </div>
-    
+            </p-floatlabel>    
         </div>
     
         <div class="patient-edit__button-container">

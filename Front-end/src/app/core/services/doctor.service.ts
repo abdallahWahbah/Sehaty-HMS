@@ -16,7 +16,7 @@ export class DoctorService {
   getById(id: number){
     return this.http.get(this.baseUrl + id);
   }
-  updateDoctor(id: number, formData: FormData): Observable<any> {
-    return this.http.put(this.baseUrl + id, formData);
+  updateDoctor(id: number, doctorData: any): Observable<any> {
+    return this.http.put(this.baseUrl + id, doctorData);
   }
 }
