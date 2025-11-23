@@ -465,13 +465,10 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("MRN")
-                        .HasColumnType("nvarchar(20)");
-
                     b.Property<string>("NationalId")
                         .HasColumnType("nvarchar(14)");
 
-                    b.Property<string>("PatientId")
+                    b.Property<string>("Patient_Id")
                         .IsRequired()
                         .HasColumnType("nvarchar(20)");
 
@@ -487,7 +484,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientId")
+                    b.HasIndex("Patient_Id")
                         .IsUnique();
 
                     b.HasIndex("UserId");
@@ -604,7 +601,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AppointmentId")
+                    b.Property<int?>("AppointmentId")
                         .HasColumnType("int");
 
                     b.Property<int?>("BpDiastolic")
@@ -624,6 +621,9 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("RecordDate")
                         .HasColumnType("datetime2");
@@ -653,6 +653,9 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AppointmentId");
+
+                    b.HasIndex("PatientId")
+                        .IsUnique();
 
                     b.ToTable("MedicalRecords");
                 });
@@ -1102,7 +1105,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasOne("Sehaty.Core.Entites.Patient", "Patient")
                         .WithMany("Billings")
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Appointment");
@@ -1165,7 +1168,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasOne("Sehaty.Core.Entities.User_Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1182,7 +1185,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasOne("Sehaty.Core.Entites.Patient", "Patient")
                         .WithMany("Appointments")
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Doctor");
@@ -1192,13 +1195,17 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.MedicalRecords.MedicalRecord", b =>
                 {
-                    b.HasOne("Sehaty.Core.Entities.Business_Entities.Appointments.Appointment", "Appointment")
+                    b.HasOne("Sehaty.Core.Entities.Business_Entities.Appointments.Appointment", null)
                         .WithMany("MedicalRecords")
-                        .HasForeignKey("AppointmentId")
+                        .HasForeignKey("AppointmentId");
+
+                    b.HasOne("Sehaty.Core.Entites.Patient", "Patient")
+                        .WithOne("MedicalRecord")
+                        .HasForeignKey("Sehaty.Core.Entities.Business_Entities.MedicalRecords.MedicalRecord", "PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Appointment");
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Prescription", b =>
@@ -1220,7 +1227,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasOne("Sehaty.Core.Entites.Patient", "Patient")
                         .WithMany("Prescriptions")
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Appointment");
 
@@ -1291,6 +1298,8 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("Billings");
+
+                    b.Navigation("MedicalRecord");
 
                     b.Navigation("Prescriptions");
                 });

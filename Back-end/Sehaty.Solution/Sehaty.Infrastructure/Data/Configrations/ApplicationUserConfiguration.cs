@@ -44,10 +44,6 @@
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //builder.HasOne(U => U.Role)
-            //    .WithMany(R => R.Users)
-            //    .HasForeignKey(U => U.RoleId)
-            //    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

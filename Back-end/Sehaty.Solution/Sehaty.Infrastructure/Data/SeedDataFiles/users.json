@@ -1,9 +1,9 @@
 [
   {
-    "UserName": "Abdullah",
-    "FirstName": "Abdullah",
-    "LastName": "Muhammad",
-    "Email": "Abdullah@example.com",
+    "UserName": "Admin",
+    "FirstName": "Admin",
+    "LastName": "User",
+    "Email": "admin@example.com",
     "PhoneNumber": "01000000001",
     "LanguagePreference": "English",
     "IsActive": true,
@@ -11,10 +11,10 @@
     "LastLogin": "2025-11-02T20:00:00"
   },
   {
-    "UserName": "Wahbah",
-    "FirstName": "Abdallah",
-    "LastName": "Wahbah",
-    "Email": "Wahbah@example.com",
+    "UserName": "Doctor1",
+    "FirstName": "Ahmed",
+    "LastName": "Ali",
+    "Email": "doctor1@example.com",
     "PhoneNumber": "01000000002",
     "LanguagePreference": "English",
     "IsActive": true,
@@ -22,10 +22,10 @@
     "LastLogin": "2025-11-02T20:00:00"
   },
   {
-    "UserName": "Gendy",
-    "FirstName": "Ahmed",
-    "LastName": "Algendy",
-    "Email": "Gengy@example.com",
+    "UserName": "Doctor2",
+    "FirstName": "Mohamed",
+    "LastName": "Hany",
+    "Email": "doctor2@example.com",
     "PhoneNumber": "01000000003",
     "LanguagePreference": "English",
     "IsActive": true,
@@ -33,10 +33,10 @@
     "LastLogin": "2025-11-02T20:00:00"
   },
   {
-    "UserName": "Ibrahim",
+    "UserName": "Doctor3",
     "FirstName": "Ibrahim",
-    "LastName": "Mohamed",
-    "Email": "Ibrahim@example.com",
+    "LastName": "Youssef",
+    "Email": "doctor3@example.com",
     "PhoneNumber": "01000000004",
     "LanguagePreference": "English",
     "IsActive": true,
@@ -44,10 +44,10 @@
     "LastLogin": "2025-11-02T20:00:00"
   },
   {
-    "UserName": "Abdelraheem",
-    "FirstName": "Ahmed",
-    "LastName": "Abdelraheem",
-    "Email": "Abdelraheem@example.com",
+    "UserName": "Patient1",
+    "FirstName": "Sara",
+    "LastName": "Ibrahim",
+    "Email": "patient1@example.com",
     "PhoneNumber": "01000000005",
     "LanguagePreference": "English",
     "IsActive": true,
@@ -55,10 +55,10 @@
     "LastLogin": "2025-11-02T20:00:00"
   },
   {
-    "UserName": "Hanaa",
-    "FirstName": "Hanaa",
-    "LastName": "Elagami",
-    "Email": "Hanaa@example.com",
+    "UserName": "Patient2",
+    "FirstName": "Mariam",
+    "LastName": "Ali",
+    "Email": "patient2@example.com",
     "PhoneNumber": "01000000006",
     "LanguagePreference": "English",
     "IsActive": true,
@@ -66,10 +66,10 @@
     "LastLogin": "2025-11-02T20:00:00"
   },
   {
-    "UserName": "ali.hassan",
-    "FirstName": "Ali",
-    "LastName": "Hassan",
-    "Email": "ali.hassan@example.com",
+    "UserName": "Patient3",
+    "FirstName": "Youssef",
+    "LastName": "Hany",
+    "Email": "patient3@example.com",
     "PhoneNumber": "01000000007",
     "LanguagePreference": "English",
     "IsActive": true,
@@ -77,10 +77,10 @@
     "LastLogin": "2025-11-02T20:00:00"
   },
   {
-    "UserName": "sara.ibrahim",
-    "FirstName": "Sara",
-    "LastName": "Ibrahim",
-    "Email": "sara.ibrahim@example.com",
+    "UserName": "Nurse",
+    "FirstName": "Nurse",
+    "LastName": "User",
+    "Email": "nurse@example.com",
     "PhoneNumber": "01000000008",
     "LanguagePreference": "English",
     "IsActive": true,
@@ -88,47 +88,14 @@
     "LastLogin": "2025-11-02T20:00:00"
   },
   {
-    "UserName": "hany.gamal",
-    "FirstName": "Hany",
-    "LastName": "Gamal",
-    "Email": "hany.gamal@example.com",
+    "UserName": "Receptionist",
+    "FirstName": "Receptionist",
+    "LastName": "User",
+    "Email": "receptionist@example.com",
     "PhoneNumber": "01000000009",
     "LanguagePreference": "English",
     "IsActive": true,
     "CreatedAt": "2025-11-02T20:00:00",
     "LastLogin": "2025-11-02T20:00:00"
-  },
-  {
-    "UserName": "noha.salem",
-    "FirstName": "Noha",
-    "LastName": "Salem",
-    "Email": "noha.salem@example.com",
-    "PhoneNumber": "01000000010",
-    "LanguagePreference": "English",
-    "IsActive": true,
-    "CreatedAt": "2025-11-07T20:00:00",
-    "LastLogin": "2025-11-07T20:00:00"
-  },
-  {
-    "UserName": "youssef.mostafa",
-    "FirstName": "Youssef",
-    "LastName": "Mostafa",
-    "Email": "youssef.mostafa@example.com",
-    "PhoneNumber": "01000000011",
-    "LanguagePreference": "English",
-    "IsActive": true,
-    "CreatedAt": "2025-11-07T20:00:00",
-    "LastLogin": "2025-11-07T20:00:00"
-  },
-  {
-    "UserName": "mariam.khaled",
-    "FirstName": "Mariam",
-    "LastName": "Khaled",
-    "Email": "mariam.khaled@example.com",
-    "PhoneNumber": "01000000012",
-    "LanguagePreference": "English",
-    "IsActive": true,
-    "CreatedAt": "2025-11-07T20:00:00",
-    "LastLogin": "2025-11-07T20:00:00"
   }
 ]

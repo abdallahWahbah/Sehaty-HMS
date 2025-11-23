@@ -1,17 +1,17 @@
 [
   {
     "Name": "Cardiology",
-    "NameLocal": "قسم القلب",
-    "Description": "Heart and cardiovascular care"
+    "NameLocal": "أمراض القلب",
+    "Description": "Handles heart-related conditions"
   },
   {
     "Name": "Neurology",
-    "NameLocal": "قسم الأعصاب",
-    "Description": "Brain and nervous system care"
+    "NameLocal": "أمراض الأعصاب",
+    "Description": "Handles brain and nervous system conditions"
   },
   {
     "Name": "Pediatrics",
-    "NameLocal": "قسم الأطفال",
-    "Description": "Child healthcare and pediatrics"
+    "NameLocal": "طب الأطفال",
+    "Description": "Handles child health care"
   }
 ]

@@ -35,9 +35,6 @@
                    .WithOne(p => p.MedicalRecord)
                    .HasForeignKey(p => p.MedicalRecordId);
 
-            builder.HasOne(m => m.Appointment)
-                   .WithMany(a => a.MedicalRecords)
-                   .HasForeignKey(m => m.AppointmentId);
         }
 
     }

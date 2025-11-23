@@ -4,6 +4,5 @@
     {
         public string Description { get; set; }
 
-        //public List<ApplicationUser> Users { get; set; }
     }
 }

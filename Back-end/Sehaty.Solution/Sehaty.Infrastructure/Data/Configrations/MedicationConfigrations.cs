@@ -14,11 +14,6 @@
             builder.Property(m => m.Name)
                    .IsRequired()
                    .HasMaxLength(100);
-
-
-
-
-
         }
     }
 }

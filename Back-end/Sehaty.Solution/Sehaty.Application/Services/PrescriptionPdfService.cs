@@ -21,7 +21,7 @@
                         col.Item().PaddingBottom(5).Row(row =>
                         {
                             row.RelativeItem().Text($"Patient: {prescription.Patient.FirstName} {prescription.Patient.LastName}").FontSize(12);
-                            row.RelativeItem().Text($"MRN: {prescription.Patient.MRN}").FontSize(12);
+                            //row.RelativeItem().Text($"MRN: {prescription.Patient.MRN}").FontSize(12);
                         });
                         col.Item().PaddingBottom(5).Row(row =>
                         {

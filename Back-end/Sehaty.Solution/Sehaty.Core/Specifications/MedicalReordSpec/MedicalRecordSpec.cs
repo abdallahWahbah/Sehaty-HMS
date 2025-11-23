@@ -14,7 +14,7 @@
 
         private void AddIncludes()
         {
-            Includes.Add(m => m.Appointment);
+            //Includes.Add(m => m.Appointment);
             Includes.Add(m => m.Prescriptions);
         }
     }
