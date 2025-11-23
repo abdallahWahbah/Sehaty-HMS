@@ -1,7 +1,7 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
 
-    public class AppointmentsController(IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService, IEmailSender emailSender, ISmsSender smsSender) : ApiBaseController
+    public class AppointmentsController(IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService, IEmailSender emailSender, ISmsSender smsSender, IWebHostEnvironment env) : ApiBaseController
     {
 
         [HttpGet]
@@ -153,11 +153,11 @@
                         await emailSender.SendEmailAsync(patient.User.Email, "Sehaty", body);
                         notificationDto.SentViaEmail = true;
                     }
-                    //if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
-                    //{
-                    //    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
-                    //    notificationDto.SentViaSMS = true;
-                    //}
+                    if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
+                    {
+                        smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
+                        notificationDto.SentViaSMS = true;
+                    }
                     await unit.CommitAsync();
                 }
 

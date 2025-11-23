@@ -126,6 +126,9 @@
             services.Configure<TwilioSettings>(configuration.GetSection("TwilioSMSSetting"));
             //Add SMS Service
             services.AddTransient<ISmsSender, SmsSender>();
+
+            //add background service
+            services.AddHostedService<AppointmentReminderService>();
             #endregion
 
 
