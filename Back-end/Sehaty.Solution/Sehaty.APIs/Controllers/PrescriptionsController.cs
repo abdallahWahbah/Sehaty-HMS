@@ -1,7 +1,9 @@
-﻿namespace Sehaty.APIs.Controllers
+﻿using Sehaty.Core.Entites;
+
+namespace Sehaty.APIs.Controllers
 {
 
-    public class PrescriptionsController(IUnitOfWork unit, IMapper map, IPrescriptionPdfService pdfService, IEmailSender emailSender, ISmsSender smsSender) : ApiBaseController
+    public class PrescriptionsController(IUnitOfWork unit, IMapper map, IPrescriptionPdfService pdfService, IEmailSender emailSender, ISmsSender smsSender, IWebHostEnvironment env) : ApiBaseController
     {
 
         [HttpGet]
@@ -70,7 +72,7 @@
             return NotFound(new ApiResponse(404));
         }
 
-        //[Authorize(Roles = "Doctor")]
+        [Authorize(Roles = "Doctor")]
         [HttpPost]
         public async Task<IActionResult> CreatePrescription([FromBody] CreatePrescriptionsDto model)
         {
@@ -84,10 +86,12 @@
 
                 if (prescription.PatientId.HasValue)
                 {
-                    var patient = await unit.Repository<Patient>().GetByIdAsync(prescription.PatientId.Value);
+                    var spec = new PatientSpecifications(P => P.Id == prescription.PatientId);
+                    var patient = await unit.Repository<Patient>().GetByIdWithSpecAsync(spec);
                     if (patient != null)
                     {
-                        string message = $"تم تجهيز الروشته مع الطبيب {prescription.Doctor.FirstName} {prescription.Doctor.LastName} بتاريخ {prescription.DateIssued}";
+                        var doctor = await unit.Repository<Doctor>().GetByIdAsync(int.Parse(doctorId));
+                        string message = $"تم تجهيز الروشته مع الطبيب {doctor.FirstName} {doctor.LastName} بتاريخ {prescription.DateIssued}";
 
                         var notificationDto = new CreateNotificationDto
                         {
@@ -105,9 +109,28 @@
                         var notification = map.Map<Notification>(notificationDto);
                         await unit.Repository<Notification>().AddAsync(notification);
                         await unit.CommitAsync();
+                        var Prescriptionspec = new PrescriptionSpecifications(P => P.Id == prescription.Id);
+                        var currentprescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(Prescriptionspec);
+                        var medicationsHtml = "";
+
+                        foreach (var item in currentprescription.Medications)
+                        {
+                            medicationsHtml += $"<p><strong>{item.Medication.Name}</strong> — {item.Dosage}, {item.Frequency}, لمدة {item.Duration}</p>";
+                        }
                         if (!string.IsNullOrEmpty(patient.User.Email))
                         {
-                            await emailSender.SendEmailAsync(patient.User.Email, "تم تجهيز الروشته", message);
+                            var filepath = $"{env.WebRootPath}/templates/PrescriptionReady.html";
+                            StreamReader reader = new StreamReader(filepath);
+                            var body = reader.ReadToEnd();
+                            reader.Close();
+                            body = body.Replace("[header]", message)
+                                .Replace("[body]", $"{prescription.SpecialInstructions}")
+                                .Replace("[url]", $"https://localhost:7086/api/Prescriptions/prescriptions/{prescription.Id}/download")
+                                .Replace("[linkTitle]", "Download Prescription")
+                                .Replace("[MedicationDeatails]", $"{medicationsHtml}")
+                                .Replace("[imageUrl]", "https://res.cloudinary.com/dl21kzp79/image/upload/f_png/v1763917652/icon-positive-vote-1_1_dpzjrw.png");
+
+                            await emailSender.SendEmailAsync(patient.User.Email, "Sehaty", body);
                             notificationDto.SentViaEmail = true;
                         }
                         if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
@@ -150,7 +173,7 @@
             return NoContent();
         }
 
-        [Authorize(Roles = "Admin,Patient,Doctor")]
+        //[Authorize(Roles = "Admin,Patient,Doctor")]
         [HttpGet("prescriptions/{id}/download")]
         public async Task<IActionResult> DownloadPrescription(int id)
         {
