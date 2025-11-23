@@ -1,9 +1,4 @@
-﻿using AutoMapper;
-using Sehaty.Application.Dtos.DoctorDtos;
-using Sehaty.Application.MappingHelpers;
-using Sehaty.Core.Entites;
-
-namespace Sehaty.Application.MappingProfiles
+﻿namespace Sehaty.Application.MappingProfiles
 {
     public class DoctorProfile : Profile
     {

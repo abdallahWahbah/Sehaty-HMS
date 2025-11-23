@@ -1,13 +1,4 @@
-﻿using Sehaty.Core.Entities.Business_Entities;
-using Sehaty.Core.Entities.Business_Entities.MedicalRecords;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sehaty.Infrastructure.Dtos
+﻿namespace Sehaty.Infrastructure.Dtos
 {
     public class MedicalRecordAddByDoctorDto
     {

@@ -11,7 +11,7 @@
     "RelatedEntityId": 1,
     "SentViaEmail": true,
     "SentViaSMS": false,
-    "UserId": 1
+    "UserId": 4
   },
   {
     "Title": "Prescription Ready",
@@ -25,7 +25,7 @@
     "RelatedEntityId": 2,
     "SentViaEmail": true,
     "SentViaSMS": false,
-    "UserId": 2
+    "UserId": 5
   },
   {
     "Title": "Billing Due",
@@ -39,6 +39,6 @@
     "RelatedEntityId": 3,
     "SentViaEmail": true,
     "SentViaSMS": true,
-    "UserId": 3
+    "UserId": 6
   }
 ]

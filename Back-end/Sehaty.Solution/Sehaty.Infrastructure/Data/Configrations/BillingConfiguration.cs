@@ -1,10 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Sehaty.Core.Entites;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System;
-
-namespace Sehaty.Infrastructure.Data.Configrations
+﻿namespace Sehaty.Infrastructure.Data.Configrations
 {
     public class BillingConfiguration : IEntityTypeConfiguration<Billing>
     {

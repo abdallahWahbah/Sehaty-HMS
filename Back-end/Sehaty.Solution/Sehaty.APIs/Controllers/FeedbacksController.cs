@@ -1,12 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Sehaty.APIs.Errors;
-using Sehaty.Application.Dtos.FeedbackDtos;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Specifications.FeedbackSpec;
-using Sehaty.Core.UnitOfWork.Contract;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
 
     public class FeedbacksController(IUnitOfWork unit, IMapper mapper) : ApiBaseController

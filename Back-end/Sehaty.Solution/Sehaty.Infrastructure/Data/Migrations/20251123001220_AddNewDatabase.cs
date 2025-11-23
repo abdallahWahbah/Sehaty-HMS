@@ -6,11 +6,29 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Sehaty.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDatabase : Migration
+    public partial class AddNewDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AppointmentAuditLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppointmentId = table.Column<int>(type: "int", nullable: false),
+                    Action = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    OldDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NewDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ChangedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ChangedBy = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppointmentAuditLogs", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AuditLogs",
                 columns: table => new
@@ -40,6 +58,24 @@ namespace Sehaty.Infrastructure.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Departments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MedicalRecordAuditLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MedicalRecordId = table.Column<int>(type: "int", nullable: false),
+                    FieldName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OldValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NewValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedByDoctorId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MedicalRecordAuditLogs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -221,7 +257,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     LicenseNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Qualifications = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     YearsOfExperience = table.Column<int>(type: "int", nullable: false),
-                    ProfilePhotoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProfilePhoto = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AvailabilityNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     DepartmentId = table.Column<int>(type: "int", nullable: true)
@@ -303,7 +339,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MRN = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    Patient_Id = table.Column<string>(type: "nvarchar(20)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -327,7 +363,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -396,7 +432,8 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     ScheduledTime = table.Column<TimeOnly>(type: "time", nullable: true),
                     BookingDateTime = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP"),
                     ConfirmationDateTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    CancellationReason = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                    CancellationReason = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    NoShowTimestamp = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -413,7 +450,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         column: x => x.PatientId,
                         principalTable: "Patients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -424,7 +461,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PatientId = table.Column<int>(type: "int", nullable: false),
                     AppointmentId = table.Column<int>(type: "int", nullable: false),
-                    BillDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    BillDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETDATE()"),
                     Subtotal = table.Column<decimal>(type: "decimal(10,2)", nullable: false, defaultValue: 0m),
                     TaxAmount = table.Column<decimal>(type: "decimal(10,2)", nullable: false, defaultValue: 0m),
                     DiscountAmount = table.Column<decimal>(type: "decimal(10,2)", nullable: false, defaultValue: 0m),
@@ -453,7 +490,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         column: x => x.PatientId,
                         principalTable: "Patients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -485,7 +522,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AppointmentId = table.Column<int>(type: "int", nullable: false),
                     RecordDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Symptoms = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Diagnosis = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -498,7 +534,9 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     VitalBp = table.Column<string>(type: "nvarchar(20)", nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RecordType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Diagnosis"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PatientId = table.Column<int>(type: "int", nullable: false),
+                    AppointmentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -507,6 +545,11 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         name: "FK_MedicalRecords_Appointments_AppointmentId",
                         column: x => x.AppointmentId,
                         principalTable: "Appointments",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_MedicalRecords_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -549,8 +592,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         name: "FK_Prescriptions_Patients_PatientId",
                         column: x => x.PatientId,
                         principalTable: "Patients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -651,6 +693,12 @@ namespace Sehaty.Infrastructure.Data.Migrations
                 column: "AppointmentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MedicalRecords_PatientId",
+                table: "MedicalRecords",
+                column: "PatientId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Notifications_UserId",
                 table: "Notifications",
                 column: "UserId");
@@ -659,6 +707,12 @@ namespace Sehaty.Infrastructure.Data.Migrations
                 name: "IX_PasswordResetCodes_UserId",
                 table: "PasswordResetCodes",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_Patient_Id",
+                table: "Patients",
+                column: "Patient_Id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Patients_UserId",
@@ -744,6 +798,9 @@ namespace Sehaty.Infrastructure.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AppointmentAuditLogs");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
@@ -769,6 +826,9 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Feedbacks");
+
+            migrationBuilder.DropTable(
+                name: "MedicalRecordAuditLogs");
 
             migrationBuilder.DropTable(
                 name: "Notifications");

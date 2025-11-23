@@ -1,8 +1,3 @@
-using Sehaty.APIs.Extensions;
-using Sehaty.APIs.Middlewares;
-using System.Text.Json.Serialization;
-
-
 namespace Sehaty.APIs
 {
     public class Program

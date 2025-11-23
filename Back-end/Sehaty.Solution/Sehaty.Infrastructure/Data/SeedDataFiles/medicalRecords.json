@@ -13,7 +13,8 @@
     "VitalBp": "120/80",
     "Notes": "Patient advised rest and hydration",
     "RecordType": "Diagnosis",
-    "CreatedAt": "2025-11-02T10:05:00Z"
+    "CreatedAt": "2025-11-02T10:05:00Z",
+    "PatientId": 1
   },
   {
     "AppointmentId": 2,
@@ -29,7 +30,8 @@
     "VitalBp": "130/85",
     "Notes": "Prescribed migraine medication",
     "RecordType": "Diagnosis",
-    "CreatedAt": "2025-11-02T11:35:00Z"
+    "CreatedAt": "2025-11-02T11:35:00Z",
+    "PatientId": 2
   },
   {
     "AppointmentId": 3,
@@ -45,6 +47,7 @@
     "VitalBp": "115/75",
     "Notes": "Advised diet changes and antacids",
     "RecordType": "Diagnosis",
-    "CreatedAt": "2025-11-02T12:20:00Z"
+    "CreatedAt": "2025-11-02T12:20:00Z",
+    "PatientId": 3
   }
 ]

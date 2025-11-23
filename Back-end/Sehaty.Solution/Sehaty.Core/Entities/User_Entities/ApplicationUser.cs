@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Sehaty.Core.Entites;
-
-namespace Sehaty.Core.Entities.User_Entities
+﻿namespace Sehaty.Core.Entities.User_Entities
 {
+    public enum LanguagePreferenceEnum
+    {
+        Arabic,
+        English
+    }
     public class ApplicationUser : IdentityUser<int>
     {
-        public enum LanguagePreferenceEnum
-        {
-            Arabic,
-            English
-        }
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -23,9 +21,6 @@ namespace Sehaty.Core.Entities.User_Entities
         public DateTime? LastLogin { get; set; }
 
         public List<Notification> Notifications { get; set; }
-        //public int RoleId { get; set; }
-        //public ApplicationRole Role { get; set; }
-
         public List<RefreshToken> RefreshTokens { get; set; }
 
     }

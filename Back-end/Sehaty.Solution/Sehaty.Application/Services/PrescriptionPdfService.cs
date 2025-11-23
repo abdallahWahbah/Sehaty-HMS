@@ -1,9 +1,4 @@
-﻿using QuestPDF.Fluent;
-using QuestPDF.Infrastructure;
-using Sehaty.Application.Services.Contract.BusinessServices.Contract;
-using Sehaty.Core.Entities.Business_Entities;
-
-namespace Sehaty.Application.Services
+﻿namespace Sehaty.Application.Services
 {
     public class PrescriptionPdfService : IPrescriptionPdfService
     {
@@ -26,7 +21,7 @@ namespace Sehaty.Application.Services
                         col.Item().PaddingBottom(5).Row(row =>
                         {
                             row.RelativeItem().Text($"Patient: {prescription.Patient.FirstName} {prescription.Patient.LastName}").FontSize(12);
-                            row.RelativeItem().Text($"MRN: {prescription.Patient.MRN}").FontSize(12);
+                            //row.RelativeItem().Text($"MRN: {prescription.Patient.MRN}").FontSize(12);
                         });
                         col.Item().PaddingBottom(5).Row(row =>
                         {

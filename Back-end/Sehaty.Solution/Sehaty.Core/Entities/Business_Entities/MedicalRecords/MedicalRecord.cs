@@ -1,7 +1,4 @@
-﻿using Sehaty.Core.Entites;
-using Sehaty.Core.Entities.Business_Entities.Appointments;
-
-namespace Sehaty.Core.Entities.Business_Entities.MedicalRecords
+﻿namespace Sehaty.Core.Entities.Business_Entities.MedicalRecords
 {
     public enum RecordType
     {
@@ -13,8 +10,6 @@ namespace Sehaty.Core.Entities.Business_Entities.MedicalRecords
     }
     public class MedicalRecord : BaseEntity
     {
-        public int AppointmentId { get; set; }
-        public Appointment Appointment { get; set; }
         public DateTime RecordDate { get; set; } = DateTime.UtcNow;
         public string Symptoms { get; set; }
         public string Diagnosis { get; set; }
@@ -29,7 +24,9 @@ namespace Sehaty.Core.Entities.Business_Entities.MedicalRecords
         public RecordType RecordType { get; set; } = RecordType.Diagnosis;
         public DateTime? CreatedAt { get; set; }
 
-        // Navigation Property to Prescriptions
+        public int PatientId { get; set; }
+        public Patient Patient { get; set; }
+
         public ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
 
     }

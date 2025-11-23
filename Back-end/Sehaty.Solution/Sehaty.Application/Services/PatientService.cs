@@ -1,17 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using QuestPDF.Infrastructure;
-using Sehaty.Application.Dtos.PatientDto;
-using Sehaty.Application.Services.Contract.BusinessServices.Contract;
-using Sehaty.Core.Entites;
-using Sehaty.Core.UnitOfWork.Contract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sehaty.Application.Services
+﻿namespace Sehaty.Application.Services
 {
     public class PatientService(IMapper mapper, IUnitOfWork unit) : IPatientService
     {
@@ -22,7 +9,7 @@ namespace Sehaty.Application.Services
             var patientToAdd = mapper.Map<Patient>(dto);
 
 
-            patientToAdd.PatientId = await GeneratePatientIdAsync();
+            patientToAdd.Patient_Id = await GeneratePatientIdAsync();
 
             await unit.Repository<Patient>().AddAsync(patientToAdd);
             await unit.CommitAsync();
@@ -38,15 +25,15 @@ namespace Sehaty.Application.Services
 
 
             var lastPatient = await unit.Repository<Patient>()
-                .FindByAsync(p => p.PatientId.StartsWith(prefix))
-                .OrderByDescending(p => p.PatientId)
+                .FindByAsync(p => p.Patient_Id.StartsWith(prefix))
+                .OrderByDescending(p => p.Patient_Id)
                 .FirstOrDefaultAsync();
 
             int sequence = 1;
 
             if (lastPatient != null)
             {
-                var lastSeq = lastPatient.PatientId.Split('-').Last();
+                var lastSeq = lastPatient.Patient_Id.Split('-').Last();
                 sequence = int.Parse(lastSeq) + 1;
             }
 

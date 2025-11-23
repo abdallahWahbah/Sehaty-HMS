@@ -1,7 +1,4 @@
-﻿using Sehaty.Core.Entites;
-using System.Linq.Expressions;
-
-namespace Sehaty.Core.Specefications
+﻿namespace Sehaty.Core.Specefications
 {
     public interface ISpecefication<T> where T : BaseEntity
     {

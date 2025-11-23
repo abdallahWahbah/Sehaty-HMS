@@ -1,6 +1,4 @@
-﻿using Sehaty.Core.Entites;
-
-namespace Sehaty.Application.Dtos.DepartmentDtos
+﻿namespace Sehaty.Application.Dtos.DepartmentDtos
 {
     public class GetDepartmentDto
     {

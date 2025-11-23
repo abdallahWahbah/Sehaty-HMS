@@ -1,13 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Sehaty.APIs.Errors;
-using Sehaty.Application.Dtos.BillngDto;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Specifications.BillingSpec;
-using Sehaty.Core.UnitOfWork.Contract;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
     public class BillingsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
     {

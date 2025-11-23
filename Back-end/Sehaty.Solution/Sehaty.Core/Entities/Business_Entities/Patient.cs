@@ -1,9 +1,4 @@
-﻿using Sehaty.Core.Entities.Business_Entities;
-using Sehaty.Core.Entities.Business_Entities.Appointments;
-using Sehaty.Core.Entities.User_Entities;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Sehaty.Core.Entites
+﻿namespace Sehaty.Core.Entites
 {
     public enum PatientStatus
     {
@@ -13,8 +8,7 @@ namespace Sehaty.Core.Entites
     }
     public class Patient : BaseEntity
     {
-        public string PatientId { get; set; }
-        public string MRN { get; set; }
+        public string Patient_Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
@@ -28,10 +22,7 @@ namespace Sehaty.Core.Entites
         public string EmergencyContactPhone { get; set; }
         public PatientStatus Status { get; set; }
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
-
-        // NAVIGATION PROPERTIES
-
-        [ForeignKey("User")]
+        public MedicalRecord MedicalRecord { get; set; }
         public int UserId { get; set; }
         public ApplicationUser User { get; set; }
         public List<Appointment> Appointments { get; set; }

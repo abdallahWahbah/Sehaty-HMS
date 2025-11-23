@@ -1,14 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
-using Sehaty.Application.Services.Contract.BusinessServices.Contract;
-
-namespace Sehaty.Infrastructure.Service.Email
+﻿namespace Sehaty.Application.Services
 {
     public class EmailSender(IConfiguration config) : IEmailSender
     {

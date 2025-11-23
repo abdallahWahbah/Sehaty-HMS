@@ -1,16 +1,8 @@
-﻿using Sehaty.Core.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sehaty.Application.Dtos.MedicalRecordDto
+﻿namespace Sehaty.Application.Dtos.MedicalRecordDto
 {
     public class MedicalRecordReadDto
     {
         public int Id { get; set; }
-        public int AppointmentId { get; set; }
         public DateTime RecordDate { get; set; } = DateTime.UtcNow;
         public string Symptoms { get; set; }
         public string Diagnosis { get; set; }
@@ -22,8 +14,10 @@ namespace Sehaty.Application.Dtos.MedicalRecordDto
         public decimal? Weight { get; set; }
         public string VitalBp { get; set; }
         public string Notes { get; set; }
-        public string RecordType { get; set; }
+        public RecordType RecordType { get; set; }
         public DateTime? CreatedAt { get; set; }
         public bool? IsFinialize { get; set; }
+        public int PatientId { get; set; }
+        public string PatientName { get; set; }
     }
 }

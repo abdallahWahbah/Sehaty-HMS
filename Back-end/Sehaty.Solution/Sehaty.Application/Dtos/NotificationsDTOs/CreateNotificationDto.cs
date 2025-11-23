@@ -1,7 +1,4 @@
-﻿using Sehaty.Core.Entites;
-using System.ComponentModel.DataAnnotations;
-
-namespace Sehaty.Application.Dtos.NotificationsDTOs
+﻿namespace Sehaty.Application.Dtos.NotificationsDTOs
 {
     public class CreateNotificationDto
     {

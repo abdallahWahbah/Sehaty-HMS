@@ -1,15 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Sehaty.Application.Dtos.IdentityDtos;
-using Sehaty.Application.Services.Contract.AuthService.Contract;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     [Authorize(Roles = "Admin")]
-    public class RolesController(IRoleManagementService roleService) : ControllerBase
+    public class RolesController(IRoleManagementService roleService) : ApiBaseController
     {
         [HttpPost("ChangeUserRole")]
         public async Task<IActionResult> ChangeUserRole(ChangeUserRoleDto model)

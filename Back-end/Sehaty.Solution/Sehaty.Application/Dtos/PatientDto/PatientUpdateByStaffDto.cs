@@ -1,7 +1,4 @@
-﻿using Sehaty.Core.Entites;
-using System.ComponentModel.DataAnnotations;
-
-namespace Sehaty.Application.Dtos.PatientDto
+﻿namespace Sehaty.Application.Dtos.PatientDto
 {
     public class PatientUpdateByStaffDto
     {
