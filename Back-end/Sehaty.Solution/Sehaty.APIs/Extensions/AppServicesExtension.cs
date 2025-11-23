@@ -78,10 +78,13 @@
             // Inject Service For Doctor To Add And Manage Doctors
             services.AddScoped<IDoctorService, DoctorService>();
 
-            // Inject Service For Patient To Add And Manage Doctors
+            // Inject Service For Appointment To Add And Manage Appointments
+            services.AddScoped<IAppointmentService, AppointmentService>();
+
+            // Inject Service For Patient To Add And Manage Patient
             services.AddScoped<IPatientService, PatientService>();
 
-            // Inject Service For Doctor To Add And Manage Doctors
+            // Inject Service For File To Add And Manage Files
             services.AddScoped<IFileService, FileService>();
 
             // Add DbContext Class Injection
