@@ -18,6 +18,8 @@ namespace Sehaty.APIs
 
             // Extension Method To Add All Services Needed To Run Application
             builder.Services.AddApplicationServices(builder.Configuration);
+            builder.Services.AddHttpClient();
+
 
             // allow cors
             builder.Services.AddCors(options =>
