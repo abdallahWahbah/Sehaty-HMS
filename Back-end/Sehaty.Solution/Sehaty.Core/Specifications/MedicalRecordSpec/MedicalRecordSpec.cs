@@ -1,4 +1,4 @@
-﻿namespace Sehaty.Core.Specifications.MedicalReord
+﻿namespace Sehaty.Core.Specifications.MedicalRecordSpec
 {
     public class MedicalRecordSpec : BaseSpecefication<MedicalRecord>
     {
@@ -14,8 +14,8 @@
 
         private void AddIncludes()
         {
-            //Includes.Add(m => m.Appointment);
             Includes.Add(m => m.Prescriptions);
+            Includes.Add(m => m.Patient);
         }
     }
 }
