@@ -7,7 +7,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { PateintStatusEnum } from '../../../../core/enums/patient-status-enum';
 
 @Component({
@@ -32,12 +32,16 @@ export class PatientEditComponent implements OnInit{
   token: any = '';
   serverError: string = '';
 
-  constructor(private location:Location, private _patientService: PatientsService, private formBuilder: FormBuilder){}
+  constructor(
+    private location:Location, 
+    private _patientService: PatientsService, 
+    private formBuilder: FormBuilder,
+    private router: Router
+  ){}
 
   ngOnInit(){
     this.patientForm = this.formBuilder.group({
       patientId: [''],
-      mrn: ['', Validators.required],
       firstName: [''],
       lastName: [''],
       dateOfBirth: [''],
@@ -69,7 +73,6 @@ export class PatientEditComponent implements OnInit{
     console.log("1111111111", patient);
     this.patientForm = this.formBuilder.group({
       patientId: [patient.patientId],
-      mrn: [patient.mrn, Validators.required],
       firstName: [patient.firstName],
       lastName: [patient.lastName],
       dateOfBirth: [patient.dateOfBirth],
@@ -90,7 +93,6 @@ export class PatientEditComponent implements OnInit{
     this.serverError = '';
     if (this.patientForm.invalid) return;
     const patientToUpdate = {
-      mrn: this.patientForm.value.mrn,
       bloodType: this.patientForm.value.bloodType,
       allergies: this.patientForm.value.allergies,
       chrinicConditions: this.patientForm.value.chrinicConditions,
@@ -98,12 +100,14 @@ export class PatientEditComponent implements OnInit{
     }
 
     this._patientService.editByStuff(this.patient.id, patientToUpdate, this.token).subscribe({
-      next: data => console.log(data),
+      next: data => {
+        console.log(data);
+        this.router?.navigate(['admin/patients']);
+      },
       error: err => {
         console.log(err)
         this.serverError = err.error?.message || 'Invalid username or password'
       }
     })
   }
-
 }
