@@ -12,8 +12,8 @@ using Sehaty.Infrastructure.Data.Contexts;
 namespace Sehaty.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(SehatyDbContext))]
-    [Migration("20251110073727_AddRecordNoShowTimeToAppointmentTable")]
-    partial class AddRecordNoShowTimeToAppointmentTable
+    [Migration("20251123001220_AddNewDatabase")]
+    partial class AddNewDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,72 +128,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Sehaty.Core.Entites.Appointment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("AppointmentDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("BookingDateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<string>("CancellationReason")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<DateTime?>("ConfirmationDateTime")
-                        .HasColumnType("datetime");
-
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DurationMinutes")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(30);
-
-                    b.Property<DateTime?>("NoShowTimestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ReasonForVisit")
-                        .HasColumnType("varchar(max)");
-
-                    b.Property<DateOnly?>("ScheduledDate")
-                        .HasColumnType("date");
-
-                    b.Property<TimeOnly?>("ScheduledTime")
-                        .HasColumnType("time");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("Pending");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PatientId");
-
-                    b.HasIndex("DoctorId", "AppointmentDateTime")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Doctor_AppointmentDateTime");
-
-                    b.ToTable("Appointments", null, t =>
-                        {
-                            t.HasCheckConstraint("CK_Appointments_DurationMinutes_Positive", "[DurationMinutes] > 0");
-                        });
-                });
-
             modelBuilder.Entity("Sehaty.Core.Entites.Billing", b =>
                 {
                     b.Property<int>("Id")
@@ -208,7 +142,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Property<DateTime>("BillDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<decimal?>("CommissionApplied")
                         .HasColumnType("decimal(5,2)");
@@ -327,7 +261,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<string>("ProfilePhotoUrl")
+                    b.Property<string>("ProfilePhoto")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Qualifications")
@@ -422,67 +356,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasIndex("AppointmentId");
 
                     b.ToTable("Feedbacks");
-                });
-
-            modelBuilder.Entity("Sehaty.Core.Entites.MedicalRecord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AppointmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("BpDiastolic")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("BpSystolic")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Diagnosis")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("HeartRate")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("RecordDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RecordType")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasDefaultValue("Diagnosis");
-
-                    b.Property<string>("Symptoms")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("Temperature")
-                        .HasColumnType("decimal(4,1)");
-
-                    b.Property<string>("TreatmentPlan")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VitalBp")
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<decimal?>("Weight")
-                        .HasColumnType("decimal(5,1)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppointmentId");
-
-                    b.ToTable("MedicalRecords");
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entites.Notification", b =>
@@ -595,11 +468,12 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("MRN")
-                        .HasColumnType("nvarchar(20)");
-
                     b.Property<string>("NationalId")
                         .HasColumnType("nvarchar(14)");
+
+                    b.Property<string>("Patient_Id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
@@ -613,12 +487,15 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Patient_Id")
+                        .IsUnique();
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Patients");
                 });
 
-            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.AppointmentAuditLog", b =>
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Appointments.Appointment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -626,8 +503,76 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Action")
+                    b.Property<DateTime>("AppointmentDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("BookingDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("CancellationReason")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("ConfirmationDateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("DoctorId")
                         .HasColumnType("int");
+
+                    b.Property<int>("DurationMinutes")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(30);
+
+                    b.Property<DateTime?>("NoShowTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReasonForVisit")
+                        .HasColumnType("varchar(max)");
+
+                    b.Property<DateOnly?>("ScheduledDate")
+                        .HasColumnType("date");
+
+                    b.Property<TimeOnly?>("ScheduledTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Pending");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.HasIndex("DoctorId", "AppointmentDateTime")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Doctor_AppointmentDateTime");
+
+                    b.ToTable("Appointments", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Appointments_DurationMinutes_Positive", "[DurationMinutes] > 0");
+                        });
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Appointments.AppointmentAuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("AppointmentId")
                         .HasColumnType("int");
@@ -635,8 +580,10 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Property<DateTime>("ChangedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ChangedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("ChangedBy")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("NewDate")
                         .HasColumnType("datetime2");
@@ -647,6 +594,104 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppointmentAuditLogs");
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.MedicalRecords.MedicalRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BpDiastolic")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BpSystolic")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Diagnosis")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("HeartRate")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RecordDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RecordType")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("Diagnosis");
+
+                    b.Property<string>("Symptoms")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("Temperature")
+                        .HasColumnType("decimal(4,1)");
+
+                    b.Property<string>("TreatmentPlan")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VitalBp")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal?>("Weight")
+                        .HasColumnType("decimal(5,1)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId");
+
+                    b.HasIndex("PatientId")
+                        .IsUnique();
+
+                    b.ToTable("MedicalRecords");
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.MedicalRecords.MedicalRecordAuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FieldName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MedicalRecordId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NewValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OldValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UpdatedByDoctorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MedicalRecordAuditLogs");
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Medication", b =>
@@ -1052,28 +1097,9 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Sehaty.Core.Entites.Appointment", b =>
-                {
-                    b.HasOne("Sehaty.Core.Entites.Doctor", "Doctor")
-                        .WithMany("Appointments")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Sehaty.Core.Entites.Patient", "Patient")
-                        .WithMany("Appointments")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
-                });
-
             modelBuilder.Entity("Sehaty.Core.Entites.Billing", b =>
                 {
-                    b.HasOne("Sehaty.Core.Entites.Appointment", "Appointment")
+                    b.HasOne("Sehaty.Core.Entities.Business_Entities.Appointments.Appointment", "Appointment")
                         .WithMany("Billings")
                         .HasForeignKey("AppointmentId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1082,7 +1108,7 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasOne("Sehaty.Core.Entites.Patient", "Patient")
                         .WithMany("Billings")
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Appointment");
@@ -1120,19 +1146,8 @@ namespace Sehaty.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Sehaty.Core.Entites.Feedback", b =>
                 {
-                    b.HasOne("Sehaty.Core.Entites.Appointment", "Appointment")
+                    b.HasOne("Sehaty.Core.Entities.Business_Entities.Appointments.Appointment", "Appointment")
                         .WithMany("Feedbacks")
-                        .HasForeignKey("AppointmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Appointment");
-                });
-
-            modelBuilder.Entity("Sehaty.Core.Entites.MedicalRecord", b =>
-                {
-                    b.HasOne("Sehaty.Core.Entites.Appointment", "Appointment")
-                        .WithMany("MedicalRecords")
                         .HasForeignKey("AppointmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1156,15 +1171,49 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasOne("Sehaty.Core.Entities.User_Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Appointments.Appointment", b =>
+                {
+                    b.HasOne("Sehaty.Core.Entites.Doctor", "Doctor")
+                        .WithMany("Appointments")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Sehaty.Core.Entites.Patient", "Patient")
+                        .WithMany("Appointments")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.MedicalRecords.MedicalRecord", b =>
+                {
+                    b.HasOne("Sehaty.Core.Entities.Business_Entities.Appointments.Appointment", null)
+                        .WithMany("MedicalRecords")
+                        .HasForeignKey("AppointmentId");
+
+                    b.HasOne("Sehaty.Core.Entites.Patient", "Patient")
+                        .WithOne("MedicalRecord")
+                        .HasForeignKey("Sehaty.Core.Entities.Business_Entities.MedicalRecords.MedicalRecord", "PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Prescription", b =>
                 {
-                    b.HasOne("Sehaty.Core.Entites.Appointment", "Appointment")
+                    b.HasOne("Sehaty.Core.Entities.Business_Entities.Appointments.Appointment", "Appointment")
                         .WithMany("Prescriptions")
                         .HasForeignKey("AppointmentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1174,14 +1223,14 @@ namespace Sehaty.Infrastructure.Data.Migrations
                         .WithMany("Prescriptions")
                         .HasForeignKey("DoctorId");
 
-                    b.HasOne("Sehaty.Core.Entites.MedicalRecord", "MedicalRecord")
+                    b.HasOne("Sehaty.Core.Entities.Business_Entities.MedicalRecords.MedicalRecord", "MedicalRecord")
                         .WithMany("Prescriptions")
                         .HasForeignKey("MedicalRecordId");
 
                     b.HasOne("Sehaty.Core.Entites.Patient", "Patient")
                         .WithMany("Prescriptions")
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Appointment");
 
@@ -1233,17 +1282,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Sehaty.Core.Entites.Appointment", b =>
-                {
-                    b.Navigation("Billings");
-
-                    b.Navigation("Feedbacks");
-
-                    b.Navigation("MedicalRecords");
-
-                    b.Navigation("Prescriptions");
-                });
-
             modelBuilder.Entity("Sehaty.Core.Entites.Department", b =>
                 {
                     b.Navigation("Doctors");
@@ -1258,17 +1296,30 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Navigation("Prescriptions");
                 });
 
-            modelBuilder.Entity("Sehaty.Core.Entites.MedicalRecord", b =>
-                {
-                    b.Navigation("Prescriptions");
-                });
-
             modelBuilder.Entity("Sehaty.Core.Entites.Patient", b =>
                 {
                     b.Navigation("Appointments");
 
                     b.Navigation("Billings");
 
+                    b.Navigation("MedicalRecord");
+
+                    b.Navigation("Prescriptions");
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.Appointments.Appointment", b =>
+                {
+                    b.Navigation("Billings");
+
+                    b.Navigation("Feedbacks");
+
+                    b.Navigation("MedicalRecords");
+
+                    b.Navigation("Prescriptions");
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.MedicalRecords.MedicalRecord", b =>
+                {
                     b.Navigation("Prescriptions");
                 });
 

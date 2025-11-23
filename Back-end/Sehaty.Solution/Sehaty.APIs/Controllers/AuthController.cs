@@ -1,8 +1,7 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthController(IAuthService authService) : ControllerBase
+
+    public class AuthController(IAuthService authService) : ApiBaseController
     {
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto model)

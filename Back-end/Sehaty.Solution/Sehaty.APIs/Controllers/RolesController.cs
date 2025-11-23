@@ -1,9 +1,7 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     [Authorize(Roles = "Admin")]
-    public class RolesController(IRoleManagementService roleService) : ControllerBase
+    public class RolesController(IRoleManagementService roleService) : ApiBaseController
     {
         [HttpPost("ChangeUserRole")]
         public async Task<IActionResult> ChangeUserRole(ChangeUserRoleDto model)

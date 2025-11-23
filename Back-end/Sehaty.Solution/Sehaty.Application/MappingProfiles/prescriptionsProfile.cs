@@ -8,7 +8,7 @@
             CreateMap<Prescription, GetPrescriptionsDto>()
             .ForMember(d => d.DoctorName, o => o.MapFrom(s => s.Doctor.FirstName))
             .ForMember(d => d.PatiantName, o => o.MapFrom(s => s.Patient.FirstName))
-            .ForMember(d => d.MRN, o => o.MapFrom(s => s.Patient.MRN))
+            //.ForMember(d => d.MRN, o => o.MapFrom(s => s.Patient.MRN))
             .ForMember(d => d.MedicalRecordNotes, o => o.MapFrom(s => s.MedicalRecord.Notes))
             .ForMember(d => d.LicenseNumber, o => o.MapFrom(s => s.Doctor.LicenseNumber));
 

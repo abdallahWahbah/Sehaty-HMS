@@ -1,17 +1,7 @@
 [
-  {
-    "Name": "Amoxicillin"
-  },
-  {
-    "Name": "Paracetamol"
-  },
-  {
-    "Name": "Ibuprofen"
-  },
-  {
-    "Name": "Fucicort"
-  },
-  {
-    "Name": "Augmentin"
-  }
+  { "Name": "Amoxicillin" },
+  { "Name": "Paracetamol" },
+  { "Name": "Ibuprofen" },
+  { "Name": "Fucicort" },
+  { "Name": "Augmentin" }
 ]

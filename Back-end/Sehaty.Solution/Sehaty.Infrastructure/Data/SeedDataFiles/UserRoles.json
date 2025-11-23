@@ -5,11 +5,11 @@
   },
   {
     "UserId": 2,
-    "RoleId": 1
+    "RoleId": 2
   },
   {
     "UserId": 3,
-    "RoleId": 1
+    "RoleId": 2
   },
   {
     "UserId": 4,
@@ -17,11 +17,11 @@
   },
   {
     "UserId": 5,
-    "RoleId": 2
+    "RoleId": 3
   },
   {
     "UserId": 6,
-    "RoleId": 2
+    "RoleId": 3
   },
   {
     "UserId": 7,
@@ -29,22 +29,10 @@
   },
   {
     "UserId": 8,
-    "RoleId": 3
+    "RoleId": 4
   },
   {
     "UserId": 9,
-    "RoleId": 3
-  },
-  {
-    "UserId": 10,
-    "RoleId": 4
-  },
-  {
-    "UserId": 11,
-    "RoleId": 4
-  },
-  {
-    "UserId": 12,
-    "RoleId": 4
+    "RoleId": 5
   }
 ]

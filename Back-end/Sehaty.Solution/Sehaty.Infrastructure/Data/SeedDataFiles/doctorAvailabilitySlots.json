@@ -25,14 +25,5 @@
     "IsRecurring": true,
     "Date": "2025-11-02",
     "AvailableFlag": true
-  },
-  {
-    "DoctorId": 1,
-    "DayOfWeek": "Monday,Wednesday",
-    "StartTime": "14:00:00",
-    "EndTime": "18:00:00",
-    "IsRecurring": true,
-    "Date": "2025-11-03",
-    "AvailableFlag": true
   }
 ]

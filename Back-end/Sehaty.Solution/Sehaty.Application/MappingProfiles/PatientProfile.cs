@@ -9,7 +9,7 @@
 
             CreateMap<PatientAddDto, Patient>()
                 .ForMember(D => D.RegistrationDate, O => O.Ignore())
-                .ForMember(D => D.PatientId, O => O.Ignore());
+                .ForMember(D => D.Patient_Id, O => O.Ignore());
 
             CreateMap<PatientUpdateByStaffDto, Patient>();
             CreateMap<PatientUpdateDto, Patient>();

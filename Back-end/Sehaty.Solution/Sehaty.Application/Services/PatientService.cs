@@ -9,7 +9,7 @@
             var patientToAdd = mapper.Map<Patient>(dto);
 
 
-            patientToAdd.PatientId = await GeneratePatientIdAsync();
+            patientToAdd.Patient_Id = await GeneratePatientIdAsync();
 
             await unit.Repository<Patient>().AddAsync(patientToAdd);
             await unit.CommitAsync();
@@ -25,15 +25,15 @@
 
 
             var lastPatient = await unit.Repository<Patient>()
-                .FindByAsync(p => p.PatientId.StartsWith(prefix))
-                .OrderByDescending(p => p.PatientId)
+                .FindByAsync(p => p.Patient_Id.StartsWith(prefix))
+                .OrderByDescending(p => p.Patient_Id)
                 .FirstOrDefaultAsync();
 
             int sequence = 1;
 
             if (lastPatient != null)
             {
-                var lastSeq = lastPatient.PatientId.Split('-').Last();
+                var lastSeq = lastPatient.Patient_Id.Split('-').Last();
                 sequence = int.Parse(lastSeq) + 1;
             }
 

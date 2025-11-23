@@ -8,8 +8,7 @@
     }
     public class Patient : BaseEntity
     {
-        public string PatientId { get; set; }
-        public string MRN { get; set; }
+        public string Patient_Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
@@ -23,10 +22,7 @@
         public string EmergencyContactPhone { get; set; }
         public PatientStatus Status { get; set; }
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
-
-        // NAVIGATION PROPERTIES
-
-        [ForeignKey("User")]
+        public MedicalRecord MedicalRecord { get; set; }
         public int UserId { get; set; }
         public ApplicationUser User { get; set; }
         public List<Appointment> Appointments { get; set; }
