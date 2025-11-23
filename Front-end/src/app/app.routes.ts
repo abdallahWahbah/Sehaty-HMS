@@ -30,7 +30,6 @@ import { DoctorAppointmentsComponent } from './features/doctor/doctor-appointmen
 import { DoctorDetailsComponent } from './features/doctor/doctor-details/doctor-details.component';
 import { DoctorPrescriptionsComponent } from './features/doctor/doctor-prescriptions/doctor-prescriptions.component';
 import { DoctorAvailableSlotsComponent } from './features/doctor/doctor-available-slots/doctor-available-slots.component';
-import { DoctorSelfEditComponent } from './features/doctor/doctor-details/doctor-self-edit/doctor-self-edit.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
