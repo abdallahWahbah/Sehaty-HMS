@@ -1,8 +1,11 @@
-﻿namespace Sehaty.Infrastructure.Dtos
+﻿using System.Text.Json.Serialization;
+
+namespace Sehaty.Infrastructure.Dtos
 {
     public class MedicalRecordAddByDoctorDto
     {
-        public int AppointmentId { get; set; }
+        public int PatientId { get; set; }
+        [JsonIgnore]
         public DateTime RecordDate { get; set; } = DateTime.UtcNow;
         public string Symptoms { get; set; }
         [Required(ErrorMessage = "Diagnosis Plan IsRequired")]
@@ -20,7 +23,7 @@
         [Required]
         [EnumDataType(typeof(RecordType))]
         public RecordType RecordType { get; set; } = RecordType.Diagnosis;
-        public DateTime? CreatedAt { get; set; }
-        public bool? IsFinialize { get; set; }
+        [JsonIgnore]
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

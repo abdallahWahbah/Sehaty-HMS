@@ -25,7 +25,7 @@
 
 
             var lastPatient = await unit.Repository<Patient>()
-                .FindByAsync(p => p.Patient_Id.StartsWith(prefix))
+                .FindBy(p => p.Patient_Id.StartsWith(prefix))
                 .OrderByDescending(p => p.Patient_Id)
                 .FirstOrDefaultAsync();
 

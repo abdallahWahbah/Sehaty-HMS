@@ -32,7 +32,7 @@ namespace Sehaty.APIs.Controllers
         public async Task<IActionResult> GetByDoctorId()
         {
             var doctorUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var doctorId = unit.Repository<Doctor>().FindByAsync(D => D.UserId == doctorUserId).Select(D => D.Id).FirstOrDefault();
+            var doctorId = unit.Repository<Doctor>().FindBy(D => D.UserId == doctorUserId).Select(D => D.Id).FirstOrDefault();
             var spec = new PrescriptionSpecifications(P => P.DoctorId == doctorId);
 
             var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
@@ -47,7 +47,7 @@ namespace Sehaty.APIs.Controllers
         public async Task<IActionResult> GetPrescriptionDetails(int id)
         {
             var doctorUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var doctorId = unit.Repository<Doctor>().FindByAsync(D => D.UserId == doctorUserId).Select(D => D.Id).FirstOrDefault();
+            var doctorId = unit.Repository<Doctor>().FindBy(D => D.UserId == doctorUserId).Select(D => D.Id).FirstOrDefault();
             var spec = new PrescriptionSpecifications(P => P.Id == id && P.DoctorId == doctorId);
             var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
             if (prescription == null)

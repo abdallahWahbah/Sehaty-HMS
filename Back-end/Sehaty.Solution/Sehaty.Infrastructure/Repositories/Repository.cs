@@ -14,11 +14,11 @@
         public async Task<IEnumerable<T>> GetAllAsync() => await Set.AsNoTracking().ToListAsync();
 
         public async Task<IEnumerable<T>> GetAllWithSpecAsync(ISpecefication<T> spec)
-            => await GenerateSpec(spec).AsNoTracking().ToListAsync();
+            => await GenerateQuery(spec).AsNoTracking().ToListAsync();
 
 
         public async Task<T> GetByIdWithSpecAsync(ISpecefication<T> spec)
-            => await GenerateSpec(spec).FirstOrDefaultAsync();
+            => await GenerateQuery(spec).FirstOrDefaultAsync();
 
         public async Task<T> GetByIdAsync(int id, bool asNoTracking = false)
         {
@@ -26,8 +26,17 @@
                 return await Set.AsNoTracking().FirstOrDefaultAsync(E => E.Id == id);
             return await Set.FindAsync(id);
         }
-        public IQueryable<T> FindByAsync(Expression<Func<T, bool>> predicate)
+
+
+        public IQueryable<T> FindBy(Expression<Func<T, bool>> predicate)
             => Set.Where(predicate);
+
+        public async Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await Set.FirstOrDefaultAsync(predicate);
+        }
+
+
         public async Task AddAsync(T entity)
             => await Set.AddAsync(entity);
         public void Delete(T entity)
@@ -35,8 +44,27 @@
         public void Update(T entity)
             => Set.Update(entity);
 
+        public async Task<int> CountAsync(ISpecefication<T> spec)
+        {
+            return await GenerateQuery(spec).CountAsync();
+        }
 
-        IQueryable<T> GenerateSpec(ISpecefication<T> spec) => SpecificationEvaluator<T>.GetQuery(Set, spec);
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await Set.AnyAsync(predicate);
+        }
+
+        public async Task AddRangeAsync(IEnumerable<T> entities)
+        {
+            await AddRangeAsync(entities);
+        }
+
+        public void DeleteRange(IEnumerable<T> entities)
+        {
+            Set.RemoveRange(entities);
+        }
+        IQueryable<T> GenerateQuery(ISpecefication<T> spec) => SpecificationEvaluator<T>.GetQuery(Set, spec);
+
     }
 }
 

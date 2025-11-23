@@ -1,4 +1,6 @@
-﻿namespace Sehaty.Application.Dtos.MedicalRecordDto
+﻿using System.Text.Json.Serialization;
+
+namespace Sehaty.Application.Dtos.MedicalRecordDto
 {
     public class MedicalRecordUpdateDto
     {
@@ -13,6 +15,8 @@
         public string VitalBp { get; set; }
         public string Notes { get; set; }
         public RecordType? RecordType { get; set; }
-        public bool? IsFinialize { get; set; }
+        [JsonIgnore]
+        public DateTime RecordDate { get; set; } = DateTime.UtcNow;
+
     }
 }

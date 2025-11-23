@@ -9,7 +9,7 @@
         public string LicenseNumber { get; set; }
         public string Qualifications { get; set; }
         public int YearsOfExperience { get; set; }
-        public string ProfilePhotoUrl { get; set; }
+        //public string ProfilePhotoUrl { get; set; }
         public string AvailabilityNotes { get; set; }
         public int UserId { get; set; }
         public string User { get; set; }

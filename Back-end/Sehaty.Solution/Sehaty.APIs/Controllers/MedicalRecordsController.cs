@@ -12,7 +12,17 @@
             if (medicalRecords is null) return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<List<MedicalRecordReadDto>>(medicalRecords));
         }
+        [HttpGet("GetById/{id}")]
+        [Authorize(Roles = "Admin,Doctor,Receptionist")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var spec = new MedicalRecordSpec(m => m.Id == id);
+            var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
 
+            if (medicalRecord is null)
+                return NotFound(new ApiResponse(404));
+            return Ok(mapper.Map<MedicalRecordReadDto>(medicalRecord));
+        }
 
 
         [HttpGet("GetMedicalRecordForPatient")]
@@ -20,7 +30,7 @@
         public async Task<ActionResult<MedicalRecordReadDto>> GetMedicalRecordForPatient()
         {
             var patientUserId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var patientId = unit.Repository<Patient>().FindByAsync(P => P.UserId == patientUserId).Select(P => P.Id).FirstOrDefault();
+            var patientId = unit.Repository<Patient>().FindBy(P => P.UserId == patientUserId).Select(P => P.Id).FirstOrDefault();
 
             var spec = new MedicalRecordSpec(M => M.PatientId == patientId);
             var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
@@ -31,19 +41,8 @@
         }
 
 
-        [HttpGet("GetMedicalRecordForDoctor/{id}")]
-        [Authorize(Roles = "Doctor")]
-        public async Task<IActionResult> GetMedicalRecordForDoctor(int id)
-        {
-            var spec = new MedicalRecordSpec(m => m.Id == id);
-            var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
-
-            if (medicalRecord is null)
-                return NotFound(new ApiResponse(404));
-            return Ok(mapper.Map<MedicalRecordReadDto>(medicalRecord));
-        }
         [HttpGet("GetMedicalRecordByPatientId/{patientId}")]
-        [Authorize(Roles = "Doctor,Receptionist")]
+        [Authorize(Roles = "Admin,Doctor,Receptionist")]
         public async Task<IActionResult> GetMedicalRecordByPatientId(int patientId)
         {
             var spec = new MedicalRecordSpec(m => m.PatientId == patientId);
@@ -52,6 +51,73 @@
             if (medicalRecord is null)
                 return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<MedicalRecordReadDto>(medicalRecord));
+        }
+
+        [Authorize(Roles = "Doctor")]
+        [HttpPost("AddMedicalRecord")]
+        public async Task<IActionResult> AddMedicalRecord([FromBody] MedicalRecordAddByDoctorDto model)
+        {
+            if (!ModelState.IsValid) return BadRequest(new ApiResponse(400));
+            var patient = await unit.Repository<Patient>().GetByIdAsync(model.PatientId);
+            if (patient is null) return NotFound(new ApiResponse(404, "Patient Not Found"));
+
+
+            bool patientHasMedicalRecord = await unit.Repository<MedicalRecord>().AnyAsync(m => m.PatientId == model.PatientId);
+            if (patientHasMedicalRecord)
+                return BadRequest(new ApiResponse(400, "Patient already has a medical record"));
+
+            var addMedicalRecord = mapper.Map<MedicalRecord>(model);
+            await unit.Repository<MedicalRecord>().AddAsync(addMedicalRecord);
+
+            var RowAffected = await unit.CommitAsync();
+            return RowAffected > 0 ? CreatedAtAction(nameof(GetById),
+                new { id = addMedicalRecord.Id }, mapper.Map<MedicalRecordReadDto>(addMedicalRecord))
+                  : BadRequest(new ApiResponse(400));
+        }
+
+        [Authorize(Roles = "Doctor")]
+        [HttpPut("UpdateByDoctor/{id}")]
+        public async Task<IActionResult> Update(int id, MedicalRecordUpdateDto model)
+        {
+            var record = await unit.Repository<MedicalRecord>().GetByIdAsync(id);
+            if (record == null) return NotFound(new ApiResponse(404, "Medical Record Not Found !!!"));
+
+            bool isSameDayUpdate = record.CreatedAt?.Date == DateTime.UtcNow.Date;
+
+            if (isSameDayUpdate)
+            {
+                var auditEntries = new List<MedicalRecordAuditLog>();
+                var props = typeof(MedicalRecordUpdateDto).GetProperties();
+                var doctorUserId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var doctorId = (await unit.Repository<Doctor>().GetFirstOrDefaultAsync(D => D.UserId == doctorUserId)).Id;
+
+                foreach (var prop in props)
+                {
+                    var newValue = prop.GetValue(model)?.ToString();
+                    var oldValue = record.GetType().GetProperty(prop.Name)?.GetValue(record)?.ToString();
+
+                    if (newValue != oldValue)
+                    {
+                        auditEntries.Add(new MedicalRecordAuditLog
+                        {
+                            MedicalRecordId = record.Id,
+                            FieldName = prop.Name,
+                            OldValue = oldValue,
+                            NewValue = newValue,
+                            UpdatedByDoctorId = doctorId
+                        });
+                    }
+                }
+
+                foreach (var entry in auditEntries)
+                    await unit.Repository<MedicalRecordAuditLog>().AddAsync(entry);
+            }
+
+            mapper.Map(model, record);
+            unit.Repository<MedicalRecord>().Update(record);
+
+            await unit.CommitAsync();
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
@@ -87,35 +153,7 @@
 
         //// Add Record
 
-        //[Authorize(Roles = "Doctor")]
-        //[HttpPost("AddByDoctor")]
-        //public async Task<IActionResult> AddMedicalRecordByDoctor([FromBody] MedicalRecordAddByDoctorDto model)
-        //{
-        //    // Validate appointment existence
-        //    if (!ModelState.IsValid) return BadRequest(new ApiResponse(400));
 
-        //    var appointment = await unit.Repository<Appointment>().GetByIdAsync(model.AppointmentId);
-        //    if (appointment is null) return NotFound(new ApiResponse(404));
-
-        //    // Prevent editing completed records
-        //    if (appointment.Status == AppointmentStatus.Completed) return BadRequest(new ApiResponse(400, "Can't Modify completed Record"));
-
-
-        //    // Create record
-        //    var addMedicalRecord = mapper.Map<MedicalRecord>(model);
-        //    await unit.Repository<MedicalRecord>().AddAsync(addMedicalRecord);
-
-        //    // Finalize appointment if requested
-        //    if (model.IsFinialize == true)
-        //    {
-        //        appointment.Status = AppointmentStatus.Completed;
-        //        unit.Repository<Appointment>().Update(appointment);
-        //    }
-        //    var RowAffected = await unit.CommitAsync();
-        //    return RowAffected > 0 ? CreatedAtAction(nameof(GetMedicalRecordForDoctor),
-        //        new { id = addMedicalRecord.Id }, mapper.Map<MedicalRecordReadDto>(addMedicalRecord))
-        //          : BadRequest(new ApiResponse(400));
-        //}
 
         ////Add By Nurse
         //[Authorize(Roles = "Nurse")]
