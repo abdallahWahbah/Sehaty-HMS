@@ -1,7 +1,7 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
 
-    public class AppointmentsController(IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService, IEmailSender emailSender, ISmsSender smsSender, IWebHostEnvironment env) : ApiBaseController
+    public class AppointmentsController(IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService, IEmailSender emailSender, IWebHostEnvironment env) : ApiBaseController// ISmsSender smsSender,
     {
 
         [HttpGet]

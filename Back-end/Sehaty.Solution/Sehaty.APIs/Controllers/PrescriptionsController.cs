@@ -1,13 +1,11 @@
-﻿using Sehaty.Core.Entites;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
 
     public class PrescriptionsController(IUnitOfWork unit, IMapper map, IPrescriptionPdfService pdfService, IEmailSender emailSender, ISmsSender smsSender, IWebHostEnvironment env) : ApiBaseController
     {
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<IEnumerable<GetPrescriptionsDto>>> GetAll()
         {
             var spec = new PrescriptionSpecifications();
             var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
@@ -79,8 +77,10 @@ namespace Sehaty.APIs.Controllers
             if (ModelState.IsValid)
             {
                 var prescription = map.Map<Prescription>(model);
-                var doctorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                prescription.DoctorId = int.Parse(doctorId);
+                var doctorUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var doctorId = (await unit.Repository<Doctor>().GetFirstOrDefaultAsync(D => D.UserId == doctorUserId)).Id;
+
+                prescription.DoctorId = doctorId;
                 await unit.Repository<Prescription>().AddAsync(prescription);
                 await unit.CommitAsync();
 
@@ -90,7 +90,7 @@ namespace Sehaty.APIs.Controllers
                     var patient = await unit.Repository<Patient>().GetByIdWithSpecAsync(spec);
                     if (patient != null)
                     {
-                        var doctor = await unit.Repository<Doctor>().GetByIdAsync(int.Parse(doctorId));
+                        var doctor = await unit.Repository<Doctor>().GetByIdAsync(doctorId);
                         string message = $"تم تجهيز الروشته مع الطبيب {doctor.FirstName} {doctor.LastName} بتاريخ {prescription.DateIssued}";
 
                         var notificationDto = new CreateNotificationDto
@@ -109,6 +109,7 @@ namespace Sehaty.APIs.Controllers
                         var notification = map.Map<Notification>(notificationDto);
                         await unit.Repository<Notification>().AddAsync(notification);
                         await unit.CommitAsync();
+
                         var Prescriptionspec = new PrescriptionSpecifications(P => P.Id == prescription.Id);
                         var currentprescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(Prescriptionspec);
                         var medicationsHtml = "";
@@ -133,11 +134,11 @@ namespace Sehaty.APIs.Controllers
                             await emailSender.SendEmailAsync(patient.User.Email, "Sehaty", body);
                             notificationDto.SentViaEmail = true;
                         }
-                        if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
-                        {
-                            smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
-                            notificationDto.SentViaSMS = true;
-                        }
+                        //if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
+                        //{
+                        //    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
+                        //    notificationDto.SentViaSMS = true;
+                        //}
                         await unit.CommitAsync();
                     }
                 }
