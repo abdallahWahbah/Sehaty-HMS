@@ -1,4 +1,4 @@
-export interface Doctor {
+export interface DoctorResponseModel {
   id: number;
   firstName: string;
   lastName: string;

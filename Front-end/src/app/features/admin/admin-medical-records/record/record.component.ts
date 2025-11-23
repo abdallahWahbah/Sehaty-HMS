@@ -14,9 +14,7 @@ export class RecordComponent implements OnChanges {
 
   @Input() record: MedicalRecordModel | null = null;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    
-    console.log("111111111111111", this.record);
+  ngOnChanges(changes: SimpleChanges): void {    
   }
 
 }

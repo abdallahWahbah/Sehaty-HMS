@@ -3,7 +3,12 @@
     <h2 class="dashboard__title-main">Edit Patient: {{patient?.firstName}} {{patient?.lastName}}</h2>
     <div class="patient-edit">
       <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
-    
+        
+        @if(serverError){
+          <div class="server-error">
+              <span>{{ serverError }}</span>
+          </div>
+        }
         <div class="patient-edit__grid">
     
           <!-- MRN -->
