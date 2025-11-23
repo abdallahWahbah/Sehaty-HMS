@@ -3,10 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { DepartmentService } from '../../../core/services/department.service';
 import { Department } from '../../../core/models/department-response.model';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin-department-details',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './admin-department-details.component.html',
   styleUrls: ['./admin-department-details.component.scss'],
 })
@@ -35,8 +36,6 @@ export class AdminDepartmentDetailsComponent implements OnInit {
       if (!this.department) return; // للتأكد إن البيانات موجودة
       this.deptService.deleteDepartment(this.department.id).subscribe({
         next: () => {
-          alert('Department deleted successfully!');
-          // بعد الحذف ارجع للقائمة
           window.location.href = '/admin/departments';
         },
         error: (err) => console.error('Delete error:', err),

@@ -12,10 +12,19 @@
         <div class="header-search">
           <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Search departments..." />
+            <input
+              type="text"
+              placeholder="Search departments..."
+              [(ngModel)]="searchTerm"
+              (input)="searchDepartments()"
+            />
           </div>
         </div>
-        <button class="btn-add-department">
+        <button
+          type="button"
+          [routerLink]="['/admin/departments/add']"
+          class="btn-add-department"
+        >
           <i class="fa-solid fa-plus"></i>
           Add Department
         </button>
@@ -55,21 +64,18 @@
       </div>
     </div>
 
-    <div class="overview-card">
-      <div class="overview-icon indigo">
-        <i class="fa-solid fa-star"></i>
-      </div>
-      <div class="overview-content">
-        <h3>{{ averageRating }}</h3>
-        <p>Average Rating</p>
-      </div>
-    </div>
   </div>
 
   <!-- Departments Grid -->
   <div class="departments-grid">
-    <!-- Cardiology -->
-    <div class="department-card mint" *ngFor="let dept of departments">
+    <div
+      class="department-card mint"
+      *ngFor="
+        let dept of filteredDepartments.length
+          ? filteredDepartments
+          : departments
+      "
+    >
       <div class="card-header-section">
         <div class="department-icon">
           <i class="fa-solid fa-heart-pulse"></i>

@@ -1,0 +1,51 @@
+.add-department-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+
+    label {
+      margin-bottom: 0.3rem;
+      font-weight: bold;
+    }
+
+    input,
+    textarea {
+      padding: 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #aaa;
+      font-size: 1rem;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+  }
+
+  button {
+    width: 100%;
+    padding: 0.6rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+
+    &:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+  }
+}

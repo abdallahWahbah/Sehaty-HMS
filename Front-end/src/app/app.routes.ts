@@ -21,6 +21,8 @@ import { AdminNavigationComponent } from './features/admin/admin-navigation/admi
 import { AdminDepartmentDetailsComponent } from './features/admin/admin-department-details/admin-department-details.component';
 import { PatientEditComponent } from './features/admin/admin-patients/patient-edit/patient-edit.component';
 import { DoctorEditComponent } from './features/admin/admin-doctors/doctor-edit/doctor-edit.component';
+import { AdminUpdateDepartmentComponent } from './features/admin/admin-update-department/admin-update-department.component';
+import { AdminAddDepartmentComponent } from './features/admin/admin-add-department/admin-add-department.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -42,8 +44,16 @@ export const routes: Routes = [
       { path: 'doctors/:id/edit', component: DoctorEditComponent },
       { path: 'appointments', component: AdminAppointmentsComponent },
       { path: 'medicalRecords', component: AdminMedicalRecordsComponent },
+      { path: 'doctors', component: AdminDoctorsComponent },
+      { path: 'appointments', component: AdminAppointmentsComponent },
+      { path: 'medicalRecords', component: AdminMedicalRecordsComponent },
       { path: 'departments', component: AdminDepartmentsComponent },
+      { path: 'departments/add', component: AdminAddDepartmentComponent },
       { path: 'departments/:id', component: AdminDepartmentDetailsComponent },
+      {
+        path: 'departments/update/:id',
+        component: AdminUpdateDepartmentComponent,
+      },
     ],
   },
   {
