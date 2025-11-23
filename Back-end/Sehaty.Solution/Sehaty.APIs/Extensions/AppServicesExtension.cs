@@ -86,6 +86,9 @@
 
             // Inject Service For File To Add And Manage Files
             services.AddScoped<IFileService, FileService>();
+            // Inject Service For Billing To Add And Manage Billing
+
+            services.AddScoped<IBillingService, BillingService>();
 
             // Add DbContext Class Injection
             services.AddDbContext<SehatyDbContext>(options =>
