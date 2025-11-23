@@ -1,11 +1,13 @@
-﻿namespace Sehaty.Application.Dtos.IdentityDtos
+﻿using System.Text.Json.Serialization;
+
+namespace Sehaty.Application.Dtos.IdentityDtos
 {
     public class LoginDto
     {
         public string UserName { get; set; }
 
         public string Password { get; set; }
-
+        [JsonIgnore]
         public string IpAddress { get; set; }
 
     }

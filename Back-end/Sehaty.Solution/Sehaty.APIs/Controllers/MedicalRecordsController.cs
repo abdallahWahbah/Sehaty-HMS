@@ -4,52 +4,66 @@
     public class MedicalRecordsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
     {
 
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<MedicalRecordReadDto>>> GetAllMedicalRecord()
-        //{
-        //    var spec = new MedicalRecordSpec();
-        //    var medicalRecords = await unit.Repository<MedicalRecord>().GetAllWithSpecAsync(spec);
-        //    if (medicalRecords is null) return NotFound(new ApiResponse(404));
-        //    return Ok(mapper.Map<List<MedicalRecordReadDto>>(medicalRecords));
-        //}
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<MedicalRecordReadDto>>> GetAllMedicalRecord()
+        {
+            var spec = new MedicalRecordSpec();
+            var medicalRecords = await unit.Repository<MedicalRecord>().GetAllWithSpecAsync(spec);
+            if (medicalRecords is null) return NotFound(new ApiResponse(404));
+            return Ok(mapper.Map<List<MedicalRecordReadDto>>(medicalRecords));
+        }
 
 
 
-        //[HttpGet("GetMedicalRecordForPatient/{id}")]
-        //[Authorize(Roles = "Patient")]
-        //public async Task<ActionResult> GetMedicalRecordForPatient(int id)
-        //{
-        //    var spec = new MedicalRecordSpec(m => m.Id == id);
-        //    var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
+        [HttpGet("GetMedicalRecordForPatient")]
+        [Authorize(Roles = "Patient")]
+        public async Task<ActionResult<MedicalRecordReadDto>> GetMedicalRecordForPatient()
+        {
+            var patientUserId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var patientId = unit.Repository<Patient>().FindByAsync(P => P.UserId == patientUserId).Select(P => P.Id).FirstOrDefault();
 
-        //    if (medicalRecord is null)
-        //        return NotFound(new ApiResponse(404));
+            var spec = new MedicalRecordSpec(M => M.PatientId == patientId);
+            var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
 
-        //    var userId = User.FindFirst("uid")?.Value;
-        //    if (medicalRecord.Appointment.PatientId.ToString() != userId)
-        //        return Unauthorized(new ApiResponse(401, "You are not allowed to view this record"));
-
-        //    return Ok(mapper.Map<MedicalRecordReadDto>(medicalRecord));
-        //}
+            if (medicalRecord is null)
+                return NotFound(new ApiResponse(404));
+            return Ok(mapper.Map<MedicalRecordReadDto>(medicalRecord));
+        }
 
 
-        //[HttpGet("GetMedicalRecordForDoctor/{id}")]
-        //[Authorize(Roles = "Doctor")]
-        //public async Task<IActionResult> GetMedicalRecordForDoctor(int id)
-        //{
-        //    var spec = new MedicalRecordSpec(m => m.Id == id);
-        //    var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
+        [HttpGet("GetMedicalRecordForDoctor/{id}")]
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> GetMedicalRecordForDoctor(int id)
+        {
+            var spec = new MedicalRecordSpec(m => m.Id == id);
+            var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
 
-        //    if (medicalRecord is null)
-        //        return NotFound(new ApiResponse(404));
+            if (medicalRecord is null)
+                return NotFound(new ApiResponse(404));
+            return Ok(mapper.Map<MedicalRecordReadDto>(medicalRecord));
+        }
+        [HttpGet("GetMedicalRecordByPatientId/{patientId}")]
+        [Authorize(Roles = "Doctor,Receptionist")]
+        public async Task<IActionResult> GetMedicalRecordByPatientId(int patientId)
+        {
+            var spec = new MedicalRecordSpec(m => m.PatientId == patientId);
+            var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdWithSpecAsync(spec);
 
-        //    var userId = User.FindFirst("uid")?.Value;
-        //    if (medicalRecord.Appointment.DoctorId.ToString() != userId)
-        //        return Unauthorized(new ApiResponse(401, "You are not allowed to view this record"));
+            if (medicalRecord is null)
+                return NotFound(new ApiResponse(404));
+            return Ok(mapper.Map<MedicalRecordReadDto>(medicalRecord));
+        }
 
-        //    return Ok(mapper.Map<MedicalRecordReadDto>(medicalRecord));
-        //}
-
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Doctor")]
+        public async Task<IActionResult> DeleteMedicalRecord(int id)
+        {
+            var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdAsync(id);
+            if (medicalRecord is null) return NotFound(new ApiResponse(404));
+            unit.Repository<MedicalRecord>().Delete(medicalRecord);
+            var RowAffected = await unit.CommitAsync();
+            return RowAffected > 0 ? Ok(new ApiResponse(200, "Deleted Successfully")) : BadRequest(new ApiResponse(400));
+        }
 
         //[HttpGet("GetMedicalRecordForNurse/{id}")]
         //[Authorize(Roles = "Nurse")]
@@ -187,20 +201,6 @@
         //        return Ok(mapper.Map<MedicalRecordReadDto>(medicalRecord));
 
         //    return NotFound(new ApiResponse(404));
-        //}
-
-
-
-
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteMedicalRecord(int? id)
-        //{
-        //    if (id is null) return BadRequest(new ApiResponse(400));
-        //    var medicalRecord = await unit.Repository<MedicalRecord>().GetByIdAsync(id.Value);
-        //    if (medicalRecord is null) return NotFound(new ApiResponse(404));
-        //    unit.Repository<MedicalRecord>().Delete(medicalRecord);
-        //    var RowAffected = await unit.CommitAsync();
-        //    return RowAffected > 0 ? Ok(new ApiResponse(200, "Deleted Successfully")) : BadRequest(new ApiResponse(400));
         //}
 
     }
