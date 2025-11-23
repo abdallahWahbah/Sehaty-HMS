@@ -14,7 +14,6 @@
         public string MedicalRecordNotes { get; set; }
         public int? PatientId { get; set; }
         public string PatiantName { get; set; }
-        public string MRN { get; set; }
         public int? DoctorId { get; set; }
         public string DoctorName { get; set; }
         public string LicenseNumber { get; set; }

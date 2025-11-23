@@ -30,6 +30,8 @@ import { DoctorAppointmentsComponent } from './features/doctor/doctor-appointmen
 import { DoctorDetailsComponent } from './features/doctor/doctor-details/doctor-details.component';
 import { DoctorPrescriptionsComponent } from './features/doctor/doctor-prescriptions/doctor-prescriptions.component';
 import { DoctorAvailableSlotsComponent } from './features/doctor/doctor-available-slots/doctor-available-slots.component';
+import { AdminAppointmentDetailsComponent } from './features/admin/admin-appointments/admin-appointment-details/admin-appointment-details.component';
+import { AdminUpdateScheduleComponent } from './features/admin/admin-appointments/admin-update-schedule/admin-update-schedule.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -50,9 +52,13 @@ export const routes: Routes = [
       { path: 'doctors', component: AdminDoctorsComponent },
       { path: 'doctors/:id/edit', component: DoctorEditComponent },
       { path: 'appointments', component: AdminAppointmentsComponent },
+      { path: 'appointments/:id', component: AdminAppointmentDetailsComponent },
+      {
+        path: 'appointments/update/:id',
+        component: AdminUpdateScheduleComponent,
+      },
       { path: 'medicalRecords', component: AdminMedicalRecordsComponent },
       { path: 'doctors', component: AdminDoctorsComponent },
-      { path: 'appointments', component: AdminAppointmentsComponent },
       { path: 'medicalRecords', component: AdminMedicalRecordsComponent },
       { path: 'departments', component: AdminDepartmentsComponent },
       { path: 'departments/add', component: AdminAddDepartmentComponent },
@@ -64,16 +70,17 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'doctor', 
+    path: 'doctor',
     canActivate: [doctorGuard],
     component: DoctorNavigationComponent,
     children: [
       { path: '', redirectTo: 'appointments', pathMatch: 'full' },
       { path: 'appointments', component: DoctorAppointmentsComponent },
       { path: 'details', component: DoctorDetailsComponent },
+      { path: ':id/edit', component: DoctorEditComponent },
       { path: 'prescription', component: DoctorPrescriptionsComponent },
       { path: 'availableSlots', component: DoctorAvailableSlotsComponent },
-    ]
+    ],
   },
   {
     path: 'patient',

@@ -1,0 +1,278 @@
+.appointment-details {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding: 2rem;
+
+  .details-header {
+    margin-bottom: 2rem;
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-back {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #f0f0f0;
+        border-color: #007bff;
+      }
+
+      i {
+        color: #333;
+        font-size: 1rem;
+      }
+    }
+
+    .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #f0f0f0;
+      margin: 0;
+    }
+
+    .page-subtitle {
+      color: #f0f0f0;
+      margin: 0.25rem 0 0 0;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// ------------------------------------
+// 2. Main Content Container
+// ------------------------------------
+
+.details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .details-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  // Status Section
+  .status-section {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+
+      i {
+        font-size: 0.6rem;
+      }
+    }
+
+    // Status Modifiers
+    .status-confirmed {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status-delayed {
+      background: #f8d7da;
+      color: #721c24;
+    }
+  }
+
+  // Info Fields Section
+  .info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+
+    .info-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .field-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        color: #555;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        i {
+          color: #007bff;
+        }
+      }
+
+      .field-value {
+        margin-top: 0.5rem;
+
+        h2 {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: #1a1a1a;
+          margin: 0;
+        }
+
+        .date-time {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 1.1rem;
+          color: #333;
+          margin: 0.5rem 0;
+
+          i {
+            color: #007bff;
+            width: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  // Reason & Notes Text Block Styles
+  .reason-text,
+  .notes-text {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid #007bff;
+  }
+
+  // Actions (Buttons) Section
+  .actions-section {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e0e0e0;
+
+    .btn-edit,
+    .btn-back-list {
+      flex: 1;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+      }
+    }
+
+    .btn-edit {
+      background: #007bff;
+      color: #fff;
+
+      &:hover {
+        background: #0056b3;
+      }
+    }
+
+    .btn-back-list {
+      background: #6c757d;
+      color: #fff;
+
+      &:hover {
+        background: #5a6268;
+        box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+      }
+    }
+  }
+
+  // Loading & Error States
+  .loading-container,
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    font-size: 1.2rem;
+    gap: 1rem;
+  }
+
+  .loading-container {
+    color: #666;
+  }
+
+  .error-container {
+    color: #dc3545;
+    padding: 2rem;
+    text-align: center;
+  }
+}
+
+// ------------------------------------
+// 3. Responsive Design (Media Queries)
+// ------------------------------------
+
+@media (max-width: 768px) {
+  .appointment-details {
+    padding: 1rem;
+  }
+
+  .details-container {
+    .details-card {
+      padding: 1.5rem;
+    }
+
+    .details-header {
+      .page-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    .actions-section {
+      flex-direction: column;
+
+      .btn-edit,
+      .btn-back-list {
+        width: 100%;
+      }
+    }
+  }
+}

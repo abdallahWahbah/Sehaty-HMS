@@ -1,8 +1,54 @@
 <section id="dashboard" class="dashboard">
     <div class="dashboard__title">
-        <h2 class="dashboard__title-main">xxxxx</h2>
+        <h2 class="dashboard__title-main">Details</h2>
         <p class="dashboard__title-sub">
-            xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx
+            Edit dr. {{currentDoctor?.firstName}} {{currentDoctor?.lastName}}
         </p>
+
+        @if(currentDoctor){
+            <div class="doctor-details">
+                <div class="doctor-details__header">
+                    <div class="doctor-details__info">
+                        <h3 class="doctor-details__name">
+                        Dr. {{ currentDoctor.firstName }} {{ currentDoctor.lastName }}
+                        </h3>
+                        <p class="doctor-details__specialty">{{ currentDoctor.specialty }}</p>
+                    </div>
+                </div>
+    
+                <div class="doctor-details__content">
+                    <div class="doctor-details__item">
+                        <span class="doctor-details__label">License Number:</span>
+                        <span class="doctor-details__value">{{ currentDoctor.licenseNumber }}</span>
+                    </div>
+        
+                    <div class="doctor-details__item">
+                        <span class="doctor-details__label">Department:</span>
+                        <span class="doctor-details__value">{{ currentDoctor.department }}</span>
+                    </div>
+        
+                    <div class="doctor-details__item">
+                        <span class="doctor-details__label">Experience:</span>
+                        <span class="doctor-details__value">
+                        {{ currentDoctor.yearsOfExperience }} years
+                        </span>
+                    </div>
+        
+                    <div class="doctor-details__item">
+                        <span class="doctor-details__label">Qualifications:</span>
+                        <span class="doctor-details__value">{{ currentDoctor.qualifications }}</span>
+                    </div>
+        
+                    <div class="doctor-details__item">
+                        <span class="doctor-details__label">Notes:</span>
+                        <span class="doctor-details__value">{{ currentDoctor.availabilityNotes }}</span>
+                    </div>
+                </div>
+                <div class="view_downlad" (click)="navigateToEdit(currentDoctor.id)">
+                    <i class="fa-solid fa-file-pen"></i>
+                    <p>Edit</p>
+                </div>
+            </div>
+        }
     </div>
 </section>

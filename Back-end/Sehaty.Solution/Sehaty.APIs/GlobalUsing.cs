@@ -45,11 +45,11 @@ global using Sehaty.Core.Specifications.Prescription_Specs;
 global using Sehaty.Core.UnitOfWork.Contract;
 global using Sehaty.Infrastructure.Data.Contexts;
 global using Sehaty.Infrastructure.Data.SeedClass;
+global using Sehaty.Infrastructure.Dtos;
 global using Sehaty.Infrastructure.UnitOfWork;
 global using System.Security.Claims;
 global using System.Text;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
-
 
 

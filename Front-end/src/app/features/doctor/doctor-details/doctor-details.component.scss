@@ -1,0 +1,87 @@
+.doctor-details {
+  width: 100%;
+  border: 0.1rem solid #252b61;
+  border-radius: 1rem;
+  margin: 4rem 0;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(37, 43, 97, 0.1);
+  background: #fff;
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(37, 43, 97, 0.15);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  &__photo {
+    width: 8rem;
+    height: 8rem;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 0.2rem solid #252b61;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__name {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 0;
+    color: #252b61;
+  }
+
+  &__specialty {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #555;
+    margin-top: 0.5rem;
+  }
+
+  &__content {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  &__item {
+    display: flex;
+    gap: 1rem;
+    font-size: 1.4rem;
+  }
+
+  &__label {
+    font-weight: 600;
+    min-width: 14rem;
+    color: #000;
+  }
+
+  &__value {
+    font-weight: 400;
+    color: #444;
+  }
+}
+.view_downlad{
+  margin-top: 2rem;
+  width: 8rem;
+  padding: -1rem 0;
+  padding-top: 1rem;
+  cursor: pointer;
+  // background-color: red;
+  border: 1px solid var(--color-primary);
+  border-radius: 3px;
+  font-size: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
