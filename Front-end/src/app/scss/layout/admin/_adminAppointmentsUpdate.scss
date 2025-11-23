@@ -1,0 +1,96 @@
+.edit-appointment {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  &__title {
+    text-align: center;
+    margin-bottom: 25px;
+    color: $color-primary;
+    font-size: 1.8rem;
+  }
+
+  &__error {
+    background-color: #ffe6e6;
+    color: #d8000c;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  &__label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: $color-primary;
+  }
+
+  &__input {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border 0.3s, box-shadow 0.3s;
+
+    &:focus {
+      border-color: $color-primary;
+      box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+      outline: none;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  &__btn {
+    flex: 1;
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+
+    &--primary {
+      background-color: $color-primary;
+      color: #fff;
+
+      &:hover {
+        background-color: darken($color-primary, 10%);
+      }
+    }
+
+    &--secondary {
+      background-color: #f0f0f0;
+      color: $color-primary;
+
+      &:hover {
+        background-color: #dcdcdc;
+      }
+    }
+  }
+
+  &__loading {
+    text-align: center;
+    padding: 30px;
+    font-size: 1.2rem;
+    color: #555;
+  }
+}
