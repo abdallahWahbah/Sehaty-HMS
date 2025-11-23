@@ -36,7 +36,7 @@
 
                 return CreatedAtAction(nameof(GetAppointmentById),
                     new { id = appointment.Id },
-                    appointment);
+                    mapper.Map<AppointmentReadDto>(appointment));
             }
             catch (Exception ex)
             {
