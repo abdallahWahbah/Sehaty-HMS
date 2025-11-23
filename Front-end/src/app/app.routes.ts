@@ -23,6 +23,8 @@ import { PatientEditComponent } from './features/admin/admin-patients/patient-ed
 import { DoctorEditComponent } from './features/admin/admin-doctors/doctor-edit/doctor-edit.component';
 import { AdminUpdateDepartmentComponent } from './features/admin/admin-update-department/admin-update-department.component';
 import { AdminAddDepartmentComponent } from './features/admin/admin-add-department/admin-add-department.component';
+import { doctorGuard } from './core/guards/doctor.guard';
+import { NotAllowedComponent } from './pages/not-allowed/not-allowed.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -69,5 +71,6 @@ export const routes: Routes = [
   },
   { path: 'home', component: HomeComponent },
   { path: 'not-found', component: NotFoundComponent },
+  { path: 'not-allowed', component: NotAllowedComponent },
   { path: '**', redirectTo: '/not-found' },
 ];
