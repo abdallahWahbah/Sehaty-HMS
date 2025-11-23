@@ -14,8 +14,8 @@
 
         private void AddIncludes()
         {
-            Includes.Add(m => m.Prescriptions);
             Includes.Add(m => m.Patient);
+            Includes.Add(m => m.Prescriptions);
         }
     }
 }

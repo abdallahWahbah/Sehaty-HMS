@@ -76,7 +76,7 @@
             services.AddScoped<IPrescriptionPdfService, PrescriptionPdfService>();
 
             // Inject Service For Doctor To Add And Manage Doctors
-            services.AddScoped<IDoctorService, DoctorService>();
+            //services.AddScoped<IDoctorService, DoctorService>();
 
             // Inject Service For Appointment To Add And Manage Appointments
             services.AddScoped<IAppointmentService, AppointmentService>();
