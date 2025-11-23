@@ -6,10 +6,10 @@ export interface DoctorResponseModel {
   licenseNumber: string;
   qualifications: string;
   yearsOfExperience: number;
-  profilePhotoUrl: string;
+  profilePhotoUrl?: string;
   availabilityNotes: string;
   userId: number;
-  user: string;
+  user?: string;
   departmentId: number;
-  department: string;
+  department?: string;
 }

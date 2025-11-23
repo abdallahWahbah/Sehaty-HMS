@@ -1,0 +1,113 @@
+.section_two {
+  width: fit-content;
+
+  border: 0.1rem solid #252b61;
+  border-radius: 1rem;
+  margin: 4rem 2rem 2rem 2rem;
+  padding: 1rem 0;
+  box-shadow: 0 2px 8px rgba(37, 43, 97, 0.1);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(37, 43, 97, 0.15);
+  }
+}
+
+
+.appointment {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 0.1rem solid #e6e6f5;
+    padding-bottom: 0.6rem;
+  }
+
+  &__label {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #252b61;
+    margin: 0;
+  }
+
+  &__value {
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin: 0;
+    color: #333;
+
+    &--status {
+      font-weight: 600;
+      color: #3b82f6; // blue for status
+    }
+  }
+}
+
+
+.person_info {
+  margin: 1rem 2rem;
+  padding: 0 1rem;
+
+  .name_time_other {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    align-items: center;
+
+    /* Left section: name + time + duration */
+    .name_time {
+      display: flex;
+      gap: 3rem;
+      flex-wrap: wrap;
+
+      .name,
+      .time,
+      .duration {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.6rem;
+        color: var(--color-primary);
+
+        p {
+          margin: 0;
+        }
+
+        i {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    /* Right section: appointment status */
+    .appointment-status {
+      .status-pill {
+        padding: 0.6rem 1.6rem;
+        border-radius: 9999px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &.dashboard__appointments-item--confirmed {
+          background-color: #4bee0a;
+        }
+
+        &.dashboard__appointments-item--pending {
+          background-color: #ffc107;
+          color: #000;
+        }
+
+        &.dashboard__appointments-item--delayed {
+          background-color: #dc3545;
+        }
+      }
+    }
+  }
+}

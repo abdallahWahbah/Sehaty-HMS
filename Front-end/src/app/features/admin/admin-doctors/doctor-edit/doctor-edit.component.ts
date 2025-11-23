@@ -6,7 +6,7 @@ import { DoctorService } from '../../../../core/services/doctor.service';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FileUploadModule } from 'primeng/fileupload';
 
 @Component({
@@ -28,9 +28,13 @@ export class DoctorEditComponent {
   doctor!: DoctorResponseModel;
   doctorForm!: FormGroup;
   serverError: string = '';
-  selectedFile!: File;
 
-  constructor(private location:Location, private formBuilder: FormBuilder, private _doctorService: DoctorService){}
+  constructor(
+    private location:Location, 
+    private formBuilder: FormBuilder, 
+    private _doctorService: DoctorService,
+    private router: Router
+  ){}
 
   ngOnInit(){
     this.doctorForm = this.formBuilder.group({
@@ -59,10 +63,6 @@ export class DoctorEditComponent {
     })
   }
 
-  onFileSelected(event: any) {
-    this.selectedFile = event.files[0];
-  }
-
   buildForm(doctor: any) {
     this.doctorForm = this.formBuilder.group({
       firstName: [doctor.firstName, Validators.required],
@@ -80,23 +80,23 @@ export class DoctorEditComponent {
 
   onSubmit() {
     this.serverError = '';
-    if(!this.selectedFile) {
-      this.serverError = "Please select a profile photo for the doctor";
-    }
-    if (this.doctorForm.invalid || !this.selectedFile) return;
+    if (this.doctorForm.invalid) return;
 
-    const formData = new FormData();
-    Object.keys(this.doctorForm.value).forEach(key => {
-      formData.append(key, this.doctorForm.value[key]);
-    });
-
-    if(this.selectedFile){
-      formData.append("profilePhoto", this.selectedFile);
-    }
-
-    this._doctorService.updateDoctor(this.doctor.id, formData).subscribe({
+    this._doctorService.updateDoctor(this.doctor.id, this.doctorForm.value).subscribe({
       next: (res) => {
         console.log("Doctor updated successfully");
+        const url = this.router.url;
+        const navigateTo = url.split('/')[1];
+        switch(navigateTo){
+          case 'doctor':{
+            this.router.navigate(['/doctor/details'])
+            break;
+          }
+          case 'admin':{
+            this.router.navigate(['/admin/doctors'])
+            break;
+          }
+        }
       },
       error: (err) => {
         console.error("Error updating doctor", err);
