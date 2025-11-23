@@ -1,7 +1,4 @@
-﻿using Sehaty.Core.Entites;
-using System.ComponentModel.DataAnnotations;
-
-namespace Sehaty.Application.Dtos.NotificationsDTOs
+﻿namespace Sehaty.Application.Dtos.NotificationsDTOs
 {
     public class CreateNotificationDto
     {
@@ -26,7 +23,7 @@ namespace Sehaty.Application.Dtos.NotificationsDTOs
         public bool SentViaEmail { get; set; }
         [Required]
         public bool SentViaSMS { get; set; }
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
 
     }
 }

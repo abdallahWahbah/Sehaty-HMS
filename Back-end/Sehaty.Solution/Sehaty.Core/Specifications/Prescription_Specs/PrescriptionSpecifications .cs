@@ -1,13 +1,4 @@
-﻿using Sehaty.Core.Entities.Business_Entities;
-using Sehaty.Core.Specefications;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sehaty.Core.Specifications.Prescription_Specs
+﻿namespace Sehaty.Core.Specifications.Prescription_Specs
 {
     public class PrescriptionSpecifications : BaseSpecefication<Prescription>
     {

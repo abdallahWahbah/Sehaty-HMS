@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Sehaty.Core.Entities.Business_Entities;
-
-namespace Sehaty.Infrastructure.Data.Configrations
+﻿namespace Sehaty.Infrastructure.Data.Configrations
 {
     internal class PrescriptionConfigrations : IEntityTypeConfiguration<Prescription>
     {
@@ -40,7 +36,7 @@ namespace Sehaty.Infrastructure.Data.Configrations
             builder.HasOne(p => p.Patient) //set foreign key to patient
                    .WithMany(pt => pt.Prescriptions)
                    .HasForeignKey(p => p.PatientId)
-                   .OnDelete(DeleteBehavior.SetNull);// Set null on delete
+                   .OnDelete(DeleteBehavior.NoAction);// Set null on delete
             builder.Property(p => p.PatientId)
                    .IsRequired(false);
 

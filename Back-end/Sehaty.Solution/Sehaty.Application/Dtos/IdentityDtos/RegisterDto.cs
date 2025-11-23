@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using static Sehaty.Core.Entities.User_Entities.ApplicationUser;
-
-namespace Sehaty.Application.Dtos.IdentityDtos
+﻿namespace Sehaty.Application.Dtos.IdentityDtos
 {
     public class RegisterDto
     {

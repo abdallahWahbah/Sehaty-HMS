@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Sehaty.Application.Dtos.FeedbackDtos
+﻿namespace Sehaty.Application.Dtos.FeedbackDtos
 {
     public class FeedbackAddUpdateDto
     {

@@ -4,7 +4,7 @@
     {
         public int? Id { get; set; }
         public string Sort { get; set; }
-        public string MRN { get; set; }
+        public string PatientId { get; set; }
         public string Name { get; set; }
         public bool Descending { get; set; }
 

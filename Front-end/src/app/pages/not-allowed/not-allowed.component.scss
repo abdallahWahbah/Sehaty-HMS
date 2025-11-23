@@ -1,0 +1,43 @@
+.not-allowed {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f7f8fa;
+
+  &__card {
+    background: #fff;
+    padding: 3rem 4rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  }
+
+  &__title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #d9534f;
+    margin-bottom: 1rem;
+  }
+
+  &__message {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 2.5rem;
+  }
+
+  &__button {
+    background-color: #3b82f6;
+    border: none;
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s ease;
+
+    &:hover {
+      background-color: #2563eb;
+    }
+  }
+}

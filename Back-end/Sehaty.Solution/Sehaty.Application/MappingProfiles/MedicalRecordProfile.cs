@@ -1,9 +1,4 @@
-﻿using AutoMapper;
-using Sehaty.Application.Dtos.MedicalRecordDto;
-using Sehaty.Core.Entities.Business_Entities.MedicalRecords;
-using Sehaty.Infrastructure.Dtos;
-
-namespace Sehaty.Application.MappingProfiles
+﻿namespace Sehaty.Application.MappingProfiles
 {
     public class MedicalRecordProfile : Profile
     {
@@ -12,8 +7,8 @@ namespace Sehaty.Application.MappingProfiles
             CreateMap<MedicalRecord, MedicalRecordAddByDoctorDto>().ReverseMap();
             CreateMap<MedicalRecord, MedicalRecordUpdateDto>().ReverseMap();
             CreateMap<MedicalRecord, MedicalRecordAddOrUpdateByNurseDto>().ReverseMap();
-            CreateMap<MedicalRecord, MedicalRecordReadDto>().AfterMap((src, dest) => { dest.RecordType = src.RecordType.ToString(); })
-             .ReverseMap();
+            CreateMap<MedicalRecord, MedicalRecordReadDto>()
+                .ForMember(M => M.PatientName, opt => opt.MapFrom(src => $"{src.Patient.FirstName} {src.Patient.LastName}"));
         }
     }
 }

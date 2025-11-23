@@ -1,12 +1,4 @@
-﻿using AutoMapper;
-using Sehaty.Application.Dtos.BillngDto;
-using Sehaty.Core.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Sehaty.Application.MappingProfiles
 {
     public class BillingProfile : Profile
@@ -19,11 +11,14 @@ namespace Sehaty.Application.MappingProfiles
             }).ReverseMap();
 
             CreateMap<BillingAddDto, Billing>()
-            .ForMember(dest => dest.BillDate, opt => opt.MapFrom(_ => DateTime.Now))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => BillingStatus.Pending))
-            .ForMember(dest => dest.PaidAmount, opt => opt.MapFrom(_ => 0m))
-            .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.Subtotal + src.TaxAmount - src.DiscountAmount));
-
+             .ForMember(dest => dest.BillDate, opt => opt.MapFrom(_ => DateTime.UtcNow))
+             .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => BillingStatus.Pending))
+             .ForMember(dest => dest.PaidAmount, opt => opt.MapFrom(_ => 0m))
+             .ForMember(dest => dest.Subtotal, opt => opt.MapFrom(src => src.TotalAmount))
+             .ForMember(dest => dest.TaxAmount, opt => opt.MapFrom(_ => 0m))
+             .ForMember(dest => dest.DiscountAmount, opt => opt.MapFrom(_ => 0m))
+             .ForMember(dest => dest.TransactionId, opt => opt.Ignore())
+             .ForMember(dest => dest.PaymentMethod, opt => opt.MapFrom(src => src.paymentMethod));
 
 
 

@@ -1,1 +1,80 @@
-<p>admin-patients works!</p>
+<section class="patients-dashboard">
+    <div class="patients-dashboard__header">
+        <div class="patients-dashboard__title-group">
+        <h2 class="patients-dashboard__title">Patients</h2>
+        <p class="patients-dashboard__subtitle">
+            Manage patients, medical info, and status
+        </p>
+        </div>
+    </div>
+
+    <div class="patients-dashboard__cards">
+        @for(patient of patients; track patient.id){
+            <div class="patient-card">
+                <div class="patient-card__header">
+                    <div class="patient-card__info">
+                        <p class="patient-card__name">{{patient.firstName}} {{patient.lastName}}</p>
+                        <!-- <p class="patient-card__mrn">MRN: {{patient.mrn}}</p> -->
+                        <p class="patient-card__dob">Date of birth: {{patient.dateOfBirth | date : 'yyyy-MM-dd'}}</p>
+                    </div>
+    
+                    <div class="patient-card__status patient-card__status--active">
+                        {{patient.status}}
+                    </div>
+                </div>
+    
+                <div class="patient-card__section">
+                    <div class="patient-card__labels">
+                        <p>Blood Type</p>
+                        <p>Chronic</p>
+                        <p>Allergies</p>
+                    </div>
+    
+                    <div class="patient-card__values">
+                        <p>{{patient.bloodType}}</p>
+                        <p>{{patient.chrinicConditions}}</p>
+                        <p>{{patient.allergies}}</p>
+                    </div>
+                </div>
+    
+                <div class="patient-card__divider"></div>
+    
+                <div class="patient-card__contact">
+                    <div class="patient-card__contact-item">
+                        <i class="fa-solid fa-phone"></i>
+                        <p>{{patient.emergencyContactPhone || '----'}}</p>
+
+                    </div>
+    
+                    <div class="patient-card__contact-item">
+                        <i class="fa-solid fa-user"></i>
+                        <p>Emergency: {{patient.emergencyContactName}}</p>
+                    </div>
+                </div>
+    
+                <div class="patient-card__footer">
+                    <div class="patient-card__action" (click)="showPatient(patient)">
+                        <i class="fa-solid fa-eye"></i>
+                        <p>View</p>
+                    </div>
+    
+                    <div class="patient-card__action" (click)="navigateToEdit(patient.id)">
+                        <i class="fa-solid fa-file-pen"></i>
+                        <p>Edit</p>
+                    </div>
+                </div>
+            </div>
+        }
+        @if(selectedPatient){
+            <div class="card flex justify-center">
+                <p-dialog 
+                    [modal]="true" [(visible)]="isPatientShown" 
+                    [style]="{ width: '100rem', color: 'var(--color-primary)' }" 
+                    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+                >
+                        <app-patient [patient]="selectedPatient"></app-patient>
+                </p-dialog>
+            </div>
+        }
+    </div>
+</section>

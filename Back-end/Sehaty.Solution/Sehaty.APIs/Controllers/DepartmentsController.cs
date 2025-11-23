@@ -1,13 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Sehaty.APIs.Errors;
-using Sehaty.Application.Dtos.DepartmentDtos;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Specefications;
-using Sehaty.Core.Specifications.DepartmentSpec;
-using Sehaty.Core.UnitOfWork.Contract;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
     public class DepartmentsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
     {

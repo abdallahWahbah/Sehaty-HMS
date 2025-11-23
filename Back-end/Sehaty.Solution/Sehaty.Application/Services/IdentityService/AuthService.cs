@@ -1,20 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using Sehaty.Application.Dtos.IdentityDtos;
-using Sehaty.Application.Services.Contract.AuthService.Contract;
-using Sehaty.Application.Shared.AuthShared;
-using Sehaty.Core.Entities.User_Entities;
-using Sehaty.Infrastructure.Data.Contexts;
-using Sehaty.Infrastructure.Service.Email;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-
-namespace Sehaty.Application.Services.IdentityService
+﻿namespace Sehaty.Application.Services.IdentityService
 {
     public class AuthService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IOptions<JwtOptions> options, SehatyDbContext context, IEmailSender emailSender) : IAuthService
     {

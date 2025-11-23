@@ -1,11 +1,7 @@
-﻿using Sehaty.Core.Entites;
-using System.ComponentModel.DataAnnotations;
-
-namespace Sehaty.Application.Dtos.PatientDto
+﻿namespace Sehaty.Application.Dtos.PatientDto
 {
     public class PatientAddDto
     {
-        public string MRN { get; set; }
         [Required, MaxLength(50)]
         public string FirstName { get; set; }
 

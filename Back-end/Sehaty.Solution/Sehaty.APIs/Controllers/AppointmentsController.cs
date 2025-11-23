@@ -1,25 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using QuestPDF.Infrastructure;
-using Sehaty.APIs.Errors;
-using Sehaty.Application.Dtos.AppointmentDTOs;
-using Sehaty.Application.Dtos.BillngDto;
-using Sehaty.Application.Dtos.NotificationsDTOs;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Entities.Business_Entities.Appointments;
-using Sehaty.Core.Specifications.Appointment_Specs;
-using Sehaty.Core.Specifications.MedicalReord;
-using Sehaty.Core.UnitOfWork.Contract;
-using Sehaty.Infrastructure.Service.Email;
-using Sehaty.Infrastructure.Service.SMS;
-using System.Security.Claims;
-using Twilio.TwiML.Messaging;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
 
-    public class AppointmentsController(IUnitOfWork unit, IMapper mapper, IEmailSender emailSender, ISmsSender smsSender) : ApiBaseController
+    public class AppointmentsController(IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService, IEmailSender emailSender, ISmsSender smsSender) : ApiBaseController
     {
 
         [HttpGet]
@@ -30,10 +12,10 @@ namespace Sehaty.APIs.Controllers
             return Ok(mapper.Map<List<AppointmentReadDto>>(appointments));
         }
 
-        [HttpGet("GetAppointmentById/{id}")]
-        public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AppointmentReadDto>> GetAppointmentById(int id)
         {
-            var specs = new AppointmentSpecifications(D => D.Id == id);
+            var specs = new AppointmentSpecifications(id);
             var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(specs);
             if (appointment is null)
                 return NotFound(new ApiResponse(404));
@@ -44,69 +26,22 @@ namespace Sehaty.APIs.Controllers
 
         // POST: api/Appointments
         [HttpPost]
-        public async Task<ActionResult> CreateAppointment([FromBody] AppointmentAddOrUpdateDto dto)
+        public async Task<ActionResult> CreateAppointment([FromBody] AppointmentAddDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new ApiResponse(400));
-            if (dto.AppointmentDateTime < DateTime.Now)
-                return BadRequest(new ApiResponse(400, "Appointment date cannot be in the past"));
-
-            //  Check if the doctor already has an appointment at the same time
-            var spec = new AppointmentSpecifications(a =>
-                a.DoctorId == dto.DoctorId && a.AppointmentDateTime == dto.AppointmentDateTime);
-            var existingAppointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(spec);
-            if (existingAppointments.Any())
-                return BadRequest(new ApiResponse(400, "Doctor already has an appointment at this time"));
-            var appointment = mapper.Map<Appointment>(dto);
-            await unit.Repository<Appointment>().AddAsync(appointment);
-            await unit.CommitAsync();
-            var patient = await unit.Repository<Patient>().GetByIdAsync(dto.PatientId);
-            if (patient is null)
-                return NotFound(new ApiResponse(404, "Patient not found"));
-
-            var specappointemnet = new AppointmentSpecifications(a => a.Id == appointment.Id);
-            appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(specappointemnet);
-            string message = $"تم حجز موعدك مع الطبيب {appointment.Doctor.FirstName + " " + appointment.Doctor.LastName} بتاريخ {appointment.AppointmentDateTime}";
-
-            //Create a DTO for the notification
-
-
-            var notificationDto = new CreateNotificationDto
+            try
             {
-                UserId = dto.PatientId,
-                Title = "Appointment Booked",
-                Message = message,
-                Priority = NotificationPriority.High,
-                RelatedEntityType = "Appointment",
-                RelatedEntityId = appointment.Id,
-                SentViaEmail = false,
-                IsRead = false,
-                NotificationType = NotificationType.Appointment,
-                SentViaSMS = false
-            };
-            var notification = mapper.Map<Notification>(notificationDto);
-            await unit.Repository<Notification>().AddAsync(notification);
-            await unit.CommitAsync();
+                var appointment = await appointmentService.CreateAsync(dto);
 
-            return CreatedAtAction(nameof(GetAppointmentById), new { id = appointment.Id }, dto);
-        }
-
-        // PUT: api/Appointments/5 <<works great>>
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateAppointment(int? id, AppointmentAddOrUpdateDto dto)
-        {
-            if (id is null) return BadRequest(new ApiResponse(400));
-            if (ModelState.IsValid)
-            {
-                var updateAppointment = await unit.Repository<Appointment>().GetByIdAsync(id.Value);
-                if (updateAppointment is null)
-                    return NotFound(new ApiResponse(404));
-                mapper.Map(dto, updateAppointment);
-                unit.Repository<Appointment>().Update(updateAppointment);
-                await unit.CommitAsync();
-                return NoContent();
+                return CreatedAtAction(nameof(GetAppointmentById),
+                    new { id = appointment.Id },
+                    mapper.Map<AppointmentReadDto>(appointment));
             }
-            return BadRequest(new ApiResponse(400));
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse(400, ex.Message));
+            }
         }
 
         // DELETE: api/Appointments/5
@@ -123,12 +58,13 @@ namespace Sehaty.APIs.Controllers
 
 
         // Change AppointmentStatus To No Show if the currentTime has passed the AppointmentTime
-        [Authorize(Roles = "Admin,Reception")]
+        //[Authorize(Roles = "Admin,Reception")]
         [HttpPost("NoShow/{id}")]
-        public async Task<IActionResult> MarkedStatusAsNoShow(int id, [FromQuery] DateTime currentDateTime)
+        public async Task<IActionResult> MarkedStatusAsNoShow(int id)
         {
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
             if (appointment is null) return NotFound(new ApiResponse(404));
+            var currentDateTime = DateTime.UtcNow;
             if (currentDateTime < appointment.AppointmentDateTime)
             {
                 return BadRequest(new ApiResponse(400, "Cann't mark as No Show before Appointment time"));
@@ -167,7 +103,7 @@ namespace Sehaty.APIs.Controllers
         }
 
         //Cancel Appointment With Policy
-        [Authorize(Roles = "Patient,Reception")]
+        //[Authorize(Roles = "Patient,Reception")]
         [HttpPost("CancelAppointment/{id}")]
         public async Task<IActionResult> CancelAppointment(int id)
         {
@@ -221,22 +157,34 @@ namespace Sehaty.APIs.Controllers
             }
             return Ok(new ApiResponse(200, "Appointment canceled successfully"));
         }
-        [Authorize(Roles = "Patient,Reception")]
-        //RescheduleAppointment
+
+        //[Authorize(Roles = "Patient,Reception")]
         [HttpPut("RescheduleAppointment/{id}")]
-        public async Task<IActionResult> RescheduleAppointment(int id, [FromQuery] DateTime newDate)
+        public async Task<IActionResult> RescheduleAppointment(int id, [FromBody] RescheduleAppointmentDto model)
         {
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
             if (appointment is null) return NotFound(new ApiResponse(404));
-            var requestTime = DateTime.UtcNow;
-            var timeBeforeEdit = appointment.AppointmentDateTime - requestTime;
-            if (timeBeforeEdit < TimeSpan.FromHours(24) || appointment.Status != AppointmentStatus.Emergency)
+
+
+            if (appointment.AppointmentDateTime < DateTime.Now)
+            {
+                return BadRequest(new ApiResponse(400,
+                    "Cannot reschedule an appointment that has already passed"));
+            }
+
+            var timeBeforeEdit = appointment.AppointmentDateTime - DateTime.Now;
+
+            bool isLessThan24Hours = timeBeforeEdit < TimeSpan.FromHours(24);
+            bool notEmergency = appointment.Status != AppointmentStatus.Emergency;
+
+            if (isLessThan24Hours && notEmergency)
             {
                 return BadRequest(new ApiResponse(400, "Cannot reschedule appointment within 24 hours unless marked as Emergency"));
-
             }
+
             var oldDateTime = appointment.AppointmentDateTime;
-            appointment.AppointmentDateTime = newDate;
+            appointment.AppointmentDateTime = model.NewAppointmentDateTime;
+
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "Admin";
             var changedBy = userRole switch
             {
@@ -250,17 +198,20 @@ namespace Sehaty.APIs.Controllers
                 AppointmentId = appointment.Id,
                 Action = AuditAction.Rescheduled,
                 OldDate = oldDateTime,
-                NewDate = newDate,
+                NewDate = model.NewAppointmentDateTime,
                 ChangedAt = DateTime.UtcNow,
                 ChangedBy = changedBy,
             };
+
             await unit.Repository<AppointmentAuditLog>().AddAsync(auditLog);
             unit.Repository<Appointment>().Update(appointment);
             var rowsAffected = await unit.CommitAsync();
             return rowsAffected > 0 ? Ok(new ApiResponse(200, "Appointment rescheduled successfully")) : BadRequest(new ApiResponse(400, "Failed to reschedule appointment"));
 
-
         }
+
+
+
         [HttpPost("ConfirmAppointment/{id}")]
         public async Task<IActionResult> ConfirmAppointment(int id)
         {

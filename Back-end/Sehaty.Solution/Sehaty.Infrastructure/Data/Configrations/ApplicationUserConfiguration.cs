@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Sehaty.Core.Entities.User_Entities;
-
-namespace Sehaty.Infrastructure.Data.Configrations
+﻿namespace Sehaty.Infrastructure.Data.Configrations
 {
     public class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
     {
@@ -48,10 +44,6 @@ namespace Sehaty.Infrastructure.Data.Configrations
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //builder.HasOne(U => U.Role)
-            //    .WithMany(R => R.Users)
-            //    .HasForeignKey(U => U.RoleId)
-            //    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

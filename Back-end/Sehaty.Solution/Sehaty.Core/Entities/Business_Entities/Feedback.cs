@@ -1,6 +1,4 @@
-﻿using Sehaty.Core.Entities.Business_Entities.Appointments;
-
-namespace Sehaty.Core.Entites
+﻿namespace Sehaty.Core.Entites
 {
     public class Feedback : BaseEntity
     {

@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Sehaty.Core.Entities.Business_Entities.MedicalRecords;
-
-namespace Sehaty.Infrastructure.Data.Configrations
+﻿namespace Sehaty.Infrastructure.Data.Configrations
 {
     public class MedicalRecordConfigration : IEntityTypeConfiguration<MedicalRecord>
     {
@@ -39,9 +35,6 @@ namespace Sehaty.Infrastructure.Data.Configrations
                    .WithOne(p => p.MedicalRecord)
                    .HasForeignKey(p => p.MedicalRecordId);
 
-            builder.HasOne(m => m.Appointment)
-                   .WithMany(a => a.MedicalRecords)
-                   .HasForeignKey(m => m.AppointmentId);
         }
 
     }

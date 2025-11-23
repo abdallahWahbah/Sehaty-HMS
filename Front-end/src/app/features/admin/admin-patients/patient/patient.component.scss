@@ -1,0 +1,25 @@
+.patient-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.patient-item {
+  width: 48%;
+  background: #fff;
+  padding: 10px 5px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.item-label {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 3px;
+  color: var(--color-primary);
+}
+
+.item-value {
+  font-size: 0.95rem;
+  color: var(--color-primary);
+}

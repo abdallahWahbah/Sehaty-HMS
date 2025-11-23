@@ -1,6 +1,4 @@
-﻿using Sehaty.Core.Entities.User_Entities;
-
-namespace Sehaty.Core.Entites
+﻿namespace Sehaty.Core.Entites
 {
     public enum NotificationType
     {

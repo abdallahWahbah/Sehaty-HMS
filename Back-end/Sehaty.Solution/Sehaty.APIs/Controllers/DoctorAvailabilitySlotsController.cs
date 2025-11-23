@@ -1,16 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Sehaty.APIs.Errors;
-using Sehaty.Application.Dtos.DoctorAvailabilitySlotDto;
-using Sehaty.Application.Dtos.PrescriptionsDTOs;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Entities.Business_Entities;
-using Sehaty.Core.Specifications.DoctorAvailabilitySlotSpec;
-using Sehaty.Core.Specifications.Prescription_Specs;
-using Sehaty.Core.UnitOfWork.Contract;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
     public class DoctorAvailabilitySlotsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
     {

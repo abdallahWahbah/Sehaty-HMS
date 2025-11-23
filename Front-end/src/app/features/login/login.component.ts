@@ -30,9 +30,8 @@ export class LoginComponent {
   serverError: string = '';
 
   loginForm = new FormGroup({
-    // pateint credentials: abdallah2, asdASD!@#123  (✅gmail)
-    // admin credentials: Abdullah, P@ssw0rd
-    username: new FormControl('Abdullah', [ 
+    
+    username: new FormControl('Doctor1', [ // Admin Doctor1
       Validators.required,
     ]),
     password: new FormControl('P@ssw0rd', [ 
@@ -64,11 +63,16 @@ export class LoginComponent {
         localStorage.setItem("refreshToken", data['refreshToken']);
         switch(data['role']){
           case "Admin":{
-            this.router.navigate(['admin/dashboard']);
+            this.router.navigate(['admin']);
+            break;
+          }
+          case "Doctor":{
+            this.router.navigate(['doctor']);
             break;
           }
           case "Patient":{
             this.router.navigate(['patient/home']);
+            break;
           }
         }
       },

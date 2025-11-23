@@ -1,15 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Entities.Business_Entities;
-using Sehaty.Core.Entities.Business_Entities.Appointments;
-using Sehaty.Core.Entities.Business_Entities.MedicalRecords;
-using Sehaty.Core.Entities.User_Entities;
-using Sehaty.Infrastructure.Data.Configrations;
-using System.Reflection;
-
-namespace Sehaty.Infrastructure.Data.Contexts
+﻿namespace Sehaty.Infrastructure.Data.Contexts
 {
     // It Will Be Modefied To Inherit From IdentityDbContext<ApplicationUser,IdentityRole> To Add Auth Tables 
     public class SehatyDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>

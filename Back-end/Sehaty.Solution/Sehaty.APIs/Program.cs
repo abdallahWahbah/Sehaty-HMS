@@ -1,8 +1,3 @@
-using Sehaty.APIs.Extensions;
-using Sehaty.APIs.Middlewares;
-using System.Text.Json.Serialization;
-
-
 namespace Sehaty.APIs
 {
     public class Program
@@ -23,6 +18,8 @@ namespace Sehaty.APIs
 
             // Extension Method To Add All Services Needed To Run Application
             builder.Services.AddApplicationServices(builder.Configuration);
+            builder.Services.AddHttpClient();
+
 
             // allow cors
             builder.Services.AddCors(options =>

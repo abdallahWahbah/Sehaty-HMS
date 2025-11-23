@@ -1,16 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
-using Sehaty.Application.Dtos.IdentityDtos;
-using Sehaty.Application.Services.Contract.AuthService.Contract;
-using System.Security.Claims;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthController(IAuthService authService) : ControllerBase
+
+    public class AuthController(IAuthService authService) : ApiBaseController
     {
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto model)

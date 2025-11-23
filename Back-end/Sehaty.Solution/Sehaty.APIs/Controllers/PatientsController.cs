@@ -1,14 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Sehaty.APIs.Errors;
-using Sehaty.Application.Dtos.PatientDto;
-using Sehaty.Application.Services.Contract.BusinessServices.Contract;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Specifications.PatientSpec;
-using Sehaty.Core.UnitOfWork.Contract;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
 
     public class PatientsController(IUnitOfWork unit, IMapper mapper, IPatientService patientService) : ApiBaseController
@@ -24,16 +14,16 @@ namespace Sehaty.APIs.Controllers
             return Ok(mapper.Map<IEnumerable<GetPatientDto>>(patients));
         }
 
-        [HttpGet("Search")]
-        [Authorize(Roles = "Admin,Doctor,Receptionist")]
-        public async Task<ActionResult<IEnumerable<GetPatientDto>>> SearchForPatient([FromQuery] PatientSpecsParams specParam)
-        {
-            var spec = new PatientSearchSpecification(specParam);
-            var patients = await unit.Repository<Patient>().GetAllWithSpecAsync(spec);
-            if (patients is null)
-                return NotFound(new ApiResponse(404));
-            return Ok(mapper.Map<IEnumerable<GetPatientDto>>(patients));
-        }
+        //[HttpGet("Search")]
+        //[Authorize(Roles = "Admin,Doctor,Receptionist")]
+        //public async Task<ActionResult<IEnumerable<GetPatientDto>>> SearchForPatient([FromQuery] PatientSpecsParams specParam)
+        //{
+        //    var spec = new PatientSearchSpecification(specParam);
+        //    var patients = await unit.Repository<Patient>().GetAllWithSpecAsync(spec);
+        //    if (patients is null)
+        //        return NotFound(new ApiResponse(404));
+        //    return Ok(mapper.Map<IEnumerable<GetPatientDto>>(patients));
+        //}
 
         [HttpGet("UpdateStatus/{id}")]
         [Authorize(Roles = "Admin,Doctor,Receptionist")]

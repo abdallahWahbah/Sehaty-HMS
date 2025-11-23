@@ -1,17 +1,13 @@
-﻿using Sehaty.Core.Entites;
-using System.Linq.Expressions;
-
-namespace Sehaty.Core.Specifications.PatientSpec
+﻿namespace Sehaty.Core.Specifications.PatientSpec
 {
     public class PatientSearchSpecification : PatientSpecifications
     {
         public PatientSearchSpecification(PatientSpecsParams param)
             : base(P =>
-            ((!param.Id.HasValue || P.Id == param.Id)) &&
-            ((String.IsNullOrEmpty(param.MRN) || P.MRN.ToLower().Contains(param.MRN))) &&
-            ((String.IsNullOrEmpty(param.Name) || P.FirstName.ToLower().Contains(param.Name.ToLower())
+            (!param.Id.HasValue || P.Id == param.Id) &&
+            (String.IsNullOrEmpty(param.PatientId) || P.Patient_Id.ToLower().Contains(param.PatientId.ToLower())) &&
+            (String.IsNullOrEmpty(param.Name) || P.FirstName.ToLower().Contains(param.Name.ToLower())
             || P.LastName.ToLower().Contains(param.Name.ToLower())))
-            )
         {
             ApplySorting(param);
             Pagination(param);
@@ -33,7 +29,7 @@ namespace Sehaty.Core.Specifications.PatientSpec
             Expression<Func<Patient, object>> sortExpression = sortKey switch
             {
                 "id" => p => p.Id,
-                "mrn" => p => p.MRN,
+                "patientid" => p => p.Patient_Id,
                 "firstname" => p => p.FirstName,
                 "lastname" => p => p.LastName,
                 "dateofbirth" => p => p.DateOfBirth,

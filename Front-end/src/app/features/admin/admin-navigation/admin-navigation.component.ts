@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin-navigation',
@@ -9,4 +9,12 @@ import { RouterModule } from '@angular/router';
 })
 export class AdminNavigationComponent {
 
+  constructor(private router:Router){}
+
+  logout(){
+    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('token')
+    localStorage.removeItem('userData')
+    this.router.navigate(['/login'])
+  }
 }

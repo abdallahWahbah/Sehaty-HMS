@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using Sehaty.Core.Entities.Business_Entities.Appointments;
-using Sehaty.Core.Specefications;
-
-namespace Sehaty.Core.Specifications.Appointment_Specs
+﻿namespace Sehaty.Core.Specifications.Appointment_Specs
 {
     public class AppointmentSpecifications : BaseSpecefication<Appointment>
     {
