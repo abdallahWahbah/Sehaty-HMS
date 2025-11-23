@@ -30,19 +30,27 @@ namespace Sehaty.Application.Services
                 throw new Exception("Appointment date cannot be in the past");
 
 
-            var doctorSpec = new AppointmentSpecifications(a =>
-                a.DoctorId == dto.DoctorId && a.AppointmentDateTime == dto.AppointmentDateTime);
 
+
+            var doctorSpec = new AppointmentSpecifications(a => a.DoctorId == dto.DoctorId &&
+            a.AppointmentDateTime.Date == dto.AppointmentDateTime.Date);
             var doctorAppointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(doctorSpec);
-            if (doctorAppointments.Count() > 0)
-                throw new Exception("Doctor already has an appointment at this time");
 
 
-            var patientSpec = new AppointmentSpecifications(a =>
-                a.PatientId == dto.PatientId && a.AppointmentDateTime == dto.AppointmentDateTime);
+            if (doctorAppointments.Count(a =>
+                dto.AppointmentDateTime < a.AppointmentDateTime.AddMinutes(a.DurationMinutes) &&
+                dto.AppointmentDateTime.AddMinutes(30) > a.AppointmentDateTime) > 0)
+                throw new Exception("Doctor already has an overlapping appointment");
 
-            var patientAppointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(patientSpec);
-            if (patientAppointments.Count() > 0)
+
+            var patientSpec = new AppointmentSpecifications(a => a.PatientId == dto.PatientId &&
+                                          a.AppointmentDateTime.Date == dto.AppointmentDateTime.Date);
+            var patientAppointments = await unit.Repository<Appointment>()
+                .GetAllWithSpecAsync(patientSpec);
+
+            if (patientAppointments.Count(a =>
+                dto.AppointmentDateTime < a.AppointmentDateTime.AddMinutes(a.DurationMinutes) &&
+                dto.AppointmentDateTime.AddMinutes(30) > a.AppointmentDateTime) > 0)
                 throw new Exception("Cannot book more than 1 appointment at this time");
 
 
