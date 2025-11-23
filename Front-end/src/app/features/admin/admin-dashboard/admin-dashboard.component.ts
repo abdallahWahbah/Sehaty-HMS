@@ -34,21 +34,24 @@ export class AdminDashboardComponent implements OnInit{
     // num of today's appointments
     this._appointmentService.getAll().subscribe({
       next: data => {
-        this.todaysAppointments = data;
-        this.numOfTodaysAppointments = data.filter(item => {
+        this.todaysAppointments = data.filter(item => {
           const appointmentDate = new Date(item.appointmentDateTime);
           const today = new Date();
 
-          return (
-            appointmentDate.getDate() === today.getDate() &&
-            appointmentDate.getMonth() === today.getMonth() &&
-            appointmentDate.getFullYear() === today.getFullYear()
-          );
-        }).length
+          return this.checkTheSameDay(appointmentDate, today);
+        });
+        this.numOfTodaysAppointments = this.todaysAppointments.length;
       },
       error: err => {
         console.log(err);
       }
     })
+  }
+  checkTheSameDay(appointmentDate: Date, today: Date){
+    return (
+      appointmentDate.getDate() === today.getDate() &&
+      appointmentDate.getMonth() === today.getMonth() &&
+      appointmentDate.getFullYear() === today.getFullYear()
+    );
   }
 }

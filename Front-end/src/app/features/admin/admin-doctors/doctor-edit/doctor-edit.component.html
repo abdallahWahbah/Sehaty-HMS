@@ -1,0 +1,82 @@
+<section id="dashboard" class="dashboard">
+  <div class="dashboard__title">
+    <h2 class="dashboard__title-main">Edit Doctor: {{doctor?.firstName}} {{doctor?.lastName}}</h2>
+    <div class="patient-edit">
+      <form [formGroup]="doctorForm" (ngSubmit)="onSubmit()">
+        
+        @if(serverError){
+          <div class="server-error" style="margin-bottom: 3rem;">
+              <span>{{ serverError }}</span>
+          </div>
+        }
+        <div class="patient-edit__grid">
+
+            <p-floatlabel class="patient-edit__input">
+                <input pInputText formControlName="firstName" />
+                <label>First Name</label>
+            </p-floatlabel>
+            
+            <p-floatlabel class="patient-edit__input">
+                <input pInputText formControlName="lastName" />
+                <label>Last Name</label>
+            </p-floatlabel>
+
+            <p-floatlabel class="patient-edit__input">
+                <input pInputText formControlName="specialty" />
+                <label>speciality</label>
+            </p-floatlabel>
+
+            <p-floatlabel class="patient-edit__input">
+                <input pInputText formControlName="licenseNumber" />
+                <label>license Number</label>
+            </p-floatlabel>
+
+            <p-floatlabel class="patient-edit__input">
+                <input pInputText formControlName="qualifications" />
+                <label>Qualifications</label>
+            </p-floatlabel>
+
+            <p-floatlabel class="patient-edit__input">
+                <input pInputText formControlName="yearsOfExperience" />
+                <label>Years Of Experience</label>
+            </p-floatlabel>
+
+            <p-floatlabel class="patient-edit__input">
+                <input pInputText formControlName="availabilityNotes" />
+                <label>Availability Notes</label>
+            </p-floatlabel>
+
+            <p-floatlabel class="patient-edit__input">
+                <input pInputText formControlName="userId" />
+                <label>userId</label>
+            </p-floatlabel>
+
+            <p-floatlabel class="patient-edit__input">
+                <input pInputText formControlName="departmentId" />
+                <label>Department Id</label>
+            </p-floatlabel>
+
+            <div class="patient-edit__input">
+                <label class="p-float-label">Profile Photo</label>
+                <p-fileUpload 
+                    mode="basic"
+                    name="profilePhoto"
+                    accept="image/*"
+                    auto="false"
+                    maxFileSize="5000000"
+                    (onSelect)="onFileSelected($event)"
+                    chooseLabel="Choose File">
+                </p-fileUpload>
+            </div>
+    
+        </div>
+    
+        <div class="patient-edit__button-container">
+            <p-button type="submit" label="Update Doctor"></p-button>
+        </div>
+    
+      </form>
+    </div>
+  </div>
+
+</section>

@@ -30,6 +30,7 @@ export class PatientEditComponent implements OnInit{
   patientForm!: FormGroup;
   statusEnum = PateintStatusEnum;
   token: any = '';
+  serverError: string = '';
 
   constructor(private location:Location, private _patientService: PatientsService, private formBuilder: FormBuilder){}
 
@@ -86,6 +87,7 @@ export class PatientEditComponent implements OnInit{
     });
   }
   onSubmit() {
+    this.serverError = '';
     if (this.patientForm.invalid) return;
     const patientToUpdate = {
       mrn: this.patientForm.value.mrn,
@@ -97,7 +99,10 @@ export class PatientEditComponent implements OnInit{
 
     this._patientService.editByStuff(this.patient.id, patientToUpdate, this.token).subscribe({
       next: data => console.log(data),
-      error: err => console.log(err)
+      error: err => {
+        console.log(err)
+        this.serverError = err.error?.message || 'Invalid username or password'
+      }
     })
   }
 

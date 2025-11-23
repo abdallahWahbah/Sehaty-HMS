@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { Department } from '../../../core/models/department-response.model';
 import { DepartmentService } from '../../../core/services/department.service';
-import { doctorService } from '../../../core/services/doctor.service';
+import { DoctorService } from '../../../core/services/doctor.service';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -20,7 +20,7 @@ export class AdminDepartmentsComponent implements OnInit {
   averageRating: string = '4.8';
   constructor(
     private deptService: DepartmentService,
-    private doctorService: doctorService,
+    private doctorService: DoctorService,
     private cdr: ChangeDetectorRef
   ) {}
   ngOnInit(): void {

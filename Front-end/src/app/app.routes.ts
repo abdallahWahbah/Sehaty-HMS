@@ -20,6 +20,7 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { AdminNavigationComponent } from './features/admin/admin-navigation/admin-navigation.component';
 import { AdminDepartmentDetailsComponent } from './features/admin/admin-department-details/admin-department-details.component';
 import { PatientEditComponent } from './features/admin/admin-patients/patient-edit/patient-edit.component';
+import { DoctorEditComponent } from './features/admin/admin-doctors/doctor-edit/doctor-edit.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -38,6 +39,7 @@ export const routes: Routes = [
       { path: 'patients', component: AdminPatientsComponent },
       { path: 'patients/:id/edit', component: PatientEditComponent },
       { path: 'doctors', component: AdminDoctorsComponent },
+      { path: 'doctors/:id/edit', component: DoctorEditComponent },
       { path: 'appointments', component: AdminAppointmentsComponent },
       { path: 'medicalRecords', component: AdminMedicalRecordsComponent },
       { path: 'departments', component: AdminDepartmentsComponent },
