@@ -14,16 +14,16 @@
             return Ok(mapper.Map<IEnumerable<GetPatientDto>>(patients));
         }
 
-        [HttpGet("Search")]
-        [Authorize(Roles = "Admin,Doctor,Receptionist")]
-        public async Task<ActionResult<IEnumerable<GetPatientDto>>> SearchForPatient([FromQuery] PatientSpecsParams specParam)
-        {
-            var spec = new PatientSearchSpecification(specParam);
-            var patients = await unit.Repository<Patient>().GetAllWithSpecAsync(spec);
-            if (patients is null)
-                return NotFound(new ApiResponse(404));
-            return Ok(mapper.Map<IEnumerable<GetPatientDto>>(patients));
-        }
+        //[HttpGet("Search")]
+        //[Authorize(Roles = "Admin,Doctor,Receptionist")]
+        //public async Task<ActionResult<IEnumerable<GetPatientDto>>> SearchForPatient([FromQuery] PatientSpecsParams specParam)
+        //{
+        //    var spec = new PatientSearchSpecification(specParam);
+        //    var patients = await unit.Repository<Patient>().GetAllWithSpecAsync(spec);
+        //    if (patients is null)
+        //        return NotFound(new ApiResponse(404));
+        //    return Ok(mapper.Map<IEnumerable<GetPatientDto>>(patients));
+        //}
 
         [HttpGet("UpdateStatus/{id}")]
         [Authorize(Roles = "Admin,Doctor,Receptionist")]
