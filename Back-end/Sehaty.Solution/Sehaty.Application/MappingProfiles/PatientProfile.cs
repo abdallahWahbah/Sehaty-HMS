@@ -5,7 +5,8 @@
         public PatientProfile()
         {
             CreateMap<Patient, GetPatientDto>()
-                .ForMember(P => P.User, O => O.MapFrom(S => S.User.UserName));
+                .ForMember(P => P.User, O => O.MapFrom(S => S.User.UserName))
+                .ForMember(P => P.PatientId, O => O.MapFrom(S => S.Patient_Id));
 
             CreateMap<PatientAddDto, Patient>()
                 .ForMember(D => D.RegistrationDate, O => O.Ignore())

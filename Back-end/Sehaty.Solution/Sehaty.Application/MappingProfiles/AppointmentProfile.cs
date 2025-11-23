@@ -17,14 +17,14 @@
 
             // Create 
             CreateMap<AppointmentAddDto, Appointment>()
-                .ForMember(dest => dest.ScheduledDate,
-                    opt => opt.MapFrom(src => DateOnly.FromDateTime(src.ScheduledDate)))
-                .ForMember(dest => dest.ScheduledTime,
-                    opt => opt.MapFrom(src => TimeOnly.FromTimeSpan(src.ScheduledTime)))
                 .ForMember(dest => dest.BookingDateTime,
                     opt => opt.MapFrom(_ => DateTime.Now))
                 .ForMember(dest => dest.DurationMinutes,
-                    opt => opt.MapFrom(src => src.DurationMinutes ?? 30));
+                    opt => opt.MapFrom(_ => 30))
+                   .ForMember(dest => dest.ScheduledDate,
+                   opt => opt.MapFrom(src => DateOnly.FromDateTime(src.AppointmentDateTime)))
+                   .ForMember(dest => dest.ScheduledTime,
+                   opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.AppointmentDateTime))); ;
 
         }
 

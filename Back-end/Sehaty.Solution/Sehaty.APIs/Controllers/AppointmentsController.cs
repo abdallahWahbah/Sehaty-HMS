@@ -1,7 +1,7 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
 
-    public class AppointmentsController(IUnitOfWork unit, IMapper mapper, IEmailSender emailSender, ISmsSender smsSender) : ApiBaseController
+    public class AppointmentsController(IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService, IEmailSender emailSender, ISmsSender smsSender) : ApiBaseController
     {
 
         [HttpGet]
@@ -30,32 +30,18 @@
         {
             if (!ModelState.IsValid)
                 return BadRequest(new ApiResponse(400));
-            if (dto.AppointmentDateTime < DateTime.Now)
-                return BadRequest(new ApiResponse(400, "Appointment date cannot be in the past"));
-            if (dto.DurationMinutes.HasValue && dto.DurationMinutes.Value > 30)
-                return BadRequest(new ApiResponse(400, "Duration cannot exceed 30 minutes"));
+            try
+            {
+                var appointment = await appointmentService.CreateAsync(dto);
 
-            //  Check if the doctor already has an appointment at the same time
-            var spec = new AppointmentSpecifications(a =>
-                a.DoctorId == dto.DoctorId && a.AppointmentDateTime == dto.AppointmentDateTime);
-            var existingAppointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(spec);
-            if (existingAppointments.Any())
-                return BadRequest(new ApiResponse(400, "Doctor already has an appointment at this time"));
-            var appointment = mapper.Map<Appointment>(dto);
-            await unit.Repository<Appointment>().AddAsync(appointment);
-            await unit.CommitAsync();
-            var patient = await unit.Repository<Patient>().GetByIdAsync(dto.PatientId);
-            if (patient is null)
-                return NotFound(new ApiResponse(404, "Patient not found"));
-
-            var specappointemnet = new AppointmentSpecifications(a => a.Id == appointment.Id);
-            appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(specappointemnet);
-            string message = $"تم حجز موعدك مع الطبيب {appointment.Doctor.FirstName + " " + appointment.Doctor.LastName} بتاريخ {appointment.AppointmentDateTime}";
-
-
-            await unit.CommitAsync();
-
-            return CreatedAtAction(nameof(GetAppointmentById), new { id = appointment.Id }, dto);
+                return CreatedAtAction(nameof(GetAppointmentById),
+                    new { id = appointment.Id },
+                    appointment);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse(400, ex.Message));
+            }
         }
 
         // DELETE: api/Appointments/5
@@ -173,21 +159,32 @@
         }
 
         //[Authorize(Roles = "Patient,Reception")]
-        //RescheduleAppointment
         [HttpPut("RescheduleAppointment/{id}")]
         public async Task<IActionResult> RescheduleAppointment(int id, [FromBody] RescheduleAppointmentDto model)
         {
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
             if (appointment is null) return NotFound(new ApiResponse(404));
+
+
+            if (appointment.AppointmentDateTime < DateTime.Now)
+            {
+                return BadRequest(new ApiResponse(400,
+                    "Cannot reschedule an appointment that has already passed"));
+            }
+
             var timeBeforeEdit = appointment.AppointmentDateTime - DateTime.Now;
 
-            if (timeBeforeEdit < TimeSpan.FromHours(24) && appointment.Status != AppointmentStatus.Emergency)
+            bool isLessThan24Hours = timeBeforeEdit < TimeSpan.FromHours(24);
+            bool notEmergency = appointment.Status != AppointmentStatus.Emergency;
+
+            if (isLessThan24Hours && notEmergency)
             {
                 return BadRequest(new ApiResponse(400, "Cannot reschedule appointment within 24 hours unless marked as Emergency"));
             }
 
             var oldDateTime = appointment.AppointmentDateTime;
             appointment.AppointmentDateTime = model.NewAppointmentDateTime;
+
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "Admin";
             var changedBy = userRole switch
             {
@@ -205,13 +202,16 @@
                 ChangedAt = DateTime.UtcNow,
                 ChangedBy = changedBy,
             };
+
             await unit.Repository<AppointmentAuditLog>().AddAsync(auditLog);
             unit.Repository<Appointment>().Update(appointment);
             var rowsAffected = await unit.CommitAsync();
             return rowsAffected > 0 ? Ok(new ApiResponse(200, "Appointment rescheduled successfully")) : BadRequest(new ApiResponse(400, "Failed to reschedule appointment"));
 
-
         }
+
+
+
         [HttpPost("ConfirmAppointment/{id}")]
         public async Task<IActionResult> ConfirmAppointment(int id)
         {

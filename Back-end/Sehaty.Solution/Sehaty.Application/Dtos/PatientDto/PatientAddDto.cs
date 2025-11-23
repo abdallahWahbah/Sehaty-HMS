@@ -2,7 +2,6 @@
 {
     public class PatientAddDto
     {
-        public string MRN { get; set; }
         [Required, MaxLength(50)]
         public string FirstName { get; set; }
 
