@@ -25,6 +25,11 @@ import { AdminUpdateDepartmentComponent } from './features/admin/admin-update-de
 import { AdminAddDepartmentComponent } from './features/admin/admin-add-department/admin-add-department.component';
 import { doctorGuard } from './core/guards/doctor.guard';
 import { NotAllowedComponent } from './pages/not-allowed/not-allowed.component';
+import { DoctorNavigationComponent } from './features/doctor/doctor-navigation/doctor-navigation.component';
+import { DoctorAppointmentsComponent } from './features/doctor/doctor-appointments/doctor-appointments.component';
+import { DoctorDetailsComponent } from './features/doctor/doctor-details/doctor-details.component';
+import { DoctorPrescriptionsComponent } from './features/doctor/doctor-prescriptions/doctor-prescriptions.component';
+import { DoctorAvailableSlotsComponent } from './features/doctor/doctor-available-slots/doctor-available-slots.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -57,6 +62,18 @@ export const routes: Routes = [
         component: AdminUpdateDepartmentComponent,
       },
     ],
+  },
+  {
+    path: 'doctor', 
+    canActivate: [doctorGuard],
+    component: DoctorNavigationComponent,
+    children: [
+      { path: '', redirectTo: 'appointments', pathMatch: 'full' },
+      { path: 'appointments', component: DoctorAppointmentsComponent },
+      { path: 'details', component: DoctorDetailsComponent },
+      { path: 'prescription', component: DoctorPrescriptionsComponent },
+      { path: 'availableSlots', component: DoctorAvailableSlotsComponent },
+    ]
   },
   {
     path: 'patient',

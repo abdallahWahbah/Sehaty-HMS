@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-admin-navigation',
+  selector: 'app-doctor-navigation',
   imports: [RouterModule],
-  templateUrl: './admin-navigation.component.html',
-  styleUrl: './admin-navigation.component.scss'
+  templateUrl: './doctor-navigation.component.html',
+  styleUrl: './doctor-navigation.component.scss'
 })
-export class AdminNavigationComponent {
+export class DoctorNavigationComponent {
 
   constructor(private router:Router){}
 

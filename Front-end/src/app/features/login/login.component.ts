@@ -31,7 +31,7 @@ export class LoginComponent {
 
   loginForm = new FormGroup({
     
-    username: new FormControl('Admin', [ // Admin Doctor1
+    username: new FormControl('Doctor1', [ // Admin Doctor1
       Validators.required,
     ]),
     password: new FormControl('P@ssw0rd', [ 
@@ -62,9 +62,12 @@ export class LoginComponent {
         localStorage.setItem("token", data['token']);
         localStorage.setItem("refreshToken", data['refreshToken']);
         switch(data['role']){
-          case "Admin":
-            case "Doctor":{
-            this.router.navigate(['admin/dashboard']);
+          case "Admin":{
+            this.router.navigate(['admin']);
+            break;
+          }
+          case "Doctor":{
+            this.router.navigate(['doctor']);
             break;
           }
           case "Patient":{
