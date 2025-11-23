@@ -1,0 +1,92 @@
+<section class="appointment-details" *ngIf="appointment">
+  <!-- Header Section -->
+  <div class="details-header">
+    <div class="header-content">
+      <div class="header-left">
+        <div>
+          <h1 class="page-title">Appointment Details</h1>
+          <p class="page-subtitle">View appointment information</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Appointment Details Card -->
+  <div class="details-container">
+    <div class="details-card">
+      <!-- Status Badge -->
+      <div class="status-section">
+        <div [ngClass]="getStatusClass()" class="status-badge">
+          <i class="fa-solid fa-circle"></i>
+          {{ appointment.status }}
+        </div>
+      </div>
+
+      <!-- Appointment Information -->
+      <div class="info-section">
+        <!-- Patient Information -->
+        <div class="info-field">
+          <label class="field-label">
+            <i class="fa-solid fa-user"></i>
+            Patient Name
+          </label>
+          <div class="field-value">
+            <h2>{{ appointment.patientName }}</h2>
+          </div>
+        </div>
+
+        <!-- Doctor Information -->
+        <div class="info-field">
+          <label class="field-label">
+            <i class="fa-solid fa-user-doctor"></i>
+            Doctor Name
+          </label>
+          <div class="field-value">
+            <h2>Dr. {{ appointment.doctorName }}</h2>
+          </div>
+        </div>
+
+        <!-- Appointment Date & Time -->
+        <div class="info-field" *ngIf="appointment.appointmentDateTime">
+          <label class="field-label">
+            <i class="fa-regular fa-calendar"></i>
+            Appointment Date & Time
+          </label>
+          <div class="field-value">
+            <p class="date-time">
+              <i class="fa-regular fa-calendar"></i>
+              {{ appointment.appointmentDateTime | date : "EEEE, MMMM d, y" }}
+            </p>
+            <p class="date-time">
+              <i class="fa-regular fa-clock"></i>
+              {{ appointment.appointmentDateTime | date : "h:mm a" }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Reason for Visit -->
+        <div class="info-field">
+          <label class="field-label">
+            <i class="fa-solid fa-file-medical"></i>
+            Reason for Visit
+          </label>
+          <div class="field-value">
+            <p class="reason-text">{{ appointment.reasonForVisit }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="actions-section">
+        <button class="btn-edit" (click)="editAppointment()">
+          <i class="fa-solid fa-pen-to-square"></i>
+          Edit Appointment
+        </button>
+        <button class="btn-back-list" routerLink="/appointments">
+          <i class="fa-solid fa-list"></i>
+          Back to List
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

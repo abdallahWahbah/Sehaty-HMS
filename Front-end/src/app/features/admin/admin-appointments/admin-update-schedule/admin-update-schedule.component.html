@@ -1,0 +1,48 @@
+<section class="edit-appointment" *ngIf="appointment; else loading">
+  <h2 class="edit-appointment__title">Update Appointment Date</h2>
+
+  <!-- Error message -->
+  <div *ngIf="errorMessage" class="edit-appointment__error mb-3">
+    {{ errorMessage }}
+  </div>
+
+  <form class="edit-appointment__form" (ngSubmit)="saveChanges()">
+    <!-- Appointment Date & Time -->
+    <div class="edit-appointment__form-group">
+      <label for="appointmentDateTime" class="edit-appointment__label">
+        New Appointment Date & Time
+      </label>
+      <input
+        type="datetime-local"
+        id="appointmentDateTime"
+        name="appointmentDateTime"
+        [(ngModel)]="newAppointmentDateTime"
+        required
+        class="edit-appointment__input"
+      />
+    </div>
+
+    <!-- Actions -->
+    <div class="edit-appointment__actions mt-3">
+      <button
+        type="submit"
+        class="edit-appointment__btn edit-appointment__btn--primary"
+      >
+        Save Changes
+      </button>
+      <button
+        type="button"
+        class="edit-appointment__btn edit-appointment__btn--secondary"
+        (click)="goBack()"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+
+<ng-template #loading>
+  <div class="edit-appointment__loading">
+    <p>Loading appointment...</p>
+  </div>
+</ng-template>

@@ -1,58 +1,87 @@
-<section class="appointments">
-  <div class="appointments__header">
-    <div class="appointments__header-title">
+<section class="dashboard_appointments">
+  <div class="title_dashboard">
+    <div>
       <h2>Appointments</h2>
-      <p>Review the history of your old Appointment</p>
+      <p>Review the history of your old appointments</p>
     </div>
-
-    <!-- <div class="appointments__header-add-btn">
-      <i class="fa-solid fa-plus"></i>
-      <p>Add Appointment</p>
-    </div> -->
   </div>
 
-  <div class="appointments__item">
-    <div class="appointments__person">
-      <div class="appointments__person-left">
-        <div class="appointments__person-name">
-          <i class="fa-solid fa-user"></i>
-          <p>John Doe</p>
+  <div
+    *ngFor="let appointment of appointments; trackBy: trackById"
+    class="section_two"
+  >
+    <!-- Patient Info -->
+    <div class="person_info">
+      <div class="name_time_other">
+        <div class="name_time">
+          <div class="name">
+            <i class="fa-solid fa-user"></i>
+            <p class="fw-bold">{{ appointment.patientName }}</p>
+          </div>
+          <div class="time">
+            <i class="fa-regular fa-calendar"></i>
+            <p>{{ appointment.appointmentDateTime | date : "yyyy-MM-dd" }}</p>
+          </div>
         </div>
 
-        <div class="appointments__person-time">
-          <i class="fa-regular fa-calendar"></i>
-          <p>2024-01-22</p>
+        <div class="confirm_consultation">
+          <div
+            [ngClass]="{
+              'dashboard__appointments-item--confirmed':
+                appointment.status === 'Confirmed',
+              'dashboard__appointments-item--pending':
+                appointment.status === 'Pending',
+              'dashboard__appointments-item--delayed':
+                appointment.status === 'Delayed',
+              'dashboard__appointments-item--cancelled':
+                appointment.status === 'Cancelled',
+              'dashboard__appointments-item--noshow':
+                appointment.status === 'NoShow'
+            }"
+            class="status-pill"
+          >
+            {{ appointment.status }}
+          </div>
+          <div class="consultation">{{ appointment.reasonForVisit }}</div>
         </div>
-      </div>
 
-      <div class="appointments__person-status">
-        <div class="appointments__person-status-confirmed">confirmed</div>
-        <div class="appointments__person-status-consultation">consultation</div>
-      </div>
+        <div class="edit_confirm">
+          <button
+            type="button"
+            class="view-details"
+            (click)="viewDetails(appointment)"
+          >
+            <i class="fa-solid fa-eye"></i>
+            <p>View</p>
+          </button>
 
-      <div class="appointments__person-actions">
-        <div class="appointments__person-actions-edit">
-          <i class="fa-solid fa-file-pen"></i>
-          <p>Edit</p>
+          <button
+            type="button"
+            class="edit"
+            (click)="editAppointment(appointment)"
+          >
+            <i class="fa-solid fa-file-pen"></i>
+            <p>Edit</p>
+          </button>
+          <!-- Confirm button removed for Admin -->
         </div>
-        <div class="appointments__person-actions-confirm">confirm</div>
       </div>
     </div>
 
-    <div class="appointments__doctor">
-      <div class="appointments__doctor-info">
-        <div class="appointments__doctor-name">
-          <i class="fa-solid fa-user-doctor"></i>
-          <p>Dr. Michael Johnson</p>
-        </div>
-
-        <div class="appointments__doctor-time">
-          <i class="fa-regular fa-clock"></i>
-          <p>09:00 (30min)</p>
+    <!-- Doctor Info -->
+    <div class="doctor_info">
+      <div class="info">
+        <div class="name_time_doctor">
+          <div class="name_doctor">
+            <i class="fa-solid fa-user-doctor"></i>
+            <p>Dr: {{ appointment.doctorName }}</p>
+          </div>
+          <div class="time_doctor">
+            <i class="fa-regular fa-clock"></i>
+            <p>{{ appointment.appointmentDateTime | date : "HH:mm" }}</p>
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="appointments__category">Department: Cardiology</div>
   </div>
 </section>
