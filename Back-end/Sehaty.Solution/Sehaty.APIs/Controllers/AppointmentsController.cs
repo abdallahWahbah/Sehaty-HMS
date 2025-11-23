@@ -143,14 +143,21 @@
                     await unit.CommitAsync();
                     if (!string.IsNullOrEmpty(patient.User.Email))
                     {
-                        await emailSender.SendEmailAsync(patient.User.Email, "تم إلغاء موعدك", message);
+                        var filepath = $"{env.WebRootPath}/templates/ConfirmEmail.html";
+                        StreamReader reader = new StreamReader(filepath);
+                        var body = reader.ReadToEnd();
+                        reader.Close();
+                        body = body.Replace("[header]", message)
+                            .Replace("[body]", "نود إبلاغكم بأنه تم إلغاء موعدكم بنجاح. إذا كنت بحاجة لحجز موعد بديل، يرجى التواصل معنا أو استخدام الموقع الإلكتروني.\")\r\n")
+                            .Replace("[imageUrl]", "https://res.cloudinary.com/dl21kzp79/image/upload/f_png/v1763917652/icon-positive-vote-1_1_dpzjrw.png");
+                        await emailSender.SendEmailAsync(patient.User.Email, "Sehaty", body);
                         notificationDto.SentViaEmail = true;
                     }
-                    if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
-                    {
-                        smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
-                        notificationDto.SentViaSMS = true;
-                    }
+                    //if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
+                    //{
+                    //    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
+                    //    notificationDto.SentViaSMS = true;
+                    //}
                     await unit.CommitAsync();
                 }
 
@@ -247,14 +254,21 @@
                 await unit.CommitAsync();
                 if (!string.IsNullOrEmpty(patient.User.Email))
                 {
-                    await emailSender.SendEmailAsync(patient.User.Email, "تم تأكيد موعدك", message);
+                    var filepath = $"{env.WebRootPath}/templates/ConfirmEmail.html";
+                    StreamReader reader = new StreamReader(filepath);
+                    var body = reader.ReadToEnd();
+                    reader.Close();
+                    body = body.Replace("[header]", message)
+                        .Replace("[body]", "تم تأكيد موعدك بنجاح. نتمنى لك دوام الصحة.")
+                        .Replace("[imageUrl]", "https://res.cloudinary.com/dl21kzp79/image/upload/f_png/v1763918337/icon-positive-vote-3_xfc5be.png\r\n");
+                    await emailSender.SendEmailAsync(patient.User.Email, "Sehaty", body);
                     notificationDto.SentViaEmail = true;
                 }
-                if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
-                {
-                    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
-                    notificationDto.SentViaSMS = true;
-                }
+                //if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
+                //{
+                //    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
+                //    notificationDto.SentViaSMS = true;
+                //}
                 await unit.CommitAsync();
             }
 
