@@ -26,12 +26,14 @@
 
         // POST: api/Appointments
         [HttpPost]
-        public async Task<ActionResult> CreateAppointment([FromBody] AppointmentAddOrUpdateDto dto)
+        public async Task<ActionResult> CreateAppointment([FromBody] AppointmentAddDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new ApiResponse(400));
             if (dto.AppointmentDateTime < DateTime.Now)
                 return BadRequest(new ApiResponse(400, "Appointment date cannot be in the past"));
+            if (dto.DurationMinutes.HasValue && dto.DurationMinutes.Value > 30)
+                return BadRequest(new ApiResponse(400, "Duration cannot exceed 30 minutes"));
 
             //  Check if the doctor already has an appointment at the same time
             var spec = new AppointmentSpecifications(a =>
@@ -50,45 +52,10 @@
             appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(specappointemnet);
             string message = $"تم حجز موعدك مع الطبيب {appointment.Doctor.FirstName + " " + appointment.Doctor.LastName} بتاريخ {appointment.AppointmentDateTime}";
 
-            //Create a DTO for the notification
 
-
-            var notificationDto = new CreateNotificationDto
-            {
-                UserId = dto.PatientId,
-                Title = "Appointment Booked",
-                Message = message,
-                Priority = NotificationPriority.High,
-                RelatedEntityType = "Appointment",
-                RelatedEntityId = appointment.Id,
-                SentViaEmail = false,
-                IsRead = false,
-                NotificationType = NotificationType.Appointment,
-                SentViaSMS = false
-            };
-            var notification = mapper.Map<Notification>(notificationDto);
-            await unit.Repository<Notification>().AddAsync(notification);
             await unit.CommitAsync();
 
             return CreatedAtAction(nameof(GetAppointmentById), new { id = appointment.Id }, dto);
-        }
-
-        // PUT: api/Appointments/5 <<works great>>
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateAppointment(int? id, AppointmentAddOrUpdateDto dto)
-        {
-            if (id is null) return BadRequest(new ApiResponse(400));
-            if (ModelState.IsValid)
-            {
-                var updateAppointment = await unit.Repository<Appointment>().GetByIdAsync(id.Value);
-                if (updateAppointment is null)
-                    return NotFound(new ApiResponse(404));
-                mapper.Map(dto, updateAppointment);
-                unit.Repository<Appointment>().Update(updateAppointment);
-                await unit.CommitAsync();
-                return NoContent();
-            }
-            return BadRequest(new ApiResponse(400));
         }
 
         // DELETE: api/Appointments/5
@@ -105,12 +72,13 @@
 
 
         // Change AppointmentStatus To No Show if the currentTime has passed the AppointmentTime
-        [Authorize(Roles = "Admin,Reception")]
+        //[Authorize(Roles = "Admin,Reception")]
         [HttpPost("NoShow/{id}")]
-        public async Task<IActionResult> MarkedStatusAsNoShow(int id, [FromQuery] DateTime currentDateTime)
+        public async Task<IActionResult> MarkedStatusAsNoShow(int id)
         {
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
             if (appointment is null) return NotFound(new ApiResponse(404));
+            var currentDateTime = DateTime.UtcNow;
             if (currentDateTime < appointment.AppointmentDateTime)
             {
                 return BadRequest(new ApiResponse(400, "Cann't mark as No Show before Appointment time"));
@@ -149,7 +117,7 @@
         }
 
         //Cancel Appointment With Policy
-        [Authorize(Roles = "Patient,Reception")]
+        //[Authorize(Roles = "Patient,Reception")]
         [HttpPost("CancelAppointment/{id}")]
         public async Task<IActionResult> CancelAppointment(int id)
         {
@@ -204,22 +172,22 @@
             return Ok(new ApiResponse(200, "Appointment canceled successfully"));
         }
 
-        [Authorize(Roles = "Patient,Reception")]
+        //[Authorize(Roles = "Patient,Reception")]
         //RescheduleAppointment
         [HttpPut("RescheduleAppointment/{id}")]
-        public async Task<IActionResult> RescheduleAppointment(int id, [FromQuery] DateTime newDate)
+        public async Task<IActionResult> RescheduleAppointment(int id, [FromBody] RescheduleAppointmentDto model)
         {
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
             if (appointment is null) return NotFound(new ApiResponse(404));
-            var requestTime = DateTime.UtcNow;
-            var timeBeforeEdit = appointment.AppointmentDateTime - requestTime;
-            if (timeBeforeEdit < TimeSpan.FromHours(24) || appointment.Status != AppointmentStatus.Emergency)
+            var timeBeforeEdit = appointment.AppointmentDateTime - DateTime.Now;
+
+            if (timeBeforeEdit < TimeSpan.FromHours(24) && appointment.Status != AppointmentStatus.Emergency)
             {
                 return BadRequest(new ApiResponse(400, "Cannot reschedule appointment within 24 hours unless marked as Emergency"));
-
             }
+
             var oldDateTime = appointment.AppointmentDateTime;
-            appointment.AppointmentDateTime = newDate;
+            appointment.AppointmentDateTime = model.NewAppointmentDateTime;
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "Admin";
             var changedBy = userRole switch
             {
@@ -233,7 +201,7 @@
                 AppointmentId = appointment.Id,
                 Action = AuditAction.Rescheduled,
                 OldDate = oldDateTime,
-                NewDate = newDate,
+                NewDate = model.NewAppointmentDateTime,
                 ChangedAt = DateTime.UtcNow,
                 ChangedBy = changedBy,
             };
