@@ -31,7 +31,7 @@ export class LoginComponent {
 
   loginForm = new FormGroup({
     
-    username: new FormControl('Doctor1', [ // Admin Doctor1
+    username: new FormControl('Patient1', [ // Admin Doctor1 Patient1
       Validators.required,
     ]),
     password: new FormControl('P@ssw0rd', [ 
@@ -71,7 +71,7 @@ export class LoginComponent {
             break;
           }
           case "Patient":{
-            this.router.navigate(['patient/home']);
+            this.router.navigate(['patient']);
             break;
           }
         }

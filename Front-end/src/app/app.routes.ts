@@ -33,6 +33,7 @@ import { AdminAppointmentDetailsComponent } from './features/admin/admin-appoint
 import { AdminUpdateScheduleComponent } from './features/admin/admin-appointments/admin-update-schedule/admin-update-schedule.component';
 import { patientGuard } from './core/guards/patient.guard';
 import { PatientPaymentComponent } from './features/patient/patient-payment/patient-payment.component';
+import { PatientNavigationComponent } from './features/patient/patient-navigation/patient-navigation.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -86,6 +87,7 @@ export const routes: Routes = [
   {
     path: 'patient',
     canActivate: [patientGuard],
+    component: PatientNavigationComponent,
     children: [
       { path: '', redirectTo: 'medicalRecords', pathMatch: 'full' },
       {path: 'medicalRecords', component: PatientMedicalRecordsComponent},

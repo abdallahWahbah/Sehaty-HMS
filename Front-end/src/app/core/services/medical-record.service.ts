@@ -8,7 +8,8 @@ import { MedicalRecordModel } from '../models/medical-record-model';
 })
 export class MedicalRecordService {
 
-  private baseUrl = 'https://localhost:7086/api/MedicalRecords';
+  private baseUrl = 'https://localhost:7086/api/MedicalRecords/';
+  token = localStorage.getItem('token');
 
   constructor(private http: HttpClient) {}
 
@@ -16,4 +17,9 @@ export class MedicalRecordService {
     return this.http.get<MedicalRecordModel[]>(this.baseUrl);
   }
   
+  getAllForPatient(){
+    return this.http.get<MedicalRecordModel>(this.baseUrl + 'GetMedicalRecordForPatient', {
+      headers: { Authorization: `Bearer ${this.token}` }
+    })
+  }
 }

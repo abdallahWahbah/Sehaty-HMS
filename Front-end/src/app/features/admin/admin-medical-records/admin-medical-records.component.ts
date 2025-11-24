@@ -39,14 +39,17 @@ export class AdminMedicalRecordsComponent implements OnInit{
       next: ({ appointments, records }) => {
         this.appointments = appointments;
 
-        this.records = records.map((r) => {
-          const appointment = this.appointments.find((a) => a.id === r.appointmentId);
-          return {
-            ...r,
-            patientName: appointment?.patientName || 'Unknown',
-            appointmentDateTime: appointment?.appointmentDateTime,
-          };
-        });
+          this.records = records.map((r) => {
+            const appointment = this.appointments.find(
+              (a) => a.id === r.appointmentId
+            );
+
+            return {
+              ...r,
+              patientName: r.patientName || appointment?.patientName || 'Unknown',
+              appointmentDateTime: appointment?.appointmentDateTime,
+            };
+          });
 
         console.log('Mapped Records with Appointments:', this.records);
         this.cdr.detectChanges();

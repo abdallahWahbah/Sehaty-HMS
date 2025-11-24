@@ -17,4 +17,5 @@ export interface MedicalRecordModel {
     isFinialize: boolean | null;
     patientName?: string;
     appointmentDateTime?: string;
+    patientId?: number
 }
