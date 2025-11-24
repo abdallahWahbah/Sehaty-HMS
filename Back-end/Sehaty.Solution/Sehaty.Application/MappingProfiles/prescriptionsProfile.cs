@@ -16,6 +16,8 @@
 
             //mapping for create prescription dto and reverse map
             CreateMap<CreatePrescriptionsDto, Prescription>();
+            CreateMap<UpdatePrescriptionDto, Prescription>();
+
             CreateMap<MedicationDto, PrescriptionMedications>()
             .ForMember(dest => dest.Medication,
                        opt => opt.MapFrom(src => new Medication
