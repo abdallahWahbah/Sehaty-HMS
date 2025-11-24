@@ -154,7 +154,8 @@
         {
             if (ModelState.IsValid)
             {
-                var prescription = await unit.Repository<Prescription>().GetByIdAsync(id);
+                var spec = new PrescriptionSpecifications(id);
+                var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
                 if (prescription == null) return NotFound(new ApiResponse(404));
                 map.Map(model, prescription);
                 unit.Repository<Prescription>().Update(prescription);
