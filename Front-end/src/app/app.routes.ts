@@ -35,6 +35,9 @@ import { patientGuard } from './core/guards/patient.guard';
 import { PatientPaymentComponent } from './features/patient/patient-payment/patient-payment.component';
 import { PatientNavigationComponent } from './features/patient/patient-navigation/patient-navigation.component';
 import { PatientUpdateComponent } from './features/patient/patient-update/patient-update.component';
+import { DoctorEditPrescriptionsComponent } from './features/doctor/doctor-prescriptions/doctor-edit-prescriptions.component/doctor-edit-prescriptions.component';
+import { DoctorAddPrescriptionComponent } from './features/doctor/doctor-prescriptions/doctor-add-prescription/doctor-add-prescription.component';
+
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -81,6 +84,8 @@ export const routes: Routes = [
       { path: 'details', component: DoctorDetailsComponent },
       { path: ':id/edit', component: DoctorEditComponent },
       { path: 'prescription', component: DoctorPrescriptionsComponent },
+      { path: 'prescriptions/edit/:id', component: DoctorEditPrescriptionsComponent },
+      { path: 'prescriptions/add', component: DoctorAddPrescriptionComponent },
       { path: 'availableSlots', component: DoctorAvailableSlotsComponent },
     ],
   },

@@ -1,0 +1,53 @@
+<div class="add-prescription">
+  <h3 class="add-prescription__title">Add Prescription</h3>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <div class="add-prescription__form">
+    <div class="mb-3">
+      <label>Status</label>
+      <input class="form-control" [(ngModel)]="prescription.status">
+    </div>
+
+    <div class="mb-3">
+      <label>Special Instructions</label>
+      <textarea class="form-control" rows="3" [(ngModel)]="prescription.specialInstructions"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label>Digital Signature</label>
+      <input class="form-control" [(ngModel)]="prescription.digitalSignature">
+    </div>
+
+    <h5 class="mt-4">Medications</h5>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Dosage</th>
+          <th>Frequency</th>
+          <th>Duration</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let med of prescription.medications || []; let i = index">
+          <td><input class="form-control" [(ngModel)]="med.medicationName"></td>
+          <td><input class="form-control" [(ngModel)]="med.dosage"></td>
+          <td><input class="form-control" [(ngModel)]="med.frequency"></td>
+          <td><input class="form-control" [(ngModel)]="med.duration"></td>
+          <td>
+            <button class="btn btn-danger btn-sm" (click)="removeMedication(i)" 
+              [disabled]="(prescription.medications?.length || 0) === 1">Remove</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-secondary mb-3" (click)="addMedication()">Add Medication</button>
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary" (click)="savePrescription()" [disabled]="isSubmitting">Save</button>
+      <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+    </div>
+  </div>
+</div>

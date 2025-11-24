@@ -1,56 +1,53 @@
 <section id="dashboard" class="dashboard">
-    <div class="dashboard__title">
-        <h2 class="dashboard__title-main">Appointments</h2>
-        <p class="dashboard__title-sub">
-            Appointments with dr. {{currentDoctor?.firstName}} {{currentDoctor?.lastName}}
-        </p>
+  <div class="dashboard__title">
+    <h2 class="dashboard__title-main">Appointments</h2>
+    <p class="dashboard__title-sub">
+      Appointments with dr. {{ currentDoctor?.firstName }} {{ currentDoctor?.lastName }}
+    </p>
+  </div>
+
+  <p *ngIf="isLoading && appointments.length === 0" class="no-appointments">Loading...</p>
+  <p *ngIf="!isLoading && appointments.length === 0" class="no-appointments">No appointments</p>
+
+  <div *ngFor="let appointment of appointments; trackBy: trackById" class="section_two">
+    <div class="person_info">
+      <div class="name_time_other">
+        <div class="name_time">
+          <div class="name">
+            <i class="fa-solid fa-user"></i>
+            <p class="fw-bold">{{ appointment.patientName }}</p>
+          </div>
+          <div class="time">
+            <i class="fa-regular fa-calendar"></i>
+            <p>{{ appointment.appointmentDateTime | date:'yyyy-MM-dd' }}</p>
+          </div>
+          <div class="time">
+            <i class="fa-regular fa-calendar"></i>
+            <p>{{ appointment.appointmentDateTime | date:'HH:mm' }}</p>
+          </div>
+          <div class="duration">
+            <i class="fa-regular fa-clock"></i>
+            <p>{{ appointment.durationMinutes }} mins</p>
+          </div>
+        </div>
+
+        <div class="appointment-status">
+          <span class="status-pill main">{{ appointment.status }}</span>
+        </div>
+      </div>
+
+      <div class="name_time_other">
+        <div class="name_time">
+          <div class="reason name">
+            <i class="fa-solid fa-stethoscope"></i>
+            <p class="fw-bold">{{ appointment.reasonForVisit }}</p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    @if (isLoading && appointments.length === 0) {
-        <p class="no-appointments">Loading...</p>
-    } 
-    @else if (appointments.length === 0) {
-        <p class="no-appointments">No appointments</p>
-    }
-    @for (appointment of appointments; track appointment.id) {
-        <div class="section_two">
-            <div class="person_info">
-                <div class="name_time_other">
-                    <div class="name_time">
-                        <div class="name">
-                            <i class="fa-solid fa-user"></i>
-                            <p class="fw-bold">{{ appointment.patientName }}</p>
-                        </div>
-                        <div class="time">
-                            <i class="fa-regular fa-calendar"></i>
-                            <p>{{ appointment.appointmentDateTime | date:'yyyy-MM-dd' }}</p>
-                        </div>
-                        <div class="time">
-                            <i class="fa-regular fa-calendar"></i>
-                            <p>{{ appointment.appointmentDateTime | date:'HH:mm' }}</p>
-                        </div>
-                        <div class="duration">
-                            <i class="fa-regular fa-clock"></i>
-                            <p>{{ appointment.durationMinutes }} mins</p>
-                        </div>
-                    </div>
-
-                    <div class="appointment-status">
-                        <span class="status-pill main"> {{ appointment.status }} </span>
-                    </div>
-                </div>
-
-                <div class="name_time_other">
-                    <div class="name_time">
-                        <div class="reason name">
-                            <i class="fa-solid fa-stethoscope"></i>
-                            <p class="fw-bold">{{ appointment.reasonForVisit }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    }
-    
+    <button class="btn btn-primary mt-2" (click)="addPrescription(appointment)">
+      Add Prescription
+    </button>
+  </div>
 </section>
