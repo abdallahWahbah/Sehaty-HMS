@@ -1,0 +1,54 @@
+<div *ngIf="isLoading" class="alert alert-info">
+  Loading prescription...
+</div>
+
+<div *ngIf="errorMessage" class="alert alert-danger">
+  {{ errorMessage }}
+</div>
+
+<div *ngIf="!isLoading && prescription" class="card shadow p-4">
+
+  <h3 class="mb-3">Edit Prescription #{{ prescription.id }}</h3>
+
+  <div class="mb-3">
+    <label>Status</label>
+    <input class="form-control" [(ngModel)]="prescription.status">
+  </div>
+
+  <div class="mb-3">
+    <label>Special Instructions</label>
+    <textarea class="form-control" rows="3" [(ngModel)]="prescription.specialInstructions"></textarea>
+  </div>
+
+  <div class="mb-3">
+    <label>Digital Signature</label>
+    <input class="form-control" [(ngModel)]="prescription.digitalSignature">
+  </div>
+
+  <h5 class="mt-4">Medications</h5>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Dosage</th>
+        <th>Frequency</th>
+        <th>Duration</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let med of prescription.medications">
+        <td><input class="form-control" [(ngModel)]="med.medicationName"></td>
+        <td><input class="form-control" [(ngModel)]="med.dosage"></td>
+        <td><input class="form-control" [(ngModel)]="med.frequency"></td>
+        <td><input class="form-control" [(ngModel)]="med.duration"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="d-flex gap-2 mt-3">
+    <button (click)="saveChanges()" class="btn btn-primary">Save Changes</button>
+    <button (click)="cancel()" class="btn btn-secondary">Cancel</button>
+  </div>
+
+</div>
