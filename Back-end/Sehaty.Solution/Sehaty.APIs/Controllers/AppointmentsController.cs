@@ -26,7 +26,7 @@
 
         // POST: api/Appointments
         [HttpPost]
-        public async Task<ActionResult> CreateAppointment([FromBody] AppointmentAddDto dto)
+        public async Task<ActionResult<AppointmentReadDto>> CreateAppointment([FromBody] AppointmentAddDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new ApiResponse(400));
@@ -107,9 +107,15 @@
         [HttpPost("CancelAppointment/{id}")]
         public async Task<IActionResult> CancelAppointment(int id)
         {
-            var spec = new AppointmentSpecifications(a => a.Id == id);
+            var spec = new AppointmentSpecifications(id);
             var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
+
             if (appointment is null) return NotFound(new ApiResponse(404));
+            if (appointment.Status == AppointmentStatus.Canceled)
+            {
+                return BadRequest(new ApiResponse(400, "Appointment is already canceled"));
+            }
+
             var requestTime = DateTime.UtcNow;
             var timeBeforeCancel = appointment.AppointmentDateTime - requestTime;
             if (timeBeforeCancel >= TimeSpan.FromHours(24) || appointment.Status == AppointmentStatus.Emergency)
@@ -153,16 +159,17 @@
                         await emailSender.SendEmailAsync(patient.User.Email, "Sehaty", body);
                         notificationDto.SentViaEmail = true;
                     }
-                    if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
-                    {
-                        smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
-                        notificationDto.SentViaSMS = true;
-                    }
+                    //if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
+                    //{
+                    //    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
+                    //    notificationDto.SentViaSMS = true;
+                    //}
                     await unit.CommitAsync();
                 }
 
+                return Ok(new ApiResponse(200, "Appointment canceled successfully"));
             }
-            return Ok(new ApiResponse(200, "Appointment canceled successfully"));
+            return BadRequest(new ApiResponse(400, "Cannot cancel appointment within 24 hours unless marked as Emergency"));
         }
 
         //[Authorize(Roles = "Patient,Reception")]

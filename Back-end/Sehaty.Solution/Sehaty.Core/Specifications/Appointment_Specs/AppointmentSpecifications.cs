@@ -6,7 +6,7 @@
         {
             AddIncludes();
         }
-        public AppointmentSpecifications(int id) : base(P => P.Id == id)
+        public AppointmentSpecifications(int id) : base(A => A.Id == id)
         {
             AddIncludes();
         }
