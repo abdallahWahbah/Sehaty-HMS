@@ -150,7 +150,7 @@
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePrescription(int id, [FromBody] CreatePrescriptionsDto model)
+        public async Task<IActionResult> UpdatePrescription(int id, [FromBody] UpdatePrescriptionDto model)
         {
             if (ModelState.IsValid)
             {
