@@ -21,6 +21,15 @@ export class PatientUpdateComponent {
   ) {}
   // جلب بيانات المريض
   ngOnInit() {
+    this.patientForm = this.fb.group({
+      firstName: [''],
+      lastName: [''],
+      dateOfBirth: [''],
+      gender: [''],
+      address: [''],
+      emergencyContactName: [''],
+      emergencyContactPhone: [''],
+    });
     // جلب بيانات المستخدم من localStorage
     const storedUser: any = JSON.parse(localStorage.getItem('userData')!);
 
@@ -33,6 +42,11 @@ export class PatientUpdateComponent {
     });
   }
   initForm() {
+
+    let formattedDob = this.patient.dateOfBirth
+      ? new Date(this.patient.dateOfBirth).toISOString().split('T')[0]
+      : '';
+
     this.patientForm = this.fb.group({
       firstName: [
         this.patient.firstName,
@@ -42,7 +56,7 @@ export class PatientUpdateComponent {
         this.patient.lastName,
         [Validators.required, Validators.maxLength(20)],
       ],
-      dateOfBirth: [this.patient.dateOfBirth, Validators.required],
+      dateOfBirth: [formattedDob, Validators.required],
       gender: [
         this.patient.gender,
         [Validators.required, Validators.maxLength(10)],
