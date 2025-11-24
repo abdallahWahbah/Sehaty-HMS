@@ -76,7 +76,9 @@
         {
             if (ModelState.IsValid)
             {
+
                 var prescription = map.Map<Prescription>(model);
+                prescription.MedicalRecordId = (await unit.Repository<MedicalRecord>().GetFirstOrDefaultAsync(m => m.PatientId == model.PatientId)).Id;
                 var doctorUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 var doctorId = (await unit.Repository<Doctor>().GetFirstOrDefaultAsync(D => D.UserId == doctorUserId)).Id;
 

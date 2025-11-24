@@ -9,8 +9,6 @@
         [Required]
         public int AppointmentId { get; set; }
 
-        public int? MedicalRecordId { get; set; }
-
         [MaxLength(200)]
         public string SpecialInstructions { get; set; }
         public string DigitalSignature { get; set; }
