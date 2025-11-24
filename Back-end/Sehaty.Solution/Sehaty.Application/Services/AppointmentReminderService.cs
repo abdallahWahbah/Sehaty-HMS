@@ -23,9 +23,9 @@ namespace Sehaty.Application.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Console.WriteLine("hhh");
             while (!stoppingToken.IsCancellationRequested)
             {
+                Console.WriteLine("hhh");
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var unit = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
@@ -36,12 +36,11 @@ namespace Sehaty.Application.Services
 
                     var spec = new AppointmentSpecifications();
                     var appointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(spec);
-
+                    var targetTime = DateTime.UtcNow.AddHours(24);
                     var filteredAppointments = appointments
                         .Where(a =>
                                a.Status != AppointmentStatus.Canceled &&
-                               a.AppointmentDateTime > DateTime.UtcNow &&
-                               a.AppointmentDateTime <= DateTime.UtcNow.AddMinutes(1)
+                                Math.Abs((a.AppointmentDateTime - targetTime).TotalMinutes) <= 1
                         ).ToList();
 
                     foreach (var item in filteredAppointments)
@@ -51,7 +50,7 @@ namespace Sehaty.Application.Services
                         var notificationDto = new CreateNotificationDto
                         {
                             UserId = item.PatientId,
-                            Title = "Appointment Reminder", 
+                            Title = "Appointment Reminder",
                             Message = message,
                             Priority = NotificationPriority.High,
                             RelatedEntityType = "Appointment",
@@ -68,7 +67,7 @@ namespace Sehaty.Application.Services
 
                         if (!string.IsNullOrEmpty(item.Patient.User.Email))
                         {
-                            var filepath = $"{env.WebRootPath}/templates/ConfirmEmail.html";
+                            var filepath = $"{env.WebRootPath}/templates/ConfirmationReminder.html";
                             var body = File.ReadAllText(filepath);
 
                             body = body.Replace("[header]", message)

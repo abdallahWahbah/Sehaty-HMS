@@ -24,16 +24,29 @@
             return NotFound(new ApiResponse(404));
         }
 
-        [HttpGet("GetByPatientId/{id}")]
-        public async Task<ActionResult<IEnumerable<AllNotificationsDto>>> GetByPatientId(int id)
+        [HttpGet("GetByPatientId")]
+        public async Task<ActionResult<IEnumerable<AllNotificationsDto>>> GetByPatientId()
         {
-            var spec = new NotificationSpecifications(N => N.UserId == id);
+            var patientUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var patientId = (await unit.Repository<Patient>().GetFirstOrDefaultAsync(P => P.UserId == patientUserId)).Id;
+            var spec = new NotificationSpecifications(N => N.UserId == patientUserId);
             var notifications = await unit.Repository<Notification>().GetAllWithSpecAsync(spec);
-            if (notifications != null)
+            if (notifications.Count() > 0)
                 return Ok(map.Map<IEnumerable<AllNotificationsDto>>(notifications));
             return NotFound(new ApiResponse(404));
         }
-
+        [HttpGet("Unread")]
+        public async Task<ActionResult<IEnumerable<AllNotificationsDto>>> GetUnreadedByPatientId()
+        {
+            var patientUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var patientId = (await unit.Repository<Patient>().GetFirstOrDefaultAsync(P => P.UserId == patientUserId)).Id;
+            var spec = new NotificationSpecifications(N => N.UserId == patientUserId && !N.IsRead);
+            var notifications = await unit.Repository<Notification>().GetAllWithSpecAsync(spec);
+            //var unreadnotifications = notifications.Where(n => !n.IsRead);
+            if (notifications.Count() > 0)
+                return Ok(map.Map<IEnumerable<AllNotificationsDto>>(notifications));
+            return NotFound(new ApiResponse(404));
+        }
         [HttpPost]
         public async Task<IActionResult> CreateNotification([FromBody] CreateNotificationDto createNotificationDto)
         {
@@ -77,6 +90,7 @@
             await unit.CommitAsync();
             return NoContent();
         }
+
 
 
 
