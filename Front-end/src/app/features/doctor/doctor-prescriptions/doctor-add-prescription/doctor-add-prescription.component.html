@@ -36,18 +36,18 @@
           <td><input class="form-control" [(ngModel)]="med.dosage"></td>
           <td><input class="form-control" [(ngModel)]="med.frequency"></td>
           <td><input class="form-control" [(ngModel)]="med.duration"></td>
-          <td>
-            <button class="btn btn-danger btn-sm" (click)="removeMedication(i)" 
+          <td class="d-flex justify-content-center">
+            <button class="btn btn-danger btn-sm fs-5" (click)="removeMedication(i)" 
               [disabled]="prescription.medications?.length === 1">Remove</button>
           </td>
         </tr>
       </tbody>
     </table>
-    <button class="btn btn-secondary mb-3" (click)="addMedication()">Add Medication</button>
+    <button class="btn btn-secondary mb-3 fs-5" (click)="addMedication()">Add Medication</button>
 
     <div class="d-flex gap-2">
-      <button class="btn btn-primary" (click)="savePrescription()" [disabled]="isSubmitting">Save</button>
-      <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+      <button class="btn btn-primary fs-5" (click)="savePrescription()" [disabled]="isSubmitting">Save</button>
+      <button class="btn btn-secondary fs-5" (click)="cancel()">Cancel</button>
     </div>
   </div>
 </div>
