@@ -1,4 +1,6 @@
-﻿namespace Sehaty.Infrastructure.Data.Configrations
+﻿using Sehaty.Core.Entities.Business_Entities.DoctorAvailabilitySlots;
+
+namespace Sehaty.Infrastructure.Data.Configrations
 {
     internal class DoctorAvailabilitySlotConfigration : IEntityTypeConfiguration<DoctorAvailabilitySlot>
     {

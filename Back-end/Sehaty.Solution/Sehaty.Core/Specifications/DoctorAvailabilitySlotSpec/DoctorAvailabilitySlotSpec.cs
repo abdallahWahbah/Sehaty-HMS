@@ -1,4 +1,6 @@
-﻿namespace Sehaty.Core.Specifications.DoctorAvailabilitySlotSpec
+﻿using Sehaty.Core.Entities.Business_Entities.DoctorAvailabilitySlots;
+
+namespace Sehaty.Core.Specifications.DoctorAvailabilitySlotSpec
 {
     public class DoctorAvailabilitySlotSpec : BaseSpecefication<DoctorAvailabilitySlot>
     {

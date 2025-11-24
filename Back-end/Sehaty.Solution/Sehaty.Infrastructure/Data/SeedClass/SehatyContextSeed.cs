@@ -1,4 +1,6 @@
-﻿namespace Sehaty.Infrastructure.Data.SeedClass
+﻿using Sehaty.Core.Entities.Business_Entities.DoctorAvailabilitySlots;
+
+namespace Sehaty.Infrastructure.Data.SeedClass
 {
     public static class SeedExtensions
     {

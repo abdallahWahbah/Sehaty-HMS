@@ -1,81 +1,138 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
-    public class DoctorAvailabilitySlotsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
+    public class DoctorAvailabilitySlotsController(IUnitOfWork unit, IMapper mapper, IDoctorAvailabilityService availabilityService) : ApiBaseController
     {
-        //GetAll
-        [HttpGet]
-        public async Task<IActionResult> GetAllDoctorAvailability()
+
+
+        [HttpPost("AddAvailabilitySlot")]
+        public async Task<IActionResult> AddAvailabilitySlot([FromBody] CreateDoctorAvailabilityDto model)
         {
-            var spec = new DoctorAvailabilitySlotSpec();
-            var doctorAvailability = await unit.Repository<DoctorAvailabilitySlot>().GetAllWithSpecAsync(spec);
-            return Ok(mapper.Map<List<DoctorAvailabilityReadDto>>(doctorAvailability));
-        }
-        //Get By Id
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetDoctorAvailabilityById(int? id)
-        {
-            var spec = new DoctorAvailabilitySlotSpec(d => d.Id == id);
-            var doctorAvailability = await unit.Repository<DoctorAvailabilitySlot>().GetByIdWithSpecAsync(spec);
-            return Ok(mapper.Map<DoctorAvailabilityReadDto>(doctorAvailability));
-        }
-
-        [HttpGet("getByName/{FullName}")]
-        public async Task<IActionResult> GetByDoctorName(string FullName)
-        {
-            var spec = new DoctorAvailabilitySlotSpec(d =>
-            (d.Doctor.FirstName + "" + d.Doctor.LastName).Contains(FullName));
-            var doctorAvailability = await unit.Repository<DoctorAvailabilitySlot>().GetByIdWithSpecAsync(spec);
-
-            if (doctorAvailability != null)
-                return Ok(mapper.Map<DoctorAvailabilityReadDto>(doctorAvailability));
-
-            return NotFound(new ApiResponse(404));
-        }
-
-        // PostData
-        [HttpPost]
-        public async Task<IActionResult> AddDoctorAvailability(DoctorAvailabilityAddOrUpdateDto model)
-        {
-            if (!ModelState.IsValid) return BadRequest(new ApiResponse(400));
-            var AddDoctorAvailability = mapper.Map<DoctorAvailabilitySlot>(model);
-            await unit.Repository<DoctorAvailabilitySlot>().AddAsync(AddDoctorAvailability);
-            var RowAffected = await unit.CommitAsync();
-            return RowAffected > 0 ? CreatedAtAction(nameof(GetDoctorAvailabilityById),
-                new { id = AddDoctorAvailability.Id }, mapper.Map<DoctorAvailabilityReadDto>(AddDoctorAvailability))
-                : BadRequest(new ApiResponse(400));
-        }
-
-        //UpdateData
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDoctorAvailability(int? id, [FromBody] DoctorAvailabilityAddOrUpdateDto model)
-        {
-
-            if (id is null) return BadRequest(new ApiResponse(400));
-            if (ModelState.IsValid)
+            try
             {
-                var updateDoctorAvailability = await unit.Repository<DoctorAvailabilitySlot>().GetByIdAsync(id.Value);
-                if (updateDoctorAvailability is null)
-                    return NotFound(new ApiResponse(404));
-                mapper.Map(model, updateDoctorAvailability);
-                unit.Repository<DoctorAvailabilitySlot>().Update(updateDoctorAvailability);
-                await unit.CommitAsync();
-                return Ok(new ApiResponse(200, "Updated successfully"));
+                await availabilityService.AddAvailabilityAsync(model);
+                return Ok(new ApiResponse(200, "Doctor availability slot(s) added successfully"));
             }
-            return BadRequest(new ApiResponse(400));
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse(400, $"{ex.Message}"));
+            }
         }
 
-        //DeleteData
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDoctorAvailability(int? id)
+        [HttpPost("Generateslots")]
+        public async Task<IActionResult> GenerateSlots([FromBody] GenerateSlotsDto model)
         {
-            if (id is null) return BadRequest(new ApiResponse(400));
-            var doctorAvailability = await unit.Repository<DoctorAvailabilitySlot>().GetByIdAsync(id.Value);
-            if (doctorAvailability is null) return NotFound(new ApiResponse(404));
-            unit.Repository<DoctorAvailabilitySlot>().Delete(doctorAvailability);
-            var RowAffected = await unit.CommitAsync();
-            return RowAffected > 0 ? Ok(new ApiResponse(200, "Deleted successfully")) : BadRequest(new ApiResponse(400));
+            try
+            {
+                await availabilityService.GenerateSlotsAsync(model);
+                return Ok(new ApiResponse(200, "Slots generated successfully"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse(400, $"{ex.Message}"));
+            }
         }
 
+
+
+        [HttpGet("slotDetails/{slotId}")]
+        public async Task<IActionResult> GetSlotDetails(int slotId)
+        {
+            try
+            {
+                var result = await availabilityService.GetSlotDetailsAsync(slotId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse(400, ex.Message));
+            }
+        }
+
+
+
+        [HttpGet("availableDaysForDoctor/{doctorId}")]
+        public async Task<IActionResult> GetDoctorAvailableDays(int doctorId)
+        {
+            try
+            {
+                var result = await availabilityService.GetDoctorAvailableDaysAsync(doctorId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse(400, ex.Message));
+            }
+        }
+
+
+
+        [HttpGet("AvailableSlots")]
+        public async Task<IActionResult> GetAvailableSlots([FromQuery] int doctorId, [FromQuery] DateOnly date)
+        {
+            try
+            {
+                var model = new GetAvailableSlotsRequestDto
+                {
+                    DoctorId = doctorId,
+                    Date = date
+                };
+
+                var result = await availabilityService.GetAvailableSlotsAsync(model);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse(400, ex.Message));
+            }
+        }
+
+
+        [HttpPost("BookSlot")]
+        public async Task<IActionResult> BookSlot([FromBody] BookSlotDto model)
+        {
+            try
+            {
+                var result = await availabilityService.BookSlotAsync(model);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse(400, ex.Message));
+            }
+        }
+
+
+        [HttpGet("AvailableSlotsRangeForDoctor")]
+        public async Task<IActionResult> GetAvailableSlotsRange([FromQuery] int doctorId, [FromQuery] DateOnly startDate, [FromQuery] DateOnly endDate)
+        {
+            try
+            {
+                var result = await availabilityService.GetAvailableSlotsRangeAsync(
+                    doctorId,
+                    startDate,
+                    endDate);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse(400, ex.Message));
+            }
+        }
+
+        [HttpPost("Cancelslot/{slotId}")]
+        public async Task<IActionResult> CancelSlot(int slotId)
+        {
+            try
+            {
+                await availabilityService.CancelSlotAsync(slotId);
+                return Ok(new ApiResponse(200, "Slot Canceled successfully"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse(400, ex.Message));
+            }
+        }
 
     }
 }

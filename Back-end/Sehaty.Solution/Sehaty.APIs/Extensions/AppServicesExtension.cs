@@ -89,6 +89,7 @@
             // Inject Service For Billing To Add And Manage Billing
 
             services.AddScoped<IBillingService, BillingService>();
+            services.AddScoped<IDoctorAvailabilityService, DoctorAvailabilityService>();
 
             // Add DbContext Class Injection
             services.AddDbContext<SehatyDbContext>(options =>
