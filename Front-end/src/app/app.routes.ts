@@ -34,7 +34,7 @@ import { AdminUpdateScheduleComponent } from './features/admin/admin-appointment
 import { patientGuard } from './core/guards/patient.guard';
 import { PatientPaymentComponent } from './features/patient/patient-payment/patient-payment.component';
 import { PatientNavigationComponent } from './features/patient/patient-navigation/patient-navigation.component';
-
+import { PatientUpdateComponent } from './features/patient/patient-update/patient-update.component';
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -90,10 +90,11 @@ export const routes: Routes = [
     component: PatientNavigationComponent,
     children: [
       { path: '', redirectTo: 'medicalRecords', pathMatch: 'full' },
-      {path: 'medicalRecords', component: PatientMedicalRecordsComponent},
-      {path: 'appointments', component: PatientAppointmentsComponent},
-      {path: 'details', component: PatientDetailsComponent},
-      {path: 'payment', component: PatientPaymentComponent},
+      { path: 'medicalRecords', component: PatientMedicalRecordsComponent },
+      { path: 'appointments', component: PatientAppointmentsComponent },
+      { path: 'details', component: PatientDetailsComponent },
+      { path: 'edit/:id', component: PatientUpdateComponent },
+      { path: 'payment', component: PatientPaymentComponent },
     ],
   },
   { path: 'home', component: HomeComponent },
