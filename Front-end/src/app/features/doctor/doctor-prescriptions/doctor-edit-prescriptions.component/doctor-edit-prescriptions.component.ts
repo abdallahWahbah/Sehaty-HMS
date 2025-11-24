@@ -32,7 +32,14 @@ export class DoctorEditPrescriptionsComponent implements OnInit {
 
     this.loadPrescription(prescriptionId);
   }
-
+  removeMedication(index: number) {
+    if (this.prescription.medications && this.prescription.medications.length > 1) {
+      this.prescription.medications.splice(index, 1);
+    }
+  }
+  addMedication() {
+    this.prescription.medications?.push({ medicationName: '', dosage: '', frequency: '', duration: '' });
+  }
   private loadPrescription(id: number) {
     this.prescriptionService.getPrescriptionById(id).subscribe({
       next: (found) => {
@@ -58,16 +65,20 @@ export class DoctorEditPrescriptionsComponent implements OnInit {
 
 
   saveChanges() {
+    this.errorMessage = '';
     this.prescriptionService.editPrescription(this.prescription.id, this.prescription).subscribe({
       next: () => {
         alert('Prescription updated successfully');
-        this.router.navigate(['/prescriptions']);
+        this.router.navigate(['/doctor/prescription']);
       },
-      error: (err) => console.error('Update failed', err)
+      error: (err) => {
+        this.errorMessage = err.error.errors[0];
+        console.error('Update failed', err)
+      }
     });
   }
 
   cancel() {
-    this.router.navigate(['/prescriptions']);
+    this.router.navigate(['/doctor/prescription']);
   }
 }

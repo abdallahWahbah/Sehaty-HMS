@@ -38,7 +38,7 @@
           <td><input class="form-control" [(ngModel)]="med.duration"></td>
           <td>
             <button class="btn btn-danger btn-sm" (click)="removeMedication(i)" 
-              [disabled]="(prescription.medications?.length || 0) === 1">Remove</button>
+              [disabled]="prescription.medications?.length === 1">Remove</button>
           </td>
         </tr>
       </tbody>

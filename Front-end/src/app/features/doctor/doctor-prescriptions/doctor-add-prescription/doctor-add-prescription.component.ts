@@ -36,7 +36,6 @@ export class DoctorAddPrescriptionComponent {
 
   ngOnInit() {
     const state: any = this.location?.getState();
-    console.log(state);
     this.patientId = state.patientId ;
     this.appointmentId = state.appointmentId ;
   }
@@ -51,35 +50,28 @@ export class DoctorAddPrescriptionComponent {
   }
 
   savePrescription() {
-    // تحقق من الحقول المطلوبة
+    this.errorMessage = '';
     if (
       !this.prescription.status ||
       !this.prescription.medications?.length ||
       !this.prescription.digitalSignature ||
       !this.prescription.specialInstructions
-
     ) {
       this.errorMessage = 'Please fill all required fields';
       return;
     }
-
-
     this.isSubmitting = true;
-    // this.prescriptionService.addPrescription(this.prescription).subscribe({
-    //   next: () => {
-    //     alert('Prescription added successfully');
-    //     this.router.navigate(['/doctor/prescription']);
-    //   },
-    //   error: (err) => {
-    //     console.error(err);
-    //     this.errorMessage = 'Failed to add prescription';
-    //     this.isSubmitting = false;
-    //   }
-    // });
-    console.log(this.prescription);
-    console.log(this.appointmentId,this.patientId);
-
-
+    this.prescriptionService.addPrescription(this.prescription, this.patientId, this.appointmentId).subscribe({
+      next: () => {
+        alert('Prescription added successfully');
+        this.router.navigate(['/doctor/prescription']);
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMessage = err.error.errors[0];
+        this.isSubmitting = false;
+      }
+    });
   }
 
   cancel() {
