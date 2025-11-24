@@ -37,6 +37,7 @@ import { PatientNavigationComponent } from './features/patient/patient-navigatio
 import { PatientUpdateComponent } from './features/patient/patient-update/patient-update.component';
 import { DoctorEditPrescriptionsComponent } from './features/doctor/doctor-prescriptions/doctor-edit-prescriptions.component/doctor-edit-prescriptions.component';
 import { DoctorAddPrescriptionComponent } from './features/doctor/doctor-prescriptions/doctor-add-prescription/doctor-add-prescription.component';
+import { AddDoctorComponent } from './features/admin/admin-doctors/add-doctor/add-doctor.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -55,6 +56,7 @@ export const routes: Routes = [
       { path: 'patients', component: AdminPatientsComponent },
       { path: 'patients/:id/edit', component: PatientEditComponent },
       { path: 'doctors', component: AdminDoctorsComponent },
+      { path: 'doctors/add', component: AddDoctorComponent },
       { path: 'doctors/:id/edit', component: DoctorEditComponent },
       { path: 'appointments', component: AdminAppointmentsComponent },
       { path: 'appointments/:id', component: AdminAppointmentDetailsComponent },
@@ -84,7 +86,10 @@ export const routes: Routes = [
       { path: 'details', component: DoctorDetailsComponent },
       { path: ':id/edit', component: DoctorEditComponent },
       { path: 'prescription', component: DoctorPrescriptionsComponent },
-      { path: 'prescriptions/edit/:id', component: DoctorEditPrescriptionsComponent },
+      {
+        path: 'prescriptions/edit/:id',
+        component: DoctorEditPrescriptionsComponent,
+      },
       { path: 'prescriptions/add', component: DoctorAddPrescriptionComponent },
       { path: 'availableSlots', component: DoctorAvailableSlotsComponent },
     ],

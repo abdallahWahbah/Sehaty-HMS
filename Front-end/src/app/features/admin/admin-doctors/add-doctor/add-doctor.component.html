@@ -1,15 +1,15 @@
 <section id="dashboard" class="dashboard">
   <div class="dashboard__title">
-    <h2 class="dashboard__title-main">
-      Edit Doctor: {{ doctor?.firstName }} {{ doctor?.lastName }}
-    </h2>
+    <h2 class="dashboard__title-main">Add New Doctor</h2>
+
     <div class="patient-edit">
       <form [formGroup]="doctorForm" (ngSubmit)="onSubmit()">
-        @if(serverError){
+        @if (serverError) {
         <div class="server-error" style="margin-bottom: 3rem">
           <span>{{ serverError }}</span>
         </div>
         }
+
         <div class="patient-edit__grid">
           <p-floatlabel class="patient-edit__input">
             <input pInputText formControlName="firstName" />
@@ -23,12 +23,12 @@
 
           <p-floatlabel class="patient-edit__input">
             <input pInputText formControlName="specialty" />
-            <label>speciality</label>
+            <label>Specialty</label>
           </p-floatlabel>
 
           <p-floatlabel class="patient-edit__input">
             <input pInputText formControlName="licenseNumber" />
-            <label>license Number</label>
+            <label>License Number</label>
           </p-floatlabel>
 
           <p-floatlabel class="patient-edit__input">
@@ -48,26 +48,17 @@
 
           <p-floatlabel class="patient-edit__input">
             <input pInputText formControlName="userId" />
-            <label>userId</label>
+            <label>User ID</label>
           </p-floatlabel>
 
           <p-floatlabel class="patient-edit__input">
             <input pInputText formControlName="departmentId" />
-            <label>Department Id</label>
+            <label>Department ID</label>
           </p-floatlabel>
         </div>
 
-        <div
-          class="patient-edit__button-container"
-          style="display: flex; gap: 1rem"
-        >
-          <p-button type="submit" label="Update Doctor"></p-button>
-
-          <p-button
-            label="Delete Doctor"
-            styleClass="p-button-danger"
-            (click)="onDelete()"
-          ></p-button>
+        <div class="patient-edit__button-container">
+          <p-button type="submit" label="Add Doctor"></p-button>
         </div>
       </form>
     </div>
