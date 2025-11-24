@@ -24,7 +24,6 @@ export class PatientDetailsComponent implements OnInit {
     this._patientService.getAll().subscribe({
       next: (data) => {
         this.patient = data.find((p) => p.userId === storedUser.userId)!;
-        console.log('Patient Details:', this.patient);
       },
     });
   }

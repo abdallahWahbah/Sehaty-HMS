@@ -17,7 +17,7 @@ export class MedicalRecordService {
     return this.http.get<MedicalRecordModel[]>(this.baseUrl);
   }
   
-  getAllForPatient(){
+  getForPatient(){
     return this.http.get<MedicalRecordModel>(this.baseUrl + 'GetMedicalRecordForPatient', {
       headers: { Authorization: `Bearer ${this.token}` }
     })

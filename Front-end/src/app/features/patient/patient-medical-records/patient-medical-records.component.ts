@@ -30,7 +30,7 @@ export class PatientMedicalRecordsComponent implements OnInit{
       }
     });
 
-    this._medicalRecordService.getAllForPatient().subscribe({
+    this._medicalRecordService.getForPatient().subscribe({
       next: (data: MedicalRecordModel) => {
         this.medicalRecord = data;
         console.log("aaaaaaaaa", this.medicalRecord);
