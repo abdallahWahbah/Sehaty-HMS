@@ -1,4 +1,16 @@
-<div *ngFor="let prescription of prescriptions" class="card mb-4 shadow-sm">
+<div class="mb-3">
+  <input 
+    class="form-control" 
+    type="number" 
+    placeholder="Search by Patient ID..."
+    [(ngModel)]="searchPatientId"
+    (input)="filterByPatientId()"
+  />
+</div>
+
+
+
+<div *ngFor="let prescription of filteredPrescriptions " class="card mb-4 shadow-sm">
     <div class="card-header bg-primary text-white">
         <strong>Prescription ID:</strong> {{ prescription.id }} |
         <strong>Status:</strong> {{ prescription.status }} |
