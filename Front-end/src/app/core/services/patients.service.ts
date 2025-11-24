@@ -23,4 +23,9 @@ export class PatientsService {
       headers: { Authorization: `Bearer ${token}` },
     });
   }
+  editByPatient(id: number, body: any, token: string) {
+    return this._http.put<any>(this.baseUrl + 'EditProfile/' + id, body, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
 }

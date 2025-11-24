@@ -1,0 +1,67 @@
+.patient-details {
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 14px;
+
+  &__header {
+    margin-bottom: 20px;
+
+    & > .patient-details__title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #333;
+    }
+  }
+
+  &__card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 0 10px #0001;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eaeaea;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__label {
+    font-weight: 600;
+    color: #555;
+  }
+
+  &__value {
+    font-weight: 500;
+    color: #222;
+    text-align: right;
+  }
+}
+.patient-details__edit-btn {
+  display: inline-block;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  margin-top: 0.5rem;
+  background-color: #252b61; // أزرق Bootstrap style
+  border: none;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  text-align: center;
+  &:active {
+    background-color: #004085;
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    background-color: #c0c0c0;
+    cursor: not-allowed;
+  }
+}
