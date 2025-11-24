@@ -1,0 +1,67 @@
+.medical-record {
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+
+  &__header {
+    border-bottom: 1px solid #e6e6f5;
+    padding-bottom: 0.5rem;
+
+    & h3 {
+      margin: 0;
+      font-size: 1.6rem;
+      color: #252b61;
+    }
+  }
+
+  &__patient-name {
+    font-weight: 600;
+  }
+
+  &__record-type {
+    font-size: 1rem;
+    padding: 0.3rem 0.8rem;
+  }
+
+  &__dates {
+    font-size: 1.4rem;
+    color: #555;
+
+    & > div {
+      display: flex;
+      gap: 0.5rem;
+    }
+  }
+
+  &__vitals {
+    font-size: 1.4rem;
+
+    & > .medical-record__vital {
+      strong {
+        color: #252b61;
+      }
+    }
+  }
+
+  &__details {
+    font-size: 1.4rem;
+    color: #333;
+
+    & > div {
+      strong {
+        color: #252b61;
+      }
+    }
+  }
+
+  &__status {
+    .badge {
+      font-size: 1.2rem;
+      padding: 0.5rem 1rem;
+    }
+  }
+}
+.no-records {
+  font-size: 1.4rem;
+  color: #777;
+  text-align: center;
+}

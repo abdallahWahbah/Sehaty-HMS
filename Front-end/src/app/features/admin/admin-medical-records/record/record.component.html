@@ -1,17 +1,6 @@
 @if(record){
 <div class="record-container">
   <div class="record-grid">
-    
-    <div class="record-item">
-      <p class="record-header">Appointment Date</p>
-      <p class="record-value">{{ record?.appointmentDateTime | date:'yyyy-MM-dd HH:mm' }}</p>
-    </div>
-
-    <div class="record-item">
-      <p class="record-header">Appointment ID</p>
-      <p class="record-value">{{ record?.appointmentId }}</p>
-    </div>
-
     <div class="record-item">
       <p class="record-header">Patient Name</p>
       <p class="record-value">{{ record?.patientName }}</p>
@@ -34,7 +23,9 @@
 
     <div class="record-item">
       <p class="record-header">BP</p>
-      <p class="record-value">{{ record?.vitalBp || (record?.bpSystolic + '/' + record?.bpDiastolic) }}</p>
+      <p class="record-value">
+        {{ record?.vitalBp || record?.bpSystolic + "/" + record?.bpDiastolic }}
+      </p>
     </div>
 
     <div class="record-item">
@@ -59,7 +50,9 @@
 
     <div class="record-item">
       <p class="record-header">Record Date</p>
-      <p class="record-value">{{ record?.recordDate | date:'yyyy-MM-dd HH:mm' }}</p>
+      <p class="record-value">
+        {{ record?.recordDate | date : "yyyy-MM-dd HH:mm" }}
+      </p>
     </div>
 
     <div class="record-item">
@@ -69,9 +62,8 @@
 
     <div class="record-item">
       <p class="record-header">Is Finalized</p>
-      <p class="record-value">{{ record?.isFinialize ? 'Yes' : 'No' }}</p>
+      <p class="record-value">{{ record?.isFinialize ? "Yes" : "No" }}</p>
     </div>
-
-  </div>
+  </div>
 </div>
 }
