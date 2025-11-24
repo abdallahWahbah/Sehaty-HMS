@@ -12,7 +12,6 @@ import { AdminAppointmentsComponent } from './features/admin/admin-appointments/
 import { AdminMedicalRecordsComponent } from './features/admin/admin-medical-records/admin-medical-records.component';
 import { AdminDepartmentsComponent } from './features/admin/admin-departments/admin-departments.component';
 import { adminGuard } from './core/guards/admin.guard';
-import { PatientHomeComponent } from './features/patient/patient-home/patient-home.component';
 import { PatientMedicalRecordsComponent } from './features/patient/patient-medical-records/patient-medical-records.component';
 import { PatientAppointmentsComponent } from './features/patient/patient-appointments/patient-appointments.component';
 import { PatientDetailsComponent } from './features/patient/patient-details/patient-details.component';
@@ -32,6 +31,8 @@ import { DoctorPrescriptionsComponent } from './features/doctor/doctor-prescript
 import { DoctorAvailableSlotsComponent } from './features/doctor/doctor-available-slots/doctor-available-slots.component';
 import { AdminAppointmentDetailsComponent } from './features/admin/admin-appointments/admin-appointment-details/admin-appointment-details.component';
 import { AdminUpdateScheduleComponent } from './features/admin/admin-appointments/admin-update-schedule/admin-update-schedule.component';
+import { patientGuard } from './core/guards/patient.guard';
+import { PatientPaymentComponent } from './features/patient/patient-payment/patient-payment.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -84,13 +85,13 @@ export const routes: Routes = [
   },
   {
     path: 'patient',
-    // canActivate: [],
+    canActivate: [patientGuard],
     children: [
-      { path: '', component: PatientHomeComponent },
-      { path: 'home', component: PatientHomeComponent },
-      // {path: 'medicalRecords', component: PatientMedicalRecordsComponent},
-      // {path: 'appointments', component: PatientAppointmentsComponent},
-      // {path: 'details', component: PatientDetailsComponent},
+      { path: '', redirectTo: 'medicalRecords', pathMatch: 'full' },
+      {path: 'medicalRecords', component: PatientMedicalRecordsComponent},
+      {path: 'appointments', component: PatientAppointmentsComponent},
+      {path: 'details', component: PatientDetailsComponent},
+      {path: 'payment', component: PatientPaymentComponent},
     ],
   },
   { path: 'home', component: HomeComponent },

@@ -11,7 +11,7 @@ export const patientGuard: CanActivateFn = (route, state) => {
     return true;
   }
   else{
-    router.navigate(['/not-found']);
+    router.navigate(['/not-allowed']);
     return false;
   }
 };
