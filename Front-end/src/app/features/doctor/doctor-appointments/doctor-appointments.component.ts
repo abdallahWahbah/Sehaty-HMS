@@ -15,6 +15,7 @@ export class DoctorAppointmentsComponent {
 
   appointments: AppointmentResponseModel[] = [];
   currentDoctor!: DoctorResponseModel;
+  isLoading: boolean = true;
 
   constructor(private _appointmentsService: AppointmentService, private _doctorService: DoctorService){}
 
@@ -30,8 +31,25 @@ export class DoctorAppointmentsComponent {
 
     this._appointmentsService.getAll().subscribe({
       next: data => {
-        this.appointments = data.filter(app => app.doctorId === this.currentDoctor?.id);
+        this.appointments = 
+            data.filter(app => app.doctorId === this.currentDoctor?.id)
+              .sort((a, b) => {
+                  const dateA = new Date(a.appointmentDateTime);
+                  const dateB = new Date(b.appointmentDateTime);
+
+                  // Compare dates only (DESC)
+                  const dayA = new Date(dateA.getFullYear(), dateA.getMonth(), dateA.getDate()).getTime();
+                  const dayB = new Date(dateB.getFullYear(), dateB.getMonth(), dateB.getDate()).getTime();
+
+                  if (dayA !== dayB) {
+                    return dayB - dayA; // Newer date first
+                  }
+
+                  // Same day → compare time (ASC)
+                  return dateA.getTime() - dateB.getTime();
+                });
       }
     });
+    this.isLoading = false;
   }
 }
