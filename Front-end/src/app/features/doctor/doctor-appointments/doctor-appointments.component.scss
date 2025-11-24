@@ -55,14 +55,18 @@
     display: flex;
     justify-content: space-between;
     gap: 2rem;
-    flex-wrap: wrap;
+    // flex-wrap: wrap;
     align-items: center;
+    width: 80rem;
 
     /* Left section: name + time + duration */
     .name_time {
-      display: flex;
       gap: 3rem;
+      display: flex;
       flex-wrap: wrap;
+      justify-content: space-between;
+      width: 80%;
+      margin-bottom: 1rem;
 
       .name,
       .time,
@@ -72,6 +76,7 @@
         gap: 0.5rem;
         font-size: 1.6rem;
         color: var(--color-primary);
+        flex-basis: 20%;
 
         p {
           margin: 0;
@@ -80,6 +85,9 @@
         i {
           font-size: 1.4rem;
         }
+      }
+      .name{
+        flex-basis: 25%;
       }
     }
 
@@ -98,6 +106,9 @@
         &.dashboard__appointments-item--confirmed {
           background-color: #4bee0a;
         }
+        &.main{
+          background-color: var(--color-primary);
+        }
 
         &.dashboard__appointments-item--pending {
           background-color: #ffc107;
@@ -110,4 +121,12 @@
       }
     }
   }
+}
+.reason.name{
+  flex-basis: 100% !important;
+}
+.no-appointments {
+  margin: 4rem 2rem;
+  font-size: 1.6rem;
+  color: #777;
 }
