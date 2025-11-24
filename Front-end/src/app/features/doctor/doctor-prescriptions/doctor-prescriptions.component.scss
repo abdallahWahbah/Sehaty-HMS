@@ -1,3 +1,23 @@
 :host {
   font-size: calc(1rem + 4px);
 }
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: #f8f9ff;
+  border: 2px dashed #bfc5ff;
+  border-radius: 1rem;
+  margin-top: 2rem;
+  color: #3c3f61;
+
+  &__icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--color-primary);
+  }
+
+  &__text {
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+}
