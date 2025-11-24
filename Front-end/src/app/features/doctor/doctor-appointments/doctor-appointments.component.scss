@@ -59,13 +59,29 @@
     align-items: center;
     width: 80rem;
 
+    .appointment__button {
+        padding: 0.8rem 1.6rem;
+        background-color: var(--color-primary);
+        color: white;
+        border: none;
+        border-radius: 0.6rem;
+        cursor: pointer;
+        font-size: 1.2rem;
+        height: fit-content;
+        white-space: nowrap;
+        &:hover {
+          background-color: #1e2561;
+        }
+      }
+
     /* Left section: name + time + duration */
     .name_time {
       gap: 3rem;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      width: 80%;
+      width: 70%;
+      // background-color: red;
       margin-bottom: 1rem;
 
       .name,

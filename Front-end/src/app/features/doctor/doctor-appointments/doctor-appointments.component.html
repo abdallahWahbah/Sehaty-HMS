@@ -42,12 +42,15 @@
             <i class="fa-solid fa-stethoscope"></i>
             <p class="fw-bold">{{ appointment.reasonForVisit }}</p>
           </div>
+          <button class="appointment__button btn" (click)="addPrescription(appointment)">
+            Add Prescription
+          </button>
         </div>
       </div>
     </div>
 
-    <button class="btn btn-primary mt-2" (click)="addPrescription(appointment)">
+    <!-- <button class="btn btn-primary mt-2" (click)="addPrescription(appointment)">
       Add Prescription
-    </button>
+    </button> -->
   </div>
 </section>

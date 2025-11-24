@@ -33,18 +33,24 @@
         <th>Dosage</th>
         <th>Frequency</th>
         <th>Duration</th>
+        <th>Delete</th>
       </tr>
     </thead>
 
     <tbody>
-      <tr *ngFor="let med of prescription.medications">
+      <tr *ngFor="let med of prescription.medications; let i = index">
         <td><input class="form-control" [(ngModel)]="med.medicationName"></td>
         <td><input class="form-control" [(ngModel)]="med.dosage"></td>
         <td><input class="form-control" [(ngModel)]="med.frequency"></td>
         <td><input class="form-control" [(ngModel)]="med.duration"></td>
+        <td>
+          <button class="btn btn-danger btn-sm" (click)="removeMedication(i)" 
+            [disabled]="prescription.medications?.length === 1">Remove</button>
+        </td>
       </tr>
     </tbody>
   </table>
+  <button class="btn btn-secondary mb-3" (click)="addMedication()" style="width: fit-content;">Add Medication</button>
 
   <div class="d-flex gap-2 mt-3">
     <button (click)="saveChanges()" class="btn btn-primary">Save Changes</button>
