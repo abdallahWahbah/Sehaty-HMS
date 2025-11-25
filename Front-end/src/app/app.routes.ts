@@ -38,7 +38,7 @@ import { PatientUpdateComponent } from './features/patient/patient-update/patien
 import { DoctorEditPrescriptionsComponent } from './features/doctor/doctor-prescriptions/doctor-edit-prescriptions.component/doctor-edit-prescriptions.component';
 import { DoctorAddPrescriptionComponent } from './features/doctor/doctor-prescriptions/doctor-add-prescription/doctor-add-prescription.component';
 import { AddDoctorComponent } from './features/admin/admin-doctors/add-doctor/add-doctor.component';
-
+import { PatientPrescriptionComponent } from './features/patient/patient-prescription/patient-prescription.component';
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -105,6 +105,7 @@ export const routes: Routes = [
       { path: 'details', component: PatientDetailsComponent },
       { path: 'edit/:id', component: PatientUpdateComponent },
       { path: 'payment', component: PatientPaymentComponent },
+      { path: 'prescription', component: PatientPrescriptionComponent },
     ],
   },
   { path: 'home', component: HomeComponent },

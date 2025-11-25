@@ -1,0 +1,63 @@
+<section id="dashboard" class="dashboard">
+  <div class="dashboard__title">
+    <h2 class="dashboard__title-main">Prescriptions</h2>
+    <section class="dashboard">
+      <ng-container *ngIf="prescriptions.length > 0; else noPrescriptions">
+        <div
+          *ngFor="let prescription of prescriptions"
+          class="card mb-4 shadow-sm"
+        >
+          <div class="card-header bg-primary text-white">
+            <strong>Prescription ID:</strong> {{ prescription.id }} |
+            <strong>Status:</strong> {{ prescription.status }} |
+            <strong>Date Issued:</strong>
+            {{ prescription.dateIssued | date : "medium" }}
+          </div>
+
+          <div class="card-body">
+            <p>
+              <strong>Doctor Notes:</strong>
+              {{ prescription.medicalRecordNotes }}
+            </p>
+            <p><strong>Doctor:</strong> Dr. {{ prescription.doctorName }}</p>
+
+            <div *ngIf="prescription.medications.length > 0">
+              <h5>Medications:</h5>
+              <table class="table table-striped table-bordered mt-2">
+                <thead class="table-light">
+                  <tr>
+                    <th>Name</th>
+                    <th>Dosage</th>
+                    <th>Frequency</th>
+                    <th>Duration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let med of prescription.medications">
+                    <td>{{ med.medicationName }}</td>
+                    <td>{{ med.dosage }}</td>
+                    <td>{{ med.frequency }}</td>
+                    <td>{{ med.duration }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- زرار التحميل -->
+            <button
+              class="btn btn-success mt-3"
+              *ngIf="prescription.id"
+              (click)="downloadPrescription(prescription.id)"
+            >
+              Download PDF
+            </button>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #noPrescriptions>
+        <p>No prescriptions found.</p>
+      </ng-template>
+    </section>
+  </div>
+</section>
