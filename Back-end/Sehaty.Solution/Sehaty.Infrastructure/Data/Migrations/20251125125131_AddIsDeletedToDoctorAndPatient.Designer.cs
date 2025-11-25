@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sehaty.Infrastructure.Data.Contexts;
 
@@ -11,9 +12,11 @@ using Sehaty.Infrastructure.Data.Contexts;
 namespace Sehaty.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(SehatyDbContext))]
-    partial class SehatyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251125125131_AddIsDeletedToDoctorAndPatient")]
+    partial class AddIsDeletedToDoctorAndPatient
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -284,6 +287,46 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Doctors");
+                });
+
+            modelBuilder.Entity("Sehaty.Core.Entites.DoctorAvailabilitySlot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AvailableFlag")
+                        .HasColumnType("bit");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("DayOfWeek")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("WeekDays");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<bool>("IsRecurring")
+                        .HasColumnType("bit");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId", "Date", "StartTime")
+                        .IsUnique();
+
+                    b.ToTable("DoctorAvailabilitySlots");
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entites.Feedback", b =>
@@ -558,80 +601,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppointmentAuditLogs");
-                });
-
-            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.DoctorAvailabilitySlots.DoctorAppointmentSlot", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AppointmentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<TimeOnly>("EndTime")
-                        .HasColumnType("time");
-
-                    b.Property<bool>("IsBooked")
-                        .HasColumnType("bit");
-
-                    b.Property<TimeOnly>("StartTime")
-                        .HasColumnType("time");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppointmentId");
-
-                    b.ToTable("DoctorAppointmentSlots");
-                });
-
-            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.DoctorAvailabilitySlots.DoctorAvailabilitySlot", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("AvailableFlag")
-                        .HasColumnType("bit");
-
-                    b.Property<DateOnly?>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<string>("DayOfWeek")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("WeekDays");
-
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<TimeOnly>("EndTime")
-                        .HasColumnType("time");
-
-                    b.Property<bool>("IsRecurring")
-                        .HasColumnType("bit");
-
-                    b.Property<TimeOnly>("StartTime")
-                        .HasColumnType("time");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DoctorId", "Date", "StartTime")
-                        .IsUnique()
-                        .HasFilter("[Date] IS NOT NULL");
-
-                    b.ToTable("DoctorAvailabilitySlots");
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.MedicalRecords.MedicalRecord", b =>
@@ -1171,6 +1140,17 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Sehaty.Core.Entites.DoctorAvailabilitySlot", b =>
+                {
+                    b.HasOne("Sehaty.Core.Entites.Doctor", "Doctor")
+                        .WithMany("DoctorAvailabilitySlots")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+                });
+
             modelBuilder.Entity("Sehaty.Core.Entites.Feedback", b =>
                 {
                     b.HasOne("Sehaty.Core.Entities.Business_Entities.Appointments.Appointment", "Appointment")
@@ -1221,27 +1201,6 @@ namespace Sehaty.Infrastructure.Data.Migrations
                     b.Navigation("Doctor");
 
                     b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.DoctorAvailabilitySlots.DoctorAppointmentSlot", b =>
-                {
-                    b.HasOne("Sehaty.Core.Entities.Business_Entities.Appointments.Appointment", "Appointment")
-                        .WithMany()
-                        .HasForeignKey("AppointmentId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Appointment");
-                });
-
-            modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.DoctorAvailabilitySlots.DoctorAvailabilitySlot", b =>
-                {
-                    b.HasOne("Sehaty.Core.Entites.Doctor", "Doctor")
-                        .WithMany("DoctorAvailabilitySlots")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("Sehaty.Core.Entities.Business_Entities.MedicalRecords.MedicalRecord", b =>
