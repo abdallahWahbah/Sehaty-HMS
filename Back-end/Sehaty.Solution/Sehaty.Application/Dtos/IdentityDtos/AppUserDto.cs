@@ -7,7 +7,7 @@
         public string Email { get; set; } = null!;
         public string PhoneNumber { get; set; }
 
-        public IList<string> Roles { get; set; }
+        public string Role { get; set; }
 
     }
 }

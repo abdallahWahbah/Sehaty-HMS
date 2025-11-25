@@ -13,7 +13,7 @@ namespace Sehaty.Application.Services.IdentityService
                 UserName = result.user.UserName,
                 Email = result.user.Email,
                 PhoneNumber = result.user.PhoneNumber,
-                Roles = result.roles.ToList()
+                Role = result.role
             }).ToList();
             return userDtos;
         }
@@ -31,7 +31,7 @@ namespace Sehaty.Application.Services.IdentityService
                 UserName = user.user.UserName,
                 Email = user.user.Email,
                 PhoneNumber = user.user.PhoneNumber,
-                Roles = user.roles.ToList()
+                Role = user.role
             };
 
             return userDto;
