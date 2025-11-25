@@ -1,0 +1,32 @@
+.patient-edit {
+  margin-top: 4rem;
+
+  &__header {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    margin-bottom: 2rem;
+  }
+  &__status {
+    margin-top: 0.5rem;
+    width: 48%;
+    .p-dropdown.p-inputwrapper.p-select {
+      height: 4rem;
+      width: 100%;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 48%);
+    gap: 2%;
+  }
+
+  &__input {
+    margin-bottom: 1.5rem;
+    width: 100%;
+  }
+
+  &__button-container {
+    margin-top: 2rem;
+  }
+}

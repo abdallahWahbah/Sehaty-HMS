@@ -4,52 +4,56 @@
       <h2>Doctors</h2>
       <p>Manage doctor profiles and schedules</p>
     </div>
+    <div class="add_btn" (click)="navigateToAdd()">
+      <i class="fa-solid fa-plus"></i>
+      <p>Add Doctor</p>
+    </div>
   </div>
   <div class="second_section">
     @for(doctor of doctors; track doctor.id){
-      <div class="doctor_card">
-        <div class="name_and_satuts">
-          <div class="doctor_info">
-            <p>Dr. {{doctor.firstName}} {{doctor.lastName}}</p>
-            <!-- <p>Cardiologist</p> -->
-            <p>Department: {{doctor.department}}</p>
-          </div>
-          <div class="active"></div>
+    <div class="doctor_card">
+      <div class="name_and_satuts">
+        <div class="doctor_info">
+          <p>Dr. {{ doctor.firstName }} {{ doctor.lastName }}</p>
+          <!-- <p>Cardiologist</p> -->
+          <p>Department: {{ doctor.department }}</p>
         </div>
-        <div class="name_and_satuts_sec2">
-          <div class="doctor_info_sec2">
-            <p>License Number</p>
-            <p>specialty</p>
-            <p>Years of experience</p>
-          </div>
-          <div class="doctor_info_sec2_right">
-            <p>{{doctor.licenseNumber}}</p>
-            <p>{{doctor.specialty}}</p>
-            <p>{{doctor.yearsOfExperience}}</p>
-          </div>
+        <div class="active"></div>
+      </div>
+      <div class="name_and_satuts_sec2">
+        <div class="doctor_info_sec2">
+          <p>License Number</p>
+          <p>specialty</p>
+          <p>Years of experience</p>
         </div>
-        <div class="view_and_edit">
-          <div class="view" (click)="showDoctor(doctor)">
-            <i class="fa-solid fa-eye"></i>
-            <p>view</p>
-          </div>
-          <div class="view" (click)="navigateToEdit(doctor.id)">
-            <i class="fa-solid fa-file-pen"></i>
-            <p>edit</p>
-          </div>
+        <div class="doctor_info_sec2_right">
+          <p>{{ doctor.licenseNumber }}</p>
+          <p>{{ doctor.specialty }}</p>
+          <p>{{ doctor.yearsOfExperience }}</p>
         </div>
       </div>
-    }
-    @if(selectedDoctor){
-        <div class="card flex justify-center">
-            <p-dialog 
-                [modal]="true" [(visible)]="isDoctorShown" 
-                [style]="{ width: '100rem', color: 'var(--color-primary)' }" 
-                [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-            >
-              <app-doctor [doctor]="selectedDoctor"></app-doctor>
-            </p-dialog>
+      <div class="view_and_edit">
+        <div class="view" (click)="showDoctor(doctor)">
+          <i class="fa-solid fa-eye"></i>
+          <p>view</p>
         </div>
+        <div class="view" (click)="navigateToEdit(doctor.id)">
+          <i class="fa-solid fa-file-pen"></i>
+          <p>edit</p>
+        </div>
+      </div>
+    </div>
+    } @if(selectedDoctor){
+    <div class="card flex justify-center">
+      <p-dialog
+        [modal]="true"
+        [(visible)]="isDoctorShown"
+        [style]="{ width: '100rem', color: 'var(--color-primary)' }"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+      >
+        <app-doctor [doctor]="selectedDoctor"></app-doctor>
+      </p-dialog>
+    </div>
     }
   </div>
 </section>

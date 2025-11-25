@@ -11,32 +11,35 @@ import { DoctorComponent } from './doctor/doctor.component';
   selector: 'app-admin-doctors',
   imports: [CommonModule, Dialog, ButtonModule, DoctorComponent],
   templateUrl: './admin-doctors.component.html',
-  styleUrl: './admin-doctors.component.scss'
+  styleUrl: './admin-doctors.component.scss',
 })
 export class AdminDoctorsComponent {
   doctors: DoctorResponseModel[] = [];
   selectedDoctor!: DoctorResponseModel;
   isDoctorShown: boolean = false;
 
-  constructor(private _doctorService: DoctorService, private router: Router){}
+  constructor(private _doctorService: DoctorService, private router: Router) {}
 
   ngOnInit(): void {
     this._doctorService.getAllDoctors().subscribe({
-      next: data => {
+      next: (data) => {
         this.doctors = data;
       },
-      error: err => {
+      error: (err) => {
         console.log(err);
-      }
+      },
     });
   }
 
-  showDoctor(doctor: DoctorResponseModel){
+  showDoctor(doctor: DoctorResponseModel) {
     this.selectedDoctor = doctor;
     this.isDoctorShown = true;
   }
-  
-  navigateToEdit(id: number){
-    this.router.navigate([`/admin/doctors/${id}/edit`], {state: {id}})
+
+  navigateToEdit(id: number) {
+    this.router.navigate([`/admin/doctors/${id}/edit`], { state: { id } });
+  }
+  navigateToAdd() {
+    this.router.navigate(['/admin/doctors/add']);
   }
 }
