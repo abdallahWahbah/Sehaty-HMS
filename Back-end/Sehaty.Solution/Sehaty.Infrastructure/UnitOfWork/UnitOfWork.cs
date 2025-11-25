@@ -7,10 +7,13 @@
 
         // Dictionary Of Repos That Every Repo Created To Pass It To User If He Ask For It Again
         private readonly Dictionary<string, object> repositories = new();
+        private IUserRepository userRepository;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public UnitOfWork(SehatyDbContext context)
+        public UnitOfWork(SehatyDbContext context, UserManager<ApplicationUser> userManager)
         {
             this.context = context;
+            this.userManager = userManager;
         }
 
         // To Check If The User Asked For This Repo Before And If Not Then Create New One And Pass It To Him
@@ -26,10 +29,21 @@
             return (IRepository<T>)repositories[key];
         }
 
+        public IUserRepository UserRepository()
+        {
+            if (userRepository == null)
+            {
+                userRepository = new UserRepository(userManager);
+            }
+            return userRepository;
+        }
+
         public async Task<int> CommitAsync() // This Is To Save All Changes Happened At Once
             => await context.SaveChangesAsync();
 
         public void Dispose() // To Close Connection With Database Once The Request Has Handeled Successfully
             => context.Dispose();
+
+
     }
 }

@@ -57,7 +57,8 @@
         [HttpGet("patientprescriptions")]
         public async Task<IActionResult> GetByPatientId()
         {
-            var patientId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var patientUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var patientId = (await unit.Repository<Patient>().GetFirstOrDefaultAsync(P => P.UserId == patientUserId)).Id;
 
             var spec = new PrescriptionSpecifications(P => P.PatientId == patientId);
             var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
