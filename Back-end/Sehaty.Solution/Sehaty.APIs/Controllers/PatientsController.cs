@@ -68,7 +68,7 @@
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var userExists = await unit.UserRepository().ExistsByIdAsync(dto.UserId);
+            var userExists = await unit.Users.ExistsByIdAsync(dto.UserId);
             if (!userExists)
                 return BadRequest(new ApiResponse(400, "Invalid User Id"));
 
