@@ -21,7 +21,6 @@ namespace Sehaty.Application.Services
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                Console.WriteLine("hello");
                 await CleanOldNotifications();
 
 
