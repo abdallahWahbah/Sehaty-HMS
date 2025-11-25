@@ -130,6 +130,7 @@
 
             //add background service
             services.AddHostedService<AppointmentReminderService>();
+            services.AddHostedService<OldNotificationsCleanupService>();
             #endregion
 
 
