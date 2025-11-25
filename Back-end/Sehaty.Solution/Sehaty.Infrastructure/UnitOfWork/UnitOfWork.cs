@@ -7,9 +7,9 @@
 
         // Dictionary Of Repos That Every Repo Created To Pass It To User If He Ask For It Again
         private readonly Dictionary<string, object> repositories = new();
-        private IUserRepository userRepository;
         private readonly UserManager<ApplicationUser> userManager;
 
+        private IUserRepository users;
         public UnitOfWork(SehatyDbContext context, UserManager<ApplicationUser> userManager)
         {
             this.context = context;
@@ -28,14 +28,15 @@
 
             return (IRepository<T>)repositories[key];
         }
-
-        public IUserRepository UserRepository()
+        public IUserRepository Users
         {
-            if (userRepository == null)
+            get
             {
-                userRepository = new UserRepository(userManager);
+                if (users == null)
+                    users = new UserRepository(userManager);
+
+                return users;
             }
-            return userRepository;
         }
 
         public async Task<int> CommitAsync() // This Is To Save All Changes Happened At Once

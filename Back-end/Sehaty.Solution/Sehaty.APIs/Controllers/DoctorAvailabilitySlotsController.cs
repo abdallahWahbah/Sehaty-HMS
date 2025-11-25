@@ -1,6 +1,6 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
-    public class DoctorAvailabilitySlotsController(IUnitOfWork unit, IMapper mapper, IDoctorAvailabilityService availabilityService) : ApiBaseController
+    public class DoctorAvailabilitySlotsController(IDoctorAvailabilityService availabilityService) : ApiBaseController //IUnitOfWork unit, IMapper mapper,
     {
 
 
