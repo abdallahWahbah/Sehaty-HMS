@@ -1,4 +1,6 @@
-﻿namespace Sehaty.Infrastructure.Data.Contexts
+﻿using Sehaty.Core.Entities.Business_Entities.DoctorAvailabilitySlots;
+
+namespace Sehaty.Infrastructure.Data.Contexts
 {
     // It Will Be Modefied To Inherit From IdentityDbContext<ApplicationUser,IdentityRole> To Add Auth Tables 
     public class SehatyDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
@@ -26,6 +28,7 @@
         public DbSet<PrescriptionMedications> PrescriptionMedications { get; set; }
         public DbSet<AppointmentAuditLog> AppointmentAuditLogs { get; set; }
         public DbSet<MedicalRecordAuditLog> MedicalRecordAuditLogs { get; set; }
+        public DbSet<DoctorAppointmentSlot> DoctorAppointmentSlots { get; set; }
 
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
