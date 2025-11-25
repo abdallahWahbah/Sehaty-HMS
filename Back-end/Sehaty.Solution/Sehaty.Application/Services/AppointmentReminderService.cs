@@ -1,14 +1,6 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Sehaty.Core.Entites;
-using Sehaty.Core.Entities.Business_Entities.Appointments;
 using Sehaty.Core.Specifications.Appointment_Specs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sehaty.Application.Services
 {
@@ -25,7 +17,6 @@ namespace Sehaty.Application.Services
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                Console.WriteLine("hhh");
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var unit = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();

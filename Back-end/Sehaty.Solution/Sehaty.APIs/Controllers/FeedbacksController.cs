@@ -20,6 +20,16 @@
             return Ok(mapper.Map<GetFeedbackDto>(feedback));
         }
 
+
+        [HttpGet("GetByAppointmentId/{appointmentId}")]
+        public async Task<ActionResult<IEnumerable<GetFeedbackDto>>> GetFeedbackByAppointmentId(int appointmentId)
+        {
+            var spec = new FeedbackSpecification(F => F.AppointmentId == appointmentId);
+            var feedbacks = await unit.Repository<Feedback>().GetAllWithSpecAsync(spec);
+            if (feedbacks is null) return NotFound(new ApiResponse(404));
+            return Ok(mapper.Map<IEnumerable<GetFeedbackDto>>(feedbacks));
+        }
+
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateFeedback(int id, [FromBody] FeedbackAddUpdateDto feedbackDto)
         {
