@@ -1,4 +1,4 @@
-﻿namespace Sehaty.Core.Entites
+﻿namespace Sehaty.Core.Entities.Business_Entities.DoctorAvailabilitySlots
 {
     [Flags]
     public enum WeekDays
@@ -21,7 +21,7 @@
         public TimeOnly StartTime { get; set; }
         public TimeOnly EndTime { get; set; }
         public bool IsRecurring { get; set; }
-        public DateOnly Date { get; set; }
+        public DateOnly? Date { get; set; }
         public bool AvailableFlag { get; set; }
     }
 }

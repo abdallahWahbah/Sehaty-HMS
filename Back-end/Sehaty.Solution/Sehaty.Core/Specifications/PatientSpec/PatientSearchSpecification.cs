@@ -7,7 +7,8 @@
             (!param.Id.HasValue || P.Id == param.Id) &&
             (String.IsNullOrEmpty(param.PatientId) || P.Patient_Id.ToLower().Contains(param.PatientId.ToLower())) &&
             (String.IsNullOrEmpty(param.Name) || P.FirstName.ToLower().Contains(param.Name.ToLower())
-            || P.LastName.ToLower().Contains(param.Name.ToLower())))
+            || P.LastName.ToLower().Contains(param.Name.ToLower()))
+            && !P.IsDeleted)
         {
             ApplySorting(param);
             Pagination(param);
