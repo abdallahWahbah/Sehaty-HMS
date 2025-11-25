@@ -11,50 +11,126 @@
         }
 
         <div class="patient-edit__grid">
-          <p-floatlabel class="patient-edit__input">
-            <input pInputText formControlName="firstName" />
-            <label>First Name</label>
-          </p-floatlabel>
+          <div>
+            <p-floatlabel class="patient-edit__input auth__input--container">
+              <input 
+                  pInputText 
+                  id="firstName" 
+                  autocomplete="off" 
+                  formControlName="firstName"
+              />
+              <label for="firstName">firstName</label>
+            </p-floatlabel>
+              @if(doctorForm.get('firstName')?.touched && doctorForm.get('firstName')?.invalid){
+                <div class="error-text">
+                  @if(doctorForm.get('firstName')?.errors?.['required']){
+                    <span>firstName is required</span>
+                  }
+                  @if(doctorForm.get('firstName')?.errors?.['maxlength']){
+                    <span>Maximum 50 characters allowed</span>
+                  }
+                </div>
+              }
+          </div>
 
-          <p-floatlabel class="patient-edit__input">
-            <input pInputText formControlName="lastName" />
-            <label>Last Name</label>
-          </p-floatlabel>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="lastName" />
+              <label>Last Name</label>
+            </p-floatlabel>
+            @if(doctorForm.get('lastName')?.touched && doctorForm.get('lastName')?.invalid){
+                <div class="error-text">
+                  @if(doctorForm.get('lastName')?.errors?.['required']){
+                    <span>lastName is required</span>
+                  }
+                  @if(doctorForm.get('lastName')?.errors?.['maxlength']){
+                    <span>Maximum 50 characters allowed</span>
+                  }
+                </div>
+              }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="specialty" />
+              <label>Specialty</label>
+            </p-floatlabel>
+            @if(doctorForm.get('specialty')?.touched && doctorForm.get('specialty')?.invalid){
+                <div class="error-text">
+                  @if(doctorForm.get('specialty')?.errors?.['required']){
+                    <span>specialty is required</span>
+                  }
+                  @if(doctorForm.get('specialty')?.errors?.['maxlength']){
+                    <span>Maximum 100 characters allowed</span>
+                  }
+                </div>
+              }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="licenseNumber" />
+              <label>License Number</label>
+            </p-floatlabel>
+            @if(doctorForm.get('licenseNumber')?.touched && doctorForm.get('licenseNumber')?.invalid){
+                <div class="error-text">
+                  @if(doctorForm.get('licenseNumber')?.errors?.['required']){
+                    <span>licenseNumber is required</span>
+                  }
+                  @if(doctorForm.get('licenseNumber')?.errors?.['maxlength']){
+                    <span>Maximum 50 characters allowed</span>
+                  }
+                </div>
+              }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="qualifications" />
+              <label>Qualifications</label>
+            </p-floatlabel>
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="yearsOfExperience" />
+              <label>Years Of Experience</label>
+            </p-floatlabel>
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="availabilityNotes" />
+              <label>Availability Notes</label>
+            </p-floatlabel>
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="userId" />
+              <label>User ID</label>
+            </p-floatlabel>
+            @if(doctorForm.get('userId')?.touched && doctorForm.get('userId')?.invalid){
+              <div class="error-text">
+                  @if(doctorForm.get('userId')?.errors?.['required']){
+                      <span>userId is required</span>
+                  }
+              </div>
+            }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="departmentId" />
+              <label>Department ID</label>
+            </p-floatlabel>
+            @if(doctorForm.get('departmentId')?.touched && doctorForm.get('departmentId')?.invalid){
+              <div class="error-text">
 
-          <p-floatlabel class="patient-edit__input">
-            <input pInputText formControlName="specialty" />
-            <label>Specialty</label>
-          </p-floatlabel>
+                @if(doctorForm.get('departmentId')?.errors?.['required']){
+                  <span>Department is required</span>
+                }
 
-          <p-floatlabel class="patient-edit__input">
-            <input pInputText formControlName="licenseNumber" />
-            <label>License Number</label>
-          </p-floatlabel>
+                @if(doctorForm.get('departmentId')?.errors?.['min']){
+                  <span>Value must be greater than 0</span>
+                }
 
-          <p-floatlabel class="patient-edit__input">
-            <input pInputText formControlName="qualifications" />
-            <label>Qualifications</label>
-          </p-floatlabel>
-
-          <p-floatlabel class="patient-edit__input">
-            <input pInputText formControlName="yearsOfExperience" />
-            <label>Years Of Experience</label>
-          </p-floatlabel>
-
-          <p-floatlabel class="patient-edit__input">
-            <input pInputText formControlName="availabilityNotes" />
-            <label>Availability Notes</label>
-          </p-floatlabel>
-
-          <p-floatlabel class="patient-edit__input">
-            <input pInputText formControlName="userId" />
-            <label>User ID</label>
-          </p-floatlabel>
-
-          <p-floatlabel class="patient-edit__input">
-            <input pInputText formControlName="departmentId" />
-            <label>Department ID</label>
-          </p-floatlabel>
+              </div>
+            }
+          </div>
         </div>
 
         <div class="patient-edit__button-container">
