@@ -44,12 +44,16 @@ export class AddDoctorComponent {
       yearsOfExperience: [''],
       availabilityNotes: [''],
       userId: ['', Validators.required],
-      departmentId: ['', Validators.required],
+      departmentId: ['', [Validators.required, Validators.min(1)]],
     });
   }
 
   onSubmit() {
-    if (this.doctorForm.invalid) return;
+    this.serverError = '';
+    if (this.doctorForm.invalid) {
+      this.doctorForm.markAllAsTouched();
+      return;
+    }
 
     this.doctorService.addDoctor(this.doctorForm.value).subscribe({
       next: () => {
