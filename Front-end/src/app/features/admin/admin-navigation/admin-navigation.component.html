@@ -4,42 +4,76 @@
       <img src="/images/logo.png" alt="" class="sidebar__logo" />
 
       <nav class="sidebar__menu">
-
-        <div class="sidebar__item" routerLink="/admin/dashboard" routerLinkActive="sidebar__item--active">
+        <div
+          class="sidebar__item"
+          routerLink="/admin/dashboard"
+          routerLinkActive="sidebar__item--active"
+        >
           <i class="sidebar__icon fa-solid fa-house"></i>
           <p class="sidebar__label">Dashboard</p>
         </div>
 
-        <div class="sidebar__item" routerLink="/admin/patients" routerLinkActive="sidebar__item--active">
+        <div
+          class="sidebar__item"
+          routerLink="/admin/patients"
+          routerLinkActive="sidebar__item--active"
+        >
           <i class="sidebar__icon fa-solid fa-user"></i>
           <p class="sidebar__label">Patients</p>
         </div>
 
-        <div class="sidebar__item" routerLink="/admin/doctors" routerLinkActive="sidebar__item--active">
+        <div
+          class="sidebar__item"
+          routerLink="/admin/doctors"
+          routerLinkActive="sidebar__item--active"
+        >
           <i class="sidebar__icon fa-solid fa-user-doctor"></i>
           <p class="sidebar__label">Doctors</p>
         </div>
 
-        <div class="sidebar__item" routerLink="/admin/appointments" routerLinkActive="sidebar__item--active">
+        <div
+          class="sidebar__item"
+          routerLink="/admin/appointments"
+          routerLinkActive="sidebar__item--active"
+        >
           <i class="sidebar__icon fa-regular fa-calendar-check"></i>
           <p class="sidebar__label">Appointments</p>
         </div>
 
-        <div class="sidebar__item" routerLink="/admin/medicalRecords" routerLinkActive="sidebar__item--active">
+        <div
+          class="sidebar__item"
+          routerLink="/admin/medicalRecords"
+          routerLinkActive="sidebar__item--active"
+        >
           <i class="sidebar__icon fa-solid fa-id-badge"></i>
           <p class="sidebar__label">Medical Records</p>
         </div>
 
-        <div class="sidebar__item" routerLink="/admin/departments" routerLinkActive="sidebar__item--active">
+        <div
+          class="sidebar__item"
+          routerLink="/admin/departments"
+          routerLinkActive="sidebar__item--active"
+        >
           <i class="sidebar__icon fa-solid fa-building"></i>
           <p class="sidebar__label">Departments</p>
         </div>
+        <div
+          class="sidebar__item"
+          routerLink="/admin/users"
+          routerLinkActive="sidebar__item--active"
+        >
+          <i class="sidebar__icon fa-solid fa-users"></i>
+          <p class="sidebar__label">Users</p>
+        </div>
 
-        <div class="sidebar__item sidebar__item--logout" (click)="logout()" style="margin-top: auto;">
+        <div
+          class="sidebar__item sidebar__item--logout"
+          (click)="logout()"
+          style="margin-top: auto"
+        >
           <i class="sidebar__icon fa-solid fa-right-from-bracket"></i>
           <p class="sidebar__label">Logout</p>
         </div>
-
       </nav>
     </div>
   </aside>

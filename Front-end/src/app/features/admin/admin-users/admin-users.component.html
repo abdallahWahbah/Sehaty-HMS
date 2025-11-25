@@ -1,0 +1,64 @@
+<section class="user-management">
+  <h2 class="user-management__title">User Management</h2>
+
+  <p *ngIf="isLoading" class="user-management__loading">Loading users...</p>
+  <p *ngIf="errorMessage" class="user-management__error">{{ errorMessage }}</p>
+
+  <table
+    *ngIf="!isLoading && users.length > 0"
+    class="user-management__table"
+    border="1"
+    cellpadding="8"
+    cellspacing="0"
+  >
+    <thead class="user-management__thead">
+      <tr class="user-management__row user-management__row--header">
+        <th class="user-management__cell user-management__cell--header">
+          User Name
+        </th>
+        <th class="user-management__cell user-management__cell--header">
+          Email
+        </th>
+        <th class="user-management__cell user-management__cell--header">
+          Phone
+        </th>
+        <th class="user-management__cell user-management__cell--header">
+          Current Role
+        </th>
+        <th class="user-management__cell user-management__cell--header">
+          Change Role
+        </th>
+        <th class="user-management__cell user-management__cell--header">
+          Action
+        </th>
+      </tr>
+    </thead>
+    <tbody class="user-management__tbody">
+      <tr *ngFor="let user of users" class="user-management__row">
+        <td class="user-management__cell">{{ user.userName }}</td>
+        <td class="user-management__cell">{{ user.email }}</td>
+        <td class="user-management__cell">{{ user.phoneNumber }}</td>
+        <td class="user-management__cell">{{ user.role }}</td>
+        <td class="user-management__cell">
+          <select
+            class="user-management__select"
+            [(ngModel)]="selectedRoles[user.id]"
+          >
+            <option *ngFor="let roleName of roleNames" [value]="roleName">
+              {{ roleName }}
+            </option>
+          </select>
+        </td>
+        <td class="user-management__cell">
+          <button class="user-management__button" (click)="changeRole(user.id)">
+            Change Role
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!isLoading && users.length === 0" class="user-management__no-users">
+    No users found.
+  </p>
+</section>

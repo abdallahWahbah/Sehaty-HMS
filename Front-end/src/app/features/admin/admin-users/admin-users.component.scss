@@ -1,0 +1,81 @@
+.user-management {
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+  color: #252b61;
+
+  &__title {
+    font-size: 2.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  &__loading,
+  &__error,
+  &__no-users {
+    font-size: 1.4rem;
+    color: #555;
+    margin: 1rem 0;
+  }
+
+  &__error {
+    color: #dc3545; // أحمر للأخطاء
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.4rem;
+  }
+
+  &__thead {
+    background-color: #f2f4f8;
+  }
+
+  &__row {
+    &--header {
+      font-weight: 600;
+      text-align: left;
+    }
+
+    &:nth-child(even) {
+      background-color: #fafafa;
+    }
+  }
+
+  &__cell {
+    padding: 0.8rem 1rem;
+    border: 1px solid #ccc;
+
+    &--header {
+      border-bottom: 2px solid #252b61;
+    }
+  }
+
+  &__select {
+    padding: 0.4rem 0.8rem;
+    font-size: 1.4rem;
+    border: 1px solid #ccc;
+    border-radius: 0.4rem;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: #252b61;
+      box-shadow: 0 0 5px rgba(37, 43, 97, 0.5);
+    }
+  }
+
+  &__button {
+    padding: 0.5rem 1.2rem;
+    background-color: #252b61;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1.4rem;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #1a1f4a;
+    }
+  }
+}

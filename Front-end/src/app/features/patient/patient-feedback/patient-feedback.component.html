@@ -1,10 +1,6 @@
 <section id="dashboard" class="dashboard">
   <div class="dashboard__title">
     <h2 class="dashboard__title-main">Appointments</h2>
-    <p class="dashboard__title-sub">
-      Appointments with dr. {{ currentDoctor?.firstName }}
-      {{ currentDoctor?.lastName }}
-    </p>
   </div>
 
   <p *ngIf="isLoading && appointments.length === 0" class="no-appointments">
@@ -19,6 +15,7 @@
     class="section_two"
   >
     <div class="person_info">
+      <!-- Main Info -->
       <div class="name_time_other">
         <div class="name_time">
           <div class="name">
@@ -44,59 +41,39 @@
         </div>
       </div>
 
+      <!-- Reason + Button -->
       <div class="name_time_other">
         <div class="name_time">
           <div class="reason name">
             <i class="fa-solid fa-stethoscope"></i>
             <p class="fw-bold">{{ appointment.reasonForVisit }}</p>
           </div>
-          <button
-            class="appointment__button btn"
-            (click)="addPrescription(appointment)"
-          >
-            Add Prescription
-          </button>
 
           <button
-            class="appointment__button btn feedback-btn"
-            (click)="toggleFeedback(appointment.id)"
+            class="appointment__button btn"
+            (click)="addFeedback(appointment.id)"
           >
-            {{
-              openedAppointmentId === appointment.id
-                ? "Hide Feedback"
-                : "View Feedback"
-            }}
+            Add Feedback
           </button>
         </div>
       </div>
 
-      <!-- عرض الفيدباك لو فتحنا الموعد -->
+      <!-- ⭐⭐⭐⭐ Feedback Summary ⭐⭐⭐⭐ -->
       <div
-        *ngIf="openedAppointmentId === appointment.id"
         class="feedback-summary"
+        *ngIf="getFeedbackForAppointment(appointment.id) as feedback"
       >
-        <ng-container
-          *ngIf="selectedFeedbackMap[appointment.id]; else noFeedback"
-        >
-          <div class="rating-stars">
-            <ng-container *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
-              <span
-                class="star"
-                [class.filled]="
-                  i < (selectedFeedbackMap[appointment.id]?.rating ?? 0)
-                "
-              >
-                &#9733;
-              </span>
-            </ng-container>
-          </div>
-          <p class="comments-count">
-            {{ selectedFeedbackMap[appointment.id]?.comments }}
-          </p>
-        </ng-container>
-        <ng-template #noFeedback>
-          <p>No feedback available for this appointment.</p>
-        </ng-template>
+        <div class="rating-stars">
+          <ng-container *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
+            <span class="star" [class.filled]="i < feedback.rating"
+              >&#9733;</span
+            >
+          </ng-container>
+        </div>
+
+        <p class="comments-count">
+          {{ feedback.comments }}
+        </p>
       </div>
     </div>
   </div>

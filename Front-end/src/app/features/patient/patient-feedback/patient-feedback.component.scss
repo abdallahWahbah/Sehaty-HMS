@@ -1,5 +1,6 @@
 .section_two {
   width: fit-content;
+
   border: 0.1rem solid #252b61;
   border-radius: 1rem;
   margin: 4rem 2rem 2rem 2rem;
@@ -52,6 +53,7 @@
     display: flex;
     justify-content: space-between;
     gap: 2rem;
+    // flex-wrap: wrap;
     align-items: center;
     width: 80rem;
 
@@ -77,6 +79,7 @@
       flex-wrap: wrap;
       justify-content: space-between;
       width: 70%;
+      // background-color: red;
       margin-bottom: 1rem;
 
       .name,
@@ -133,39 +136,77 @@
     }
   }
 }
-
 .reason.name {
   flex-basis: 100% !important;
 }
-
 .no-appointments {
   margin: 4rem 2rem;
   font-size: 1.6rem;
   color: #777;
 }
-
 .feedback-summary {
-  margin: 1rem 2rem;
-  padding: 1rem;
-  background-color: #f9f9ff;
-  border-radius: 1rem;
-  box-shadow: 0 0 6px rgba(37, 43, 97, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 2rem 0 2rem;
 
   .rating-stars {
-    margin-bottom: 0.5rem;
+    display: flex;
+    gap: 0.3rem;
 
     .star {
-      font-size: 1.8rem;
+      font-size: 2rem; /* حجم أكبر من الافتراضي */
       color: #ccc;
 
       &.filled {
-        color: gold;
+        color: #ffb400; /* لون النجوم المملوءة */
       }
     }
   }
 
   .comments-count {
     font-size: 1.4rem;
-    color: #444;
+    color: #555;
+    margin: 0;
   }
+}
+/* ============================
+   Feedback Summary Section
+   ============================ */
+
+.feedback-summary {
+  margin-top: 1.6rem; // = 16px لو الـ root = 10px
+  padding: 1.2rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  gap: 1.6rem; // مسافة بين النجوم وعدد الكومنتس
+}
+
+/* ======= النجوم ======= */
+
+.rating-stars {
+  display: flex;
+  gap: 0.6rem; // المسافة الطبيعية بين كل نجمة والتانية
+}
+
+.star {
+  font-size: 2rem; // = 20px علشان يناسب لو الأصل 10px
+  color: #ccc; // لون النجمة الفاضية
+  cursor: default;
+  transition: color 0.2s ease;
+}
+
+.star.filled {
+  color: #f5b50a; // لون النجمة المليانة
+}
+
+/* ======= عدد الكومنتس ======= */
+
+.comments-count {
+  font-size: 1.6rem; // = 16px
+  font-weight: 500;
+  color: #555;
 }
