@@ -19,6 +19,7 @@
             builder.Property(P => P.EmergencyContactName).HasColumnType("nvarchar(100)");
             builder.Property(P => P.EmergencyContactPhone).HasColumnType("nvarchar(20)");
             builder.Property(P => P.Status).HasConversion<string>().HasColumnType("nvarchar(12)");
+            builder.Property(P => P.IsDeleted).HasDefaultValue(false);
 
             builder.HasMany(P => P.Appointments)
                    .WithOne(A => A.Patient)

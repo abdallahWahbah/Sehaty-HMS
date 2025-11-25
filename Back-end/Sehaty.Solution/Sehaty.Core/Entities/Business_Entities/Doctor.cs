@@ -10,6 +10,7 @@
         public int YearsOfExperience { get; set; }
         //public string ProfilePhoto { get; set; }
         public string AvailabilityNotes { get; set; }
+        public bool IsDeleted { get; set; }
         public int UserId { get; set; }
         public ApplicationUser User { get; set; }
         public int? DepartmentId { get; set; }

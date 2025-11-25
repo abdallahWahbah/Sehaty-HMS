@@ -22,6 +22,7 @@
         public string EmergencyContactPhone { get; set; }
         public PatientStatus Status { get; set; }
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
+        public bool IsDeleted { get; set; }
         public MedicalRecord MedicalRecord { get; set; }
         public int UserId { get; set; }
         public ApplicationUser User { get; set; }
