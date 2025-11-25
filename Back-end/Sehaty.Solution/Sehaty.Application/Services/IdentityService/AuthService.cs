@@ -66,7 +66,6 @@
                 Role = userRole,
             };
         }
-
         public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
         {
             var user = await userManager.Users.Include(r => r.RefreshTokens).FirstOrDefaultAsync(u => u.UserName == loginDto.UserName);

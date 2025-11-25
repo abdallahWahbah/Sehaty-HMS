@@ -68,6 +68,18 @@
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            var userExists = await unit.UserRepository().ExistsByIdAsync(dto.UserId);
+            if (!userExists)
+                return BadRequest(new ApiResponse(400, "Invalid User Id"));
+
+            var userIsUsed = await unit.Repository<Doctor>().AnyAsync(D => D.UserId == dto.UserId);
+            if (userIsUsed)
+                return BadRequest(new ApiResponse(400, "User Id Is Already Used !!"));
+
+            userIsUsed = await unit.Repository<Patient>().AnyAsync(P => P.UserId == dto.UserId);
+            if (userIsUsed)
+                return BadRequest(new ApiResponse(400, "User Id Is Already Used !!"));
+
             var patientToAdd = await patientService.AddPatientAsync(dto);
             return CreatedAtAction(nameof(GetPatientById), new { id = patientToAdd.Id }, mapper.Map<GetPatientDto>(patientToAdd));
 

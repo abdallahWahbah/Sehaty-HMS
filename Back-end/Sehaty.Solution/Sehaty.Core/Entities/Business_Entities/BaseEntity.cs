@@ -1,6 +1,6 @@
 ﻿namespace Sehaty.Core.Entites
 {
-    public class BaseEntity
+    public abstract class BaseEntity
     {
         public int Id { get; set; }
     }
