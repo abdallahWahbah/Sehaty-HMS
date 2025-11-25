@@ -18,6 +18,31 @@
         public async Task<IEnumerable<ApplicationUser>> GetAllAsync()
             => await userManager.Users.ToListAsync();
 
+        public async Task<(ApplicationUser user, IList<string> roles)> GetByIdWithRolesAsync(int id)
+        {
+            var user = await userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if (user == null)
+                return (null, null);
+
+            var roles = await userManager.GetRolesAsync(user);
+            return (user, roles);
+        }
+
+        public async Task<IEnumerable<(ApplicationUser user, IList<string> roles)>> GetAllWithRolesAsync()
+        {
+            var users = await userManager.Users.ToListAsync();
+
+            var result = new List<(ApplicationUser user, IList<string> roles)>();
+
+            foreach (var user in users)
+            {
+                var roles = await userManager.GetRolesAsync(user);
+                result.Add((user, roles));
+            }
+
+            return result;
+        }
+
         // ✔️ Checks
         public async Task<bool> ExistsByIdAsync(int id)
             => await userManager.Users.AnyAsync(u => u.Id == id);

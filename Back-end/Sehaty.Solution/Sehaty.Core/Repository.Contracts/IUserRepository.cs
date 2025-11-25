@@ -6,6 +6,9 @@
         Task<ApplicationUser> GetByEmailAsync(string email);
         Task<IEnumerable<ApplicationUser>> GetAllAsync();
 
+        Task<(ApplicationUser user, IList<string> roles)> GetByIdWithRolesAsync(int id);
+        Task<IEnumerable<(ApplicationUser user, IList<string> roles)>> GetAllWithRolesAsync();
+
         // Checks
         Task<bool> ExistsByIdAsync(int id);
         Task<bool> ExistsByEmailAsync(string email);

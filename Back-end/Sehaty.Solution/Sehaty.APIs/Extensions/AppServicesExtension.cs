@@ -12,61 +12,6 @@
             });
 
 
-            #region Add Authentications Services
-
-            services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
-            services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IRoleManagementService, RoleManagementService>();
-            services.AddTransient<IEmailSender, EmailSender>();
-            // Add Identity Class Injection
-            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-            {
-                options.User.RequireUniqueEmail = true;
-            }).AddEntityFrameworkStores<SehatyDbContext>();
-
-            #endregion
-
-            #region Swagger Setting
-
-            services.AddSwaggerGen(swagger =>
-            {
-                //This is to generate the Default UI of Swagger Documentation    
-                swagger.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "Sehaty",
-                    Description = "Sehaty Medical Web API"
-                });
-                // To Enable authorization using Swagger (JWT)    
-                swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "Enter your valid token in the text input below . \r\n\r\nExample: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-                });
-
-                swagger.AddSecurityRequirement(
-                    new OpenApiSecurityRequirement
-                    {
-                        {
-                            new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Type = ReferenceType.SecurityScheme,
-                                    Id = "Bearer"
-                                }
-                            },
-                            Array.Empty<string>()
-                        }
-                    });
-            });
-
-            #endregion
-
             #region Add Services
 
             // Add UnitOfWork Class Injection
@@ -89,71 +34,29 @@
             // Inject Service For Billing To Add And Manage Billing
 
             services.AddScoped<IBillingService, BillingService>();
-            services.AddScoped<IDoctorAvailabilityService, DoctorAvailabilityService>();
 
-            // Add DbContext Class Injection
-            services.AddDbContext<SehatyDbContext>(options =>
-            {
-                options.UseSqlServer(configuration.GetConnectionString("Sehaty"));
-            });
+            //Add Email Service
+            services.AddTransient<IEmailSender, EmailSender>();
+
+            //Add SMS Service
+            services.AddTransient<ISmsSender, SmsSender>();
+
+            services.AddScoped<IDoctorAvailabilityService, DoctorAvailabilityService>();
 
             // Add AutoMapper Profiles Injection
             // To Add Every Profile Automatically
             services.AddAutoMapper(cfg => { }, typeof(DoctorProfile).Assembly);
 
-            //Add Jwt Authentication
-            var jwtOptions = configuration.GetSection("Jwt").Get<JwtOptions>()!;
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtOptions.Issuer,
-                    ValidAudience = jwtOptions.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
             //Add email services
-            services.AddTransient<IEmailSender, EmailSender>();
             //bind Twilio settings
             services.Configure<TwilioSettings>(configuration.GetSection("TwilioSMSSetting"));
-            //Add SMS Service
-            services.AddTransient<ISmsSender, SmsSender>();
+
 
             //add background service
             services.AddHostedService<AppointmentReminderService>();
             services.AddHostedService<OldNotificationsCleanupService>();
+          
             #endregion
-
-
-            #region Validation Error Configuration
-            services.Configure<ApiBehaviorOptions>(cfg =>
-            {
-                cfg.InvalidModelStateResponseFactory = (context) =>
-                {
-                    var errors = context.ModelState
-                    .Where(P => P.Value!.Errors.Count > 0)
-                    .SelectMany(P => P.Value!.Errors)
-                    .Select(E => E.ErrorMessage);
-
-                    var response = new ApiValidationErrorResponse()
-                    {
-                        Errors = errors
-                    };
-
-                    return new BadRequestObjectResult(response);
-                };
-            });
-            #endregion
-
 
             return services;
         }

@@ -23,6 +23,18 @@
 
         }
 
+        [HttpGet("GetByPatientId{patientId}")]
+        public async Task<ActionResult<IEnumerable<PatientAppointmentDto>>> GetByPatientId(int patientId)
+        {
+            var patient = await unit.Repository<Appointment>().GetByIdAsync(patientId);
+            var specs = new AppointmentSpecifications(A => A.PatientId == patientId);
+            var appointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(specs);
+            if (appointments is null)
+                return NotFound(new ApiResponse(404));
+            return Ok(mapper.Map<IEnumerable<PatientAppointmentDto>>(appointments));
+
+        }
+
 
         // POST: api/Appointments
         [HttpPost]

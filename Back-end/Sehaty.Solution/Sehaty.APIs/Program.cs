@@ -17,20 +17,15 @@ namespace Sehaty.APIs
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
             // Extension Method To Add All Services Needed To Run Application
-            builder.Services.AddApplicationServices(builder.Configuration);
+            builder.Services.AddApplicationServices(builder.Configuration)
+                .AddAuthServices(builder.Configuration)
+                .AddErrorServices()
+                .AddSwaggerServices();
+
             builder.Services.AddHttpClient();
 
 
-            // allow cors
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAngular", policy =>
-                {
-                    policy.AllowAnyOrigin()
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
-                });
-            });
+
             var app = builder.Build();
 
             #region Update Database & Seed Data In Data Base 
@@ -57,6 +52,7 @@ namespace Sehaty.APIs
             app.UseAuthentication();
 
             app.UseAuthorization();
+
             app.UseCors("AllowAngular");
 
 
