@@ -15,6 +15,5 @@
         Task RequestResetPasswordAsync(string email);
 
         Task ResendOtpAsync(string email);
-
     }
 }

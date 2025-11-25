@@ -13,6 +13,15 @@
                     ? src.Patient.FirstName + " " + src.Patient.LastName
                     : "Unknown Patient"));
 
+            CreateMap<Appointment, PatientAppointmentDto>()
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor != null
+                    ? src.Doctor.FirstName + " " + src.Doctor.LastName
+                    : "Unknown Doctor"))
+                .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient != null
+                    ? src.Patient.FirstName + " " + src.Patient.LastName
+                    : "Unknown Patient"))
+                .ForMember(P => P.UserId, O => O.MapFrom(S => S.Patient.UserId));
+
 
 
             // Create 

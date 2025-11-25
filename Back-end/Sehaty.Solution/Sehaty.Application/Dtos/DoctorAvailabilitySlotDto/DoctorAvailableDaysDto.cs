@@ -1,11 +1,4 @@
-﻿using Sehaty.Core.Entities.Business_Entities.DoctorAvailabilitySlots;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sehaty.Application.Dtos.DoctorAvailabilitySlotDto
+﻿namespace Sehaty.Application.Dtos.DoctorAvailabilitySlotDto
 {
     public class DoctorAvailableDaysDto
     {
@@ -20,8 +13,8 @@ namespace Sehaty.Application.Dtos.DoctorAvailabilitySlotDto
     {
         public string Day { get; set; }
         public string Date { get; set; }
-        public string? StartTime { get; set; }
-        public string? EndTime { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
         public string Available { get; set; }
     }
 
