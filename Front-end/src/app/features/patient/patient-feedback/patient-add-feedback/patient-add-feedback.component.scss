@@ -1,0 +1,129 @@
+.patient-add-feedback {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  font-family: Arial, sans-serif;
+  color: #333;
+  font-size: 1rem; // 10px * 1rem = 10px تقريبا
+
+  &__title {
+    text-align: center;
+    font-size: 2rem; // 20px
+    margin-bottom: 1.5rem;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  &__textarea {
+    min-height: 100px;
+    padding: 0.75rem;
+    font-size: 1rem; // 10px
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+
+    &:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 6px rgba(0, 123, 255, 0.5);
+    }
+  }
+
+  &__error {
+    color: #d9534f;
+    font-size: 0.875rem; // 8.75px
+    margin-top: 0.25rem;
+  }
+
+  &__checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+
+    &-input {
+      width: 1.8rem; // 18px
+      height: 1.8rem;
+      cursor: pointer;
+    }
+
+    &-label {
+      cursor: pointer;
+      font-size: 1rem; // 10px
+    }
+  }
+
+  &__button {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 0.85rem 1.5rem;
+    font-size: 1.1rem; // 11px
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+
+    &:hover:not(:disabled) {
+      background-color: #0056b3;
+    }
+
+    &:disabled {
+      background-color: #a0c8f0;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  gap: 0.3rem;
+  font-size: 3.6rem; // = 36px تقريبا (كبرت عشان الخط صغير)
+
+  &__input {
+    display: none;
+  }
+
+  &__label {
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i {
+      font-size: 3.6rem; // 36px حجم الايقونة
+      line-height: 1;
+    }
+
+    &:hover,
+    &:hover ~ .star-rating__label {
+      color: #ffb400;
+    }
+  }
+
+  &__input:checked ~ .star-rating__label,
+  &__input:checked + .star-rating__label {
+    color: #ffb400;
+  }
+
+  &__input:focus-visible + .star-rating__label {
+    outline: 2px solid #007bff;
+  }
+}

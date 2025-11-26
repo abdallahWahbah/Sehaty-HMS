@@ -39,6 +39,9 @@ import { DoctorEditPrescriptionsComponent } from './features/doctor/doctor-presc
 import { DoctorAddPrescriptionComponent } from './features/doctor/doctor-prescriptions/doctor-add-prescription/doctor-add-prescription.component';
 import { AddDoctorComponent } from './features/admin/admin-doctors/add-doctor/add-doctor.component';
 import { PatientPrescriptionComponent } from './features/patient/patient-prescription/patient-prescription.component';
+import { PatientFeedbackComponent } from './features/patient/patient-feedback/patient-feedback.component';
+import { PatientAddFeedbackComponent } from './features/patient/patient-feedback/patient-add-feedback/patient-add-feedback.component';
+import { AdminUsersComponent } from './features/admin/admin-users/admin-users.component';
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -74,6 +77,7 @@ export const routes: Routes = [
         path: 'departments/update/:id',
         component: AdminUpdateDepartmentComponent,
       },
+      { path: 'users', component: AdminUsersComponent },
     ],
   },
   {
@@ -106,6 +110,11 @@ export const routes: Routes = [
       { path: 'edit/:id', component: PatientUpdateComponent },
       { path: 'payment', component: PatientPaymentComponent },
       { path: 'prescription', component: PatientPrescriptionComponent },
+      { path: 'feedback', component: PatientFeedbackComponent },
+      {
+        path: 'feedback/add/:id',
+        component: PatientAddFeedbackComponent,
+      },
     ],
   },
   { path: 'home', component: HomeComponent },

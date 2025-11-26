@@ -1,0 +1,109 @@
+<section class="patient-add-feedback">
+  <h2 class="patient-add-feedback__title">Add Feedback</h2>
+
+  <form
+    class="patient-add-feedback__form"
+    [formGroup]="feedbackForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <!-- Rating stars -->
+    <div class="patient-add-feedback__group star-rating">
+      <input
+        type="radio"
+        id="star5"
+        formControlName="rating"
+        class="star-rating__input"
+        value="5"
+      />
+      <label for="star5" class="star-rating__label" title="5 stars">★</label>
+
+      <input
+        type="radio"
+        id="star4"
+        formControlName="rating"
+        class="star-rating__input"
+        value="4"
+      />
+      <label for="star4" class="star-rating__label" title="4 stars">★</label>
+
+      <input
+        type="radio"
+        id="star3"
+        formControlName="rating"
+        class="star-rating__input"
+        value="3"
+      />
+      <label for="star3" class="star-rating__label" title="3 stars">★</label>
+
+      <input
+        type="radio"
+        id="star2"
+        formControlName="rating"
+        class="star-rating__input"
+        value="2"
+      />
+      <label for="star2" class="star-rating__label" title="2 stars">★</label>
+
+      <input
+        type="radio"
+        id="star1"
+        formControlName="rating"
+        class="star-rating__input"
+        value="1"
+      />
+      <label for="star1" class="star-rating__label" title="1 star">★</label>
+    </div>
+
+    <div
+      *ngIf="
+        feedbackForm.get('rating')?.invalid &&
+        feedbackForm.get('rating')?.touched
+      "
+      class="patient-add-feedback__error"
+    >
+      Please provide a rating.
+    </div>
+
+    <!-- Comments textarea -->
+    <div class="patient-add-feedback__group">
+      <label class="patient-add-feedback__label" for="comments">Comments</label>
+      <textarea
+        id="comments"
+        class="patient-add-feedback__textarea"
+        formControlName="comments"
+        placeholder="Write your feedback here..."
+      ></textarea>
+      <div
+        *ngIf="
+          feedbackForm.get('comments')?.invalid &&
+          feedbackForm.get('comments')?.touched
+        "
+        class="patient-add-feedback__error"
+      >
+        Comments are required.
+      </div>
+    </div>
+
+    <!-- Anonymous checkbox -->
+    <div class="patient-add-feedback__group patient-add-feedback__checkbox">
+      <input
+        type="checkbox"
+        id="anonymous"
+        formControlName="isAnonymous"
+        class="patient-add-feedback__checkbox-input"
+      />
+      <label for="anonymous" class="patient-add-feedback__checkbox-label"
+        >Submit feedback anonymously</label
+      >
+    </div>
+
+    <!-- Submit button -->
+    <button
+      type="submit"
+      class="patient-add-feedback__button"
+      [disabled]="feedbackForm.invalid"
+    >
+      Submit Feedback
+    </button>
+  </form>
+</section>
