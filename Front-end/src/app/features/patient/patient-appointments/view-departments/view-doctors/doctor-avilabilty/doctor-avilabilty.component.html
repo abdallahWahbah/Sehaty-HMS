@@ -1,0 +1,46 @@
+<div class="availability">
+  <!-- Loading -->
+  <div *ngIf="loading" class="availability__loading">
+    Loading available days...
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="!loading && errorMessage" class="availability__error">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Doctor Name -->
+  <h2 *ngIf="doctorAvailability" class="availability__title">
+    Dr. {{ doctorAvailability.doctorName }}
+  </h2>
+
+  <!-- Days List -->
+  <div *ngIf="!loading && doctorAvailability" class="availability__grid">
+    <div
+      *ngFor="let day of doctorAvailability.recurringSchedule"
+      class="availability__card availability__card--{{
+        day.available === 'Available' ? 'available' : 'not-available'
+      }}"
+    >
+      <h3 class="availability__day">{{ day.day }}</h3>
+      <p class="availability__date">{{ day.date }}</p>
+
+      <p class="availability__status">
+        <strong>Status:</strong> {{ day.available }}
+      </p>
+
+      <p *ngIf="day.available === 'Available'" class="availability__time">
+        <strong>Time:</strong> {{ day.startTime }} - {{ day.endTime }}
+      </p>
+
+      <!-- View Slots Button -->
+      <button
+        *ngIf="day.available === 'Available'"
+        class="availability__button"
+        (click)="viewSlots(day.date)"
+      >
+        View Available Slots
+      </button>
+    </div>
+  </div>
+</div>

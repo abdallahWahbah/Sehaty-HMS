@@ -1,9 +1,96 @@
-<section id="dashboard" class="dashboard">
-    <div class="dashboard__title">
-        <h2 class="dashboard__title-main">Appointments</h2>
-        <p class="dashboard__title-sub">
-            Appointments related to: 
-            <!-- {{ medicalRecord.patientName }} -->
-        </p>
+<section class="dashboard_appointments">
+  <div class="title_dashboard">
+    <div>
+      <h2>My Appointments</h2>
+      <p>Review your upcoming and past appointments</p>
     </div>
+
+    <!-- Add Appointment Button -->
+    <button class="add_btn" (click)="navigateToAddAppointment()">
+      <i class="fa-solid fa-plus"></i>
+      <p>Add Appointment</p>
+    </button>
+  </div>
+
+  <!-- No Data -->
+  <div *ngIf="!loading && appointments.length === 0" class="no-data">
+    No appointments found.
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">Loading...</div>
+
+  <!-- Appointments List -->
+  <div
+    *ngFor="let appointment of appointments; trackBy: trackById"
+    class="section_two"
+  >
+    <!-- Appointment Info -->
+    <div class="person_info">
+      <div class="name_time_other">
+        <!-- Date -->
+        <div class="name_time">
+          <div class="time">
+            <i class="fa-regular fa-calendar"></i>
+            <p>{{ appointment.appointmentDateTime | date : "yyyy-MM-dd" }}</p>
+          </div>
+        </div>
+
+        <!-- Status + Reason -->
+        <div class="confirm_consultation">
+          <div
+            [ngClass]="{
+              'dashboard__appointments-item--confirmed':
+                appointment.status === 'Confirmed',
+              'dashboard__appointments-item--pending':
+                appointment.status === 'Pending',
+              'dashboard__appointments-item--delayed':
+                appointment.status === 'Delayed',
+              'dashboard__appointments-item--cancelled':
+                appointment.status === 'Cancelled',
+              'dashboard__appointments-item--noshow':
+                appointment.status === 'NoShow',
+              'dashboard__appointments-item--emergency':
+                appointment.status === 'Emergency'
+            }"
+            class="status-pill"
+          >
+            {{ appointment.status }}
+          </div>
+
+          <div class="consultation">
+            {{ appointment.reasonForVisit }}
+          </div>
+        </div>
+
+        <!-- View Button -->
+        <div class="edit_confirm">
+          <button
+            type="button"
+            class="view-details"
+            (click)="viewDetails(appointment)"
+          >
+            <i class="fa-solid fa-eye"></i>
+            <p>View</p>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Doctor Info -->
+    <div class="doctor_info">
+      <div class="info">
+        <div class="name_time_doctor">
+          <div class="name_doctor">
+            <i class="fa-solid fa-user-doctor"></i>
+            <p>Dr: {{ appointment.doctorName }}</p>
+          </div>
+          <div class="time_doctor">
+            <i class="fa-regular fa-clock"></i>
+            <p>{{ appointment.appointmentDateTime | date : "HH:mm" }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

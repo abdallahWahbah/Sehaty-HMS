@@ -1,0 +1,24 @@
+<div class="doctors-container">
+  <div *ngIf="loading" class="loading">Loading doctors...</div>
+  <div *ngIf="!loading && filteredDoctors.length === 0" class="no-data">
+    No doctors found.
+  </div>
+
+  <div class="cards-grid">
+    <div *ngFor="let doctor of filteredDoctors" class="doctor-card">
+      <div class="card-header">
+        <h3>{{ doctor.firstName }} {{ doctor.lastName }}</h3>
+        <span class="specialty">{{ doctor.specialty }}</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Experience:</strong> {{ doctor.yearsOfExperience }} years</p>
+        <p><strong>Availability:</strong> {{ doctor.availabilityNotes }}</p>
+      </div>
+      <div class="card-footer">
+        <button (click)="viewAvailability(doctor)">
+          View Available Appointments
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

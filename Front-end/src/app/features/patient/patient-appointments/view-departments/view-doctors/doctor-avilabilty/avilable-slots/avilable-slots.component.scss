@@ -1,0 +1,125 @@
+.available-slots {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f5f6fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+  &__loading,
+  &__error,
+  &__no-slots {
+    text-align: center;
+    padding: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+
+  &__loading {
+    background-color: #dfe6e9;
+    color: #2d3436;
+  }
+
+  &__error {
+    background-color: #fab1a0;
+    color: #c0392b;
+  }
+
+  &__no-slots {
+    background-color: #ffeaa7;
+    color: #d35400;
+  }
+
+  &__title {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #2d3436;
+  }
+
+  &__dates {
+    margin-bottom: 1.5rem;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  &__button {
+    padding: 0.5rem 1rem;
+    border: 2px solid #0984e3;
+    border-radius: 8px;
+    background-color: #dfe6e9;
+    color: #2d3436;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover:not(:disabled) {
+      background-color: #0984e3;
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &--selected {
+      background-color: #0984e3;
+      color: #fff;
+      border-color: #0984e3;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  &__slot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1px solid #dfe6e9;
+    transition: all 0.2s;
+
+    &:hover {
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  &__time {
+    font-weight: 600;
+  }
+
+  &__book-btn {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #00b894;
+    color: #fff;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover:not(:disabled) {
+      background-color: #019875;
+      transform: scale(1.05);
+    }
+
+    &:disabled {
+      background-color: #b2bec3;
+      cursor: not-allowed;
+    }
+  }
+}

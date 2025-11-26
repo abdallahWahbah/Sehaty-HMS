@@ -1,0 +1,69 @@
+<div class="departments-dashboard">
+  <!-- Header Section -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div>
+        <h1 class="page-title">Medical Departments</h1>
+        <p class="page-subtitle">
+          Explore our specialized healthcare departments
+        </p>
+      </div>
+      <div class="header-actions">
+        <!-- Search Box -->
+        <div class="header-search">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input
+              type="text"
+              placeholder="Search departments..."
+              [(ngModel)]="searchTerm"
+              (input)="searchDepartments()"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Departments Grid -->
+  <div class="departments-grid">
+    <!-- Show message if no departments found -->
+    <div
+      *ngIf="
+        !loading && filteredDepartments.length === 0 && departments.length === 0
+      "
+    >
+      No departments found.
+    </div>
+
+    <div
+      class="department-card mint"
+      *ngFor="
+        let dept of filteredDepartments.length
+          ? filteredDepartments
+          : departments
+      "
+    >
+      <!-- Card Header -->
+      <div class="card-header-section">
+        <div class="department-icon">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <span class="department-badge">Available</span>
+      </div>
+
+      <!-- Card Body -->
+      <div class="card-body">
+        <h3 class="department-name">{{ dept.en_Name }}</h3>
+        <p class="department-description">{{ dept.description }}</p>
+      </div>
+
+      <!-- Card Footer -->
+      <div class="card-footer">
+        <button class="btn-view" (click)="viewDoctors(dept.id)">
+          View Doctors
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

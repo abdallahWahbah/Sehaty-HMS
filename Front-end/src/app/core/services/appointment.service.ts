@@ -98,4 +98,14 @@ export class AppointmentService {
       .post<void>(`${this.baseUrl}ConfirmAppointment/${id}`, {})
       .pipe(catchError(this.handleError));
   }
+  getByPatientId(patientId: number): Observable<AppointmentResponseModel[]> {
+    return this.http
+      .get<AppointmentResponseModel[]>(
+        `${this.baseUrl}GetByPatientId${patientId}`
+      )
+      .pipe(
+        map((list) => list.map((item) => this.toAppointment(item))),
+        catchError(this.handleError)
+      );
+  }
 }
