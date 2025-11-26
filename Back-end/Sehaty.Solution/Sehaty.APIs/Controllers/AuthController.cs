@@ -6,6 +6,8 @@
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto model)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(new ApiResponse(400));
             try
             {
                 var result = await authService.RegisterAsync(model);
