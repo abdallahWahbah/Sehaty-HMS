@@ -42,6 +42,10 @@ import { PatientPrescriptionComponent } from './features/patient/patient-prescri
 import { PatientFeedbackComponent } from './features/patient/patient-feedback/patient-feedback.component';
 import { PatientAddFeedbackComponent } from './features/patient/patient-feedback/patient-add-feedback/patient-add-feedback.component';
 import { AdminUsersComponent } from './features/admin/admin-users/admin-users.component';
+import { ViewDepartmentsComponent } from './features/patient/patient-appointments/view-departments/view-departments.component';
+import { ViewDoctorsComponent } from './features/patient/patient-appointments/view-departments/view-doctors/view-doctors.component';
+import { DoctorAvailabilityComponent } from './features/patient/patient-appointments/view-departments/view-doctors/doctor-avilabilty/doctor-avilabilty.component';
+import { AvailableSlotsComponent } from './features/patient/patient-appointments/view-departments/view-doctors/doctor-avilabilty/avilable-slots/avilable-slots.component';
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -90,7 +94,10 @@ export const routes: Routes = [
       { path: 'details', component: DoctorDetailsComponent },
       { path: ':id/edit', component: DoctorEditComponent },
       { path: 'prescription', component: DoctorPrescriptionsComponent },
-      { path: 'prescriptions/edit/:id', component: DoctorEditPrescriptionsComponent },
+      {
+        path: 'prescriptions/edit/:id',
+        component: DoctorEditPrescriptionsComponent,
+      },
       { path: 'prescriptions/add', component: DoctorAddPrescriptionComponent },
       { path: 'availableSlots', component: DoctorAvailableSlotsComponent },
     ],
@@ -103,15 +110,47 @@ export const routes: Routes = [
       { path: '', redirectTo: 'medicalRecords', pathMatch: 'full' },
       { path: 'medicalRecords', component: PatientMedicalRecordsComponent },
       { path: 'appointments', component: PatientAppointmentsComponent },
+      { path: 'appointments/add', component: ViewDepartmentsComponent },
+      {
+        path: 'appointments/doctors/:departmentId',
+        component: ViewDoctorsComponent,
+      },
+      {
+        path: 'appointments/available-days/:doctorId', // <--- الجديد
+        component: DoctorAvailabilityComponent,
+      },
       { path: 'details', component: PatientDetailsComponent },
       { path: 'edit/:id', component: PatientUpdateComponent },
       { path: 'payment', component: PatientPaymentComponent },
       { path: 'prescription', component: PatientPrescriptionComponent },
       { path: 'feedback', component: PatientFeedbackComponent },
+      { path: 'feedback/add/:id', component: PatientAddFeedbackComponent },
+    ],
+  },
+
+  {
+    path: 'patient',
+    canActivate: [patientGuard],
+    component: PatientNavigationComponent,
+    children: [
+      { path: '', redirectTo: 'medicalRecords', pathMatch: 'full' },
+      { path: 'medicalRecords', component: PatientMedicalRecordsComponent },
+      { path: 'appointments', component: PatientAppointmentsComponent },
+      { path: 'appointments/add', component: ViewDepartmentsComponent },
       {
-        path: 'feedback/add/:id',
-        component: PatientAddFeedbackComponent,
+        path: 'appointments/doctors/:departmentId',
+        component: ViewDoctorsComponent,
       },
+      {
+        path: 'appointments/available-slots/:doctorId/:date',
+        component: AvailableSlotsComponent,
+      }, // ده الجديد
+      { path: 'details', component: PatientDetailsComponent },
+      { path: 'edit/:id', component: PatientUpdateComponent },
+      { path: 'payment', component: PatientPaymentComponent },
+      { path: 'prescription', component: PatientPrescriptionComponent },
+      { path: 'feedback', component: PatientFeedbackComponent },
+      { path: 'feedback/add/:id', component: PatientAddFeedbackComponent },
     ],
   },
   { path: 'home', component: HomeComponent },

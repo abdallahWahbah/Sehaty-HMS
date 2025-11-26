@@ -1,0 +1,396 @@
+.title_dashboard {
+  color: #252b61;
+  margin-top: 10rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+
+  div:first-child {
+    h2 {
+      font-weight: 700;
+      font-size: 2.4rem;
+    }
+  }
+
+  :last-child {
+    font-size: 1.4rem;
+    font-weight: 400;
+  }
+
+  .add_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20.9rem;
+    height: 4.3rem;
+    background-color: #252b61;
+    border-radius: 1rem;
+    margin-right: 6.6rem;
+    cursor: pointer;
+
+    i {
+      line-height: 1;
+      color: #fff;
+      font-size: 1.8rem;
+      margin-right: 0.6rem;
+    }
+
+    p {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 0;
+      padding: 0;
+      margin: 0;
+    }
+  }
+}
+
+// ------------------------------------
+.section_two {
+  width: 100%;
+  border: 0.1rem solid #252b61;
+  border-radius: 1rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
+  margin-top: 4rem;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+  padding-bottom: 3rem;
+  box-shadow: 0 2px 8px rgba(37, 43, 97, 0.1);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(37, 43, 97, 0.15);
+  }
+}
+
+// ------------------------------------
+.person_info {
+  margin-left: 2rem;
+  margin-top: 2rem;
+  margin-right: 2rem;
+  padding: 0 1rem;
+
+  .doctor_info {
+    margin-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .name_time_other {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+
+    .name_time {
+      display: flex;
+      gap: 3rem;
+      flex-wrap: wrap;
+
+      .name,
+      .time {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.8rem;
+        font-weight: 400;
+        color: #252b61; // بدل $color-primary
+
+        p {
+          margin: 0;
+          line-height: 0;
+        }
+      }
+    }
+
+    .confirm_consultation {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+
+      .confirm {
+        width: 7.8rem;
+        height: 2.6rem;
+        background-color: #80ffaa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 1rem;
+      }
+
+      .consultation {
+        max-width: 20rem;
+        min-width: 8.8rem;
+        height: auto;
+        min-height: 2.6rem;
+        background-color: #e88eff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 1rem;
+        padding: 0.5rem 1rem;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #fff;
+        word-wrap: break-word;
+        text-align: center;
+      }
+    }
+
+    .edit_confirm {
+      display: flex;
+      gap: 1rem;
+      position: relative;
+      z-index: 1;
+      align-items: center;
+      flex-wrap: wrap;
+
+      .view-details,
+      .edit,
+      .confirm {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        align-items: center;
+        height: 4.3rem;
+        border-radius: 1rem;
+        font-size: 1.6rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 2;
+        user-select: none;
+        -webkit-user-select: none;
+        padding: 0;
+        font-family: inherit;
+
+        p {
+          margin: 0;
+          line-height: 0;
+        }
+      }
+
+      .view-details,
+      .edit {
+        width: 9rem;
+        border: 0.1rem solid #252b61;
+        color: #252b61;
+        background: transparent;
+
+        &:focus {
+          outline: 2px solid #007bff;
+          outline-offset: 2px;
+        }
+
+        &:hover {
+          background-color: #f0f0f0;
+          border-color: #007bff;
+        }
+      }
+
+      .edit {
+        width: 8.6rem;
+      }
+
+      .confirm {
+        width: 8.6rem;
+        background-color: #252b61;
+        color: #fff;
+        border: none;
+
+        &:hover {
+          background-color: #1a1f4a;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(37, 43, 97, 0.3);
+        }
+      }
+    }
+  }
+}
+
+// ------------------------------------
+::ng-deep {
+  .btn-confirm {
+    height: 4.3rem !important;
+    min-width: 8.6rem !important;
+    font-size: 1.6rem !important;
+    font-weight: 700 !important;
+    border-radius: 1rem !important;
+    transition: all 0.3s ease !important;
+    background-color: #252b61 !important;
+    color: #fff !important;
+    border: none !important;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3) !important;
+    }
+  }
+}
+
+// ------------------------------------
+.info {
+  margin-left: 2rem;
+  margin-top: 1rem;
+  padding: 0 1rem;
+
+  .name_time_doctor {
+    display: flex;
+    gap: 3rem;
+    flex-wrap: wrap;
+
+    .name_doctor,
+    .time_doctor {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: #252b61;
+      gap: 0.5rem;
+
+      p {
+        margin: 0;
+        line-height: 0;
+      }
+    }
+  }
+}
+
+.last_section {
+  margin-left: 5rem;
+  margin-top: 4rem;
+  color: #252b61;
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+// ------------------------------------
+.status-pill {
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 1.2rem;
+  text-align: center;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard__appointments-item {
+  &--confirmed {
+    background-color: #4bee0a;
+    color: #fff;
+  }
+
+  &--pending {
+    background-color: #ffc107;
+    color: #000;
+  }
+
+  &--delayed {
+    background-color: #dc3545;
+    color: #fff;
+  }
+
+  &--cancelled {
+    background-color: #6c757d;
+    color: #fff;
+  }
+
+  &--noshow {
+    background-color: #ff4d4f;
+    color: #fff;
+  }
+
+  &--emergency {
+    background-color: #ff5733;
+    color: #fff;
+  }
+}
+
+// ------------------------------------
+@media (max-width: 1200px) {
+  .section_two {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+  .person_info .name_time_other {
+    gap: 1rem;
+
+    .name_time {
+      gap: 2rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .title_dashboard {
+    margin-top: 5rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+
+    div:first-child h2 {
+      font-size: 2rem;
+    }
+  }
+
+  .section_two {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    margin-top: 2rem;
+  }
+
+  .person_info {
+    margin-left: 1rem;
+    margin-right: 1rem;
+
+    .name_time_other {
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+
+      .name_time,
+      .confirm_consultation,
+      .edit_confirm {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+      }
+
+      .edit_confirm {
+        .view-details,
+        .edit,
+        .confirm,
+        ::ng-deep .btn-confirm {
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+      }
+
+      .name,
+      .time {
+        font-size: 1.6rem;
+      }
+    }
+  }
+
+  .info {
+    margin-left: 1rem;
+
+    .name_time_doctor {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+}

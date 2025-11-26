@@ -1,0 +1,71 @@
+.doctors-container {
+  padding: 2rem;
+
+  .loading,
+  .no-data {
+    text-align: center;
+    font-size: 1.6rem;
+    color: #555;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .doctor-card {
+    border: 1px solid #ddd;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .card-header {
+      h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.8rem;
+        color: #252b61;
+      }
+
+      .specialty {
+        font-size: 1.4rem;
+        color: #777;
+      }
+    }
+
+    .card-body {
+      margin: 1rem 0;
+
+      p {
+        margin: 0.5rem 0;
+        font-size: 1.4rem;
+        color: #333;
+      }
+    }
+
+    .card-footer {
+      text-align: center;
+
+      button {
+        background-color: #252b61;
+        color: #fff;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-size: 1.4rem;
+        border-radius: 0.8rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background-color: #1a1f4a;
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+}
