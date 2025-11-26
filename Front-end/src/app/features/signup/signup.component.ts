@@ -28,12 +28,12 @@ export class SignupComponent {
   serverError: string = '';
 
   signupForm = new FormGroup({
-    firstName: new FormControl('', [Validators.required]),
-    lastName: new FormControl('', [Validators.required]),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    phoneNumber: new FormControl('', [Validators.required]),
-    userName: new FormControl('', [Validators.required]),
-    password: new FormControl('', [
+    firstName: new FormControl('ebrahim', [Validators.required]),
+    lastName: new FormControl('fron ent', [Validators.required]),
+    email: new FormControl('a@a.a', [Validators.required, Validators.email]),
+    phoneNumber: new FormControl('+201092717902', [Validators.required]),
+    userName: new FormControl('hankosh', [Validators.required]),
+    password: new FormControl('asdASD!@#123', [
       Validators.required,
       Validators.minLength(6),
       Validators.pattern(/^(?=.*[a-z]).*$/),
@@ -42,8 +42,8 @@ export class SignupComponent {
       Validators.pattern(/^(?=.*[\W_]).*$/),
       Validators.pattern(/^\S+$/)
     ]),
-    confirmPassword: new FormControl('', [Validators.required]),
-    agreeTerms: new FormControl(false, [Validators.requiredTrue])
+    confirmPassword: new FormControl('asdASD!@#123', [Validators.required]),
+    agreeTerms: new FormControl(true, [Validators.requiredTrue])
   });
 
   constructor(private _authService: AuthService, private router: Router) {}
@@ -57,7 +57,7 @@ export class SignupComponent {
 
     const userName = this.signupForm.get('userName')?.value as string;
     const email = this.signupForm.get('email')?.value as string;
-    const phoneNumber = this.signupForm.get('phoneNumber')?.value as string;
+    const phoneNumber = "+2" + (this.signupForm.get('phoneNumber')?.value as string).replace("+2", '');
     const firstName = this.signupForm.get('firstName')?.value as string;
     const lastName = this.signupForm.get('lastName')?.value as string;
     const password = this.signupForm.get('password')?.value as string;
