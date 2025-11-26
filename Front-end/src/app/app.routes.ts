@@ -90,10 +90,7 @@ export const routes: Routes = [
       { path: 'details', component: DoctorDetailsComponent },
       { path: ':id/edit', component: DoctorEditComponent },
       { path: 'prescription', component: DoctorPrescriptionsComponent },
-      {
-        path: 'prescriptions/edit/:id',
-        component: DoctorEditPrescriptionsComponent,
-      },
+      { path: 'prescriptions/edit/:id', component: DoctorEditPrescriptionsComponent },
       { path: 'prescriptions/add', component: DoctorAddPrescriptionComponent },
       { path: 'availableSlots', component: DoctorAvailableSlotsComponent },
     ],
