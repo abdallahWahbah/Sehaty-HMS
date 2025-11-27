@@ -1,3 +1,4 @@
+import { PatientAddBodyModel } from './../models/patient-add-body-model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PatientResponseModel } from '../models/patient-response-model';
@@ -17,6 +18,9 @@ export class PatientsService {
     return this._http.get<PatientResponseModel>(this.baseUrl + id, {
       headers: { Authorization: `Bearer ${token}` },
     });
+  }
+  addPatient(patient: PatientAddBodyModel){
+    return this._http.post<any>(this.baseUrl, patient);
   }
   editByStuff(id: number, patientToUpdate: any, token: string) {
     return this._http.put<any>(this.baseUrl + id, patientToUpdate, {
