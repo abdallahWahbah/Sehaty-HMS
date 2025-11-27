@@ -1,3 +1,6 @@
+using Sehaty.Application.Services;
+using Sehaty.Application.Services.Contract.BusinessServices.Contract;
+
 namespace Sehaty.APIs
 {
     public class Program
@@ -21,6 +24,14 @@ namespace Sehaty.APIs
                 .AddAuthServices(builder.Configuration)
                 .AddErrorServices()
                 .AddSwaggerServices();
+
+            //builder.Services.AddScoped<IBillingService, BillingService>();
+
+            builder.Services.Configure<PaymentSettings>(
+                builder.Configuration.GetSection(nameof(PaymentSettings)));
+            builder.Services.Configure<PaymobEgy2Settings>(
+                builder.Configuration.GetSection(nameof(PaymobEgy2Settings)));
+
 
             builder.Services.AddHttpClient();
 

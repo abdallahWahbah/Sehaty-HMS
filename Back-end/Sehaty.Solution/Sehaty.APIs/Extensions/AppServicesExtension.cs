@@ -35,6 +35,9 @@
 
             services.AddScoped<IBillingService, BillingService>();
 
+            // Inject Service For PaymentService To Add And Manage Billing
+            services.AddScoped<IPaymentService, PaymentService>();
+
             //Add Email Service
             services.AddTransient<IEmailSender, EmailSender>();
 
@@ -55,7 +58,7 @@
             //add background service
             services.AddHostedService<AppointmentReminderService>();
             services.AddHostedService<OldNotificationsCleanupService>();
-          
+
             #endregion
 
             return services;

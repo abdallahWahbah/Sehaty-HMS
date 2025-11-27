@@ -1,166 +1,150 @@
-﻿using Sehaty.Core.Specifications.Appointment_Specs;
-using Sehaty.Core.Specifications.PatientSpec;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 
 namespace Sehaty.Application.Services
 {
-    public class BillingService(HttpClient _http, IConfiguration config, IUnitOfWork unit, IMapper mapper) : IBillingService
+    public class BillingService : IBillingService
     {
 
-        public async Task<RequestBodyForCreateTransactionDto> CreateEscrowTransactionAsync(int appointmentId, int patientId, int totalAmount)
+        private readonly PaymobEgy2Settings _settings;
+
+        public BillingService(IUnitOfWork _unit, IOptions<PaymobEgy2Settings> paymobSettings)
         {
-
-
-            var token = await AuthenticateAsync();
-
-            var orderId = await CreateOrderAsync(token, totalAmount);
-
-            var paymentKey = await CreatePaymentKeyAsync(patientId, token, orderId, totalAmount);
-
-            var redirectUrl = $"https://accept.paymob.com/api/acceptance/iframes/980937?payment_token={paymentKey}";
-
-            var response = new RequestBodyForCreateTransactionDto
-            {
-                OrderId = orderId,
-                PaymentKey = paymentKey,
-                RedirectUrl = redirectUrl
-            };
-            return response;
+            _settings = paymobSettings.Value;
         }
 
-
-        public async Task<string> AuthenticateAsync()
+        public async Task<string?> GetPaymentLinkAsync(int appointmentId, int totalAmount)
         {
-            var _apiKey = config["PayMob:api_key"];
-            if (string.IsNullOrEmpty(_apiKey))
-            {
-                throw new Exception("PayMob API Key is not configured");
+            string? clientSecret = await CreateIntentionRequest(appointmentId, totalAmount);
 
+            if (string.IsNullOrEmpty(clientSecret))
+                return null;
+
+            string url = $"https://accept.paymob.com/unifiedcheckout/?publicKey={_settings.PublicKey}&clientSecret={clientSecret}";
+            var billing = new Billing
+            {
+                AppointmentId = appointmentId,
+                TotalAmount = totalAmount / 100m,
+                BillDate = DateTime.UtcNow,
+                Status = BillingStatus.Pending
+            };
+            return url;
+        }
+
+        public bool ValidateHMAC(string dataString, string expectedHmac)
+        {
+            if (string.IsNullOrEmpty(_settings.AccountHMAC) ||
+                string.IsNullOrEmpty(dataString) ||
+                string.IsNullOrEmpty(expectedHmac))
+                return false;
+
+            var computedHmac = GenerateHmacSHA512(_settings.AccountHMAC, dataString);
+            return string.Equals(computedHmac, expectedHmac, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private async Task<string?> CreateIntentionRequest(int appointmentId, int totalAmount)
+        {
+            try
+            {
+                using HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", $"Token {_settings.SKey}");
+
+                int amountInCents = totalAmount * 100;
+
+                var body = new
+                {
+                    amount = amountInCents,
+                    currency = "EGP",
+                    special_reference = appointmentId.ToString(),
+                    payment_methods = new[]
+                    {
+                _settings.CardIntegrationId,
+                _settings.WalletIntegrationId
+            },
+                    items = new object[] { },
+                    billing_data = new
+                    {
+                        first_name = "Customer",
+                        last_name = "Name",
+                        email = "customer@example.com",
+                        phone_number = "+201000000000",
+                        country = "EG"
+                    }
+                };
+
+                var response = await client.PostAsJsonAsync(
+                    "https://accept.paymob.com/v1/intention/",
+                    body
+                );
+
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"Status: {response.StatusCode}");
+                    Console.WriteLine($"Error: {content}");
+                    return null;
+                }
+
+                var result = await response.Content.ReadFromJsonAsync<ResponseOrderCreation>();
+                return result?.client_secret;
             }
-
-            var body = new { api_key = _apiKey };
-
-            var response = await _http.PostAsJsonAsync("https://accept.paymob.com/api/auth/tokens", body);
-
-            var result = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
-
-            return result["token"].ToString();
-        }
-
-
-        public async Task<int> CreateOrderAsync(string token, int amount)
-        {
-            var body = new
+            catch (Exception ex)
             {
-                auth_token = token,
-                amount_cents = amount * 100,
-                currency = "EGP",
-            };
-
-            var response = await _http.PostAsJsonAsync("https://accept.paymob.com/api/ecommerce/orders", body);
-
-            var result = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
-
-            return int.Parse(result["id"].ToString());
-        }
-
-
-        public async Task<string> CreatePaymentKeyAsync(int patientId, string token, int orderId, int amount)
-        {
-            var spec = new PatientSpecifications(b => b.Id == patientId);
-            var patientData = await unit.Repository<Patient>().GetByIdWithSpecAsync(spec);
-            if (patientData is null) throw new Exception("Billing information not found for the patient");
-
-            var billingData = new
-            {
-                email = patientData.User.Email,
-                first_name = patientData.User.FirstName,
-                last_name = patientData.User.LastName,
-                phone_number = patientData.User.PhoneNumber,
-                country = "EG",
-                street = "NA",
-                building = "NA",
-                floor = "NA",
-                apartment = "NA",
-                city = "NA"
-
-            };
-
-            var body = new
-            {
-                auth_token = token,
-                amount_cents = amount * 100,
-                expiration = 3600,
-                order_id = orderId,
-                billing_data = billingData,
-                currency = "EGP",
-                integration_id = 5404105,
-                lock_order_when_paid = true,
-
-            };
-
-            var response = await _http.PostAsJsonAsync("https://accept.paymob.com/api/acceptance/payment_keys", body);
-
-            var result = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
-
-            return result["token"].ToString();
-        }
-
-        public async Task<string> GetPaymentStatusAsync(int orderId)
-        {
-            var authToken = await AuthenticateAsync();
-
-            var url = $"https://accept.paymob.com/api/ecommerce/orders/{orderId}";
-
-            using var client = new HttpClient();
-
-            var requestBody = new
-            {
-                auth_token = authToken
-            };
-
-            var response = await client.PostAsJsonAsync(url, requestBody);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Error getting payment status: {errorContent}");
+                Console.WriteLine($"{ex.Message}");
+                return null;
             }
-
-            var result = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
-
-            if (result.ContainsKey("payment_status"))
-            {
-                return result["payment_status"].ToString();
-            }
-
-            return "Unknown";
-
         }
-        public async Task<(Billing, string)> AuthorizeEscrowAsync(BillingAddDto model)
+        private static string GenerateHmacSHA512(string key, string message)
         {
-            var spec = new AppointmentSpecifications(a => a.Id == model.AppointmentId);
-            var appointmentData = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
-            var data = await CreateEscrowTransactionAsync(model.AppointmentId, appointmentData.Patient.Id, model.TotalAmount);
+            var keyBytes = Encoding.UTF8.GetBytes(key);
+            var messageBytes = Encoding.UTF8.GetBytes(message);
 
-            var billing = mapper.Map<Billing>(model);
-
-            billing.PatientId = appointmentData.Patient.Id;
-            billing.TransactionId = data.OrderId.ToString();
-
-            await unit.Repository<Billing>().AddAsync(billing);
-            await unit.CommitAsync();
-            return (billing, data.RedirectUrl);
+            using var hmac = new HMACSHA512(keyBytes);
+            var hashBytes = hmac.ComputeHash(messageBytes);
+            return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
         }
 
+        public async Task<bool> RefundPaymentAsync(string transactionId, decimal amountToRefund)
+        {
+            try
+            {
+                using HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", $"Token {_settings.SKey}");
 
+                int amountInCents = (int)(amountToRefund * 100);
 
+                var body = new
+                {
+                    transaction_id = transactionId,
+                    amount_cents = amountInCents
+                };
 
+                string apiUrl = "https://accept.paymob.com/api/acceptance/void_refund/refund";
 
+                Console.WriteLine($"Sending Refund Request:");
+                Console.WriteLine($"Transaction ID: {transactionId}");
+                Console.WriteLine($"Amount: {amountToRefund} EGP ({amountInCents} cents)");
 
+                var response = await client.PostAsJsonAsync(apiUrl, body);
+                var content = await response.Content.ReadAsStringAsync();
 
-
-
-
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"Refund Successful: {content}");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine($"Refund Failed ({response.StatusCode}): {content}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Refund Exception: {ex.Message}");
+                return false;
+            }
+        }
     }
+
 }

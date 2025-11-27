@@ -1,70 +1,300 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
-    public class BillingsController(IUnitOfWork unit, IMapper mapper, IBillingService billingService) : ApiBaseController
+    public class BillingsController(IPaymentService _paymentService, IUnitOfWork unit) : ApiBaseController
     {
-        //GetAllData
-        [HttpGet]
-        public async Task<IActionResult> GetAllBilling()
+
+        [HttpGet("GetLink")]
+        public async Task<IActionResult> GetPaymentLink([FromQuery] int appointmentId)
         {
-            var spec = new BillingSpec();
-            var billingData = await unit.Repository<Billing>().GetAllWithSpecAsync(spec);
-            if (billingData is null) return NotFound();
-            return Ok(mapper.Map<List<BillingReadDto>>(billingData));
+            try
+            {
+                var spec = new AppointmentSpecifications(a => a.Id == appointmentId);
+                var appointment = await unit.Repository<Appointment>()
+                    .GetByIdWithSpecAsync(spec);
+
+                if (appointment == null)
+                    return NotFound(new { error = "Appointment not found" });
+
+                var doctor = await unit.Repository<Doctor>().GetByIdAsync(appointment.DoctorId);
+
+                if (doctor == null)
+                    return NotFound(new { error = "Doctor not found" });
+
+                int totalAmount = (int)doctor.Price;
+
+                var (link, billingId) = await _paymentService.GetPaymentLinkAsync(appointmentId, totalAmount);
+                if (string.IsNullOrEmpty(appointmentId.ToString()))
+                    return BadRequest(new { error = "AppointmentId Is Required" });
+
+                if (string.IsNullOrEmpty(link))
+                    return StatusCode(500, new { error = "Cann't Create PaymentLink" });
+
+                return Ok(new
+                {
+                    success = true,
+                    payment_link = link,
+                    totalAmount,
+                    order_id = appointmentId,
+                    billingId = billingId
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
-        //GetByAppoinmentId
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetBillingByAppointmentId(int? id)
+
+        [HttpPost("Callback")]
+        public async Task<IActionResult> PaymentCallback([FromBody] PaymobCallbackPostModel model)
         {
-            var spec = new BillingSpec(b => b.AppointmentId == id);
-            var billing = await unit.Repository<Billing>().GetByIdWithSpecAsync(spec);
-            if (billing is null) return NotFound();
-            return Ok(mapper.Map<BillingReadDto>(billing));
+            try
+            {
+                Console.WriteLine(" Callback received from Paymob");
+
+                if (model?.obj == null)
+                {
+                    Console.WriteLine(" Invalid callback data");
+                    return Ok(new { message = "Invalid data" });
+                }
+
+                string merchantOrderId = model.obj.order?.merchant_order_id ?? "";
+
+                if (!int.TryParse(merchantOrderId, out int appointmentId))
+                {
+                    Console.WriteLine(" Invalid appointment ID");
+                    return Ok(new { message = "Invalid order ID" });
+                }
+
+                var billingSpec = new BillingSpec(
+                    b => b.AppointmentId == appointmentId && b.Status == BillingStatus.Pending
+                );
+
+                var billing = await unit.Repository<Billing>().GetByIdWithSpecAsync(billingSpec);
+
+                if (billing == null)
+                {
+                    Console.WriteLine($" No pending billing found for Appointment #{appointmentId}");
+                    return Ok(new { message = "Billing not found" });
+                }
+
+                if (model.obj.success)
+                {
+                    billing.Status = BillingStatus.Paid;
+                    billing.PaidAmount = model.obj.amount_cents / 100;
+                    billing.PaidAt = DateTime.UtcNow;
+                    billing.TransactionId = model.obj.id.ToString();
+                    billing.PaymentMethod = GetPaymentMethodFromCallback(model);
+                    billing.Notes = $"Paid via Paymob - Transaction #{model.obj.id} - {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}";
+
+                    Console.WriteLine($" Billing #{billing.Id} marked as PAID");
+                }
+                else
+                {
+                    billing.Status = BillingStatus.Canceled;
+                    billing.Notes = $"Payment Failed - {model.obj.data?.message ?? "Unknown error"} - {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}";
+
+                    Console.WriteLine($" Billing #{billing.Id} marked as CANCELED");
+                }
+
+                unit.Repository<Billing>().Update(billing);
+                await unit.CommitAsync();
+
+                Console.WriteLine($" Billing updated successfully");
+
+                return Ok(new { message = "Callback processed successfully" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($" Callback Error: {ex.Message}");
+                Console.WriteLine($" StackTrace: {ex.StackTrace}");
+                return Ok(new { message = "Error processed" });
+            }
+        }
+
+        private PaymentMethod GetPaymentMethodFromCallback(PaymobCallbackPostModel model)
+        {
+            string? method = model.obj?.data?.message?.ToLower();
+
+            if (method?.Contains("wallet") == true)
+                return PaymentMethod.MobileWallet;
+
+            if (method?.Contains("card") == true || method?.Contains("credit") == true)
+                return PaymentMethod.CreditCard;
+
+            return PaymentMethod.CreditCard;
         }
 
 
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBilling(int? id)
+        [HttpGet("Success")]
+        public IActionResult PaymentSuccess([FromQuery] bool success, [FromQuery] string? order, [FromQuery] int? amount_cents)
         {
-            if (id is null) return BadRequest(new ApiResponse(400));
-            var billingData = await unit.Repository<Billing>().GetByIdAsync(id.Value);
-            if (billingData is null) return NotFound(new ApiResponse(404));
-            unit.Repository<Billing>().Delete(billingData);
-            var RowAffected = await unit.CommitAsync();
-            return RowAffected > 0 ? Ok(new ApiResponse(200, "Deleted successfully")) : BadRequest(new ApiResponse(400));
-        }
+            if (success)
+            {
+                return Ok(new
+                {
+                    message = "Payment completed successfully!",
+                    order_id = order,
+                    amount = amount_cents / 100m,
+                    html = @"
+                <html>
+                <head><title>Payment Success</title></head>
+                <body style='text-align:center; padding:50px; font-family:Arial'>
+                    <h1 style='color:green'> Payment completed successfully!</h1>
+                    <p>رقم الطلب: " + order + @"</p>
+                    <p>المبلغ: " + (amount_cents / 100m) + @" Egp</p>
+                   
+                </body>
+                </html>
+            "
+                });
+            }
 
-
-        /// ////////////////////////////////////////////////////////
-
-        [HttpPost("authorize")]
-        public async Task<IActionResult> AuthorizeEscrow(BillingAddDto model)
-        {
-            if (!ModelState.IsValid) return BadRequest(new ApiResponse(400));
-            var spec = new BillingSpec(b => b.AppointmentId == model.AppointmentId);
-            var existingBilling = await unit.Repository<Billing>().GetAllWithSpecAsync(spec);
-            if (existingBilling.Any())
-                return BadRequest(new ApiResponse(400, "Billing already exists for this appointment"));
-            var specAppointment = new AppointmentSpecifications(a => a.Id == model.AppointmentId);
-            var appointmentData = await unit.Repository<Appointment>().GetByIdWithSpecAsync(specAppointment);
-            if (appointmentData is null) return NotFound(new ApiResponse(404, "Appointment not found"));
-            if (appointmentData.Status != AppointmentStatus.Pending)
-                return BadRequest(new ApiResponse(400, "Cannot authorize payment for this appointment Status not valid"));
-
-
-            var (billing, redirectUrl) = await billingService.AuthorizeEscrowAsync(model);
             return Ok(new
             {
-                BillingId = billing.Id,
-                status = billing.Status,
-                transactionId = billing.TransactionId,
-                redirectUrl = redirectUrl,
-
+                message = "Payment failed",
+                html = @"
+            <html>
+            <head><title>Payment Failed</title></head>
+            <body style='text-align:center; padding:50px; font-family:Arial'>
+                <h1 style='color:red'>Payment failed</h1>
+                <p>Tey Again</p>
+            </body>
+            </html>
+        "
             });
         }
 
+        [HttpPost("Refund")]
+        public async Task<IActionResult> RefundPayment([FromQuery] int billingId)
+        {
+            try
+            {
+                bool success = await _paymentService.ProcessRefundAsync(billingId);
 
+                if (success)
+                {
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "The amount has been successfully refunded",
+                        billing_id = billingId
+                    });
+                }
+                else
+                {
+                    return StatusCode(500, new
+                    {
+                        success = false,
+                        error = " Failed to recover the amount from Paymob"
+                    });
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { success = false, error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Refund Error: {ex.Message}");
+                return StatusCode(500, new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpPost("PartialRefund")]
+        public async Task<IActionResult> PartialRefund([FromQuery] int billingId, [FromQuery] decimal amount)
+        {
+            try
+            {
+                if (amount <= 0)
+                    return BadRequest(new { error = "The amount must be greater than zero!" });
+
+                bool success = await _paymentService.ProcessRefundAsync(billingId, amount);
+
+                if (success)
+                {
+                    return Ok(new
+                    {
+                        success = true,
+                        message = $"{amount} pounds has been successfully refunded",
+                        billing_id = billingId,
+                        refunded_amount = amount
+                    });
+                }
+                else
+                {
+                    return StatusCode(500, new
+                    {
+                        success = false,
+                        error = "Failed to recover the amount from Paymob"
+                    });
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { success = false, error = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { success = false, error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Partial Refund Error: {ex.Message}");
+                return StatusCode(500, new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpGet("GetBillingDetails")]
+        public async Task<IActionResult> GetBillingDetails([FromQuery] int billingId)
+        {
+            try
+            {
+                var billing = await unit.Repository<Billing>().GetByIdAsync(billingId);
+
+                if (billing == null)
+                    return NotFound(new { error = " Billing Not Found" });
+
+                bool canRefund = billing.Status == BillingStatus.Paid &&
+                                !string.IsNullOrEmpty(billing.TransactionId);
+
+                return Ok(new
+                {
+                    success = true,
+                    billing = new
+                    {
+                        billing.Id,
+                        billing.AppointmentId,
+                        billing.PatientId,
+                        billing.Status,
+                        billing.TotalAmount,
+                        billing.PaidAmount,
+                        billing.TransactionId,
+                        billing.PaymentMethod,
+                        billing.PaidAt,
+                        billing.BillDate,
+                        billing.Notes,
+                        canRefund,
+                        refundableAmount = canRefund ? billing.PaidAmount : 0,
+                        statusText = billing.Status switch
+                        {
+                            BillingStatus.Pending => "Pending",
+                            BillingStatus.Paid => "Paid",
+                            BillingStatus.Partially => "Partially",
+                            BillingStatus.Refunded => "Refunded",
+                            BillingStatus.Canceled => "Canceled",
+                            _ => "UnKnown"
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
     }
+
+
 }
 
