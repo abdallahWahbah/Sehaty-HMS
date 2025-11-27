@@ -123,3 +123,55 @@
     }
   }
 }
+.popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2000;
+
+  animation: slide-in 0.4s ease-out, fade-out 0.4s ease-in 2.1s forwards;
+
+  &__content {
+    background: #00b894;
+    color: #fff;
+    padding: 1rem 1.3rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  &__icon {
+    background: #fff;
+    color: #00b894;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(150%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+    transform: translateX(150%);
+  }
+}

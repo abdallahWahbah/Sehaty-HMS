@@ -6,6 +6,7 @@ import { Slot } from '../../../../../../../core/models/available-slot.model';
 import { CommonModule } from '@angular/common';
 import { PatientsService } from '../../../../../../../core/services/patients.service';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-available-slots',
@@ -22,17 +23,21 @@ export class AvailableSlotsComponent implements OnInit {
   slots: Slot[] = [];
   loading: boolean = true;
   errorMessage: string = '';
+  showPopup = false;
+  popupMessage = '';
 
   constructor(
     private route: ActivatedRoute,
     private doctorSlotsService: DoctorAvailabilityService,
-    private patientService: PatientsService
+    private patientService: PatientsService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.doctorId = +params['doctorId'];
-      this.loadAvailableDays();
+      this.selectedDate = params['date']; // ← ← ← أهم سطر
+      this.loadSlots(this.selectedDate);
     });
   }
 
@@ -71,11 +76,13 @@ export class AvailableSlotsComponent implements OnInit {
 
   // ✅ Load available slots for selected date
   loadSlots(date: string): void {
-    this.loading = true;
+    // Replace '/' with '-'
+    date = date.replace(/\//g, '-');
     this.selectedDate = date;
 
+    this.loading = true;
     this.doctorSlotsService.getAvailableSlots(this.doctorId, date).subscribe({
-      next: (slotsData: Slot[] | undefined) => {
+      next: (slotsData) => {
         this.slots = slotsData ?? [];
         this.loading = false;
       },
@@ -126,7 +133,10 @@ export class AvailableSlotsComponent implements OnInit {
           .bookSlot(slotId, patientId, reasonForVisit)
           .subscribe({
             next: (res) => {
-              alert(`Appointment booked successfully at ${res.startTime}`);
+              this.openPopup(
+                `Appointment booked successfully at ${res.startTime}`
+              );
+              this.router?.navigate(['/patient/appointments']);
               this.loadSlots(this.selectedDate);
             },
             error: () => {
@@ -138,5 +148,13 @@ export class AvailableSlotsComponent implements OnInit {
         alert('Failed to get patient data.');
       },
     });
+  }
+  openPopup(message: string) {
+    this.popupMessage = message;
+    this.showPopup = true;
+
+    setTimeout(() => {
+      this.showPopup = false;
+    }, 2500); // يختفي بعد 2.5 ثانية تلقائياً
   }
 }
