@@ -23,5 +23,6 @@
         public string AvailabilityNotes { get; set; }
         public int UserId { get; set; }
         public int DepartmentId { get; set; }
+        public int Price { get; set; }
     }
 }

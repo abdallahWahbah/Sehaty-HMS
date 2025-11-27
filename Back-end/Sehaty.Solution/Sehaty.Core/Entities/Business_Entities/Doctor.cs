@@ -14,6 +14,7 @@ namespace Sehaty.Core.Entites
         public string AvailabilityNotes { get; set; }
         public bool IsDeleted { get; set; }
         public int UserId { get; set; }
+        public int? Price { get; set; }
         public ApplicationUser User { get; set; }
         public int? DepartmentId { get; set; }
         public Department Department { get; set; }
