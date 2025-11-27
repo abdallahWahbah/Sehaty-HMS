@@ -8,6 +8,8 @@ import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { PatientsService } from '../../core/services/patients.service';
+import { PateintStatusEnum } from '../../core/enums/patient-status-enum';
 
 @Component({
   selector: 'app-signup',
@@ -33,7 +35,7 @@ export class SignupComponent {
     email: new FormControl('a@a.a', [Validators.required, Validators.email]),
     phoneNumber: new FormControl('+201092717902', [Validators.required]),
     userName: new FormControl('hankosh', [Validators.required]),
-    password: new FormControl('asdASD!@#123', [
+    password: new FormControl('P@ssw0rd', [
       Validators.required,
       Validators.minLength(6),
       Validators.pattern(/^(?=.*[a-z]).*$/),
@@ -42,11 +44,15 @@ export class SignupComponent {
       Validators.pattern(/^(?=.*[\W_]).*$/),
       Validators.pattern(/^\S+$/)
     ]),
-    confirmPassword: new FormControl('asdASD!@#123', [Validators.required]),
+    confirmPassword: new FormControl('P@ssw0rd', [Validators.required]),
     agreeTerms: new FormControl(true, [Validators.requiredTrue])
   });
 
-  constructor(private _authService: AuthService, private router: Router) {}
+  constructor(
+    private _authService: AuthService, 
+    private router: Router,
+    private _patientServie: PatientsService
+  ) {}
 
   onSubmit() {
     this.serverError = '';
@@ -65,9 +71,32 @@ export class SignupComponent {
 
     const newUser = {userName, email, phoneNumber, firstName, lastName, password, confirmPassword, languagePreference: 'Arabic'}
 
+    // create new user
     this._authService.register(newUser).subscribe({
       next: data => {
-        this.router.navigate(['login']);
+
+        // add the new user to patient table
+        this._patientServie.addPatient({
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          dateOfBirth: new Date(),
+          gender: 'Male',
+          nationalId: '',
+          bloodType: '',
+          allergies: '',
+          chrinicConditions: '',
+          address: '',
+          emergencyContactName: '',
+          emergencyContactPhone: '',
+          status: PateintStatusEnum.Active,
+          userId: data.userId
+        }).subscribe({
+          next: patientResponse => {
+            this.router.navigate(['login']);
+          },
+          error: err => this.serverError = err.error?.message
+        })
+
       },
       error: err => this.serverError = err.error?.message || 'Registration failed'
     });
