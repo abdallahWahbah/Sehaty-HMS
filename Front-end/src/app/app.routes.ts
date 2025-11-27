@@ -46,6 +46,10 @@ import { ViewDepartmentsComponent } from './features/patient/patient-appointment
 import { ViewDoctorsComponent } from './features/patient/patient-appointments/view-departments/view-doctors/view-doctors.component';
 import { DoctorAvailabilityComponent } from './features/patient/patient-appointments/view-departments/view-doctors/doctor-avilabilty/doctor-avilabilty.component';
 import { AvailableSlotsComponent } from './features/patient/patient-appointments/view-departments/view-doctors/doctor-avilabilty/avilable-slots/avilable-slots.component';
+import { receiptionistGuard } from './core/guards/receiptionist.guard';
+import { ReceptionNavigationComponent } from './features/reception/reception-navigation/reception-navigation.component';
+import { ReceptionAppointmentsComponent } from './features/reception/reception-appointments/reception-appointments.component';
+import { ReceptionNewAppointmentComponent } from './features/reception/reception-new-appointment/reception-new-appointment.component';
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -110,15 +114,10 @@ export const routes: Routes = [
       { path: '', redirectTo: 'medicalRecords', pathMatch: 'full' },
       { path: 'medicalRecords', component: PatientMedicalRecordsComponent },
       { path: 'appointments', component: PatientAppointmentsComponent },
-      { path: 'appointments/add', component: ViewDepartmentsComponent },
-      {
-        path: 'appointments/doctors/:departmentId',
-        component: ViewDoctorsComponent,
-      },
-      {
-        path: 'appointments/available-days/:doctorId', // <--- الجديد
-        component: DoctorAvailabilityComponent,
-      },
+      { path: 'appointments/add', component: ViewDepartmentsComponent},
+      { path: 'appointments/doctors/:departmentId', component: ViewDoctorsComponent },
+      { path: 'appointments/available-days/:doctorId', component: DoctorAvailabilityComponent },
+      { path: 'appointments/available-slots/:doctorId/:date', component: AvailableSlotsComponent },
       { path: 'details', component: PatientDetailsComponent },
       { path: 'edit/:id', component: PatientUpdateComponent },
       { path: 'payment', component: PatientPaymentComponent },
@@ -127,31 +126,15 @@ export const routes: Routes = [
       { path: 'feedback/add/:id', component: PatientAddFeedbackComponent },
     ],
   },
-
   {
-    path: 'patient',
-    canActivate: [patientGuard],
-    component: PatientNavigationComponent,
+    path: 'reception',
+    canActivate: [receiptionistGuard],
+    component: ReceptionNavigationComponent,
     children: [
-      { path: '', redirectTo: 'medicalRecords', pathMatch: 'full' },
-      { path: 'medicalRecords', component: PatientMedicalRecordsComponent },
-      { path: 'appointments', component: PatientAppointmentsComponent },
-      { path: 'appointments/add', component: ViewDepartmentsComponent },
-      {
-        path: 'appointments/doctors/:departmentId',
-        component: ViewDoctorsComponent,
-      },
-      {
-        path: 'appointments/available-slots/:doctorId/:date',
-        component: AvailableSlotsComponent,
-      }, // ده الجديد
-      { path: 'details', component: PatientDetailsComponent },
-      { path: 'edit/:id', component: PatientUpdateComponent },
-      { path: 'payment', component: PatientPaymentComponent },
-      { path: 'prescription', component: PatientPrescriptionComponent },
-      { path: 'feedback', component: PatientFeedbackComponent },
-      { path: 'feedback/add/:id', component: PatientAddFeedbackComponent },
-    ],
+      { path: '', redirectTo: 'appointments', pathMatch: 'full' },
+      { path: 'appointments', component: ReceptionAppointmentsComponent },
+      { path: 'new/appointment', component: ReceptionNewAppointmentComponent }
+    ]
   },
   { path: 'home', component: HomeComponent },
   { path: 'not-found', component: NotFoundComponent },
