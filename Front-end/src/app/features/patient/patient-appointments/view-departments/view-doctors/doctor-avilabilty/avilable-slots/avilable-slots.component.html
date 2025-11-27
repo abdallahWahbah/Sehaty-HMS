@@ -50,4 +50,10 @@
   >
     No available slots for this date.
   </div>
+  <div class="popup" *ngIf="showPopup">
+    <div class="popup__content">
+      <div class="popup__icon">✔</div>
+      <div class="popup__text">{{ popupMessage }}</div>
+    </div>
+  </div>
 </div>
