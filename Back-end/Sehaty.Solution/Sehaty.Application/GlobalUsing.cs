@@ -21,7 +21,6 @@ global using Sehaty.Application.Dtos.NotificationsDTOs;
 global using Sehaty.Application.Dtos.PatientDto;
 global using Sehaty.Application.Dtos.PrescriptionsDTOs;
 global using Sehaty.Application.Helper;
-global using Sehaty.Application.MappingHelpers;
 global using Sehaty.Application.Services.Contract;
 global using Sehaty.Application.Services.Contract.AuthService.Contract;
 global using Sehaty.Application.Services.Contract.BusinessServices.Contract;
@@ -42,6 +41,6 @@ global using System.Net.Mail;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
 global using System.Text;
+global using System.Text.Json.Serialization;
 global using Twilio;
 global using Twilio.Rest.Api.V2010.Account;
-

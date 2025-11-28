@@ -68,5 +68,36 @@ namespace Sehaty.Application.Services
 
             return appointment;
         }
+
+        public async Task<Appointment> CreateAsyncForReceptionist(AppointmentAddForAnonymousDto dto)
+        {
+
+            var doctor = await unit.Repository<Doctor>().GetByIdAsync(dto.DoctorId);
+            if (doctor == null)
+                throw new Exception("Doctor not found");
+
+            if (dto.AppointmentDateTime.Date < DateTime.Now.Date)
+                throw new Exception("Appointment date cannot be in the past");
+
+            var doctorAppointments = await unit.Repository<Appointment>().FindBy(a => a.DoctorId == dto.DoctorId &&
+            a.AppointmentDateTime.Date == dto.AppointmentDateTime.Date).ToListAsync();
+
+
+            if (doctorAppointments.Count(a =>
+                dto.AppointmentDateTime < a.AppointmentDateTime.AddMinutes(a.DurationMinutes) &&
+                dto.AppointmentDateTime.AddMinutes(30) > a.AppointmentDateTime) > 0)
+                throw new Exception("Doctor Already Has An Overlapping Appointment");
+
+            var appointment = mapper.Map<Appointment>(dto);
+
+            await unit.Repository<Appointment>().AddAsync(appointment);
+            await unit.CommitAsync();
+
+
+            var finalSpec = new AppointmentSpecifications(a => a.Id == appointment.Id);
+            appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(finalSpec);
+
+            return appointment;
+        }
     }
 }

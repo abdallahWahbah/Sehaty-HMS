@@ -125,6 +125,8 @@
         //[Authorize(Roles = "Admin,Receptionist")]
         public async Task<ActionResult> DeletePatient(int id)
         {
+            if (id == 999999)
+                return BadRequest(new ApiResponse(400, "Cannot Delete This Patient"));
             var patientToDelete = await unit.Repository<Patient>().GetByIdAsync(id);
             if (patientToDelete is null)
                 return NotFound(new ApiResponse(404));
@@ -138,6 +140,8 @@
         //[Authorize(Roles = "Admin,Receptionist")]
         public async Task<ActionResult> PermanentDelete(int id)
         {
+            if (id == 999999)
+                return BadRequest(new ApiResponse(400, "Cannot Delete This Patient"));
             var patientToDelete = await unit.Repository<Patient>().GetByIdAsync(id);
             if (patientToDelete is null)
                 return NotFound(new ApiResponse(404));

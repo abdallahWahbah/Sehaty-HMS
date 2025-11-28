@@ -33,7 +33,20 @@
                    .ForMember(dest => dest.ScheduledDate,
                    opt => opt.MapFrom(src => DateOnly.FromDateTime(src.AppointmentDateTime)))
                    .ForMember(dest => dest.ScheduledTime,
-                   opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.AppointmentDateTime))); ;
+                   opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.AppointmentDateTime)));
+
+
+            CreateMap<AppointmentAddForAnonymousDto, Appointment>()
+                .ForMember(dest => dest.BookingDateTime,
+                    opt => opt.MapFrom(_ => DateTime.Now))
+                .ForMember(dest => dest.DurationMinutes,
+                    opt => opt.MapFrom(_ => 30))
+                   .ForMember(dest => dest.ScheduledDate,
+                   opt => opt.MapFrom(src => DateOnly.FromDateTime(src.AppointmentDateTime)))
+                   .ForMember(dest => dest.ScheduledTime,
+                   opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.AppointmentDateTime)))
+                   .ForMember(A => A.PatientId, O => O.MapFrom(_ => 999999))
+                   .ForMember(A => A.Status, O => O.MapFrom(_ => AppointmentStatus.Confirmed));
 
         }
 

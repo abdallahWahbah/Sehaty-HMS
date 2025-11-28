@@ -3,5 +3,6 @@
     public interface IAppointmentService
     {
         Task<Appointment> CreateAsync(AppointmentAddDto dto);
+        Task<Appointment> CreateAsyncForReceptionist(AppointmentAddForAnonymousDto dto);
     }
 }
