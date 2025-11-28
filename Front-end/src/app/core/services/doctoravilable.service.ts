@@ -37,6 +37,7 @@ export class DoctorAvailabilityService {
     patientId: number,
     reasonForVisit: string
   ): Observable<BookedAppointmentModel> {
+    console.log("00000000000000000", patientId);
     return this.http.post<BookedAppointmentModel>(`${this.baseUrl}/BookSlot`, {
       slotId,
       patientId,

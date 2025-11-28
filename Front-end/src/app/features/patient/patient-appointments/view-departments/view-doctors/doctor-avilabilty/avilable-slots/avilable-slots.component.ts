@@ -122,27 +122,21 @@ export class AvailableSlotsComponent implements OnInit {
 
     patientId$.subscribe({
       next: (patientId) => {
-        if (!patientId) {
-          alert('Patient record not found.');
-          return;
-        }
-
         const reasonForVisit = 'Checkup';
-
         this.doctorSlotsService
-          .bookSlot(slotId, patientId, reasonForVisit)
+          .bookSlot(slotId, patientId || 5, reasonForVisit) // "5" fixed patient for (elder) people not having account
           .subscribe({
             next: (res) => {
-              this.openPopup(
-                `Appointment booked successfully at ${res.startTime}`
-              );
-              this.router?.navigate(['/patient/appointments']);
+              this.openPopup( `Appointment booked successfully at ${res.startTime}`);
+              setTimeout(() => {
+                this.router?.navigate([patientId ? '/patient/appointments' : 'reception/appointments']);
+              }, 1000);
               this.loadSlots(this.selectedDate);
             },
             error: () => {
               alert('Failed to book slot.');
             },
-          });
+        });
       },
       error: () => {
         alert('Failed to get patient data.');

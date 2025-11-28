@@ -1,14 +1,19 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-patient-navigation',
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './patient-navigation.component.html',
   styleUrl: './patient-navigation.component.scss'
 })
 export class PatientNavigationComponent {
-  constructor(private router:Router){}
+
+  userData: any = localStorage.getItem('userData');
+  constructor(private router:Router){
+    this.userData = JSON.parse(this.userData);
+  }
 
   logout(){
     localStorage.removeItem('refreshToken')
