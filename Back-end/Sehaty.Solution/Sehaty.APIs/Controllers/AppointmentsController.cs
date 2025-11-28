@@ -21,6 +21,18 @@
             return Ok(mapper.Map<List<AppointmentReadDto>>(appointments));
         }
 
+        [HttpGet("DoctorAppoinments")]
+        [Authorize(Roles = "Doctor")]
+        public async Task<ActionResult<IEnumerable<AppointmentReadDto>>> GetDoctorAppointments()
+        {
+            var doctorUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var doctorId = unit.Repository<Doctor>().FindBy(D => D.UserId == doctorUserId).Select(D => D.Id).FirstOrDefault();
+            var spec = new AppointmentSpecifications(A => (A.Status != AppointmentStatus.Pending ||
+            A.Status == AppointmentStatus.NoShow) && A.DoctorId == doctorId);
+            var appointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(spec);
+            return Ok(mapper.Map<List<AppointmentReadDto>>(appointments));
+        }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<AppointmentReadDto>> GetAppointmentById(int id)
