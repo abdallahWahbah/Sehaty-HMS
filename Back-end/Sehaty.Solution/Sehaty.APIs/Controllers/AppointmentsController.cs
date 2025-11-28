@@ -1,18 +1,26 @@
-﻿using Sehaty.Core.Entities.Business_Entities.Appointments;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
 
-    public class AppointmentsController(IPaymentService _paymentService, IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService, IEmailSender emailSender, ISmsSender smsSender, IWebHostEnvironment env) : ApiBaseController
+    public class AppointmentsController(IPaymentService paymentService, IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService, IEmailSender emailSender, ISmsSender smsSender, IWebHostEnvironment env) : ApiBaseController
     {
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<AppointmentReadDto>>> GetAllAppointments()
         {
             var spec = new AppointmentSpecifications();
             var appointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(spec);
             return Ok(mapper.Map<List<AppointmentReadDto>>(appointments));
         }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<AppointmentReadDto>>> GetAllActiveAppointments()
+        {
+            var spec = new AppointmentSpecifications(A => A.Status != AppointmentStatus.Pending ||
+            A.Status == AppointmentStatus.NoShow);
+            var appointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(spec);
+            return Ok(mapper.Map<List<AppointmentReadDto>>(appointments));
+        }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<AppointmentReadDto>> GetAppointmentById(int id)
@@ -279,7 +287,7 @@ namespace Sehaty.APIs.Controllers
 
                 int totalAmount = (int)doctor.Price;
 
-                var (link, billingId) = await _paymentService.GetPaymentLinkAsync(appointmentId, totalAmount);
+                var (link, billingId) = await paymentService.GetPaymentLinkAsync(appointmentId, totalAmount);
                 if (string.IsNullOrEmpty(appointmentId.ToString()))
                     return BadRequest(new { error = "AppointmentId Is Required" });
 
