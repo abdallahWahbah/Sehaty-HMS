@@ -12,9 +12,9 @@ namespace Sehaty.Application.Services
             _settings = paymobSettings.Value;
         }
 
-        public async Task<string?> GetPaymentLinkAsync(int appointmentId, int totalAmount)
+        public async Task<string> GetPaymentLinkAsync(int appointmentId, int totalAmount)
         {
-            string? clientSecret = await CreateIntentionRequest(appointmentId, totalAmount);
+            string clientSecret = await CreateIntentionRequest(appointmentId, totalAmount);
 
             if (string.IsNullOrEmpty(clientSecret))
                 return null;
@@ -41,7 +41,7 @@ namespace Sehaty.Application.Services
             return string.Equals(computedHmac, expectedHmac, StringComparison.OrdinalIgnoreCase);
         }
 
-        private async Task<string?> CreateIntentionRequest(int appointmentId, int totalAmount)
+        private async Task<string> CreateIntentionRequest(int appointmentId, int totalAmount)
         {
             try
             {

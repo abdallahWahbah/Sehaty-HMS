@@ -1,7 +1,9 @@
-﻿namespace Sehaty.APIs.Controllers
+﻿using Sehaty.Core.Entities.Business_Entities.Appointments;
+
+namespace Sehaty.APIs.Controllers
 {
 
-    public class AppointmentsController(IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService, IEmailSender emailSender, ISmsSender smsSender, IWebHostEnvironment env) : ApiBaseController
+    public class AppointmentsController(IPaymentService _paymentService, IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService, IEmailSender emailSender, ISmsSender smsSender, IWebHostEnvironment env) : ApiBaseController
     {
 
         [HttpGet]
@@ -257,13 +259,63 @@
 
 
 
-        [HttpPost("ConfirmAppointment/{id}")]
+        [HttpPost("ConfirmAppointment/{appointmentId}")]
+        public async Task<IActionResult> ConfirmAppointment(int appointmentId)
+        {
+
+            try
+            {
+                var spec = new AppointmentSpecifications(a => a.Id == appointmentId);
+                var appointment = await unit.Repository<Appointment>()
+                    .GetByIdWithSpecAsync(spec);
+
+                if (appointment == null)
+                    return NotFound(new { error = "Appointment not found" });
+
+                var doctor = await unit.Repository<Doctor>().GetByIdAsync(appointment.DoctorId);
+
+                if (doctor == null)
+                    return NotFound(new { error = "Doctor not found" });
+
+                int totalAmount = (int)doctor.Price;
+
+                var (link, billingId) = await _paymentService.GetPaymentLinkAsync(appointmentId, totalAmount);
+                if (string.IsNullOrEmpty(appointmentId.ToString()))
+                    return BadRequest(new { error = "AppointmentId Is Required" });
+
+                if (string.IsNullOrEmpty(link))
+                    return StatusCode(500, new { error = "Cann't Create PaymentLink" });
+
+                return Ok(new
+                {
+                    success = true,
+                    payment_link = link,
+                    totalAmount,
+                    order_id = appointmentId,
+                    billingId = billingId
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+    }
+}
+
+
+/*
+ *  [HttpPost("ConfirmAppointment/{id}")]
         public async Task<IActionResult> ConfirmAppointment(int id)
         {
             var spec = new AppointmentSpecifications(a => a.Id == id);
             var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
             if (appointment == null) return NotFound(new ApiResponse(404));
             if (appointment.Status != AppointmentStatus.Pending) return BadRequest(new ApiResponse(400, "Appointment cannot be confirmed"));
+
+
+
             appointment.Status = AppointmentStatus.Confirmed;
             var rowsAffected = await unit.CommitAsync();
 
@@ -312,7 +364,4 @@
 
             return Ok(new ApiResponse(200, "Appointment confirmed successfully"));
         }
-
-
-    }
-}
+ */
