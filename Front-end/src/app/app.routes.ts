@@ -50,6 +50,7 @@ import { receiptionistGuard } from './core/guards/receiptionist.guard';
 import { ReceptionNavigationComponent } from './features/reception/reception-navigation/reception-navigation.component';
 import { ReceptionAppointmentsComponent } from './features/reception/reception-appointments/reception-appointments.component';
 import { ReceptionNewAppointmentComponent } from './features/reception/reception-new-appointment/reception-new-appointment.component';
+import { patientReceptionGuard } from './core/guards/patient-reception.guard';
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -106,25 +107,47 @@ export const routes: Routes = [
       { path: 'availableSlots', component: DoctorAvailableSlotsComponent },
     ],
   },
+  // {
+  //   path: 'patient',
+  //   canActivate: [patientGuard],
+  //   component: PatientNavigationComponent,
+  //   children: [
+  //     { path: '', redirectTo: 'medicalRecords', pathMatch: 'full' },
+  //     { path: 'medicalRecords', component: PatientMedicalRecordsComponent },
+  //     { path: 'appointments', component: PatientAppointmentsComponent },
+  //     { path: 'appointments/add', component: ViewDepartmentsComponent},
+  //     { path: 'appointments/doctors/:departmentId', component: ViewDoctorsComponent },
+  //     { path: 'appointments/available-days/:doctorId', component: DoctorAvailabilityComponent },
+  //     { path: 'appointments/available-slots/:doctorId/:date', component: AvailableSlotsComponent },
+  //     { path: 'details', component: PatientDetailsComponent },
+  //     { path: 'edit/:id', component: PatientUpdateComponent },
+  //     { path: 'payment', component: PatientPaymentComponent },
+  //     { path: 'prescription', component: PatientPrescriptionComponent },
+  //     { path: 'feedback', component: PatientFeedbackComponent },
+  //     { path: 'feedback/add/:id', component: PatientAddFeedbackComponent },
+  //   ],
+  // },
   {
-    path: 'patient',
-    canActivate: [patientGuard],
+  path: 'patient',
     component: PatientNavigationComponent,
     children: [
+      // protected by patientGuard
       { path: '', redirectTo: 'medicalRecords', pathMatch: 'full' },
-      { path: 'medicalRecords', component: PatientMedicalRecordsComponent },
-      { path: 'appointments', component: PatientAppointmentsComponent },
-      { path: 'appointments/add', component: ViewDepartmentsComponent},
-      { path: 'appointments/doctors/:departmentId', component: ViewDoctorsComponent },
-      { path: 'appointments/available-days/:doctorId', component: DoctorAvailabilityComponent },
-      { path: 'appointments/available-slots/:doctorId/:date', component: AvailableSlotsComponent },
-      { path: 'details', component: PatientDetailsComponent },
-      { path: 'edit/:id', component: PatientUpdateComponent },
+      { path: 'medicalRecords', canActivate: [patientGuard], component: PatientMedicalRecordsComponent },
+      { path: 'appointments', canActivate: [patientGuard], component: PatientAppointmentsComponent },
+      { path: 'details', canActivate: [patientGuard], component: PatientDetailsComponent },
+      { path: 'edit/:id', canActivate: [patientGuard], component: PatientUpdateComponent },
       { path: 'payment', component: PatientPaymentComponent },
       { path: 'prescription', component: PatientPrescriptionComponent },
       { path: 'feedback', component: PatientFeedbackComponent },
       { path: 'feedback/add/:id', component: PatientAddFeedbackComponent },
-    ],
+
+      // protected by patientReceptionGuard
+      { path: 'appointments/add', canActivate: [patientReceptionGuard], component: ViewDepartmentsComponent },
+      { path: 'appointments/doctors/:departmentId', canActivate: [patientReceptionGuard], component: ViewDoctorsComponent },
+      { path: 'appointments/available-days/:doctorId', canActivate: [patientReceptionGuard], component: DoctorAvailabilityComponent },
+      { path: 'appointments/available-slots/:doctorId/:date', canActivate: [patientReceptionGuard], component: AvailableSlotsComponent },
+    ]
   },
   {
     path: 'reception',
@@ -133,7 +156,7 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'appointments', pathMatch: 'full' },
       { path: 'appointments', component: ReceptionAppointmentsComponent },
-      { path: 'new/appointment', component: ReceptionNewAppointmentComponent }
+      { path: 'new/appointment', component: ViewDepartmentsComponent }
     ]
   },
   { path: 'home', component: HomeComponent },
