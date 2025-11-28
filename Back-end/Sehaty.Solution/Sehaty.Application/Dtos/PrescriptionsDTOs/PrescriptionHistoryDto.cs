@@ -5,6 +5,7 @@
         public int PrescriptionId { get; set; }
         public DateTime DateIssued { get; set; }
         public string DoctorName { get; set; }
+        public string SpecialInstructions { get; set; }
         public List<string> MedicationNames { get; set; } = new List<string>();
         public string Status { get; set; }
     }
