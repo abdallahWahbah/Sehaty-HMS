@@ -87,65 +87,61 @@
                 await unit.Repository<Prescription>().AddAsync(prescription);
                 await unit.CommitAsync();
 
-                if (prescription.PatientId.HasValue)
+                var spec = new PatientSpecifications(P => P.Id == prescription.PatientId);
+                var patient = await unit.Repository<Patient>().GetByIdWithSpecAsync(spec);
+                if (patient != null || patient.Id != 999999)
                 {
-                    var spec = new PatientSpecifications(P => P.Id == prescription.PatientId);
-                    var patient = await unit.Repository<Patient>().GetByIdWithSpecAsync(spec);
-                    if (patient != null)
+                    var doctor = await unit.Repository<Doctor>().GetByIdAsync(doctorId);
+                    string message = $"تم تجهيز الروشته مع الطبيب {doctor.FirstName} {doctor.LastName} بتاريخ {prescription.DateIssued}";
+
+                    var notificationDto = new CreateNotificationDto
                     {
-                        var doctor = await unit.Repository<Doctor>().GetByIdAsync(doctorId);
-                        string message = $"تم تجهيز الروشته مع الطبيب {doctor.FirstName} {doctor.LastName} بتاريخ {prescription.DateIssued}";
+                        UserId = prescription.PatientId,
+                        Title = "Prescription Completed",
+                        Message = message,
+                        Priority = NotificationPriority.High,
+                        RelatedEntityType = "Prescription",
+                        RelatedEntityId = prescription.Id,
+                        SentViaEmail = false,
+                        SentViaSMS = false,
+                        NotificationType = NotificationType.Prescription,
+                        IsRead = false
+                    };
+                    var notification = map.Map<Notification>(notificationDto);
+                    await unit.Repository<Notification>().AddAsync(notification);
+                    await unit.CommitAsync();
 
-                        var notificationDto = new CreateNotificationDto
-                        {
-                            UserId = prescription.PatientId,
-                            Title = "Prescription Completed",
-                            Message = message,
-                            Priority = NotificationPriority.High,
-                            RelatedEntityType = "Prescription",
-                            RelatedEntityId = prescription.Id,
-                            SentViaEmail = false,
-                            SentViaSMS = false,
-                            NotificationType = NotificationType.Prescription,
-                            IsRead = false
-                        };
-                        var notification = map.Map<Notification>(notificationDto);
-                        await unit.Repository<Notification>().AddAsync(notification);
-                        await unit.CommitAsync();
+                    var Prescriptionspec = new PrescriptionSpecifications(P => P.Id == prescription.Id);
+                    var currentprescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(Prescriptionspec);
+                    var medicationsHtml = "";
 
-                        var Prescriptionspec = new PrescriptionSpecifications(P => P.Id == prescription.Id);
-                        var currentprescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(Prescriptionspec);
-                        var medicationsHtml = "";
-
-                        foreach (var item in currentprescription.Medications)
-                        {
-                            medicationsHtml += $"<p><strong>{item.Medication.Name}</strong> — {item.Dosage}, {item.Frequency}, لمدة {item.Duration}</p>";
-                        }
-                        if (!string.IsNullOrEmpty(patient.User.Email))
-                        {
-                            var filepath = $"{env.WebRootPath}/templates/PrescriptionReady.html";
-                            StreamReader reader = new StreamReader(filepath);
-                            var body = reader.ReadToEnd();
-                            reader.Close();
-                            body = body.Replace("[header]", message)
-                                .Replace("[body]", $"{prescription.SpecialInstructions}")
-                                .Replace("[url]", $"https://localhost:7086/api/Prescriptions/prescriptions/{prescription.Id}/download")
-                                .Replace("[linkTitle]", "Download Prescription")
-                                .Replace("[MedicationDeatails]", $"{medicationsHtml}")
-                                .Replace("[imageUrl]", "https://res.cloudinary.com/dl21kzp79/image/upload/f_png/v1763917652/icon-positive-vote-1_1_dpzjrw.png");
-
-                            await emailSender.SendEmailAsync(patient.User.Email, "Sehaty", body);
-                            notificationDto.SentViaEmail = true;
-                        }
-                        //if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
-                        //{
-                        //    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
-                        //    notificationDto.SentViaSMS = true;
-                        //}
-                        await unit.CommitAsync();
+                    foreach (var item in currentprescription.Medications)
+                    {
+                        medicationsHtml += $"<p><strong>{item.Medication.Name}</strong> — {item.Dosage}, {item.Frequency}, لمدة {item.Duration}</p>";
                     }
-                }
+                    if (!string.IsNullOrEmpty(patient.User.Email))
+                    {
+                        var filepath = $"{env.WebRootPath}/templates/PrescriptionReady.html";
+                        StreamReader reader = new StreamReader(filepath);
+                        var body = reader.ReadToEnd();
+                        reader.Close();
+                        body = body.Replace("[header]", message)
+                            .Replace("[body]", $"{prescription.SpecialInstructions}")
+                            .Replace("[url]", $"https://localhost:7086/api/Prescriptions/prescriptions/{prescription.Id}/download")
+                            .Replace("[linkTitle]", "Download Prescription")
+                            .Replace("[MedicationDeatails]", $"{medicationsHtml}")
+                            .Replace("[imageUrl]", "https://res.cloudinary.com/dl21kzp79/image/upload/f_png/v1763917652/icon-positive-vote-1_1_dpzjrw.png");
 
+                        await emailSender.SendEmailAsync(patient.User.Email, "Sehaty", body);
+                        notificationDto.SentViaEmail = true;
+                    }
+                    //if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
+                    //{
+                    //    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
+                    //    notificationDto.SentViaSMS = true;
+                    //}
+                    await unit.CommitAsync();
+                }
 
                 return Ok(new { message = "Prescription created successfully", prescriptionId = prescription.Id });
             }
