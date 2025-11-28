@@ -56,6 +56,25 @@
             }
         }
 
+        [HttpPost("ReceptionistCreate")]
+        public async Task<ActionResult<AppointmentReadDto>> CreateAppointmentForReceptionist([FromBody] AppointmentAddForAnonymousDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new ApiResponse(400));
+            try
+            {
+                var appointment = await appointmentService.CreateAsyncForReceptionist(dto);
+
+                return CreatedAtAction(nameof(GetAppointmentById),
+                    new { id = appointment.Id },
+                    mapper.Map<AppointmentReadDto>(appointment));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse(400, ex.Message));
+            }
+        }
+
         // DELETE: api/Appointments/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAppointment(int? id)

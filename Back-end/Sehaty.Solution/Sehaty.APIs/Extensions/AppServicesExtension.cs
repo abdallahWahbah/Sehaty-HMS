@@ -12,6 +12,17 @@
             });
 
 
+            #region Add Payment Services
+
+            services.Configure<PaymentSettings>(
+                configuration.GetSection(nameof(PaymentSettings)));
+
+            services.Configure<PaymobEgy2Settings>(
+                configuration.GetSection(nameof(PaymobEgy2Settings)));
+
+            #endregion
+
+
             #region Add Services
 
             // Add UnitOfWork Class Injection
