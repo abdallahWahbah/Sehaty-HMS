@@ -26,8 +26,8 @@
         }
 
         [Authorize(Roles = "Doctor")]
-        [HttpGet("doctorprescriptions")]
-        public async Task<IActionResult> GetByDoctorId()
+        [HttpGet("DoctorPrescriptions")]
+        public async Task<IActionResult> GetByDoctor()
         {
             var doctorUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var doctorId = unit.Repository<Doctor>().FindBy(D => D.UserId == doctorUserId).Select(D => D.Id).FirstOrDefault();
@@ -36,7 +36,7 @@
             var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
             var sortedprescriptions = prescriptions.OrderByDescending(p => p.DateIssued).ToList();
             if (sortedprescriptions.Count() > 0)
-                return Ok(map.Map<IEnumerable<DoctorPrescriptionsDto>>(sortedprescriptions));
+                return Ok(map.Map<IEnumerable<GetPrescriptionsDto>>(sortedprescriptions));
             return NotFound(new ApiResponse(404));
         }
 
