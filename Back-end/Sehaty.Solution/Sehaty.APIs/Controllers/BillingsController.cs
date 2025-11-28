@@ -1,6 +1,9 @@
-﻿namespace Sehaty.APIs.Controllers
+﻿using AutoMapper;
+using Sehaty.Application.Services;
+
+namespace Sehaty.APIs.Controllers
 {
-    public class BillingsController(IPaymentService _paymentService, IUnitOfWork unit) : ApiBaseController
+    public class BillingsController(IEmailSender emailSender, IWebHostEnvironment env, IMapper mapper, IPaymentService _paymentService, IUnitOfWork unit) : ApiBaseController
     {
 
         [HttpGet("GetLink")]
@@ -114,7 +117,7 @@
 
         private PaymentMethod GetPaymentMethodFromCallback(PaymobCallbackPostModel model)
         {
-            string? method = model.obj?.data?.message?.ToLower();
+            string method = model.obj?.data?.message?.ToLower();
 
             if (method?.Contains("wallet") == true)
                 return PaymentMethod.MobileWallet;
@@ -127,27 +130,84 @@
 
 
         [HttpGet("Success")]
-        public IActionResult PaymentSuccess([FromQuery] bool success, [FromQuery] string? order, [FromQuery] int? amount_cents)
+        public async Task<IActionResult> PaymentSuccess([FromQuery] int merchant_order_id, [FromQuery] bool success, [FromQuery] string order, [FromQuery] int? amount_cents)
         {
             if (success)
             {
-                return Ok(new
+                #region MyRegion
+                //    return Ok(new
+                //    {
+                //        message = "Payment completed successfully!",
+                //        order_id = order,
+                //        amount = amount_cents / 100m,
+                //        html = @"
+                //    <html>
+                //    <head><title>Payment Success</title></head>
+                //    <body style='text-align:center; padding:50px; font-family:Arial'>
+                //        <h1 style='color:green'> Payment completed successfully!</h1>
+                //        <p>رقم الطلب: " + order + @"</p>
+                //        <p>المبلغ: " + (amount_cents / 100m) + @" Egp</p>
+
+                //    </body>
+                //    </html>
+                //"
+                //    }); 
+                #endregion
+
+                var spec = new AppointmentSpecifications(a => a.Id == merchant_order_id);
+                var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
+                if (appointment == null) return NotFound(new ApiResponse(404));
+                if (appointment.Status != AppointmentStatus.Pending) return BadRequest(new ApiResponse(400, "Appointment cannot be confirmed"));
+
+
+
+                appointment.Status = AppointmentStatus.Confirmed;
+                var rowsAffected = await unit.CommitAsync();
+
+                if (rowsAffected <= 0)
+                    return BadRequest(new ApiResponse(400, "Failed to confirm appointment"));
+                var patient = await unit.Repository<Patient>().GetByIdAsync(appointment.PatientId);
+                if (patient != null)
                 {
-                    message = "Payment completed successfully!",
-                    order_id = order,
-                    amount = amount_cents / 100m,
-                    html = @"
-                <html>
-                <head><title>Payment Success</title></head>
-                <body style='text-align:center; padding:50px; font-family:Arial'>
-                    <h1 style='color:green'> Payment completed successfully!</h1>
-                    <p>رقم الطلب: " + order + @"</p>
-                    <p>المبلغ: " + (amount_cents / 100m) + @" Egp</p>
-                   
-                </body>
-                </html>
-            "
-                });
+                    string message = $"تم تأكيد موعدك مع الطبيب {appointment.Doctor.FirstName} {appointment.Doctor.LastName} بتاريخ {appointment.AppointmentDateTime}";
+
+                    var notificationDto = new CreateNotificationDto
+                    {
+                        UserId = appointment.PatientId,
+                        Title = "Appointment Confirmed",
+                        Message = message,
+                        Priority = NotificationPriority.High,
+                        RelatedEntityType = "Appointment",
+                        RelatedEntityId = appointment.Id,
+                        SentViaEmail = false,
+                        SentViaSMS = true,
+                        NotificationType = NotificationType.Appointment,
+                        IsRead = false
+                    };
+                    var notification = mapper.Map<Notification>(notificationDto);
+                    await unit.Repository<Notification>().AddAsync(notification);
+                    await unit.CommitAsync();
+                    if (!string.IsNullOrEmpty(patient.User.Email))
+                    {
+                        var filepath = $"{env.WebRootPath}/templates/ConfirmEmail.html";
+                        StreamReader reader = new StreamReader(filepath);
+                        var body = reader.ReadToEnd();
+                        reader.Close();
+                        body = body.Replace("[header]", message)
+                            .Replace("[body]", "تم تأكيد موعدك بنجاح. نتمنى لك دوام الصحة.")
+                            .Replace("[imageUrl]", "https://res.cloudinary.com/dl21kzp79/image/upload/f_png/v1763918337/icon-positive-vote-3_xfc5be.png\r\n");
+                        await emailSender.SendEmailAsync(patient.User.Email, "Sehaty", body);
+                        notificationDto.SentViaEmail = true;
+                    }
+                    //if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
+                    //{
+                    //    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
+                    //    notificationDto.SentViaSMS = true;
+                    //}
+                    await unit.CommitAsync();
+                }
+
+                return Ok(new ApiResponse(200, "Appointment confirmed successfully"));
             }
 
             return Ok(new

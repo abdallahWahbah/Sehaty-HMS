@@ -15,7 +15,7 @@ namespace Sehaty.Application.Services
             _paymentSettings = paymentSettings.Value;
         }
 
-        public async Task<(string? link, int? billingId)> GetPaymentLinkAsync(int appointmentId, int totalAmount)
+        public async Task<(string link, int? billingId)> GetPaymentLinkAsync(int appointmentId, int totalAmount)
         {
             var spec = new AppointmentSpecifications(a => a.Id == appointmentId);
             var appointment = await unit.Repository<Appointment>()
@@ -29,7 +29,7 @@ namespace Sehaty.Application.Services
             if (doctor == null)
                 throw new InvalidOperationException("Doctor not found");
 
-            if (appointment is null || appointment.Status != AppointmentStatus.Confirmed)
+            if (appointment is null || appointment.Status != AppointmentStatus.Pending)
             {
                 throw new InvalidOperationException("The appointment is not valid for payment!");
             }
@@ -44,7 +44,7 @@ namespace Sehaty.Application.Services
 
             if (_paymentSettings.PaymentProvider == (int)PaymentProvider.PaymobEgy2)
             {
-                string? link = await _paymobEgy2Service.GetPaymentLinkAsync(appointmentId, totalAmount);
+                string link = await _paymobEgy2Service.GetPaymentLinkAsync(appointmentId, totalAmount);
 
                 if (!string.IsNullOrEmpty(link))
                 {
