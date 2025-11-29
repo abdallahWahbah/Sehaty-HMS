@@ -17,6 +17,15 @@ namespace Sehaty.Application.Services
 
         public async Task<(string link, int? billingId)> GetPaymentLinkAsync(int appointmentId, int totalAmount)
         {
+            var specBilling = new BillingSpec(b => b.AppointmentId == appointmentId);
+            var existeingBilling = await unit.Repository<Billing>().GetByIdWithSpecAsync(specBilling);
+            if (existeingBilling != null)
+            {
+                if (existeingBilling.PaymentLink != null &&
+                    existeingBilling.Status == BillingStatus.Pending)
+                    return (existeingBilling.PaymentLink, existeingBilling.Id);
+            }
+
             var spec = new AppointmentSpecifications(a => a.Id == appointmentId);
             var appointment = await unit.Repository<Appointment>()
                 .GetByIdWithSpecAsync(spec);
@@ -40,15 +49,16 @@ namespace Sehaty.Application.Services
             if (totalAmount <= 0)
                 throw new ArgumentException("Amount must Be Larger Than Zero!", nameof(totalAmount));
 
-            var billing = await CreatePendingBilling(appointment, totalAmount);
-
+            Billing billing = new Billing();
             if (_paymentSettings.PaymentProvider == (int)PaymentProvider.PaymobEgy2)
             {
-                string link = await _paymobEgy2Service.GetPaymentLinkAsync(appointmentId, totalAmount);
+                var (link, orderId) = await _paymobEgy2Service.GetPaymentLinkAsync(appointmentId, totalAmount);
 
                 if (!string.IsNullOrEmpty(link))
                 {
+                    billing = await CreatePendingBilling(appointment, totalAmount, orderId);
                     billing.Notes = $"Payment Link Generated at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}";
+                    billing.PaymentLink = link;
                     unit.Repository<Billing>().Update(billing);
                     await unit.CommitAsync();
                 }
@@ -59,7 +69,7 @@ namespace Sehaty.Application.Services
             throw new NotSupportedException("Payment is Not Aviliable");
         }
 
-        private async Task<Billing> CreatePendingBilling(Appointment appointment, int totalAmount)
+        private async Task<Billing> CreatePendingBilling(Appointment appointment, int totalAmount, int orderId)
         {
             var existingBillingSpec = new BillingSpec(b => b.AppointmentId == appointment.Id &&
                 (b.Status == BillingStatus.Pending || b.Status == BillingStatus.Paid)
@@ -91,7 +101,7 @@ namespace Sehaty.Application.Services
                 PaidAmount = 0,
                 PaidAt = null,
                 ItemsDetail = $"Appointment #{appointment.Id} Payment",
-                TransactionId = appointment.Id.ToString(),
+                TransactionId = orderId.ToString(),
                 CommissionApplied = null,
                 NetAmount = totalAmount,
                 Notes = "Awaiting Payment"

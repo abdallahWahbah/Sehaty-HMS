@@ -61,23 +61,17 @@ namespace Sehaty.APIs.Controllers
                     return Ok(new { message = "Invalid data" });
                 }
 
-                string merchantOrderId = model.obj.order?.merchant_order_id ?? "";
-
-                if (!int.TryParse(merchantOrderId, out int appointmentId))
-                {
-                    Console.WriteLine(" Invalid appointment ID");
-                    return Ok(new { message = "Invalid order ID" });
-                }
+                int transactionId = model.obj.order.id;
 
                 var billingSpec = new BillingSpec(
-                    b => b.AppointmentId == appointmentId && b.Status == BillingStatus.Pending
+                    b => b.TransactionId == transactionId.ToString() && b.Status == BillingStatus.Pending
                 );
 
                 var billing = await unit.Repository<Billing>().GetByIdWithSpecAsync(billingSpec);
 
                 if (billing == null)
                 {
-                    Console.WriteLine($" No pending billing found for Appointment #{appointmentId}");
+                    Console.WriteLine($" No pending billing found for Appointment #{transactionId}");
                     return Ok(new { message = "Billing not found" });
                 }
 
@@ -130,31 +124,15 @@ namespace Sehaty.APIs.Controllers
 
 
         [HttpGet("Success")]
-        public async Task<IActionResult> PaymentSuccess([FromQuery] int merchant_order_id, [FromQuery] bool success, [FromQuery] string order, [FromQuery] int? amount_cents)
+        public async Task<IActionResult> PaymentSuccess([FromQuery] int id, [FromQuery] bool success, [FromQuery] string order, [FromQuery] int? amount_cents)
         {
             if (success)
             {
-                #region MyRegion
-                //    return Ok(new
-                //    {
-                //        message = "Payment completed successfully!",
-                //        order_id = order,
-                //        amount = amount_cents / 100m,
-                //        html = @"
-                //    <html>
-                //    <head><title>Payment Success</title></head>
-                //    <body style='text-align:center; padding:50px; font-family:Arial'>
-                //        <h1 style='color:green'> Payment completed successfully!</h1>
-                //        <p>رقم الطلب: " + order + @"</p>
-                //        <p>المبلغ: " + (amount_cents / 100m) + @" Egp</p>
+                var specBilling = new BillingSpec(b => b.TransactionId == id.ToString());
+                var billing = await unit.Repository<Billing>().GetByIdWithSpecAsync(specBilling);
 
-                //    </body>
-                //    </html>
-                //"
-                //    }); 
-                #endregion
 
-                var spec = new AppointmentSpecifications(a => a.Id == merchant_order_id);
+                var spec = new AppointmentSpecifications(a => a.Id == billing.AppointmentId);
                 var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
                 if (appointment == null) return NotFound(new ApiResponse(404));
                 if (appointment.Status != AppointmentStatus.Pending) return BadRequest(new ApiResponse(400, "Appointment cannot be confirmed"));
@@ -199,30 +177,13 @@ namespace Sehaty.APIs.Controllers
                         await emailSender.SendEmailAsync(patient.User.Email, "Sehaty", body);
                         notificationDto.SentViaEmail = true;
                     }
-                    //if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
-                    //{
-                    //    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
-                    //    notificationDto.SentViaSMS = true;
-                    //}
                     await unit.CommitAsync();
                 }
 
-                return Ok(new ApiResponse(200, "Appointment confirmed successfully"));
+                return Ok();
             }
 
-            return Ok(new
-            {
-                message = "Payment failed",
-                html = @"
-            <html>
-            <head><title>Payment Failed</title></head>
-            <body style='text-align:center; padding:50px; font-family:Arial'>
-                <h1 style='color:red'>Payment failed</h1>
-                <p>Tey Again</p>
-            </body>
-            </html>
-        "
-            });
+            return BadRequest();
         }
 
         [HttpPost("Refund")]
