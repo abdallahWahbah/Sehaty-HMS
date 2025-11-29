@@ -16,7 +16,7 @@
         public async Task<ActionResult<IEnumerable<AppointmentReadDto>>> GetAllActiveAppointments()
         {
             var spec = new AppointmentSpecifications(A => A.Status != AppointmentStatus.Pending ||
-            A.Status == AppointmentStatus.NoShow);
+            A.Status != AppointmentStatus.NoShow);
             var appointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(spec);
             return Ok(mapper.Map<List<AppointmentReadDto>>(appointments));
         }
