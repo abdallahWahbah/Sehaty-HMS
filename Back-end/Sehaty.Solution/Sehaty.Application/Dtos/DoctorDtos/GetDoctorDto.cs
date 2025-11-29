@@ -11,10 +11,10 @@
         public int YearsOfExperience { get; set; }
         //public string ProfilePhotoUrl { get; set; }
         public string AvailabilityNotes { get; set; }
+        public int DetectionPrice { get; set; }
         public int UserId { get; set; }
         public string User { get; set; }
         public int? DepartmentId { get; set; }
         public string Department { get; set; }
-        public int Price { get; set; }
     }
 }

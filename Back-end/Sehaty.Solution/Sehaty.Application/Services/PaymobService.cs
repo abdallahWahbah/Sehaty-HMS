@@ -10,7 +10,7 @@
         public PaymobService(IOptions<PaymobEgy2Settings> paymobSettings)
         {
             settings = paymobSettings.Value;
-            apiSecretKey = settings.SKey ?? Environment.GetEnvironmentVariable("PaymobSKey");
+            apiSecretKey = !String.IsNullOrWhiteSpace(settings.SKey) ? settings.SKey : Environment.GetEnvironmentVariable("PaymobSKey");
         }
 
         public async Task<(string, int)> GetPaymentLinkAsync(int appointmentId, int totalAmount)

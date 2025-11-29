@@ -20,7 +20,7 @@
                 if (doctor == null)
                     return NotFound(new { error = "Doctor not found" });
 
-                int totalAmount = (int)doctor.Price;
+                int totalAmount = (int)doctor.DetectionPrice;
 
                 var (link, billingId) = await paymentService.GetPaymentLinkAsync(appointmentId, totalAmount);
                 if (string.IsNullOrEmpty(appointmentId.ToString()))

@@ -17,12 +17,13 @@
         [Required]
         [MaxLength(100)]
         public string LicenseNumber { get; set; }
+        [Required]
+        public int DetectionPrice { get; set; }
         public string Qualifications { get; set; }
         public int YearsOfExperience { get; set; }
         //public IFormFile ProfilePhoto { get; set; }
         public string AvailabilityNotes { get; set; }
         public int UserId { get; set; }
         public int DepartmentId { get; set; }
-        public int Price { get; set; }
     }
 }
