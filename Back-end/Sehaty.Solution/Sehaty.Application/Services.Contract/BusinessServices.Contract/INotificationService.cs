@@ -5,5 +5,6 @@
     public interface INotificationService
     {
         public Task<bool> CreateNotificationForAppointmentConfirmation(Appointment appointment);
+        public Task<bool> CreateNotificationForAppointmentCancellation(Appointment appointment);
     }
 }
