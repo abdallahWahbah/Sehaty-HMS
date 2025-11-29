@@ -62,6 +62,9 @@
             {{ appointment.reasonForVisit }}
           </div>
         </div>
+        <button class="pay_btn" (click)="goToPayment(appointment.id)">
+          Pay Now
+        </button>
 
         <!-- View Button -->
       </div>

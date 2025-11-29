@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { AppointmentResponseModel } from '../../../core/models/appointment-response-model';
 import { AppointmentService } from '../../../core/services/appointment.service';
-import { DoctorService } from '../../../core/services/doctor.service';
 import { DoctorResponseModel } from '../../../core/models/doctor-response-model';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -12,12 +11,12 @@ import { FeedbackResponseModel } from '../../../core/models/feedback.response';
   selector: 'app-doctor-appointments',
   imports: [CommonModule],
   templateUrl: './doctor-appointments.component.html',
-  styleUrl: './doctor-appointments.component.scss',
+  styleUrls: ['./doctor-appointments.component.scss'],
 })
 export class DoctorAppointmentsComponent {
   appointments: AppointmentResponseModel[] = [];
-  currentDoctor!: DoctorResponseModel;
   isLoading: boolean = true;
+  currentDoctor!: DoctorResponseModel; // <-- لازم يكون موجود
 
   // لمتابعة الموعد المفتوح حالياً لعرض الفيدباك
   openedAppointmentId: number | null = null;
@@ -29,58 +28,42 @@ export class DoctorAppointmentsComponent {
 
   constructor(
     private _appointmentsService: AppointmentService,
-    private _doctorService: DoctorService,
     private feedbackService: FeedbackService,
     private router: Router
   ) {}
 
   ngOnInit() {
-    let storedUser: any = localStorage.getItem('userData');
-    storedUser = JSON.parse(storedUser);
-
-    // احضر بيانات الدكتور الحالي
-    this._doctorService.getAllDoctors().subscribe({
-      next: (allDoctors) => {
-        this.currentDoctor = allDoctors.find(
-          (doc) => doc.userId === storedUser.userId
-        )!;
-        this.loadAppointments();
-      },
-      error: (err) => {
-        console.error(err);
-        this.isLoading = false;
-      },
-    });
+    this.loadAppointments();
   }
 
   private loadAppointments() {
-    this._appointmentsService.getAll().subscribe({
-      next: (data) => {
-        this.appointments = data
-          .filter((app) => app.doctorId === this.currentDoctor?.id)
-          .sort((a, b) => {
-            const dateA = new Date(a.appointmentDateTime);
-            const dateB = new Date(b.appointmentDateTime);
+    this.isLoading = true;
 
-            const dayA = new Date(
-              dateA.getFullYear(),
-              dateA.getMonth(),
-              dateA.getDate()
-            ).getTime();
-            const dayB = new Date(
-              dateB.getFullYear(),
-              dateB.getMonth(),
-              dateB.getDate()
-            ).getTime();
+    this._appointmentsService.getDoctorAppointments().subscribe({
+      next: (data: AppointmentResponseModel[]) => {
+        this.appointments = data.sort((a, b) => {
+          const dateA = new Date(a.appointmentDateTime);
+          const dateB = new Date(b.appointmentDateTime);
 
-            if (dayA !== dayB) return dayB - dayA;
+          const dayA = new Date(
+            dateA.getFullYear(),
+            dateA.getMonth(),
+            dateA.getDate()
+          ).getTime();
+          const dayB = new Date(
+            dateB.getFullYear(),
+            dateB.getMonth(),
+            dateB.getDate()
+          ).getTime();
 
-            return dateA.getTime() - dateB.getTime();
-          });
+          if (dayA !== dayB) return dayB - dayA;
+          return dateA.getTime() - dateB.getTime();
+        });
+
         this.isLoading = false;
       },
       error: (err) => {
-        console.error(err);
+        console.error('Error fetching doctor appointments', err);
         this.isLoading = false;
       },
     });
@@ -104,22 +87,16 @@ export class DoctorAppointmentsComponent {
   // عرض أو إخفاء الفيدباك للموعد المحدد
   toggleFeedback(appointmentId: number) {
     if (this.openedAppointmentId === appointmentId) {
-      // لو الفيدباك ظاهر بالفعل، نخفيه
       this.openedAppointmentId = null;
       return;
     }
 
     this.openedAppointmentId = appointmentId;
 
-    // لو الفيدباك موجود مسبقاً، لا نعيد تحميله
-    if (this.selectedFeedbackMap[appointmentId]) {
-      return;
-    }
+    if (this.selectedFeedbackMap[appointmentId]) return;
 
-    // تحميل الفيدباك من الخدمة
     this.feedbackService.getByAppointmentId(appointmentId).subscribe({
       next: (feedback: unknown) => {
-        // لو الداتا جاية في شكل object يحتوي المفتاح "0"
         if (feedback && typeof feedback === 'object' && '0' in feedback) {
           this.selectedFeedbackMap[appointmentId] = (feedback as any)[
             '0'
@@ -134,5 +111,13 @@ export class DoctorAppointmentsComponent {
         this.selectedFeedbackMap[appointmentId] = null;
       },
     });
+  }
+
+  goToPatientDetails(patientId?: number) {
+    if (patientId != null) {
+      this.router.navigate(['/doctor/patient/details', patientId]);
+    } else {
+      console.warn('Patient ID is undefined!');
+    }
   }
 }

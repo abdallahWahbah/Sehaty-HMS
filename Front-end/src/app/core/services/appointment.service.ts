@@ -1,11 +1,16 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppointmentResponseModel } from '../models/appointment-response-model';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { CreateAppointmentDto } from '../models/appointment-create-model';
 import { RescheduleAppointmentDto } from '../models/appointment-updateDate-model';
-
+import { ConfirmAppointmentResponse } from '../models/confirmappoitment.model';
+import { raw } from 'express';
 @Injectable({
   providedIn: 'root',
 })
@@ -41,6 +46,21 @@ export class AppointmentService {
       map((raw) => this.toAppointment(raw)),
       catchError(this.handleError)
     );
+  }
+  getDoctorAppointments(): Observable<AppointmentResponseModel[]> {
+    const token = localStorage.getItem('token');
+    const headers = token
+      ? new HttpHeaders({ Authorization: `Bearer ${token}` })
+      : new HttpHeaders();
+
+    return this.http
+      .get<AppointmentResponseModel[]>(`${this.baseUrl}DoctorAppoinments`, {
+        headers,
+      })
+      .pipe(
+        map((rawArray) => rawArray.map((raw) => this.toAppointment(raw))), // لو عندك دالة لتحويل كل عنصر
+        catchError(this.handleError)
+      );
   }
 
   create(dto: CreateAppointmentDto): Observable<AppointmentResponseModel> {
@@ -93,11 +113,15 @@ export class AppointmentService {
       .pipe(catchError(this.handleError));
   }
 
-  confirm(id: number): Observable<void> {
+  confirm(id: number): Observable<ConfirmAppointmentResponse> {
     return this.http
-      .post<void>(`${this.baseUrl}ConfirmAppointment/${id}`, {})
+      .post<ConfirmAppointmentResponse>(
+        `${this.baseUrl}ConfirmAppointment/${id}`,
+        {}
+      )
       .pipe(catchError(this.handleError));
   }
+
   getByPatientId(patientId: number): Observable<AppointmentResponseModel[]> {
     return this.http
       .get<AppointmentResponseModel[]>(

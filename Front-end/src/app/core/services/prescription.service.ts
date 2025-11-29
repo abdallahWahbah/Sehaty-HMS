@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Prescription } from '../models/prescription-response-model';
-
+import { PrescriptionHistory } from '../models/prescriptionhistory-models';
 @Injectable({
   providedIn: 'root',
 })
@@ -14,6 +14,18 @@ export class PrescriptionService {
   // Get all prescriptions
   getAllPrescriptions(): Observable<Prescription[]> {
     return this._http.get<Prescription[]>(this.baseUrl);
+  }
+  getDoctorPrecriptions(): Observable<Prescription[]> {
+    const token = localStorage.getItem('token');
+    const headers = token
+      ? new HttpHeaders({
+          Authorization: `Bearer ${token}`,
+        })
+      : new HttpHeaders();
+    return this._http.get<Prescription[]>(
+      `${this.baseUrl}/doctorprescriptions`,
+      { headers }
+    );
   }
 
   // Get a single prescription by ID
@@ -75,6 +87,25 @@ export class PrescriptionService {
           }))
         )
       );
+  }
+  getPatientPrescriptionHistory(
+    patientId: number
+  ): Observable<PrescriptionHistory[]> {
+    const token = localStorage.getItem('token');
+    const headers = token
+      ? new HttpHeaders({ Authorization: `Bearer ${token}` })
+      : new HttpHeaders();
+
+    const url = `${this.baseUrl}/patient/${patientId}/history`;
+
+    return this._http.get<PrescriptionHistory[]>(url, { headers }).pipe(
+      map((list) =>
+        list.map((p) => ({
+          ...p,
+          dateIssued: new Date(p.dateIssued),
+        }))
+      )
+    );
   }
   downloadPrescription(id: number): Observable<Blob> {
     const url = `${this.baseUrl}/prescriptions/${id}/download`;

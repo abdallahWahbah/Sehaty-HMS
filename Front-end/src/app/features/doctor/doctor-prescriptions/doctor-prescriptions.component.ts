@@ -9,20 +9,19 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-doctor-prescriptions',
   imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './doctor-prescriptions.component.html',
-  styleUrls: ['./doctor-prescriptions.component.scss']
+  styleUrls: ['./doctor-prescriptions.component.scss'],
 })
 export class DoctorPrescriptionsComponent implements OnInit {
-
   prescriptions: Prescription[] = [];
   isLoading = true;
   errorMessage = '';
   filteredPrescriptions: Prescription[] = [];
   searchPatientId: number | null = null;
-  
+
   constructor(
     private prescriptionService: PrescriptionService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.loadPrescriptions();
@@ -30,7 +29,7 @@ export class DoctorPrescriptionsComponent implements OnInit {
 
   // Get all prescriptions
   private loadPrescriptions(): void {
-    this.prescriptionService.getAllPrescriptions().subscribe({
+    this.prescriptionService.getDoctorPrecriptions().subscribe({
       next: (data) => {
         this.prescriptions = data;
         this.filteredPrescriptions = [...this.prescriptions]; // initialize filtered list
@@ -40,11 +39,10 @@ export class DoctorPrescriptionsComponent implements OnInit {
         this.errorMessage = 'Failed to load prescriptions';
         console.error(err);
         this.isLoading = false;
-      }
+      },
     });
   }
 
-  
   filterByPatientId() {
     if (!this.searchPatientId) {
       this.filteredPrescriptions = [...this.prescriptions];
@@ -52,7 +50,7 @@ export class DoctorPrescriptionsComponent implements OnInit {
     }
 
     this.filteredPrescriptions = this.prescriptions.filter(
-      p => p.patientId === Number(this.searchPatientId)
+      (p) => p.patientId === Number(this.searchPatientId)
     );
   }
 
@@ -66,20 +64,22 @@ export class DoctorPrescriptionsComponent implements OnInit {
     this.router.navigate(['/doctor/prescriptions/edit', prescription.id]);
   }
 
-
-
-
   // Delete a prescription
   deletePrescription(prescription: Prescription) {
-    if (confirm(`Are you sure you want to delete prescription ${prescription.id}?`)) {
+    if (
+      confirm(
+        `Are you sure you want to delete prescription ${prescription.id}?`
+      )
+    ) {
       this.prescriptionService.deletePrescription(prescription.id).subscribe({
         next: () => {
-          this.prescriptions = this.prescriptions.filter(p => p.id !== prescription.id);
+          this.prescriptions = this.prescriptions.filter(
+            (p) => p.id !== prescription.id
+          );
           console.log('Prescription deleted');
         },
-        error: (err) => console.error('Failed to delete prescription', err)
+        error: (err) => console.error('Failed to delete prescription', err),
       });
     }
   }
-
 }
