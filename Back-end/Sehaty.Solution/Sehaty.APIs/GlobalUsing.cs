@@ -35,7 +35,6 @@ global using Sehaty.Core.Entities.User_Entities;
 global using Sehaty.Core.Specifications.Appointment_Specs;
 global using Sehaty.Core.Specifications.BillingSpec;
 global using Sehaty.Core.Specifications.DepartmentSpec;
-global using Sehaty.Core.Specifications.DoctorAvailabilitySlotSpec;
 global using Sehaty.Core.Specifications.DoctorSpec;
 global using Sehaty.Core.Specifications.FeedbackSpec;
 global using Sehaty.Core.Specifications.MedicalRecordSpec;
@@ -51,5 +50,3 @@ global using System.Security.Claims;
 global using System.Text;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
-
-

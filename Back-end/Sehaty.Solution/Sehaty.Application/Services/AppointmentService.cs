@@ -1,32 +1,17 @@
-﻿using Sehaty.Core.Specifications.Appointment_Specs;
-using Sehaty.Core.Specifications.BillingSpec;
-
-namespace Sehaty.Application.Services
+﻿namespace Sehaty.Application.Services
 {
-    public class AppointmentService : IAppointmentService
+    public class AppointmentService(IUnitOfWork unit, IMapper mapper) : IAppointmentService
     {
-        private readonly IUnitOfWork unit;
-        private readonly IMapper mapper;
-        private readonly INotificationService notificationService;
-
-        public AppointmentService(IUnitOfWork unit, IMapper mapper, INotificationService notificationService)
-        {
-            this.unit = unit;
-            this.mapper = mapper;
-            this.notificationService = notificationService;
-        }
 
         public async Task<Appointment> CreateAsync(AppointmentAddDto dto)
         {
 
-            var doctor = await unit.Repository<Doctor>().GetByIdAsync(dto.DoctorId);
-            if (doctor == null)
-                throw new Exception("Doctor not found");
+            var doctor = await unit.Repository<Doctor>().GetByIdAsync(dto.DoctorId)
+                ?? throw new Exception("Doctor not found");
 
 
-            var patient = await unit.Repository<Patient>().GetByIdAsync(dto.PatientId);
-            if (patient == null)
-                throw new Exception("Patient not found");
+            var patient = await unit.Repository<Patient>().GetByIdAsync(dto.PatientId)
+                ?? throw new Exception("Patient not found");
 
 
             if (dto.AppointmentDateTime < DateTime.Now)
@@ -42,9 +27,9 @@ namespace Sehaty.Application.Services
             a.AppointmentDateTime.Date == dto.AppointmentDateTime.Date).ToListAsync();
 
 
-            if (doctorAppointments.Count(a =>
+            if (doctorAppointments.Any(a =>
                 dto.AppointmentDateTime < a.AppointmentDateTime.AddMinutes(a.DurationMinutes) &&
-                dto.AppointmentDateTime.AddMinutes(30) > a.AppointmentDateTime) > 0)
+                dto.AppointmentDateTime.AddMinutes(30) > a.AppointmentDateTime))
                 throw new Exception("Doctor Already Has An Overlapping Appointment");
 
 
@@ -54,9 +39,9 @@ namespace Sehaty.Application.Services
             var patientAppointments = await unit.Repository<Appointment>().FindBy(a => a.PatientId == dto.PatientId &&
                                           a.AppointmentDateTime.Date == dto.AppointmentDateTime.Date).ToListAsync();
 
-            if (patientAppointments.Count(a =>
+            if (patientAppointments.Any(a =>
                 dto.AppointmentDateTime < a.AppointmentDateTime.AddMinutes(a.DurationMinutes) &&
-                dto.AppointmentDateTime.AddMinutes(30) > a.AppointmentDateTime) > 0)
+                dto.AppointmentDateTime.AddMinutes(30) > a.AppointmentDateTime))
                 throw new Exception("Cannot Book More Than 1 Appointment At This Time");
 
 
@@ -75,20 +60,20 @@ namespace Sehaty.Application.Services
         public async Task<Appointment> CreateAsyncForReceptionist(AppointmentAddForAnonymousDto dto)
         {
 
-            var doctor = await unit.Repository<Doctor>().GetByIdAsync(dto.DoctorId);
-            if (doctor == null)
-                throw new Exception("Doctor not found");
+            var doctor = await unit.Repository<Doctor>().GetByIdAsync(dto.DoctorId)
+                ?? throw new Exception("Doctor not found");
 
             if (dto.AppointmentDateTime.Date < DateTime.Now.Date)
                 throw new Exception("Appointment date cannot be in the past");
 
-            var doctorAppointments = await unit.Repository<Appointment>().FindBy(a => a.DoctorId == dto.DoctorId &&
-            a.AppointmentDateTime.Date == dto.AppointmentDateTime.Date).ToListAsync();
+            var doctorAppointments = await unit.Repository<Appointment>()
+                .FindBy(a => a.DoctorId == dto.DoctorId && a.AppointmentDateTime.Date == dto.AppointmentDateTime.Date)
+                .ToListAsync();
 
 
-            if (doctorAppointments.Count(a =>
+            if (doctorAppointments.Any(a =>
                 dto.AppointmentDateTime < a.AppointmentDateTime.AddMinutes(a.DurationMinutes) &&
-                dto.AppointmentDateTime.AddMinutes(30) > a.AppointmentDateTime) > 0)
+                dto.AppointmentDateTime.AddMinutes(30) > a.AppointmentDateTime))
                 throw new Exception("Doctor Already Has An Overlapping Appointment");
 
             var appointment = mapper.Map<Appointment>(dto);
