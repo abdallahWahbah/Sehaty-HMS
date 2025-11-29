@@ -1,6 +1,6 @@
 ﻿namespace Sehaty.Application.Services.Contract.BusinessServices.Contract
 {
-    public interface IBillingService
+    public interface IPaymobService
     {
         Task<(string, int)> GetPaymentLinkAsync(int appointmentId, int totalAmount);
         bool ValidateHMAC(string dataString, string expectedHmac);

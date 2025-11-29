@@ -83,6 +83,11 @@
                 var doctorUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 var doctorId = (await unit.Repository<Doctor>().GetFirstOrDefaultAsync(D => D.UserId == doctorUserId)).Id;
 
+                var appointment = await unit.Repository<Appointment>().GetByIdAsync(model.AppointmentId, true);
+                if (appointment?.Status != AppointmentStatus.InProgress || appointment?.Status != AppointmentStatus.Completed)
+                    return BadRequest(new ApiResponse(400,
+                        "Oops! You can add a prescription only when the appointment is In Progress or Completed."));
+
                 prescription.DoctorId = doctorId;
                 await unit.Repository<Prescription>().AddAsync(prescription);
                 await unit.CommitAsync();

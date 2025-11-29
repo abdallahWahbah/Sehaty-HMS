@@ -37,6 +37,7 @@ global using System.ComponentModel.DataAnnotations;
 global using System.Data;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Net;
+global using System.Net.Http.Json;
 global using System.Net.Mail;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
