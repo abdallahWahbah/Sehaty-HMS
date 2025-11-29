@@ -12,22 +12,15 @@ namespace Sehaty.Application.Services
             _settings = paymobSettings.Value;
         }
 
-        public async Task<string> GetPaymentLinkAsync(int appointmentId, int totalAmount)
+        public async Task<(string, int)> GetPaymentLinkAsync(int appointmentId, int totalAmount)
         {
-            string clientSecret = await CreateIntentionRequest(appointmentId, totalAmount);
+            var (clientSecret, orderId) = await CreateIntentionRequest(appointmentId, totalAmount);
 
             if (string.IsNullOrEmpty(clientSecret))
-                return null;
+                return (null, 0);
 
             string url = $"https://accept.paymob.com/unifiedcheckout/?publicKey={_settings.PublicKey}&clientSecret={clientSecret}";
-            var billing = new Billing
-            {
-                AppointmentId = appointmentId,
-                TotalAmount = totalAmount / 100m,
-                BillDate = DateTime.UtcNow,
-                Status = BillingStatus.Pending
-            };
-            return url;
+            return (url, orderId);
         }
 
         public bool ValidateHMAC(string dataString, string expectedHmac)
@@ -41,7 +34,7 @@ namespace Sehaty.Application.Services
             return string.Equals(computedHmac, expectedHmac, StringComparison.OrdinalIgnoreCase);
         }
 
-        private async Task<string> CreateIntentionRequest(int appointmentId, int totalAmount)
+        private async Task<(string, int)> CreateIntentionRequest(int appointmentId, int totalAmount)
         {
             try
             {
@@ -54,7 +47,7 @@ namespace Sehaty.Application.Services
                 {
                     amount = amountInCents,
                     currency = "EGP",
-                    special_reference = appointmentId.ToString(),
+                    special_reference = Guid.NewGuid().ToString(),
                     payment_methods = new[]
                     {
                 _settings.CardIntegrationId,
@@ -78,20 +71,23 @@ namespace Sehaty.Application.Services
 
                 var content = await response.Content.ReadAsStringAsync();
 
+
                 if (!response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"Status: {response.StatusCode}");
-                    Console.WriteLine($"Error: {content}");
-                    return null;
+                    return (null, 0);
                 }
 
                 var result = await response.Content.ReadFromJsonAsync<ResponseOrderCreation>();
-                return result?.client_secret;
+                using var jsonDoc = System.Text.Json.JsonDocument.Parse(content);
+                var root = jsonDoc.RootElement;
+                int orderId = root.GetProperty("intention_order_id").GetInt32();
+
+                return (result?.client_secret, orderId);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"{ex.Message}");
-                return null;
+                return (null, 0);
             }
         }
         private static string GenerateHmacSHA512(string key, string message)

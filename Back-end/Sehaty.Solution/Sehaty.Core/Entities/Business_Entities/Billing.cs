@@ -34,6 +34,7 @@
         public decimal? CommissionApplied { get; set; }
         public decimal? NetAmount { get; set; }
         public string Notes { get; set; }
+        public string PaymentLink { get; set; }
 
         // Navigation
         public Patient Patient { get; set; }
