@@ -1,4 +1,5 @@
 ﻿using Sehaty.Core.Specifications.Appointment_Specs;
+using Sehaty.Core.Specifications.BillingSpec;
 
 namespace Sehaty.Application.Services
 {
@@ -6,11 +7,13 @@ namespace Sehaty.Application.Services
     {
         private readonly IUnitOfWork unit;
         private readonly IMapper mapper;
+        private readonly INotificationService notificationService;
 
-        public AppointmentService(IUnitOfWork unit, IMapper mapper)
+        public AppointmentService(IUnitOfWork unit, IMapper mapper, INotificationService notificationService)
         {
             this.unit = unit;
             this.mapper = mapper;
+            this.notificationService = notificationService;
         }
 
         public async Task<Appointment> CreateAsync(AppointmentAddDto dto)
@@ -99,5 +102,29 @@ namespace Sehaty.Application.Services
 
             return appointment;
         }
+
+
+        public async Task<Appointment> ConfirmAppointment(int billingId)
+        {
+            var specBilling = new BillingSpec(b => b.TransactionId == billingId.ToString());
+
+            var billing = await unit.Repository<Billing>().GetByIdWithSpecAsync(specBilling);
+
+            var spec = new AppointmentSpecifications(A => A.Id == billing.AppointmentId);
+            var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
+            if (appointment == null) return null;
+
+            if (appointment.Status != AppointmentStatus.Pending) throw new Exception("Appointment cannot be confirmed");
+
+
+
+            appointment.Status = AppointmentStatus.Confirmed;
+            var rowsAffected = await unit.CommitAsync();
+
+            if (rowsAffected <= 0)
+                throw new Exception("Failed to confirm appointment");
+            return appointment;
+        }
+
     }
 }

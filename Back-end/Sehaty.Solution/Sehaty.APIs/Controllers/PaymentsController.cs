@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using Sehaty.Application.Services;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
-    public class BillingsController(IEmailSender emailSender, IWebHostEnvironment env, IMapper mapper, IPaymentService _paymentService, IUnitOfWork unit) : ApiBaseController
+    public class PaymentsController(IAppointmentService appointmentService, INotificationService notificationService, IPaymentService paymentService, IUnitOfWork unit) : ApiBaseController
     {
 
         [HttpGet("GetLink")]
@@ -25,7 +22,7 @@ namespace Sehaty.APIs.Controllers
 
                 int totalAmount = (int)doctor.Price;
 
-                var (link, billingId) = await _paymentService.GetPaymentLinkAsync(appointmentId, totalAmount);
+                var (link, billingId) = await paymentService.GetPaymentLinkAsync(appointmentId, totalAmount);
                 if (string.IsNullOrEmpty(appointmentId.ToString()))
                     return BadRequest(new { error = "AppointmentId Is Required" });
 
@@ -128,59 +125,24 @@ namespace Sehaty.APIs.Controllers
         {
             if (success)
             {
-                var specBilling = new BillingSpec(b => b.TransactionId == id.ToString());
-                var billing = await unit.Repository<Billing>().GetByIdWithSpecAsync(specBilling);
 
-
-                var spec = new AppointmentSpecifications(a => a.Id == billing.AppointmentId);
-                var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
-                if (appointment == null) return NotFound(new ApiResponse(404));
-                if (appointment.Status != AppointmentStatus.Pending) return BadRequest(new ApiResponse(400, "Appointment cannot be confirmed"));
-
-
-
-                appointment.Status = AppointmentStatus.Confirmed;
-                var rowsAffected = await unit.CommitAsync();
-
-                if (rowsAffected <= 0)
-                    return BadRequest(new ApiResponse(400, "Failed to confirm appointment"));
-                var patient = await unit.Repository<Patient>().GetByIdAsync(appointment.PatientId);
-                if (patient != null)
+                try
                 {
-                    string message = $"تم تأكيد موعدك مع الطبيب {appointment.Doctor.FirstName} {appointment.Doctor.LastName} بتاريخ {appointment.AppointmentDateTime}";
+                    var appointment = await appointmentService.ConfirmAppointment(id);
+                    if (appointment == null)
+                        return NotFound(new ApiResponse(404, "Cannot Find Appointment"));
+                    if (await notificationService.CreateNotificationForAppointmentConfirmation(appointment))
+                        return Ok(new { message = "Appointment Confirmed Check Your Email" });
+                    return Ok(new { message = "Appointment Confirmed" });
 
-                    var notificationDto = new CreateNotificationDto
-                    {
-                        UserId = appointment.PatientId,
-                        Title = "Appointment Confirmed",
-                        Message = message,
-                        Priority = NotificationPriority.High,
-                        RelatedEntityType = "Appointment",
-                        RelatedEntityId = appointment.Id,
-                        SentViaEmail = false,
-                        SentViaSMS = true,
-                        NotificationType = NotificationType.Appointment,
-                        IsRead = false
-                    };
-                    var notification = mapper.Map<Notification>(notificationDto);
-                    await unit.Repository<Notification>().AddAsync(notification);
-                    await unit.CommitAsync();
-                    if (!string.IsNullOrEmpty(patient.User.Email))
-                    {
-                        var filepath = $"{env.WebRootPath}/templates/ConfirmEmail.html";
-                        StreamReader reader = new StreamReader(filepath);
-                        var body = reader.ReadToEnd();
-                        reader.Close();
-                        body = body.Replace("[header]", message)
-                            .Replace("[body]", "تم تأكيد موعدك بنجاح. نتمنى لك دوام الصحة.")
-                            .Replace("[imageUrl]", "https://res.cloudinary.com/dl21kzp79/image/upload/f_png/v1763918337/icon-positive-vote-3_xfc5be.png\r\n");
-                        await emailSender.SendEmailAsync(patient.User.Email, "Sehaty", body);
-                        notificationDto.SentViaEmail = true;
-                    }
-                    await unit.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+
+                    return BadRequest(new ApiResponse(400, ex.Message));
                 }
 
-                return Ok();
+
             }
 
             return BadRequest();
@@ -191,7 +153,7 @@ namespace Sehaty.APIs.Controllers
         {
             try
             {
-                bool success = await _paymentService.ProcessRefundAsync(billingId);
+                bool success = await paymentService.ProcessRefundAsync(billingId);
 
                 if (success)
                 {
@@ -230,7 +192,7 @@ namespace Sehaty.APIs.Controllers
                 if (amount <= 0)
                     return BadRequest(new { error = "The amount must be greater than zero!" });
 
-                bool success = await _paymentService.ProcessRefundAsync(billingId, amount);
+                bool success = await paymentService.ProcessRefundAsync(billingId, amount);
 
                 if (success)
                 {

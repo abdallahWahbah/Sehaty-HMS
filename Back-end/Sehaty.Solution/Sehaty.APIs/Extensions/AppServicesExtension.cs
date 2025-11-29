@@ -22,8 +22,15 @@
 
             #endregion
 
+            #region Add AutoMapper Profiles
 
-            #region Add Services
+            // Add AutoMapper Profiles Injection
+            // To Add Every Profile Automatically
+            services.AddAutoMapper(cfg => { }, typeof(DoctorProfile).Assembly);
+
+            #endregion
+
+            #region Add Project Services
 
             // Add UnitOfWork Class Injection
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -37,6 +44,9 @@
             // Inject Service For Appointment To Add And Manage Appointments
             services.AddScoped<IAppointmentService, AppointmentService>();
 
+            // Inject Service For Notification To Add And Manage Notifications
+            services.AddScoped<INotificationService, NotificationService>();
+
             // Inject Service For Patient To Add And Manage Patient
             services.AddScoped<IPatientService, PatientService>();
 
@@ -44,7 +54,7 @@
             services.AddScoped<IFileService, FileService>();
             // Inject Service For Billing To Add And Manage Billing
 
-            services.AddScoped<IBillingService, BillingService>();
+            services.AddScoped<IBillingService, PaymobService>();
 
             // Inject Service For PaymentService To Add And Manage Billing
             services.AddScoped<IPaymentService, PaymentService>();
@@ -56,10 +66,6 @@
             services.AddTransient<ISmsSender, SmsSender>();
 
             services.AddScoped<IDoctorAvailabilityService, DoctorAvailabilityService>();
-
-            // Add AutoMapper Profiles Injection
-            // To Add Every Profile Automatically
-            services.AddAutoMapper(cfg => { }, typeof(DoctorProfile).Assembly);
 
             //Add email services
             //bind Twilio settings

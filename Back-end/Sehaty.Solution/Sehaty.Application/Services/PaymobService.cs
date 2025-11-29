@@ -1,15 +1,16 @@
-﻿using System.Net.Http.Json;
-
-namespace Sehaty.Application.Services
+﻿namespace Sehaty.Application.Services
 {
-    public class BillingService : IBillingService
+    public class PaymobService : IBillingService
     {
 
-        private readonly PaymobEgy2Settings _settings;
+        private readonly PaymobEgy2Settings settings;
+        private readonly string apiSecretKey;
 
-        public BillingService(IUnitOfWork _unit, IOptions<PaymobEgy2Settings> paymobSettings)
+
+        public PaymobService(IOptions<PaymobEgy2Settings> paymobSettings)
         {
-            _settings = paymobSettings.Value;
+            settings = paymobSettings.Value;
+            apiSecretKey = settings.SKey ?? Environment.GetEnvironmentVariable("PaymobSKey");
         }
 
         public async Task<(string, int)> GetPaymentLinkAsync(int appointmentId, int totalAmount)
@@ -19,18 +20,18 @@ namespace Sehaty.Application.Services
             if (string.IsNullOrEmpty(clientSecret))
                 return (null, 0);
 
-            string url = $"https://accept.paymob.com/unifiedcheckout/?publicKey={_settings.PublicKey}&clientSecret={clientSecret}";
+            string url = $"https://accept.paymob.com/unifiedcheckout/?publicKey={settings.PublicKey}&clientSecret={clientSecret}";
             return (url, orderId);
         }
 
         public bool ValidateHMAC(string dataString, string expectedHmac)
         {
-            if (string.IsNullOrEmpty(_settings.AccountHMAC) ||
+            if (string.IsNullOrEmpty(settings.AccountHMAC) ||
                 string.IsNullOrEmpty(dataString) ||
                 string.IsNullOrEmpty(expectedHmac))
                 return false;
 
-            var computedHmac = GenerateHmacSHA512(_settings.AccountHMAC, dataString);
+            var computedHmac = GenerateHmacSHA512(settings.AccountHMAC, dataString);
             return string.Equals(computedHmac, expectedHmac, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -39,7 +40,7 @@ namespace Sehaty.Application.Services
             try
             {
                 using HttpClient client = new();
-                client.DefaultRequestHeaders.Add("Authorization", $"Token {_settings.SKey}");
+                client.DefaultRequestHeaders.Add("Authorization", $"Token {apiSecretKey}");
 
                 int amountInCents = totalAmount * 100;
 
@@ -50,10 +51,10 @@ namespace Sehaty.Application.Services
                     special_reference = Guid.NewGuid().ToString(),
                     payment_methods = new[]
                     {
-                _settings.CardIntegrationId,
-                _settings.WalletIntegrationId
-            },
-                    items = new object[] { },
+                settings.CardIntegrationId,
+                settings.WalletIntegrationId
+                    },
+                    items = Array.Empty<object>(),
                     billing_data = new
                     {
                         first_name = "Customer",
@@ -105,7 +106,7 @@ namespace Sehaty.Application.Services
             try
             {
                 using HttpClient client = new();
-                client.DefaultRequestHeaders.Add("Authorization", $"Token {_settings.SKey}");
+                client.DefaultRequestHeaders.Add("Authorization", $"Token {apiSecretKey}");
 
                 int amountInCents = (int)(amountToRefund * 100);
 
