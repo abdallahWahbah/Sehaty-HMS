@@ -1,7 +1,7 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
 
-    public class AppointmentsController(IPaymentService paymentService, IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService, IEmailSender emailSender, ISmsSender smsSender, IWebHostEnvironment env) : ApiBaseController
+    public class AppointmentsController(INotificationService notificationService, IPaymentService paymentService, IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService) : ApiBaseController
     {
 
         [HttpGet("GetAll")]
@@ -193,7 +193,8 @@
         [HttpPut("RescheduleAppointment/{id}")]
         public async Task<IActionResult> RescheduleAppointment(int id, [FromBody] RescheduleAppointmentDto model)
         {
-            var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
+            var spec = new AppointmentSpecifications(id);
+            var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
             if (appointment is null) return NotFound(new ApiResponse(404));
 
 
@@ -237,6 +238,9 @@
             await unit.Repository<AppointmentAuditLog>().AddAsync(auditLog);
             unit.Repository<Appointment>().Update(appointment);
             var rowsAffected = await unit.CommitAsync();
+
+            await notificationService.NotifyAppointmentUpdated(appointment);
+
             return rowsAffected > 0 ? Ok(new ApiResponse(200, "Appointment rescheduled successfully")) : BadRequest(new ApiResponse(400, "Failed to reschedule appointment"));
 
         }

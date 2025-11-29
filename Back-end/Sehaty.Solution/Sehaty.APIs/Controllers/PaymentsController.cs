@@ -35,7 +35,7 @@
                     payment_link = link,
                     totalAmount,
                     order_id = appointmentId,
-                    billingId = billingId
+                    billingId
                 });
             }
             catch (Exception ex)
@@ -106,7 +106,7 @@
             }
         }
 
-        private PaymentMethod GetPaymentMethodFromCallback(PaymobCallbackPostModel model)
+        private static PaymentMethod GetPaymentMethodFromCallback(PaymobCallbackPostModel model)
         {
             string method = model.obj?.data?.message?.ToLower();
 
@@ -131,7 +131,7 @@
                     var appointment = await appointmentService.ConfirmAppointment(id);
                     if (appointment == null)
                         return NotFound(new ApiResponse(404, "Cannot Find Appointment"));
-                    if (await notificationService.CreateNotificationForAppointmentConfirmation(appointment))
+                    if (await notificationService.NotifyAppointmentConfirmation(appointment))
                         return Ok(new { message = "Appointment Confirmed Check Your Email" });
                     return Ok(new { message = "Appointment Confirmed" });
 

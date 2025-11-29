@@ -1,7 +1,7 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
 
-    public class PrescriptionsController(IUnitOfWork unit, IMapper map, IPrescriptionPdfService pdfService, IEmailSender emailSender, ISmsSender smsSender, IWebHostEnvironment env) : ApiBaseController
+    public class PrescriptionsController(IUnitOfWork unit, IMapper map, IPrescriptionPdfService pdfService, INotificationService notificationService) : ApiBaseController
     {
 
         [HttpGet]
@@ -35,7 +35,7 @@
 
             var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
             var sortedprescriptions = prescriptions.OrderByDescending(p => p.DateIssued).ToList();
-            if (sortedprescriptions.Count() > 0)
+            if (sortedprescriptions.Count > 0)
                 return Ok(map.Map<IEnumerable<GetPrescriptionsDto>>(sortedprescriptions));
             return NotFound(new ApiResponse(404));
         }
@@ -75,82 +75,44 @@
         [HttpPost]
         public async Task<IActionResult> CreatePrescription([FromBody] CreatePrescriptionsDto model)
         {
-            if (ModelState.IsValid)
-            {
+            var appointment = await unit.Repository<Appointment>().GetByIdAsync(model.AppointmentId);
 
-                var prescription = map.Map<Prescription>(model);
-                prescription.MedicalRecordId = (await unit.Repository<MedicalRecord>().GetFirstOrDefaultAsync(m => m.PatientId == model.PatientId)).Id;
-                var doctorUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var doctorId = (await unit.Repository<Doctor>().GetFirstOrDefaultAsync(D => D.UserId == doctorUserId)).Id;
+            if (appointment is null)
+                return NotFound(new ApiResponse(404, "Appointment not found"));
 
-                var appointment = await unit.Repository<Appointment>().GetByIdAsync(model.AppointmentId, true);
-                if (appointment?.Status != AppointmentStatus.InProgress || appointment?.Status != AppointmentStatus.Completed)
-                    return BadRequest(new ApiResponse(400,
-                        "Oops! You can add a prescription only when the appointment is In Progress or Completed."));
+            //if (appointment?.Status != AppointmentStatus.InProgress || appointment?.Status != AppointmentStatus.Completed)
+            //    return BadRequest(new ApiResponse(400,
+            //        "Oops! You can add a prescription only when the appointment is In Progress or Completed."));
 
-                prescription.DoctorId = doctorId;
-                await unit.Repository<Prescription>().AddAsync(prescription);
-                await unit.CommitAsync();
+            var doctorUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var doctor = await unit.Repository<Doctor>().GetFirstOrDefaultAsync(D => D.UserId == doctorUserId);
 
-                var spec = new PatientSpecifications(P => P.Id == prescription.PatientId);
-                var patient = await unit.Repository<Patient>().GetByIdWithSpecAsync(spec);
-                if (patient != null || patient.Id != 999999)
-                {
-                    var doctor = await unit.Repository<Doctor>().GetByIdAsync(doctorId);
-                    string message = $"تم تجهيز الروشته مع الطبيب {doctor.FirstName} {doctor.LastName} بتاريخ {prescription.DateIssued}";
+            if (doctor is null)
+                return NotFound(new ApiResponse(404, "Doctor not found"));
 
-                    var notificationDto = new CreateNotificationDto
-                    {
-                        UserId = prescription.PatientId,
-                        Title = "Prescription Completed",
-                        Message = message,
-                        Priority = NotificationPriority.High,
-                        RelatedEntityType = "Prescription",
-                        RelatedEntityId = prescription.Id,
-                        SentViaEmail = false,
-                        SentViaSMS = false,
-                        NotificationType = NotificationType.Prescription,
-                        IsRead = false
-                    };
-                    var notification = map.Map<Notification>(notificationDto);
-                    await unit.Repository<Notification>().AddAsync(notification);
-                    await unit.CommitAsync();
+            var medicalRecord = await unit.Repository<MedicalRecord>()
+                .GetFirstOrDefaultAsync(M => M.PatientId == model.PatientId);
 
-                    var Prescriptionspec = new PrescriptionSpecifications(P => P.Id == prescription.Id);
-                    var currentprescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(Prescriptionspec);
-                    var medicationsHtml = "";
+            if (medicalRecord is null)
+                return NotFound(new ApiResponse(404, "Medical record not found"));
 
-                    foreach (var item in currentprescription.Medications)
-                    {
-                        medicationsHtml += $"<p><strong>{item.Medication.Name}</strong> — {item.Dosage}, {item.Frequency}, لمدة {item.Duration}</p>";
-                    }
-                    if (!string.IsNullOrEmpty(patient.User.Email))
-                    {
-                        var filepath = $"{env.WebRootPath}/templates/PrescriptionReady.html";
-                        StreamReader reader = new StreamReader(filepath);
-                        var body = reader.ReadToEnd();
-                        reader.Close();
-                        body = body.Replace("[header]", message)
-                            .Replace("[body]", $"{prescription.SpecialInstructions}")
-                            .Replace("[url]", $"https://localhost:7086/api/Prescriptions/prescriptions/{prescription.Id}/download")
-                            .Replace("[linkTitle]", "Download Prescription")
-                            .Replace("[MedicationDeatails]", $"{medicationsHtml}")
-                            .Replace("[imageUrl]", "https://res.cloudinary.com/dl21kzp79/image/upload/f_png/v1763917652/icon-positive-vote-1_1_dpzjrw.png");
+            var prescription = map.Map<Prescription>(model);
 
-                        await emailSender.SendEmailAsync(patient.User.Email, "Sehaty", body);
-                        notificationDto.SentViaEmail = true;
-                    }
-                    //if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
-                    //{
-                    //    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
-                    //    notificationDto.SentViaSMS = true;
-                    //}
-                    await unit.CommitAsync();
-                }
+            prescription.DoctorId = doctor.Id;
+            prescription.MedicalRecordId = medicalRecord.Id;
 
-                return Ok(new { message = "Prescription created successfully", prescriptionId = prescription.Id });
-            }
-            return BadRequest(ModelState);
+            appointment.Status = AppointmentStatus.Completed;
+
+            await unit.Repository<Prescription>().AddAsync(prescription);
+            unit.Repository<Appointment>().Update(appointment);
+
+            await unit.CommitAsync();
+
+
+            await notificationService.NotifyPrescriptionComplation(prescription);
+
+            return CreatedAtAction(nameof(GetById), new { id = prescription.Id }, map.Map<GetPrescriptionsDto>(prescription));
+
         }
 
         [HttpPut("{id}")]
@@ -183,7 +145,7 @@
         [HttpGet("prescriptions/{id}/download")]
         public async Task<IActionResult> DownloadPrescription(int id)
         {
-            PrescriptionSpecifications spec = new PrescriptionSpecifications(id);
+            PrescriptionSpecifications spec = new(id);
             var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
             if (prescription is null)
                 return NotFound(new ApiResponse(404));

@@ -14,12 +14,12 @@
         public DateTime DateIssued { get; set; } = DateTime.UtcNow;
         public int AppointmentId { get; set; } // Foreign key to Appointment
         public Appointment Appointment { get; set; }
-        public int? MedicalRecordId { get; set; } // Foreign key to MedicalRecord
+        public int MedicalRecordId { get; set; } // Foreign key to MedicalRecord
         public MedicalRecord MedicalRecord { get; set; }
-        public int? PatientId { get; set; } // Foreign key to patient
+        public int PatientId { get; set; } // Foreign key to patient
         public Patient Patient { get; set; }
-        public int? DoctorId { get; set; } // Foreign key to doctor
+        public int DoctorId { get; set; } // Foreign key to doctor
         public Doctor Doctor { get; set; }
-        public ICollection<PrescriptionMedications> Medications { get; set; } = new List<PrescriptionMedications>();
+        public ICollection<PrescriptionMedications> Medications { get; set; } = [];
     }
 }
