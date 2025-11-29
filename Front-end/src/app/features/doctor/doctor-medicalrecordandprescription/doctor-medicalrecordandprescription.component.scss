@@ -1,0 +1,116 @@
+.medical-record {
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  &__header {
+    border-bottom: 1px solid #e6e6f5;
+    padding-bottom: 0.5rem;
+
+    & h3 {
+      margin: 0;
+      font-size: 1.6rem;
+      color: #252b61;
+    }
+  }
+
+  &__record-type {
+    font-size: 1rem;
+    padding: 0.3rem 0.8rem;
+  }
+
+  &__dates,
+  &__vitals,
+  &__details {
+    font-size: 1.4rem;
+    color: #333;
+  }
+}
+
+.prescription {
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  &__header {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__details p {
+    margin: 0.3rem 0;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: #f8f9ff;
+  border: 2px dashed #bfc5ff;
+  border-radius: 1rem;
+  margin-top: 2rem;
+  color: #3c3f61;
+
+  &__icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #252b61;
+  }
+
+  &__text {
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+}
+.prescription-card {
+  border-radius: 0.5rem;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  background: #f8f9fa;
+  margin-left: 1.6rem;
+  .card-header {
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  .card-body {
+    font-size: 1rem;
+    color: #333;
+
+    p {
+      margin-bottom: 0.5rem;
+      strong {
+        color: #252b61;
+      }
+    }
+
+    .medications {
+      ul {
+        list-style-type: disc;
+        padding-left: 1.5rem;
+        margin-top: 0.5rem;
+      }
+    }
+
+    button {
+      font-size: 0.95rem;
+    }
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #252b61;
+
+  i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+}
