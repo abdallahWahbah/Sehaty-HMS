@@ -3,8 +3,8 @@
   <div *ngIf="loading" class="available-slots__loading">Loading slots...</div>
 
   <!-- Error message -->
-  <div *ngIf="!loading && errorMessage" class="available-slots__error">
-    {{ errorMessage }}
+  <div *ngIf="!loading && serverError" class="available-slots__error">
+    {{ serverError }}
   </div>
 
   <!-- Date selector -->
@@ -36,7 +36,7 @@
       <button
         class="available-slots__book-btn"
         [disabled]="slot.isBooked"
-        (click)="bookSlot(slot.slotId)"
+        (click)="bookSlot(slot.slotId, slot)"
       >
         {{ slot.isBooked ? "Booked" : "Book" }}
       </button>
@@ -45,7 +45,7 @@
 
   <!-- No slots message -->
   <div
-    *ngIf="!loading && slots.length === 0 && !errorMessage"
+    *ngIf="!loading && slots.length === 0 && !serverError"
     class="available-slots__no-slots"
   >
     No available slots for this date.

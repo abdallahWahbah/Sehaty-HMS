@@ -31,13 +31,7 @@ export class DoctorAvailabilityService {
       .pipe(map((res) => res.slots ?? [])); // نرجع فقط مصفوفة slots
   }
 
-  // حجز slot لمريض مع سبب الزيارة
-  bookSlot(
-    slotId: number,
-    patientId: number,
-    reasonForVisit: string
-  ): Observable<BookedAppointmentModel> {
-    console.log("00000000000000000", patientId);
+  bookSlot( slotId: number, patientId: number, reasonForVisit: string): Observable<BookedAppointmentModel> {
     return this.http.post<BookedAppointmentModel>(`${this.baseUrl}/BookSlot`, {
       slotId,
       patientId,

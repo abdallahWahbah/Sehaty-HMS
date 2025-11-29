@@ -132,4 +132,11 @@ export class AppointmentService {
         catchError(this.handleError)
       );
   }
+  bookAppointmentByReception(doctorId: number, appointmentDateTime: string, reasonForVisit: string){
+    return this.http.post<any>(this.baseUrl + 'ReceptionistCreate', {
+      doctorId,
+      appointmentDateTime,
+      reasonForVisit
+    });
+  }
 }
