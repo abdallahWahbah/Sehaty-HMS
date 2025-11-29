@@ -11,26 +11,20 @@
                 options.UseSqlServer(configuration.GetConnectionString("Sehaty"));
             });
 
-
-            #region Add Payment Services
-
             services.Configure<PaymentSettings>(
                 configuration.GetSection(nameof(PaymentSettings)));
 
             services.Configure<PaymobEgy2Settings>(
                 configuration.GetSection(nameof(PaymobEgy2Settings)));
 
-            #endregion
+            services.AddScoped<IPaymobService, PaymobService>();
 
-            #region Add AutoMapper Profiles
+            // Inject Service For PaymentService To Add And Manage Billing
+            services.AddScoped<IPaymentService, PaymentService>();
 
             // Add AutoMapper Profiles Injection
             // To Add Every Profile Automatically
             services.AddAutoMapper(cfg => { }, typeof(DoctorProfile).Assembly);
-
-            #endregion
-
-            #region Add Project Services
 
             // Add UnitOfWork Class Injection
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -54,11 +48,6 @@
             services.AddScoped<IFileService, FileService>();
             // Inject Service For Billing To Add And Manage Billing
 
-            services.AddScoped<IBillingService, PaymobService>();
-
-            // Inject Service For PaymentService To Add And Manage Billing
-            services.AddScoped<IPaymentService, PaymentService>();
-
             //Add Email Service
             services.AddTransient<IEmailSender, EmailSender>();
 
@@ -71,19 +60,15 @@
             //bind Twilio settings
             services.Configure<TwilioSettings>(configuration.GetSection("TwilioSMSSetting"));
 
-
             //add background service
             services.AddHostedService<AppointmentReminderService>();
             services.AddHostedService<OldNotificationsCleanupService>();
-
-            #endregion
 
             return services;
         }
 
         public static async Task ApplyMigrationWithSeed(this WebApplication app)
         {
-            #region Update Database & Seed Data In Data Base 
             using var scoped = app.Services.CreateScope();
             var services = scoped.ServiceProvider;
             var dbContext = services.GetRequiredService<SehatyDbContext>();
@@ -98,8 +83,6 @@
                 var logger = loggerFactory.CreateLogger<Program>();
                 logger.LogError(ex, "An error has occured during migration !!!");
             }
-
-            #endregion
         }
     }
 }

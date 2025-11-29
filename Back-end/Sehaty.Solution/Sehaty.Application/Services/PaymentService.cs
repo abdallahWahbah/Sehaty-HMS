@@ -5,14 +5,14 @@ namespace Sehaty.Application.Services
     public class PaymentService : IPaymentService
     {
         private readonly IUnitOfWork unit;
-        private readonly IBillingService _paymobEgy2Service;
-        private readonly PaymentSettings _paymentSettings;
+        private readonly IPaymobService paymobEgy2Service;
+        private readonly PaymentSettings paymentSettings;
 
-        public PaymentService(IUnitOfWork _unit, IBillingService paymobEgy2Service, IOptions<PaymentSettings> paymentSettings)
+        public PaymentService(IUnitOfWork unit, IPaymobService paymobEgy2Service, IOptions<PaymentSettings> paymentSettings)
         {
-            unit = _unit;
-            _paymobEgy2Service = paymobEgy2Service;
-            _paymentSettings = paymentSettings.Value;
+            this.unit = unit;
+            this.paymobEgy2Service = paymobEgy2Service;
+            this.paymentSettings = paymentSettings.Value;
         }
 
         public async Task<(string link, int? billingId)> GetPaymentLinkAsync(int appointmentId, int totalAmount)
@@ -28,31 +28,25 @@ namespace Sehaty.Application.Services
 
             var spec = new AppointmentSpecifications(a => a.Id == appointmentId);
             var appointment = await unit.Repository<Appointment>()
-                .GetByIdWithSpecAsync(spec);
+                .GetByIdWithSpecAsync(spec)
+                ?? throw new InvalidOperationException("Appointment not found"); ;
 
-            if (appointment == null)
-                throw new InvalidOperationException("Appointment not found");
+            var doctor = await unit.Repository<Doctor>().GetByIdAsync(appointment.DoctorId)
+                ?? throw new InvalidOperationException("Doctor not found");
 
-            var doctor = await unit.Repository<Doctor>().GetByIdAsync(appointment.DoctorId);
-
-            if (doctor == null)
-                throw new InvalidOperationException("Doctor not found");
-
-            if (appointment is null || appointment.Status != AppointmentStatus.Pending)
-            {
+            if (appointment?.Status != AppointmentStatus.Pending)
                 throw new InvalidOperationException("The appointment is not valid for payment!");
-            }
 
-            if (!_paymentSettings.AcceptOnlinePayments)
+            if (!paymentSettings.AcceptOnlinePayments)
                 throw new InvalidOperationException("payment is not enabled");
 
             if (totalAmount <= 0)
                 throw new ArgumentException("Amount must Be Larger Than Zero!", nameof(totalAmount));
 
-            Billing billing = new Billing();
-            if (_paymentSettings.PaymentProvider == (int)PaymentProvider.PaymobEgy2)
+            Billing billing = new();
+            if (paymentSettings.PaymentProvider == (int)PaymentProvider.PaymobEgy2)
             {
-                var (link, orderId) = await _paymobEgy2Service.GetPaymentLinkAsync(appointmentId, totalAmount);
+                var (link, orderId) = await paymobEgy2Service.GetPaymentLinkAsync(appointmentId, totalAmount);
 
                 if (!string.IsNullOrEmpty(link))
                 {
@@ -121,10 +115,8 @@ namespace Sehaty.Application.Services
             var billing = await unit.Repository<Billing>().GetByIdAsync(billingId);
 
             var appointmentSpec = new AppointmentSpecifications(a => a.Id == billing.AppointmentId);
-            var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(appointmentSpec);
-
-            if (appointment == null)
-                throw new InvalidOperationException("Appointment Not Found");
+            var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(appointmentSpec)
+                ?? throw new InvalidOperationException("Appointment Not Found");
 
             if (appointment.Status == AppointmentStatus.Completed)
                 throw new InvalidOperationException(" Refund is not allowed for an Completed Appointment");
@@ -145,7 +137,7 @@ namespace Sehaty.Application.Services
             if (amountToRefund <= 0 || amountToRefund > refundableAmount)
                 throw new ArgumentException($" Invalid refund amount! Available refundable amount: {refundableAmount} EGP");
 
-            bool refundSuccess = await _paymobEgy2Service.RefundPaymentAsync(
+            bool refundSuccess = await paymobEgy2Service.RefundPaymentAsync(
                 billing.TransactionId,
                 amountToRefund
             );

@@ -13,7 +13,7 @@
         }
 
 
-        public MessageResource SendSmsAsync(string phoneNumber, string message)
+        public MessageResource SendSms(string phoneNumber, string message)
         {
             TwilioClient.Init(_settings.AccountSID, _settings.AuthToken);
             var result = MessageResource.Create(

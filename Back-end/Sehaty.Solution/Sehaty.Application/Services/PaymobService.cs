@@ -1,6 +1,6 @@
 ﻿namespace Sehaty.Application.Services
 {
-    public class PaymobService : IBillingService
+    public class PaymobService : IPaymobService
     {
 
         private readonly PaymobEgy2Settings settings;

@@ -163,15 +163,19 @@
             var spec = new AppointmentSpecifications(id);
             var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
 
+
+
             if (appointment is null) return NotFound(new ApiResponse(404));
             if (appointment.Status == AppointmentStatus.Canceled)
-            {
-                return BadRequest(new ApiResponse(400, "Appointment is already canceled"));
-            }
+                return BadRequest(new ApiResponse(400, "This appointment has already been canceled."));
+
 
             var requestTime = DateTime.UtcNow;
+            if (appointment.AppointmentDateTime < requestTime)
+                return BadRequest(new ApiResponse(400, "You cannot cancel an appointment that has already passed."));
+
             var timeBeforeCancel = appointment.AppointmentDateTime - requestTime;
-            if (timeBeforeCancel >= TimeSpan.FromHours(24) || appointment.Status == AppointmentStatus.Emergency)
+            if (timeBeforeCancel >= TimeSpan.FromHours(24))
             {
                 appointment.Status = AppointmentStatus.Canceled;
                 unit.Repository<Appointment>().Update(appointment);
@@ -179,46 +183,6 @@
 
                 if (rowsAffected <= 0)
                     return BadRequest(new ApiResponse(400, "Failed to cancel appointment"));
-                var patient = await unit.Repository<Patient>().GetByIdAsync(appointment.PatientId);
-                if (patient != null)
-                {
-                    string message = $"تم إلغاء موعدك مع الطبيب {appointment.Doctor.FirstName} {appointment.Doctor.LastName} بتاريخ {appointment.AppointmentDateTime}";
-
-                    var notificationDto = new CreateNotificationDto
-                    {
-                        UserId = appointment.PatientId,
-                        Title = "Appointment Canceled",
-                        Message = message,
-                        Priority = NotificationPriority.High,
-                        RelatedEntityType = "Appointment",
-                        RelatedEntityId = appointment.Id,
-                        SentViaEmail = false,
-                        SentViaSMS = false,
-                        NotificationType = NotificationType.Appointment,
-                        IsRead = false
-                    };
-                    var notification = mapper.Map<Notification>(notificationDto);
-                    await unit.Repository<Notification>().AddAsync(notification);
-                    await unit.CommitAsync();
-                    if (!string.IsNullOrEmpty(patient.User.Email))
-                    {
-                        var filepath = $"{env.WebRootPath}/templates/ConfirmEmail.html";
-                        StreamReader reader = new StreamReader(filepath);
-                        var body = reader.ReadToEnd();
-                        reader.Close();
-                        body = body.Replace("[header]", message)
-                            .Replace("[body]", "نود إبلاغكم بأنه تم إلغاء موعدكم بنجاح. إذا كنت بحاجة لحجز موعد بديل، يرجى التواصل معنا أو استخدام الموقع الإلكتروني.\")\r\n")
-                            .Replace("[imageUrl]", "https://res.cloudinary.com/dl21kzp79/image/upload/f_png/v1763917652/icon-positive-vote-1_1_dpzjrw.png");
-                        await emailSender.SendEmailAsync(patient.User.Email, "Sehaty", body);
-                        notificationDto.SentViaEmail = true;
-                    }
-                    //if (!string.IsNullOrEmpty(patient.User.PhoneNumber))
-                    //{
-                    //    smsSender.SendSmsAsync(patient.User.PhoneNumber, message);
-                    //    notificationDto.SentViaSMS = true;
-                    //}
-                    await unit.CommitAsync();
-                }
 
                 return Ok(new ApiResponse(200, "Appointment canceled successfully"));
             }
@@ -312,7 +276,7 @@
                     payment_link = link,
                     totalAmount,
                     order_id = appointmentId,
-                    billingId = billingId
+                    billingId
                 });
             }
             catch (Exception ex)

@@ -2,7 +2,7 @@
 {
     public interface ISmsSender
     {
-        MessageResource SendSmsAsync(string phoneNumber, string message);
+        MessageResource SendSms(string phoneNumber, string message);
 
     }
 }
