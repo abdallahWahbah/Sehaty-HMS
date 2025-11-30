@@ -55,6 +55,8 @@
             services.AddTransient<ISmsSender, SmsSender>();
 
             services.AddScoped<IDoctorAvailabilityService, DoctorAvailabilityService>();
+            services.AddScoped<IOpenAIService, OpenAIService>();
+
 
             //Add email services
             //bind Twilio settings
@@ -63,6 +65,7 @@
             //add background service
             services.AddHostedService<AppointmentReminderService>();
             services.AddHostedService<OldNotificationsCleanupService>();
+
 
             return services;
         }
