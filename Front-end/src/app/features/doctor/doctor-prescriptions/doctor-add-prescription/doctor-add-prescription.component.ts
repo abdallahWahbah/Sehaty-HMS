@@ -63,12 +63,12 @@ export class DoctorAddPrescriptionComponent {
     this.isSubmitting = true;
     this.prescriptionService.addPrescription(this.prescription, this.patientId, this.appointmentId).subscribe({
       next: () => {
-        alert('Prescription added successfully');
         this.router.navigate(['/doctor/prescription']);
       },
       error: (err) => {
         console.error(err);
-        this.errorMessage = err.error.errors[0];
+        // this.errorMessage = err.error.errors[0];
+        // this
         this.isSubmitting = false;
       }
     });

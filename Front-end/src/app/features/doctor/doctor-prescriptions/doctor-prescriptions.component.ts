@@ -16,7 +16,7 @@ export class DoctorPrescriptionsComponent implements OnInit {
   isLoading = true;
   errorMessage = '';
   filteredPrescriptions: Prescription[] = [];
-  searchPatientId: number | null = null;
+  searchPatientName: string = "";
 
   constructor(
     private prescriptionService: PrescriptionService,
@@ -43,21 +43,21 @@ export class DoctorPrescriptionsComponent implements OnInit {
     });
   }
 
-  filterByPatientId() {
-    if (!this.searchPatientId) {
+  filterByPatientName() {
+    if (!this.searchPatientName) {
       this.filteredPrescriptions = [...this.prescriptions];
       return;
     }
 
-    this.filteredPrescriptions = this.prescriptions.filter(
-      (p) => p.patientId === Number(this.searchPatientId)
-    );
+    // this.filteredPrescriptions = this.prescriptions.filter(
+    //   (p) => p.patiantName === this.searchPatientName
+    // );
+    this.filteredPrescriptions = this.prescriptions.filter(p => p.patiantName.toLowerCase().includes(this.searchPatientName.toLowerCase()));
   }
 
   // Navigate to edit prescription page
   editPrescription(prescription: Prescription) {
     if (!prescription.id) {
-      alert('Prescription ID is missing!');
       return;
     }
     // Navigate to the edit page
@@ -76,7 +76,6 @@ export class DoctorPrescriptionsComponent implements OnInit {
           this.prescriptions = this.prescriptions.filter(
             (p) => p.id !== prescription.id
           );
-          console.log('Prescription deleted');
         },
         error: (err) => console.error('Failed to delete prescription', err),
       });

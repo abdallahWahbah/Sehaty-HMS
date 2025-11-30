@@ -35,10 +35,7 @@ export class AppointmentService {
   }
 
   getAll(): Observable<AppointmentResponseModel[]> {
-    return this.http.get<AppointmentResponseModel[]>(this.baseUrl).pipe(
-      map((list) => list.map((item) => this.toAppointment(item))),
-      catchError(this.handleError)
-    );
+    return this.http.get<AppointmentResponseModel[]>(this.baseUrl);
   }
 
   getById(id: number): Observable<AppointmentResponseModel> {
@@ -95,10 +92,8 @@ export class AppointmentService {
       .pipe(catchError(this.handleError));
   }
 
-  cancel(id: number): Observable<void> {
-    return this.http
-      .post<void>(`${this.baseUrl}CancelAppointment/${id}`, {})
-      .pipe(catchError(this.handleError));
+  cancel(id: number) {
+    return this.http.post(`${this.baseUrl}CancelAppointment/${id}`, {})
   }
 
   reschedule(id: number, dto: RescheduleAppointmentDto): Observable<void> {
@@ -131,5 +126,12 @@ export class AppointmentService {
         map((list) => list.map((item) => this.toAppointment(item))),
         catchError(this.handleError)
       );
+  }
+  bookAppointmentByReception(doctorId: number, appointmentDateTime: string, reasonForVisit: string){
+    return this.http.post<any>(this.baseUrl + 'ReceptionistCreate', {
+      doctorId,
+      appointmentDateTime,
+      reasonForVisit
+    });
   }
 }

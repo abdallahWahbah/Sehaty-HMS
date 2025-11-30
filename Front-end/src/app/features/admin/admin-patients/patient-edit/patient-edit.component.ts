@@ -70,7 +70,6 @@ export class PatientEditComponent implements OnInit{
   }
 
   buildForm(patient: PatientResponseModel) {
-    console.log("1111111111", patient);
     this.patientForm = this.formBuilder.group({
       patientId: [patient.patientId],
       firstName: [patient.firstName],
@@ -101,11 +100,9 @@ export class PatientEditComponent implements OnInit{
 
     this._patientService.editByStuff(this.patient.id, patientToUpdate, this.token).subscribe({
       next: data => {
-        console.log(data);
         this.router?.navigate(['admin/patients']);
       },
       error: err => {
-        console.log(err)
         this.serverError = err.error?.message || 'Invalid username or password'
       }
     })

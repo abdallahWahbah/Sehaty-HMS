@@ -14,6 +14,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { Router, RouterModule } from '@angular/router';
 import { FileUploadModule } from 'primeng/fileupload';
+import { DepartmentService } from '../../../../core/services/department.service';
+import { Department } from '../../../../core/models/department-response.model';
 
 @Component({
   selector: 'app-doctor-edit',
@@ -32,12 +34,14 @@ import { FileUploadModule } from 'primeng/fileupload';
 export class DoctorEditComponent {
   doctor!: DoctorResponseModel;
   doctorForm!: FormGroup;
+  departments: Department[] = [];
   serverError: string = '';
 
   constructor(
     private location: Location,
     private formBuilder: FormBuilder,
     private _doctorService: DoctorService,
+    private _departmentService: DepartmentService,
     private router: Router
   ) {}
 
@@ -57,14 +61,20 @@ export class DoctorEditComponent {
 
     this._doctorService.getById(state.id).subscribe({
       next: (data: any) => {
-        console.log(data);
         this.doctor = data;
         this.buildForm(data);
       },
       error: (err) => {
-        console.log(err);
-        this.serverError = err;
+        this.serverError = err.error.message;
       },
+    });
+    this._departmentService.getAllDepartments().subscribe({
+      next: (departments) => {
+        this.departments = departments;
+      },
+      error: (err) => {
+        this.serverError = err.error.message
+      }
     });
   }
 
@@ -80,17 +90,21 @@ export class DoctorEditComponent {
       userId: [doctor.userId],
       departmentId: [doctor.departmentId],
     });
+    this.doctorForm.get('userId')?.disable();
   }
 
   onSubmit() {
     this.serverError = '';
     if (this.doctorForm.invalid) return;
-
     this._doctorService
-      .updateDoctor(this.doctor.id, this.doctorForm.value)
+      .updateDoctor(this.doctor.id, {
+        ...this.doctorForm.value, 
+        departmentId: +this.doctorForm.value.departmentId,
+        userId: this.doctor.userId, 
+        price: 0
+      })
       .subscribe({
         next: (res) => {
-          console.log('Doctor updated successfully');
           const url = this.router.url;
           const navigateTo = url.split('/')[1];
           switch (navigateTo) {
@@ -108,7 +122,8 @@ export class DoctorEditComponent {
           console.error('Error updating doctor', err);
           this.serverError = err.error.message;
         },
-      });
+      }
+    );
   }
   onDelete() {
     if (!confirm('Are you sure you want to delete this doctor?')) {
@@ -117,9 +132,6 @@ export class DoctorEditComponent {
 
     this._doctorService.deleteDoctor(this.doctor.id).subscribe({
       next: () => {
-        console.log('Doctor deleted successfully');
-
-        // توجه حسب الروت الحالي
         const url = this.router.url;
         const navigateTo = url.split('/')[1];
         switch (navigateTo) {

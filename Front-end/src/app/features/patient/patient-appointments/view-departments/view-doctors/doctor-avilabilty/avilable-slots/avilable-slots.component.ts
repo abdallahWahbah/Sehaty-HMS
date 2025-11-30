@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { PatientsService } from '../../../../../../../core/services/patients.service';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { AppointmentService } from '../../../../../../../core/services/appointment.service';
 
 @Component({
   selector: 'app-available-slots',
@@ -22,18 +23,21 @@ export class AvailableSlotsComponent implements OnInit {
   availableDays: AvailableDayModel[] = [];
   slots: Slot[] = [];
   loading: boolean = true;
-  errorMessage: string = '';
+  serverError: string = '';
   showPopup = false;
   popupMessage = '';
+  isRescheduling: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private doctorSlotsService: DoctorAvailabilityService,
     private patientService: PatientsService,
-    private router: Router
+    private router: Router,
+    private _appointmentService: AppointmentService
   ) {}
 
   ngOnInit(): void {
+    this.isRescheduling = history.state.reschedule || false;
     this.route.params.subscribe((params) => {
       this.doctorId = +params['doctorId'];
       this.selectedDate = params['date']; // ← ← ← أهم سطر
@@ -59,16 +63,16 @@ export class AvailableSlotsComponent implements OnInit {
           if (this.selectedDate) {
             this.loadSlots(this.selectedDate);
           } else {
-            this.errorMessage = 'No valid dates available.';
+            this.serverError = 'No valid dates available.';
             this.loading = false;
           }
         } else {
-          this.errorMessage = 'Doctor has no available days.';
+          this.serverError = 'Doctor has no available days.';
           this.loading = false;
         }
       },
       error: () => {
-        this.errorMessage = 'Failed to load available days.';
+        this.serverError = 'Failed to load available days.';
         this.loading = false;
       },
     });
@@ -87,7 +91,7 @@ export class AvailableSlotsComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.errorMessage = 'Failed to load slots.';
+        this.serverError = 'Failed to load slots.';
         this.loading = false;
       },
     });
@@ -112,34 +116,69 @@ export class AvailableSlotsComponent implements OnInit {
   }
 
   // ✅ Book slot using the correct patient.id
-  bookSlot(slotId: number): void {
+  bookSlot(slotId: number, slotParam: any): void {
+    this.serverError = '';
     const patientId$ = this.getLoggedInPatientId();
 
     if (!patientId$) {
-      alert('User not logged in');
       return;
     }
 
     patientId$.subscribe({
       next: (patientId) => {
+        const appointmentDateTime = `${slotParam.date}T${slotParam.startTime}.000Z`;
         const reasonForVisit = 'Checkup';
-        this.doctorSlotsService
-          .bookSlot(slotId, patientId || 5, reasonForVisit) // "5" fixed patient for (elder) people not having account
-          .subscribe({
-            next: (res) => {
-              this.openPopup( `Appointment booked successfully at ${res.startTime}`);
-              setTimeout(() => {
-                this.router?.navigate([patientId ? '/patient/appointments' : 'reception/appointments']);
-              }, 1000);
-              this.loadSlots(this.selectedDate);
-            },
-            error: () => {
-              alert('Failed to book slot.');
-            },
-        });
+        if(patientId === null){ // receptionist --> book 
+          if(this.isRescheduling){ // receptionist --> reschedule
+            this._appointmentService
+            .reschedule(history.state.appointmentId, {newAppointmentDateTime: appointmentDateTime})
+            .subscribe({
+              next: data => {
+                this.openPopup( `Appointment rescheduled successfully at ${new Date()}`);
+
+                setTimeout(() => {
+                  this.router?.navigate(['reception/appointments']);
+                }, 1000);
+              },
+              error: err => {
+                this.serverError = err.error?.message;
+              }
+            })
+          }
+          else { // receptionist --> book 
+            this._appointmentService.bookAppointmentByReception(this.doctorId, appointmentDateTime, reasonForVisit)
+            .subscribe({
+              next: data => {
+                this.openPopup( `Appointment booked successfully at ${data.startTime}`);
+                setTimeout(() => {
+                  this.router?.navigate(['reception/appointments']);
+                }, 1000);
+              },
+              error: err => {
+                this.serverError = err.error?.message;
+              }
+            })
+          }
+        }
+        else { // patient -- > book 
+          this.doctorSlotsService
+            .bookSlot(slotId, patientId || 5, reasonForVisit) // "5" fixed patient for (elder) people not having account
+            .subscribe({
+              next: (res) => {
+                this.openPopup( `Appointment booked successfully at ${res.startTime}`);
+                setTimeout(() => {
+                  this.router?.navigate(['/patient/appointments']);
+                }, 1000);
+                this.loadSlots(this.selectedDate);
+              },
+              error: (err) => {
+                this.serverError = err.error.message
+              },
+          });
+        }
       },
       error: () => {
-        alert('Failed to get patient data.');
+        console.log('Failed to get patient data.');
       },
     });
   }

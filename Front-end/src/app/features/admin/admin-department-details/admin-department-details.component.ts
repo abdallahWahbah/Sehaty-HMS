@@ -21,11 +21,9 @@ export class AdminDepartmentDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    console.log('Department ID:', id); // للتأكد من الرقم
 
     this.deptService.getDepartmentById(id).subscribe({
       next: (data) => {
-        console.log('Department data:', data); // للتأكد من البيانات
         this.department = data;
       },
       error: (err) => console.error(err),

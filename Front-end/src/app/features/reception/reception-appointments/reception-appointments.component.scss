@@ -1,0 +1,101 @@
+.section_two{
+  width: auto;
+}
+.name_time_other {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    align-items: center;
+    // width: 80rem;
+    
+
+    .appointment__button {
+      padding: 0.8rem 1.6rem;
+      background-color: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: 0.6rem;
+      cursor: pointer;
+      font-size: 1.2rem;
+      height: fit-content;
+      white-space: nowrap;
+      &:hover {
+        background-color: #1e2561;
+      }
+    }
+
+    .name_time {
+      gap: 3rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      width: 70%;
+      margin-bottom: 1rem;
+    }
+    .btns_container{
+        width: auto;
+        margin-top: 2rem;
+    }
+}
+
+.custom-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  margin-top: 2rem;
+  position: relative;
+}
+
+/* Hide native checkbox */
+.custom-switch__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Track background */
+.custom-switch__track {
+  position: relative;
+  width: 46px;
+  height: 24px;
+  background: #e9ecef;
+  border-radius: 50px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+  transition: background 0.2s ease;
+}
+
+/* Thumb */
+.custom-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+
+/* Checked state */
+.custom-switch__input:checked + .custom-switch__track {
+  background: #198754; /* Bootstrap green */
+}
+
+.custom-switch__input:checked + .custom-switch__track .custom-switch__thumb {
+  transform: translateX(22px);
+}
+
+/* Remove click flash/reflection */
+.custom-switch__track:active .custom-switch__thumb {
+  box-shadow: none;
+}
+
+/* Optional: label */
+.custom-switch__label {
+  font-size: 0.95rem;
+  color: #212529;
+}

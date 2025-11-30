@@ -5,21 +5,13 @@
       <p>View patients medical records</p>
     </div>
   </div>
-  <!-- <div class="searchbar_dashboard">
-    <div class="search_settings">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" placeholder="Search records by patients, title or doctor ...." />
-    </div>
-  </div> -->
     @if(records?.length){
         @for(rec of records; track rec.id){
             <div class="record">
                 <div class="record_info">
                     <div class="info">
-                    <p><b>Diagnosis:</b> {{ rec.diagnosis }}</p>
-                    <p>
-                        <b> Patient: {{ rec.patientName || 'Unknown' }}</b> ({{ rec.appointmentId }})
-                    </p>
+                      <p><b> Patient: {{ rec.patientName || 'Unknown' }}</b></p>
+                      <p><b>Diagnosis:</b> {{ rec.diagnosis }}</p>
                     </div>
                 </div>
         

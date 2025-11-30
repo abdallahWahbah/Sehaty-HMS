@@ -61,9 +61,7 @@ export class PatientFeedbackComponent implements OnInit {
 
         this.appointmentService.getAll().subscribe({
           next: (appointments) => {
-            this.appointments = appointments.filter(
-              (a) => a.patientId === patientId
-            );
+            this.appointments = appointments.filter((a) => (a.patientId === patientId) && (a.status !== "NoShow"));
             console.log('Filtered appointments:', this.appointments);
           },
           error: (err) => console.error('Error loading appointments', err),

@@ -68,6 +68,14 @@ export class DoctorAvailabilityComponent implements OnInit {
       '/patient/appointments/available-slots',
       this.doctorId,
       date,
-    ]);
+      
+    ], 
+    {
+      state: 
+      {
+        reschedule: history.state.reschedule,
+        appointmentId: history.state.appointmentId
+      }
+    });
   }
 }
