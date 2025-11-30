@@ -46,12 +46,10 @@ export class PatientAddFeedbackComponent implements OnInit {
 
     this.feedbackService.add(feedbackData).subscribe({
       next: () => {
-        alert('Feedback submitted successfully!');
         this.router.navigate(['/patient/feedback']); // أو أي صفحة تحب ترجع لها
       },
       error: (err) => {
         console.error('Error submitting feedback:', err);
-        alert('Failed to submit feedback.');
       },
     });
   }

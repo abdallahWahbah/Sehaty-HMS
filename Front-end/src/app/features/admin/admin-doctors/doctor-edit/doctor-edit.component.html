@@ -50,11 +50,22 @@
             <input pInputText formControlName="userId" />
             <label>userId</label>
           </p-floatlabel>
-
-          <p-floatlabel class="patient-edit__input">
-            <input pInputText formControlName="departmentId" />
-            <label>Department Id</label>
-          </p-floatlabel>
+          
+          <div class="patient-edit__input">
+            <label for="departmentId">Department</label>
+            <select
+              id="departmentId"
+              class="form-select"
+              formControlName="departmentId"
+            >
+              <option value="" disabled>Select Department</option>
+              @for(dept of departments; track dept.id){
+                <option [value]="dept.id">
+                  {{ dept.en_Name }}
+                </option>
+              }
+            </select>
+          </div>
         </div>
 
         <div

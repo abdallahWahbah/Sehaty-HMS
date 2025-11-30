@@ -27,7 +27,6 @@ export class ViewDoctorsComponent implements OnInit {
     // استلام departmentId من route params
     this.route.params.subscribe((params) => {
       this.departmentId = Number(params['departmentId']);
-      console.log('Route departmentId:', this.departmentId); // <-- تتبع
 
       this.loadDoctors();
     });
@@ -37,13 +36,11 @@ export class ViewDoctorsComponent implements OnInit {
     this.doctorsService.getAllDoctors().subscribe({
       next: (data) => {
         this.doctors = data;
-        console.log('All doctors:', this.doctors); // <-- تتبع
 
         // فلترة الدكاترة حسب departmentId
         this.filteredDoctors = this.doctors.filter(
           (d) => Number(d.departmentId) === this.departmentId
         );
-        console.log('Filtered doctors:', this.filteredDoctors); // <-- تتبع
 
         this.loading = false;
       },
@@ -55,9 +52,6 @@ export class ViewDoctorsComponent implements OnInit {
   }
 
   viewAvailability(doctor: DoctorResponseModel) {
-    console.log('Navigating with doctor id:', doctor.id);
-    console.log('Doctor object:', doctor);
-
     if (!doctor || !doctor.id) {
       console.error('Doctor id is invalid!');
       return;

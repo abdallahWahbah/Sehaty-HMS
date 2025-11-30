@@ -65,7 +65,6 @@ export class SetPasswordComponent {
     
     this._authService.setNewPassword(email, otp, password).subscribe({
       next: data => {
-        console.log("aaaaaaaaaaaaaaa", data);
         this.router.navigate(['login']);
       },
       error: err => this.serverError = err.error?.message

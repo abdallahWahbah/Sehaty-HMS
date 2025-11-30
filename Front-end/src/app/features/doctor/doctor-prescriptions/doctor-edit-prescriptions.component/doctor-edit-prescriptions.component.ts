@@ -68,7 +68,6 @@ export class DoctorEditPrescriptionsComponent implements OnInit {
     this.errorMessage = '';
     this.prescriptionService.editPrescription(this.prescription.id, this.prescription).subscribe({
       next: () => {
-        alert('Prescription updated successfully');
         this.router.navigate(['/doctor/prescription']);
       },
       error: (err) => {

@@ -57,10 +57,9 @@ export class AdminUsersComponent implements OnInit {
 
     this.userService.changeUserRole(userId, newRoleId).subscribe({
       next: () => {
-        alert(`Role updated to ${selectedRoleName} successfully.`);
+        console.log(`Role updated to ${selectedRoleName} successfully.`);
       },
       error: (err) => {
-        alert('Failed to update role.');
         console.error(err);
       },
     });

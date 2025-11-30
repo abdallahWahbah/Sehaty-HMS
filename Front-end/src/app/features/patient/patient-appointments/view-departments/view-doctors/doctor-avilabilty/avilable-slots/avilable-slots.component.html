@@ -38,7 +38,11 @@
         [disabled]="slot.isBooked"
         (click)="bookSlot(slot.slotId, slot)"
       >
-        {{ slot.isBooked ? "Booked" : "Book" }}
+        {{ isRescheduling ? 
+          "Reschedule" : 
+          slot.isBooked ? 
+          "Booked" : 
+          "Book"}}
       </button>
     </div>
   </div>

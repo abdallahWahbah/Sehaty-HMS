@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FeedbackService } from '../../../core/services/feedback.service';
 import { FeedbackResponseModel } from '../../../core/models/feedback.response';
+import { DoctorService } from '../../../core/services/doctor.service';
 
 @Component({
   selector: 'app-doctor-appointments',
@@ -29,11 +30,21 @@ export class DoctorAppointmentsComponent {
   constructor(
     private _appointmentsService: AppointmentService,
     private feedbackService: FeedbackService,
-    private router: Router
+    private router: Router,
+    private _doctorService: DoctorService,
   ) {}
 
   ngOnInit() {
     this.loadAppointments();
+
+    // load doctor
+    let storedUser: any = localStorage.getItem("userData");
+    storedUser = JSON.parse(storedUser);
+    this._doctorService.getAllDoctors().subscribe({
+      next: allDoctors => {
+        this.currentDoctor = allDoctors.filter(doc => doc.userId === storedUser.userId)[0];
+      }
+    })
   }
 
   private loadAppointments() {
@@ -96,15 +107,23 @@ export class DoctorAppointmentsComponent {
     if (this.selectedFeedbackMap[appointmentId]) return;
 
     this.feedbackService.getByAppointmentId(appointmentId).subscribe({
-      next: (feedback: unknown) => {
-        if (feedback && typeof feedback === 'object' && '0' in feedback) {
-          this.selectedFeedbackMap[appointmentId] = (feedback as any)[
-            '0'
-          ] as FeedbackResponseModel;
-        } else {
-          this.selectedFeedbackMap[appointmentId] =
-            feedback as FeedbackResponseModel | null;
+      next: (feedback: any) => {
+        if (Array.isArray(feedback) && feedback.length > 0) {
+          this.selectedFeedbackMap[appointmentId] = feedback[0];
+          return;
         }
+        // If feedback is empty array → no feedback
+        if (Array.isArray(feedback) && feedback.length === 0) {
+          this.selectedFeedbackMap[appointmentId] = null;
+          return;
+        }
+        // If backend gives object with index "0"
+        if (feedback && typeof feedback === "object" && feedback["0"]) {
+          this.selectedFeedbackMap[appointmentId] = feedback["0"];
+          return;
+        }
+        // If backend gives empty object {}
+        this.selectedFeedbackMap[appointmentId] = null;
       },
       error: (err) => {
         console.error('Error loading feedback', err);

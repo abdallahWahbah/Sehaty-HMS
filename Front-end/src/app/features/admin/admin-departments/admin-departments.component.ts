@@ -44,8 +44,6 @@ export class AdminDepartmentsComponent implements OnInit {
         this.totalDepartments = this.departments.length;
         this.totalDoctors = doctors.length;
 
-        console.log('Departments with doctors:', this.departments);
-
         try {
           this.cdr.detectChanges();
         } catch (e) {

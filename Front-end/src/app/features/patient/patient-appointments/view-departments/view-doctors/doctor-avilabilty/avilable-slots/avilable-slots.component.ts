@@ -26,6 +26,7 @@ export class AvailableSlotsComponent implements OnInit {
   serverError: string = '';
   showPopup = false;
   popupMessage = '';
+  isRescheduling: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -36,6 +37,7 @@ export class AvailableSlotsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isRescheduling = history.state.reschedule || false;
     this.route.params.subscribe((params) => {
       this.doctorId = +params['doctorId'];
       this.selectedDate = params['date']; // ← ← ← أهم سطر
@@ -115,34 +117,50 @@ export class AvailableSlotsComponent implements OnInit {
 
   // ✅ Book slot using the correct patient.id
   bookSlot(slotId: number, slotParam: any): void {
+    this.serverError = '';
     const patientId$ = this.getLoggedInPatientId();
 
     if (!patientId$) {
-      alert('User not logged in');
       return;
     }
 
     patientId$.subscribe({
       next: (patientId) => {
-        const appointmentDateTime = new Date(`${slotParam.date}T${slotParam.startTime}`).toISOString();
+        const appointmentDateTime = `${slotParam.date}T${slotParam.startTime}.000Z`;
         const reasonForVisit = 'Checkup';
-        if(patientId === null){ // book by receptionist
-          console.log("rrrrrrrrrrrrrrrrr", this.doctorId, appointmentDateTime, reasonForVisit);
-          this._appointmentService.bookAppointmentByReception(this.doctorId, appointmentDateTime, reasonForVisit)
-          .subscribe({
-            next: data => {
-              setTimeout(() => {
-                this.router?.navigate(['reception/appointments']);
+        if(patientId === null){ // receptionist --> book 
+          if(this.isRescheduling){ // receptionist --> reschedule
+            this._appointmentService
+            .reschedule(history.state.appointmentId, {newAppointmentDateTime: appointmentDateTime})
+            .subscribe({
+              next: data => {
+                this.openPopup( `Appointment rescheduled successfully at ${new Date()}`);
+
+                setTimeout(() => {
+                  this.router?.navigate(['reception/appointments']);
                 }, 1000);
-              console.log(data);
-            },
-            error: err => {
-              this.serverError = err.error?.message;
-            }
-          })
+              },
+              error: err => {
+                this.serverError = err.error?.message;
+              }
+            })
+          }
+          else { // receptionist --> book 
+            this._appointmentService.bookAppointmentByReception(this.doctorId, appointmentDateTime, reasonForVisit)
+            .subscribe({
+              next: data => {
+                this.openPopup( `Appointment booked successfully at ${data.startTime}`);
+                setTimeout(() => {
+                  this.router?.navigate(['reception/appointments']);
+                }, 1000);
+              },
+              error: err => {
+                this.serverError = err.error?.message;
+              }
+            })
+          }
         }
-        else { // book by patient
-          console.log("bbbbbbbbbbbbbbb");
+        else { // patient -- > book 
           this.doctorSlotsService
             .bookSlot(slotId, patientId || 5, reasonForVisit) // "5" fixed patient for (elder) people not having account
             .subscribe({
@@ -153,14 +171,14 @@ export class AvailableSlotsComponent implements OnInit {
                 }, 1000);
                 this.loadSlots(this.selectedDate);
               },
-              error: () => {
-                alert('Failed to book slot.');
+              error: (err) => {
+                this.serverError = err.error.message
               },
           });
         }
       },
       error: () => {
-        alert('Failed to get patient data.');
+        console.log('Failed to get patient data.');
       },
     });
   }

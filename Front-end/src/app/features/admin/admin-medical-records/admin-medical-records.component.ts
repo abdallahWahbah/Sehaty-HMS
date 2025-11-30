@@ -50,8 +50,6 @@ export class AdminMedicalRecordsComponent implements OnInit{
               appointmentDateTime: appointment?.appointmentDateTime,
             };
           });
-
-        console.log('Mapped Records with Appointments:', this.records);
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Error fetching data:', err),

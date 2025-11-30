@@ -204,9 +204,6 @@ export class DoctorAvailableSlotsComponent {
       days: daysBitmask
     };
 
-    console.log(payload, typeof payload);
-    // console.log(this.getSelectedDates());
-
     let dates = this.getSelectedDates();
 
     // add availability slots
@@ -220,7 +217,6 @@ export class DoctorAvailableSlotsComponent {
     }).subscribe({
       next: data => console.log(data),
       error: err => {
-        console.log(err);
         this.serverError = err.error?.message;
       }
     })
@@ -233,11 +229,9 @@ export class DoctorAvailableSlotsComponent {
           date: date,
         }).subscribe({
         next: data => {
-          console.log(data);
           this.router.navigate(['/doctor/appointments']);
         },
         error: err => {
-          console.log(err);
           this.serverError = err.error?.message
         }
       })
@@ -249,7 +243,6 @@ export class DoctorAvailableSlotsComponent {
         date: formValue.date,
       }).subscribe({
         next: data => {
-          console.log(data);
           this.router.navigate(['/doctor/appointments']);
         },
         error: err => {
