@@ -32,6 +32,8 @@
             // Inject Service For Prescription To Dowmload Prescription
             services.AddScoped<IPrescriptionPdfService, PrescriptionPdfService>();
 
+            services.AddScoped<IPrescriptionService, PrescriptionService>();
+
             // Inject Service For Doctor To Add And Manage Doctors
             //services.AddScoped<IDoctorService, DoctorService>();
 
@@ -66,6 +68,7 @@
             services.AddHostedService<AppointmentReminderService>();
             services.AddHostedService<OldNotificationsCleanupService>();
 
+            services.AddHttpContextAccessor();
 
             return services;
         }
