@@ -1,4 +1,5 @@
 <section id="dashboard" class="dashboard">
+  <!-- Title -->
   <div class="dashboard__title">
     <h2 class="dashboard__title-main">Dashboard</h2>
     <p class="dashboard__title-sub">
@@ -6,48 +7,86 @@
     </p>
   </div>
 
+  <!-- Stats cards -->
   <div class="dashboard__stats">
     <div class="dashboard__card">
       <div class="dashboard__card--header">
-        <p>Total Patients</p>
-        <i class="fa-solid fa-user"></i>
+        <div>
+          <p class="dashboard__card-label">Total Patients</p>
+          <p class="dashboard__card-value">{{ numOfPatients }}</p>
+        </div>
+        <div class="dashboard__card-icon">
+          <i class="fa-solid fa-user"></i>
+        </div>
       </div>
-      <div class="dashboard__card--info">
-        <p>{{numOfPatients}}</p>
-      </div>
+      <p class="dashboard__card-sub">Registered in the system</p>
     </div>
 
     <div class="dashboard__card">
       <div class="dashboard__card--header">
-        <p>Today's Appointments</p>
-        <i class="fa-regular fa-calendar-check"></i>
+        <div>
+          <p class="dashboard__card-label">Today's Appointments</p>
+          <p class="dashboard__card-value">{{ numOfTodaysAppointments }}</p>
+        </div>
+        <div class="dashboard__card-icon">
+          <i class="fa-regular fa-calendar-check"></i>
+        </div>
       </div>
-      <div class="dashboard__card--info">
-        <p>{{numOfTodaysAppointments}}</p>
-      </div>
+      <p class="dashboard__card-sub">Scheduled for today</p>
     </div>
   </div>
 
+  <!-- Appointments list -->
   <div class="dashboard__appointments">
     <div class="dashboard__appointments-card">
-      <div class="dashboard__appointments-heading">Today's Appointments</div>
+      <div class="dashboard__appointments-heading">
+        <div>
+          <h3>Today's Appointments</h3>
+          <p>Overview of your daily schedule</p>
+        </div>
+        <span class="dashboard__appointments-chip">
+          {{ numOfTodaysAppointments }} total
+        </span>
+      </div>
 
-      @for(appointment of todaysAppointments; track appointment.id){
-        <div class="dashboard__appointments-item">
-          <div class="dashboard__appointments-item-info">
-            <p>{{appointment.patientName}}</p>
-            <p>{{appointment.doctorName}}</p>
-          </div>
-          <div class="dashboard__appointments-item-time">
-            <p>{{ (appointment.appointmentDateTime | date:'HH:mm a') }}</p>
-            <div [ngClass]="{
-                'dashboard__appointments-item--confirmed': appointment.status === 'Confirmed',
-                'dashboard__appointments-item--pending': appointment.status === 'Pending',
-                'dashboard__appointments-item--delayed': appointment.status !== 'Confirmed' && appointment.status !== 'Pending',
-              }"
-              >{{appointment.status}}</div>
+      @if (todaysAppointments && todaysAppointments.length > 0) { @for
+      (appointment of todaysAppointments; track appointment.id) {
+      <div class="dashboard__appointments-item">
+        <div class="dashboard__appointments-item-info">
+          <p class="dashboard__appointments-patient">
+            {{ appointment.patientName }}
+          </p>
+          <p class="dashboard__appointments-doctor">
+            Dr. {{ appointment.doctorName }}
+          </p>
+        </div>
+
+        <div class="dashboard__appointments-item-time">
+          <p class="dashboard__appointments-time">
+            {{ appointment.appointmentDateTime | date : "hh:mm a" }}
+          </p>
+
+          <div
+            [ngClass]="{
+              'dashboard__appointments-item--confirmed':
+                appointment.status === 'Confirmed',
+              'dashboard__appointments-item--pending':
+                appointment.status === 'Pending',
+              'dashboard__appointments-item--delayed':
+                appointment.status !== 'Confirmed' &&
+                appointment.status !== 'Pending'
+            }"
+          >
+            {{ appointment.status }}
           </div>
         </div>
+      </div>
+      } } @else {
+      <div class="dashboard__appointments-empty">
+        <i class="fa-regular fa-face-smile"></i>
+        <p>No appointments for today</p>
+        <span>You're all caught up 🎉</span>
+      </div>
       }
     </div>
   </div>

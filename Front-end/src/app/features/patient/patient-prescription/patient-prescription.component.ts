@@ -4,6 +4,8 @@ import { Prescription } from '../../../core/models/prescription-response-model';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { saveAs } from 'file-saver';
+import { PrescriptionAnalysisService } from '../../../core/services/prescription-analysis.service';
+import { PrescriptionAnalysis } from '../../../core/models/prescription-analysis.model';
 
 @Component({
   selector: 'app-patient-prescription',
@@ -14,7 +16,16 @@ import { saveAs } from 'file-saver';
 export class PatientPrescriptionComponent implements OnInit {
   prescriptions: Prescription[] = [];
 
-  constructor(private prescriptionService: PrescriptionService) {}
+  // AI Analysis state
+  isAnalysisModalOpen = false;
+  analysisLoading = false;
+  analysisError: string | null = null;
+  analysisData: PrescriptionAnalysis | null = null;
+
+  constructor(
+    private prescriptionService: PrescriptionService,
+    private analysisService: PrescriptionAnalysisService
+  ) {}
 
   ngOnInit() {
     this.loadPrescriptions();
@@ -23,7 +34,6 @@ export class PatientPrescriptionComponent implements OnInit {
   loadPrescriptions() {
     this.prescriptionService.getPatientPrescriptions().subscribe({
       next: (rawData: any[]) => {
-        // استقبل البيانات كـ any[] عشان تقدر تستخدم prescriptionId
         this.prescriptions = rawData.map((p) => ({
           id: p.prescriptionId,
           doctorName: p.doctorName,
@@ -36,7 +46,7 @@ export class PatientPrescriptionComponent implements OnInit {
           appointmentId: p.appointmentId || 0,
           medicalRecordId: p.medicalRecordId || 0,
           patientId: p.patientId || 0,
-          patiantName: p.patiantName || '', // تعيين القيمة الفارغة إذا مش موجودة
+          patiantName: p.patiantName || '',
           mrn: p.mrn || '',
           doctorId: p.doctorId || 0,
           licenseNumber: p.licenseNumber || '',
@@ -67,5 +77,31 @@ export class PatientPrescriptionComponent implements OnInit {
         console.error('Download error:', err);
       },
     });
+  }
+
+  // ====== AI Analysis Handlers ======
+  openAnalysisModal(prescriptionId: number) {
+    if (!prescriptionId) return;
+
+    this.isAnalysisModalOpen = true;
+    this.analysisLoading = true;
+    this.analysisError = null;
+    this.analysisData = null;
+
+    this.analysisService.analyzePrescription(prescriptionId).subscribe({
+      next: (res) => {
+        this.analysisData = res;
+        this.analysisLoading = false;
+      },
+      error: (err) => {
+        console.error('AI analysis error:', err);
+        this.analysisError = 'حدث خطأ أثناء جلب تحليل الروشتة بالـ AI.';
+        this.analysisLoading = false;
+      },
+    });
+  }
+
+  closeAnalysisModal() {
+    this.isAnalysisModalOpen = false;
   }
 }

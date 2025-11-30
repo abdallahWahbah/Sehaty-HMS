@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 export class AdminAppointmentsComponent implements OnInit {
   appointments: AppointmentResponseModel[] = [];
   loading: boolean = false;
+
   error: string = '';
   constructor(
     private appointmentService: AppointmentService,
