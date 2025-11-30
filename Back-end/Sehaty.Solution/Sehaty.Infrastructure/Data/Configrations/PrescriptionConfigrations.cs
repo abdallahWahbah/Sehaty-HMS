@@ -28,23 +28,20 @@
 
             builder.HasOne(p => p.MedicalRecord) //set foreign key to medical record
                   .WithMany(mr => mr.Prescriptions)
-                  .HasForeignKey(p => p.MedicalRecordId);
+                  .HasForeignKey(p => p.MedicalRecordId)
+                   .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Property(p => p.MedicalRecordId)
-                  .IsRequired(false);
 
             builder.HasOne(p => p.Patient) //set foreign key to patient
                    .WithMany(pt => pt.Prescriptions)
                    .HasForeignKey(p => p.PatientId)
                    .OnDelete(DeleteBehavior.NoAction);// Set null on delete
-            builder.Property(p => p.PatientId)
-                   .IsRequired(false);
+
 
             builder.HasOne(p => p.Doctor) //set foreign key to doctor
                   .WithMany(d => d.Prescriptions)
                   .HasForeignKey(p => p.DoctorId);
-            builder.Property(p => p.DoctorId)
-                   .IsRequired(false);
+
         }
     }
 }

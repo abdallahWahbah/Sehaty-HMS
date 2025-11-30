@@ -1,7 +1,7 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
 
-    public class AppointmentsController(IPaymentService paymentService, IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService, IEmailSender emailSender, ISmsSender smsSender, IWebHostEnvironment env) : ApiBaseController
+    public class AppointmentsController(INotificationService notificationService, IPaymentService paymentService, IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService) : ApiBaseController
     {
 
         [HttpGet("GetAll")]
@@ -193,7 +193,8 @@
         [HttpPut("RescheduleAppointment/{id}")]
         public async Task<IActionResult> RescheduleAppointment(int id, [FromBody] RescheduleAppointmentDto model)
         {
-            var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
+            var spec = new AppointmentSpecifications(id);
+            var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
             if (appointment is null) return NotFound(new ApiResponse(404));
 
 
@@ -237,6 +238,9 @@
             await unit.Repository<AppointmentAuditLog>().AddAsync(auditLog);
             unit.Repository<Appointment>().Update(appointment);
             var rowsAffected = await unit.CommitAsync();
+
+            await notificationService.NotifyAppointmentUpdated(appointment);
+
             return rowsAffected > 0 ? Ok(new ApiResponse(200, "Appointment rescheduled successfully")) : BadRequest(new ApiResponse(400, "Failed to reschedule appointment"));
 
         }
@@ -246,7 +250,6 @@
         [HttpPost("ConfirmAppointment/{appointmentId}")]
         public async Task<IActionResult> ConfirmAppointment(int appointmentId)
         {
-
             try
             {
                 var spec = new AppointmentSpecifications(a => a.Id == appointmentId);
@@ -254,21 +257,21 @@
                     .GetByIdWithSpecAsync(spec);
 
                 if (appointment == null)
-                    return NotFound(new { error = "Appointment not found" });
+                    return NotFound(new ApiResponse(404, "Appointment Not Found"));
 
                 var doctor = await unit.Repository<Doctor>().GetByIdAsync(appointment.DoctorId);
 
                 if (doctor == null)
-                    return NotFound(new { error = "Doctor not found" });
+                    return NotFound(new ApiResponse(404, "Doctor not found"));
 
-                int totalAmount = (int)doctor.Price;
+                int totalAmount = (int)doctor.DetectionPrice;
 
                 var (link, billingId) = await paymentService.GetPaymentLinkAsync(appointmentId, totalAmount);
                 if (string.IsNullOrEmpty(appointmentId.ToString()))
-                    return BadRequest(new { error = "AppointmentId Is Required" });
+                    return BadRequest(new ApiResponse(400, "Appointment Id Is Required"));
 
                 if (string.IsNullOrEmpty(link))
-                    return StatusCode(500, new { error = "Cann't Create PaymentLink" });
+                    return BadRequest(new ApiResponse(5055, "Cann't Create PaymentLink"));
 
                 return Ok(new
                 {
