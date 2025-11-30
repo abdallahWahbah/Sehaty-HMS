@@ -14,7 +14,7 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, Toast, ButtonModule, Ripple, FormsModule],
   templateUrl: './reception-appointments.component.html',
   styleUrl: './reception-appointments.component.scss',
-  providers: [MessageService]
+  providers: [MessageService],
 })
 export class ReceptionAppointmentsComponent {
   allAppointments: AppointmentResponseModel[] = [];
@@ -26,23 +26,31 @@ export class ReceptionAppointmentsComponent {
   constructor(
     private appointmentService: AppointmentService,
     private router: Router,
-    private messageService: MessageService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
     this.loading = true;
     this.appointmentService.getAll().subscribe({
       next: (data) => {
-
-        data = data.filter(item => (item.status === "Confirmed" || item.status === "InProgress" || item.status === "Completed"));
+        data = data.filter(
+          (item) =>
+            item.status === 'Confirmed' ||
+            item.status === 'InProgress' ||
+            item.status === 'Completed'
+        );
         this.allAppointments = data;
         this.appointments = data;
-      
+
         this.loading = false;
       },
       error: (err) => {
         // this.serverError = err.error?.message;
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message || "Error" });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.error?.message || 'Error',
+        });
         this.loading = false;
       },
     });
@@ -52,7 +60,7 @@ export class ReceptionAppointmentsComponent {
     today.setHours(0, 0, 0, 0);
 
     if (this.showTodayOnly) {
-      this.appointments = this.allAppointments.filter(app => {
+      this.appointments = this.allAppointments.filter((app) => {
         const date = new Date(app.appointmentDateTime);
         date.setHours(0, 0, 0, 0);
         return date.getTime() === today.getTime();
@@ -61,29 +69,50 @@ export class ReceptionAppointmentsComponent {
       this.appointments = this.allAppointments;
     }
   }
-  cancelAppointment(id: number){
+  cancelAppointment(id: number) {
     this.appointmentService.cancel(id).subscribe({
-      next: data => {
-        this.messageService.add({ severity: 'success', summary: 'Done', detail: 'Cancelled Successfully' });
+      next: (data) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Done',
+          detail: 'Cancelled Successfully',
+        });
         window.location.reload();
         // this.router.navigate(['/reception/appointments'])
       },
-      error: err => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message || "Error" });
-      }
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.error?.message || 'Error',
+        });
+      },
     });
   }
-  handleReschedule(appointment: AppointmentResponseModel){
-    this.router.navigate(['/patient/appointments/available-days', appointment.doctorId], 
-      { 
-        state: 
-        { 
+  handleReschedule(appointment: AppointmentResponseModel) {
+    this.router.navigate(
+      ['/patient/appointments/available-days', appointment.doctorId],
+      {
+        state: {
           reschedule: true,
-          appointmentId: appointment.id
-        } 
-      });
+          appointmentId: appointment.id,
+        },
+      }
+    );
   }
-  checkIn(appointment: AppointmentResponseModel){
-    
+  checkIn(appointment: AppointmentResponseModel) {
+    this.appointmentService.checkIn(appointment.id).subscribe({
+      next: (data) => {
+        window.location.reload();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.error.message,
+        });
+        // this.serverError = err.error.message;
+      },
+    });
   }
 }
