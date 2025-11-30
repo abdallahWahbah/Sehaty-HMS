@@ -15,7 +15,7 @@ namespace Sehaty.Application.Services
         {
             _unitOfWork = unitOfWork;
             _httpClient = httpClientFactory.CreateClient();
-            _openAiApiKey = config["OpenAI:ApiKey"];
+            _openAiApiKey = config["OpenAI:ApiKey"] ?? Environment.GetEnvironmentVariable("ApiKey");
         }
 
         public async Task<PrescriptionAnalysisResponseDto> AnalyzePrescriptionAsync(int prescriptionId)
