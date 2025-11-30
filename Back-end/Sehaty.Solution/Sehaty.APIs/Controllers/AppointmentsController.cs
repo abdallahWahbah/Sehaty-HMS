@@ -1,4 +1,6 @@
-﻿namespace Sehaty.APIs.Controllers
+﻿using Sehaty.Core.Entites;
+
+namespace Sehaty.APIs.Controllers
 {
 
     public class AppointmentsController(INotificationService notificationService, IPaymentService paymentService, IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService) : ApiBaseController
@@ -163,8 +165,6 @@
             var spec = new AppointmentSpecifications(id);
             var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
 
-
-
             if (appointment is null) return NotFound(new ApiResponse(404));
             if (appointment.Status == AppointmentStatus.Canceled)
                 return BadRequest(new ApiResponse(400, "This appointment has already been canceled."));
@@ -177,14 +177,21 @@
             var timeBeforeCancel = appointment.AppointmentDateTime - requestTime;
             if (timeBeforeCancel >= TimeSpan.FromHours(24))
             {
-                appointment.Status = AppointmentStatus.Canceled;
-                unit.Repository<Appointment>().Update(appointment);
-                var rowsAffected = await unit.CommitAsync();
+                var specBilling = new BillingSpec(B => B.AppointmentId == appointment.Id);
+                var billing = await unit.Repository<Billing>().GetByIdWithSpecAsync(specBilling);
+                bool success = await paymentService.ProcessRefundAsync(billing.Id);
+                if (success)
+                {
+                    appointment.Status = AppointmentStatus.Canceled;
+                    unit.Repository<Appointment>().Update(appointment);
+                    var rowsAffected = await unit.CommitAsync();
 
-                if (rowsAffected <= 0)
-                    return BadRequest(new ApiResponse(400, "Failed to cancel appointment"));
+                    if (rowsAffected <= 0)
+                        return BadRequest(new ApiResponse(400, "Failed to cancel appointment"));
 
-                return Ok(new ApiResponse(200, "Appointment canceled successfully"));
+                    return Ok(new ApiResponse(200, "Appointment canceled successfully && Amount Refunded"));
+                }
+
             }
             return BadRequest(new ApiResponse(400, "Cannot cancel appointment within 24 hours unless marked as Emergency"));
         }
