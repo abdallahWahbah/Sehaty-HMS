@@ -20,16 +20,16 @@
 
 
 
-            //var doctorSpec = new AppointmentSpecifications(a => a.DoctorId == dto.DoctorId &&
-            //a.AppointmentDateTime.Date == dto.AppointmentDateTime.Date);
+            //var doctorSpec = new AppointmentSpecifications(ِA => A.DoctorId == dto.DoctorId &&
+            //A.AppointmentDateTime.Date == dto.AppointmentDateTime.Date);
 
-            var doctorAppointments = await unit.Repository<Appointment>().FindBy(a => a.DoctorId == dto.DoctorId &&
-            a.AppointmentDateTime.Date == dto.AppointmentDateTime.Date).ToListAsync();
+            var doctorAppointments = await unit.Repository<Appointment>().FindBy(A => A.DoctorId == dto.DoctorId &&
+            A.AppointmentDateTime.Date == dto.AppointmentDateTime.Date).ToListAsync();
 
 
-            if (doctorAppointments.Any(a =>
-                dto.AppointmentDateTime < a.AppointmentDateTime.AddMinutes(a.DurationMinutes) &&
-                dto.AppointmentDateTime.AddMinutes(30) > a.AppointmentDateTime))
+            if (doctorAppointments.Any(A =>
+                dto.AppointmentDateTime < A.AppointmentDateTime.AddMinutes(A.DurationMinutes) &&
+                dto.AppointmentDateTime.AddMinutes(30) > A.AppointmentDateTime))
                 throw new Exception("Doctor Already Has An Overlapping Appointment");
 
 
@@ -104,6 +104,7 @@
 
 
             appointment.Status = AppointmentStatus.Confirmed;
+            appointment.ConfirmationDateTime = DateTime.Now;
             var rowsAffected = await unit.CommitAsync();
 
             if (rowsAffected <= 0)

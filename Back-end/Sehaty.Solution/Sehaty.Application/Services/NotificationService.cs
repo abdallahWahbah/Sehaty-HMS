@@ -12,33 +12,31 @@
             return await CreateAppointmentNotificationAsync(appointment, "Appointment Canceled", message, emailBody, imageUrl);
         }
 
-
         public async Task<bool> NotifyAppointmentConfirmation(Appointment appointment)
         {
             var doctor = appointment.Doctor ?? await GetDoctorAsync(appointment.DoctorId);
             string message = $"تم تأكيد موعدك مع الطبيب {doctor.FirstName} {doctor.LastName} بتاريخ {appointment.AppointmentDateTime:yyyy-MM-dd HH:mm}";
             string emailBody = "تم تأكيد موعدك بنجاح. نتمنى لك دوام الصحة.";
-            string imageUrl = "https://res.cloudinary.com/dl21kzp79/image/upload/f_png/v1763918337/icon-positive-vote-3_xfc5be.png";
+            string imageUrl = "https://res.cloudinary.com/dl21kzp79/image/upload/f_png/v1763918378/icon-positive-vote-4_crzftt.png";
 
             return await CreateAppointmentNotificationAsync(appointment, "Appointment Confirmed", message, emailBody, imageUrl);
         }
 
-        public Task<bool> NotifyAppointmentUpdated(Appointment appointment)
+        public async Task<bool> NotifyAppointmentUpdated(Appointment appointment)
         {
-            string message = $"تم تعديل موعدك مع الطبيب {appointment.Doctor.FirstName} {appointment.Doctor.LastName} إلى تاريخ {appointment.AppointmentDateTime:yyyy-MM-dd HH:mm}";
+            var doctor = appointment.Doctor ?? await GetDoctorAsync(appointment.DoctorId);
+            string message = $"تم تعديل موعدك مع الطبيب {doctor.FirstName} {doctor.LastName} إلى تاريخ {appointment.AppointmentDateTime:yyyy-MM-dd HH:mm}";
 
             string emailBody = "تم تعديل موعدك بنجاح، يرجى مراجعة التفاصيل الجديدة.";
             string imageUrl = "https://res.cloudinary.com/dl21kzp79/image/upload/f_png/v1763917652/icon-positive-vote-1_1_dpzjrw.png";
 
-
-            return CreateAppointmentNotificationAsync(
+            return await CreateAppointmentNotificationAsync(
                 appointment,
                 "Appointment Updated",
                 message,
                 emailBody,
-               imageUrl);
+                imageUrl);
         }
-
 
         public async Task<bool> NotifyPrescriptionComplation(Prescription prescription)
         {
@@ -51,7 +49,7 @@
             string message = $"تم تجهيز الروشته مع الطبيب {doctor.FirstName} {doctor.LastName} بتاريخ {prescription.DateIssued:yyyy-MM-dd}";
 
             string medicationsHtml = GenerateMedicationsHtml(prescription);
-            string emailBody = $"{prescription.SpecialInstructions}<br/>{medicationsHtml}";
+            //string emailBody = $"{prescription.SpecialInstructions}<br/>{medicationsHtml}";
             string imageUrl = "https://res.cloudinary.com/dl21kzp79/image/upload/f_png/v1763917652/icon-positive-vote-1_1_dpzjrw.png";
 
             var dto = new CreateNotificationDto
@@ -71,7 +69,6 @@
             // Send Email
             if (!string.IsNullOrEmpty(patient.User?.Email))
             {
-
                 await SendEmailFromTemplateAsync(templateName: "PrescriptionReady.html",
                     email: patient.User.Email,
                     header: message,
@@ -101,6 +98,7 @@
             var spec = new PatientSpecifications(patientId);
             return (await unit.Repository<Patient>().GetByIdWithSpecAsync(spec));
         }
+
         private async Task<Doctor> GetDoctorAsync(int doctorId)
         {
 
@@ -112,8 +110,8 @@
             if (prescription.Medications == null || (prescription.Medications.Count == 0))
                 return string.Empty;
 
-            return string.Join("\n", prescription.Medications.Select(m =>
-                $"<p><strong>{m.Medication.Name}</strong> — {m.Dosage}, {m.Frequency}, لمدة {m.Duration}</p>"));
+            return string.Join("\n", prescription.Medications.Select(M =>
+                $"<p><strong>{M.Medication.Name}</strong> — {M.Dosage}, {M.Frequency}, لمدة {M.Duration}</p>"));
         }
 
         private async Task CreateNotificationAsync(CreateNotificationDto dto)
@@ -147,7 +145,6 @@
 
             await emailSender.SendEmailAsync(email, "Sehaty", html);
         }
-
 
         private async Task<bool> CreateAppointmentNotificationAsync(Appointment appointment,
             string title,
@@ -201,8 +198,6 @@
 
             smsSender.SendSms(phoneNumber, message);
             return true;
-
         }
-
     }
 }
