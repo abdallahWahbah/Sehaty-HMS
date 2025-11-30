@@ -1,7 +1,242 @@
-.card {
-  padding: 15px;
-  background: #f8f9fa;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+// ====== Base tokens (محلية للـ component ده) ======
+$primary: #252b61;
+$primary-soft: #4b56a3;
+$text-main: #1f2933;
+$text-muted: #6b7280;
+$bg-soft: #f5f6ff;
+$shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+$radius-lg: 1.4rem;
+
+// ====== Dashboard title ======
+.dashboard__title {
+  margin: 4rem auto 2rem;
+  max-width: 110rem;
+  padding: 0 2rem;
+
+  &-main {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: $primary;
+    margin: 0 0 0.4rem;
+  }
+
+  &-sub {
+    font-size: 1.4rem;
+    color: $primary-soft;
+    margin: 0;
+  }
+}
+
+// ====== Wrapper للقائمة ======
+.prescriptions-list {
+  max-width: 110rem;
+  margin: 0 auto 4rem;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+// ====== Loading & Empty States ======
+.loading-state,
+.empty-state {
+  max-width: 110rem;
+  margin: 3rem auto 4rem;
+  padding: 0 2rem;
+  text-align: center;
+
+  p {
+    font-size: 1.4rem;
+    color: $text-muted;
+    margin: 0.4rem 0 0;
+  }
+
+  i {
+    font-size: 3rem;
+    color: $primary-soft;
+    margin-bottom: 0.6rem;
+  }
+}
+
+.loading-state p {
+  color: $primary-soft;
+}
+
+// ====== Prescription Card ======
+.prescription-card {
+  background: #ffffff;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  border: 1px solid rgba(37, 43, 97, 0.08);
+  padding: 1.8rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+
+  // ==== Header ====
+  &__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) auto;
+    gap: 1.4rem;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: flex-start;
+    }
+  }
+
+  &__id {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: $primary;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: flex-start;
+  }
+
+  &__label {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $primary-soft;
+    margin: 0;
+  }
+
+  &__value {
+    font-size: 1.4rem;
+    color: $text-main;
+    font-weight: 500;
+  }
+
+  // ==== Status pill ====
+  .status-pill {
+    padding: 0.4rem 1.2rem;
+    border-radius: 999px;
+    background: $bg-soft;
+    color: $primary-soft;
+    font-size: 1.2rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  // ==== Body ====
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  &__row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  // ==== Medications block ====
+  &__meds-block {
+    margin-top: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  // ===== Medications table =====
+  &__meds-table {
+    margin-top: 0.4rem;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    background: #f9fafb;
+  }
+
+  &__meds-header,
+  &__meds-row {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 1.2fr 1.2fr;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.3rem;
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__meds-header {
+    background: #eef2ff;
+    font-weight: 600;
+    color: $primary-soft;
+  }
+
+  &__meds-row {
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+
+    &:nth-child(2n) {
+      background: #f9fafb;
+    }
+  }
+
+  // ==== Download button ====
+  &__footer {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__btn-download {
+    margin-top: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-radius: 999px;
+    padding: 0.8rem 1.8rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, $primary, $primary-soft);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(25, 39, 79, 0.35);
+    transition: 0.2s ease all;
+
+    i {
+      font-size: 1.4rem;
+    }
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(25, 39, 79, 0.5);
+    }
+  }
+}
+
+// ====== Responsive tweaks ======
+@media (max-width: 768px) {
+  .prescriptions-list {
+    padding: 0 1.4rem;
+  }
+
+  .prescription-card__footer {
+    justify-content: stretch;
+
+    .prescription-card__btn-download {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .prescription-card__meds-header,
+  .prescription-card__meds-row {
+    grid-template-columns: 1.8fr 1.2fr 1.2fr 1.2fr;
+  }
 }

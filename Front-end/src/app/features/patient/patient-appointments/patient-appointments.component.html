@@ -1,44 +1,62 @@
 <section class="dashboard_appointments">
+  <!-- Title + Add Button -->
   <div class="title_dashboard">
     <div>
-      <h2>My Appointments</h2>
-      <p>Review your upcoming and past appointments</p>
+      <h2 class="title_dashboard__main">My Appointments</h2>
+      <p class="title_dashboard__sub">
+        Review your upcoming and past appointments
+      </p>
     </div>
 
-    <!-- Add Appointment Button -->
     <button class="add_btn" (click)="navigateToAddAppointment()">
       <i class="fa-solid fa-plus"></i>
-      <p>Add Appointment</p>
+      <span>Add Appointment</span>
     </button>
   </div>
 
-  <!-- No Data -->
-  <div *ngIf="!loading && appointments.length === 0" class="no-data">
-    No appointments found.
+  <!-- Loading State -->
+  @if (loading) {
+  <div class="loading-state">
+    <p>Loading your appointments...</p>
   </div>
+  }
 
-  <!-- Loading -->
-  <div *ngIf="loading" class="loading">Loading...</div>
+  <!-- Empty State -->
+  @if (!loading && (!appointments || appointments.length === 0)) {
+  <div class="empty-state">
+    <i class="fa-regular fa-calendar-xmark empty-state__icon"></i>
+    <p class="empty-state__title">No appointments found</p>
+    <p class="empty-state__subtitle">You don’t have any appointments yet.</p>
+  </div>
+  }
 
   <!-- Appointments List -->
-  <div
-    *ngFor="let appointment of appointments; trackBy: trackById"
-    class="section_two"
-  >
-    <!-- Appointment Info -->
-    <div class="person_info">
-      <div class="name_time_other">
-        <!-- Date -->
-        <div class="name_time">
-          <div class="time">
-            <i class="fa-regular fa-calendar"></i>
-            <p>{{ appointment.appointmentDateTime | date : "yyyy-MM-dd" }}</p>
+  @if (!loading && appointments && appointments.length > 0) {
+  <section class="appointments-list">
+    @for (appointment of appointments; track appointment.id) {
+
+    <article class="appointment-card">
+      <!-- Header -->
+      <header class="appointment-card__header">
+        <div class="appointment-card__date-time">
+          <div class="appointment-card__row-inline">
+            <i class="fa-regular fa-calendar appointment-card__icon"></i>
+            <span class="appointment-card__date">
+              {{ appointment.appointmentDateTime | date : "MMM d, yyyy" }}
+            </span>
+          </div>
+
+          <div class="appointment-card__row-inline">
+            <i class="fa-regular fa-clock appointment-card__icon"></i>
+            <span class="appointment-card__time">
+              {{ appointment.appointmentDateTime | date : "HH:mm" }}
+            </span>
           </div>
         </div>
 
-        <!-- Status + Reason -->
-        <div class="confirm_consultation">
-          <div
+        <div class="appointment-card__status-wrapper">
+          <span
+            class="status-pill"
             [ngClass]="{
               'dashboard__appointments-item--confirmed':
                 appointment.status === 'Confirmed',
@@ -53,37 +71,49 @@
               'dashboard__appointments-item--emergency':
                 appointment.status === 'Emergency'
             }"
-            class="status-pill"
           >
             {{ appointment.status }}
-          </div>
+          </span>
+        </div>
+      </header>
 
-          <div class="consultation">
-            {{ appointment.reasonForVisit }}
+      <!-- Body -->
+      <section class="appointment-card__body">
+        <div class="appointment-card__row">
+          <span class="appointment-card__label">Doctor</span>
+          <span class="appointment-card__value">
+            <i
+              class="fa-solid fa-user-doctor appointment-card__icon-inline"
+            ></i>
+            Dr. {{ appointment.doctorName }}
+          </span>
+        </div>
+
+        <!-- ⭐ Highlighted Reason for Visit -->
+        <div class="appointment-card__row">
+          <span class="appointment-card__label">Reason for visit</span>
+          <div class="appointment-card__reason">
+            <i class="fa-solid fa-notes-medical"></i>
+            <span>{{
+              appointment.reasonForVisit || "No reason provided"
+            }}</span>
           </div>
         </div>
-        <button class="pay_btn" (click)="goToPayment(appointment.id)">
-          Pay Now
+      </section>
+
+      <!-- Footer -->
+      <footer class="appointment-card__footer">
+        <button
+          class="appointment-card__btn-pay"
+          (click)="goToPayment(appointment.id)"
+        >
+          <i class="fa-solid fa-credit-card"></i>
+          <span>Pay Now</span>
         </button>
+      </footer>
+    </article>
 
-        <!-- View Button -->
-      </div>
-    </div>
-
-    <!-- Doctor Info -->
-    <div class="doctor_info">
-      <div class="info">
-        <div class="name_time_doctor">
-          <div class="name_doctor">
-            <i class="fa-solid fa-user-doctor"></i>
-            <p>Dr: {{ appointment.doctorName }}</p>
-          </div>
-          <div class="time_doctor">
-            <i class="fa-regular fa-clock"></i>
-            <p>{{ appointment.appointmentDateTime | date : "HH:mm" }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    }
+  </section>
+  }
 </section>

@@ -1,0 +1,390 @@
+// ============== VARIABLES (اختياري) ==============
+$primary: #252b61;
+$primary-soft: #4b56a3;
+$bg-light: #e8f2ff;
+
+// ===========================
+.not-found {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(
+    circle at top,
+    $bg-light 0,
+    #ffffff 55%,
+    #f9fbff 100%
+  );
+  padding: 2rem;
+}
+
+/* ===========================
+   MAIN CONTAINER
+=========================== */
+.not-found__container {
+  max-width: 90rem;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 2rem;
+  box-shadow: 0 18px 50px rgba(5, 42, 92, 0.15);
+  padding: 3rem 4rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+  gap: 3.5rem;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: auto auto -6rem -6rem;
+    width: 18rem;
+    height: 18rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba($primary, 0.12), transparent 60%);
+    pointer-events: none;
+  }
+}
+
+/* ===========================
+   DOCTOR ILLUSTRATION
+=========================== */
+.not-found__illustration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card around the doctor */
+.doctor-card {
+  position: relative;
+  width: 100%;
+  max-width: 26rem;
+  aspect-ratio: 4 / 5;
+  border-radius: 1.8rem;
+  overflow: hidden;
+  background: linear-gradient(150deg, #f5f7ff 0%, #ffffff 40%, #e3ecff 100%);
+  box-shadow: 0 18px 40px rgba(7, 42, 97, 0.18);
+}
+
+/* Soft gradient background shape inside card */
+.doctor-card__bg {
+  position: absolute;
+  inset: -30%;
+  background: radial-gradient(
+      circle at top,
+      rgba($primary, 0.35),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(0, 196, 190, 0.28),
+      transparent 55%
+    );
+  opacity: 0.95;
+}
+
+/* Avatar (doctor icon) */
+.doctor-card__avatar {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  padding: 2.4rem 2rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.doctor-card__circle {
+  width: 9rem;
+  height: 9rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0, #e7ebff 75%);
+  box-shadow: 0 10px 25px rgba(9, 38, 84, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $primary;
+  font-size: 4.2rem;
+  border: 0.2rem solid #d5dbff;
+  animation: doctor-float 4.4s ease-in-out infinite;
+}
+
+.doctor-card__label {
+  margin-top: 1.4rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #324266;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Floating medical icons around doctor */
+.doctor-card__icon {
+  position: absolute;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 1.1rem;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  box-shadow: 0 8px 20px rgba(15, 60, 130, 0.2);
+  z-index: 2;
+  /* 2 animations مع بعض: orbit + pulse */
+}
+
+/* Each icon position + animation */
+.doctor-card__icon--one {
+  top: 1.6rem;
+  left: 1.6rem;
+  color: #e11d48;
+  animation: icon-orbit-one 7s ease-in-out infinite,
+    icon-pulse 1.9s ease-in-out infinite;
+}
+
+.doctor-card__icon--two {
+  top: 2.4rem;
+  right: 1.8rem;
+  color: #0f766e;
+  animation: icon-orbit-two 8s ease-in-out infinite,
+    icon-pulse 2.1s ease-in-out infinite;
+}
+
+.doctor-card__icon--three {
+  bottom: 2.2rem;
+  left: 2rem;
+  color: $primary;
+  animation: icon-orbit-three 9s ease-in-out infinite,
+    icon-pulse 2.3s ease-in-out infinite;
+}
+
+.doctor-card__icon--four {
+  bottom: 1.8rem;
+  right: 2.4rem;
+  color: #7c3aed;
+  animation: icon-orbit-four 10s ease-in-out infinite,
+    icon-pulse 2s ease-in-out infinite;
+}
+
+/* ===========================
+   TEXT SECTION
+=========================== */
+.not-found__text {
+  text-align: left;
+  position: relative;
+  z-index: 1;
+}
+
+.not-found__code {
+  font-size: 5.8rem;
+  font-weight: 800;
+  margin: 0 0 0.6rem;
+  color: $primary;
+  letter-spacing: 0.18em;
+}
+
+.not-found__title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 1.2rem;
+}
+
+.not-found__subtitle {
+  font-size: 1.5rem;
+  line-height: 1.8;
+  color: #4b5563;
+  margin: 0 0 2.5rem;
+}
+
+/* ===========================
+   BUTTONS
+=========================== */
+.not-found__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+}
+
+.btn {
+  border-radius: 999px;
+  padding: 0.9rem 2.4rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  white-space: nowrap;
+
+  &--primary {
+    background: linear-gradient(135deg, $primary, $primary-soft);
+    color: #ffffff;
+    box-shadow: 0 10px 25px rgba(37, 43, 97, 0.4);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px rgba(37, 43, 97, 0.5);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 20px rgba(37, 43, 97, 0.4);
+    }
+  }
+
+  &--outline {
+    background: #ffffff;
+    border: 0.14rem solid $primary;
+    color: $primary;
+
+    &:hover {
+      background: #e0e5ff;
+      box-shadow: 0 8px 18px rgba(37, 43, 97, 0.25);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+  }
+}
+
+/* ===========================
+   ANIMATIONS
+=========================== */
+@keyframes doctor-float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes icon-orbit-one {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-6px, 4px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes icon-orbit-two {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(6px, 6px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes icon-orbit-three {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-4px, -6px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes icon-orbit-four {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(6px, -4px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* Pulse بسيط للأيقونات */
+@keyframes icon-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 8px 20px rgba(15, 60, 130, 0.2);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 12px 26px rgba(15, 60, 130, 0.28);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 8px 20px rgba(15, 60, 130, 0.2);
+  }
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+@media (max-width: 900px) {
+  .not-found__container {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 2.4rem 2rem;
+    text-align: center;
+  }
+
+  .not-found__text {
+    text-align: center;
+  }
+
+  .not-found__code {
+    font-size: 4.8rem;
+  }
+
+  .not-found__subtitle {
+    font-size: 1.4rem;
+  }
+
+  .not-found__actions {
+    justify-content: center;
+
+    .btn {
+      min-width: 14rem;
+    }
+  }
+
+  .not-found__illustration {
+    order: -1;
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .not-found {
+    padding: 1.6rem;
+  }
+
+  .not-found__container {
+    padding: 2rem 1.6rem;
+    border-radius: 1.6rem;
+  }
+
+  .doctor-card {
+    max-width: 22rem;
+  }
+}

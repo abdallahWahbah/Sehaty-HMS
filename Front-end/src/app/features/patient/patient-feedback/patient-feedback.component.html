@@ -1,80 +1,75 @@
-<section id="dashboard" class="dashboard">
-  <div class="dashboard__title">
-    <h2 class="dashboard__title-main">Appointments</h2>
+<section id="dashboard" class="appointments-page">
+  <div class="appointments-page__header">
+    <h2>Appointments</h2>
   </div>
 
-  <p *ngIf="isLoading && appointments.length === 0" class="no-appointments">
-    Loading...
-  </p>
-  <p *ngIf="!isLoading && appointments.length === 0" class="no-appointments">
-    No appointments
-  </p>
+  @if (isLoading && appointments.length === 0) {
+  <p class="no-appointments">Loading...</p>
+  } @if (!isLoading && appointments.length === 0) {
+  <p class="no-appointments">No appointments</p>
+  } @if (!isLoading && appointments.length > 0) { @for (appointment of
+  appointments; track appointment.id) {
 
-  <div
-    *ngFor="let appointment of appointments; trackBy: trackById"
-    class="section_two"
-  >
-    <div class="person_info">
-      <!-- Main Info -->
-      <div class="name_time_other">
-        <div class="name_time">
-          <div class="name">
-            <i class="fa-solid fa-user"></i>
-            <p class="fw-bold">{{ appointment.patientName }}</p>
-          </div>
-          <div class="time">
-            <i class="fa-regular fa-calendar"></i>
-            <p>{{ appointment.appointmentDateTime | date : "yyyy-MM-dd" }}</p>
-          </div>
-          <div class="time">
-            <i class="fa-regular fa-calendar"></i>
-            <p>{{ appointment.appointmentDateTime | date : "HH:mm" }}</p>
-          </div>
-          <div class="duration">
-            <i class="fa-regular fa-clock"></i>
-            <p>{{ appointment.durationMinutes }} mins</p>
-          </div>
+  <div class="appointment-card">
+    <!-- TOP INFO -->
+    <div class="appointment-card__row">
+      <div class="appointment-card__info">
+        <div class="item">
+          <i class="fa-solid fa-user"></i>
+          <span>{{ appointment.patientName }}</span>
         </div>
 
-        <div class="appointment-status">
-          <span class="status-pill main">{{ appointment.status }}</span>
+        <div class="item">
+          <i class="fa-regular fa-calendar"></i>
+          <span>{{
+            appointment.appointmentDateTime | date : "yyyy-MM-dd"
+          }}</span>
+        </div>
+
+        <div class="item">
+          <i class="fa-regular fa-clock"></i>
+          <span>{{ appointment.appointmentDateTime | date : "HH:mm" }}</span>
+        </div>
+
+        <div class="item">
+          <i class="fa-solid fa-hourglass"></i>
+          <span>{{ appointment.durationMinutes }} mins</span>
         </div>
       </div>
 
-      <!-- Reason + Button -->
-      <div class="name_time_other">
-        <div class="name_time">
-          <div class="reason name">
-            <i class="fa-solid fa-stethoscope"></i>
-            <p class="fw-bold">{{ appointment.reasonForVisit }}</p>
-          </div>
-
-          <button
-            class="appointment__button btn"
-            (click)="addFeedback(appointment.id)"
-          >
-            Add Feedback
-          </button>
-        </div>
-      </div>
-
-      <!-- ⭐⭐⭐⭐ Feedback Summary ⭐⭐⭐⭐ -->
-      <div
-        class="feedback-summary"
-        *ngIf="getFeedbackForAppointment(appointment.id) as feedback"
-      >
-        <div class="rating-stars">
-          <ng-container *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
-            <span class="star" [class.filled]="i < feedback.rating"
-              >&#9733;</span
-            >
-          </ng-container>
-        </div>
-
-        <p class="comments-count">
-          {{ feedback.comments }}
-        </p>
+      <div class="appointment-card__status">
+        <span class="status-pill">{{ appointment.status }}</span>
       </div>
     </div>
+
+    <!-- REASON + BUTTON -->
+    <div class="appointment-card__row">
+      <div class="reason-box">
+        <i class="fa-solid fa-stethoscope"></i>
+        <span>{{ appointment.reasonForVisit }}</span>
+      </div>
+
+      <button
+        class="appointment-card__btn"
+        (click)="addFeedback(appointment.id)"
+      >
+        Add Feedback
+      </button>
+    </div>
+
+    <!-- FEEDBACK SUMMARY -->
+    @if (getFeedbackForAppointment(appointment.id); as feedback) {
+    <div class="feedback-summary">
+      <div class="rating-stars">
+        @for (star of [1,2,3,4,5]; track star; let i = $index) {
+        <span class="star" [class.filled]="i < feedback.rating">&#9733;</span>
+        }
+      </div>
+
+      <p class="comments-count">{{ feedback.comments }}</p>
+    </div>
+    }
   </div>
+
+  } }
 </section>
