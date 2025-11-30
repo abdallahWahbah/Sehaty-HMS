@@ -1,109 +1,129 @@
-<section class="patient-add-feedback">
-  <h2 class="patient-add-feedback__title">Add Feedback</h2>
+<section class="patient-feedback">
+  <div class="patient-feedback__card">
+    <!-- Header -->
+    <header class="patient-feedback__header">
+      <h2 class="patient-feedback__title">Add Feedback</h2>
+      <p class="patient-feedback__subtitle">
+        Share your experience to help us improve our service.
+      </p>
+    </header>
 
-  <form
-    class="patient-add-feedback__form"
-    [formGroup]="feedbackForm"
-    (ngSubmit)="onSubmit()"
-  >
-    <!-- Rating stars -->
-    <div class="patient-add-feedback__group star-rating">
-      <input
-        type="radio"
-        id="star5"
-        formControlName="rating"
-        class="star-rating__input"
-        value="5"
-      />
-      <label for="star5" class="star-rating__label" title="5 stars">★</label>
-
-      <input
-        type="radio"
-        id="star4"
-        formControlName="rating"
-        class="star-rating__input"
-        value="4"
-      />
-      <label for="star4" class="star-rating__label" title="4 stars">★</label>
-
-      <input
-        type="radio"
-        id="star3"
-        formControlName="rating"
-        class="star-rating__input"
-        value="3"
-      />
-      <label for="star3" class="star-rating__label" title="3 stars">★</label>
-
-      <input
-        type="radio"
-        id="star2"
-        formControlName="rating"
-        class="star-rating__input"
-        value="2"
-      />
-      <label for="star2" class="star-rating__label" title="2 stars">★</label>
-
-      <input
-        type="radio"
-        id="star1"
-        formControlName="rating"
-        class="star-rating__input"
-        value="1"
-      />
-      <label for="star1" class="star-rating__label" title="1 star">★</label>
-    </div>
-
-    <div
-      *ngIf="
-        feedbackForm.get('rating')?.invalid &&
-        feedbackForm.get('rating')?.touched
-      "
-      class="patient-add-feedback__error"
+    <form
+      class="patient-feedback__form"
+      [formGroup]="feedbackForm"
+      (ngSubmit)="onSubmit()"
     >
-      Please provide a rating.
-    </div>
+      <!-- Rating -->
+      <div class="patient-feedback__group">
+        <div class="patient-feedback__group-header">
+          <label class="patient-feedback__label">Your Rating</label>
+          <span class="patient-feedback__hint">Tap to rate your visit</span>
+        </div>
 
-    <!-- Comments textarea -->
-    <div class="patient-add-feedback__group">
-      <label class="patient-add-feedback__label" for="comments">Comments</label>
-      <textarea
-        id="comments"
-        class="patient-add-feedback__textarea"
-        formControlName="comments"
-        placeholder="Write your feedback here..."
-      ></textarea>
-      <div
-        *ngIf="
-          feedbackForm.get('comments')?.invalid &&
-          feedbackForm.get('comments')?.touched
-        "
-        class="patient-add-feedback__error"
-      >
-        Comments are required.
+        <div class="star-rating">
+          <input
+            type="radio"
+            id="star5"
+            value="5"
+            formControlName="rating"
+            class="star-rating__input"
+          />
+          <label for="star5" class="star-rating__label" title="Excellent"
+            >★</label
+          >
+
+          <input
+            type="radio"
+            id="star4"
+            value="4"
+            formControlName="rating"
+            class="star-rating__input"
+          />
+          <label for="star4" class="star-rating__label" title="Very Good"
+            >★</label
+          >
+
+          <input
+            type="radio"
+            id="star3"
+            value="3"
+            formControlName="rating"
+            class="star-rating__input"
+          />
+          <label for="star3" class="star-rating__label" title="Good">★</label>
+
+          <input
+            type="radio"
+            id="star2"
+            value="2"
+            formControlName="rating"
+            class="star-rating__input"
+          />
+          <label for="star2" class="star-rating__label" title="Fair">★</label>
+
+          <input
+            type="radio"
+            id="star1"
+            value="1"
+            formControlName="rating"
+            class="star-rating__input"
+          />
+          <label for="star1" class="star-rating__label" title="Poor">★</label>
+        </div>
+
+        @if (feedbackForm.get('rating')?.invalid &&
+        feedbackForm.get('rating')?.touched) {
+        <p class="patient-feedback__error">Please provide a rating.</p>
+        }
       </div>
-    </div>
 
-    <!-- Anonymous checkbox -->
-    <div class="patient-add-feedback__group patient-add-feedback__checkbox">
-      <input
-        type="checkbox"
-        id="anonymous"
-        formControlName="isAnonymous"
-        class="patient-add-feedback__checkbox-input"
-      />
-      <label for="anonymous" class="patient-add-feedback__checkbox-label"
-        >Submit feedback anonymously</label
-      >
-    </div>
+      <!-- Comments -->
+      <div class="patient-feedback__group">
+        <div class="patient-feedback__group-header">
+          <label for="comments" class="patient-feedback__label">Comments</label>
+          <span class="patient-feedback__hint">
+            Tell us more about what went well or what could be better.
+          </span>
+        </div>
 
-    <!-- Submit button -->
-    <button
-      type="submit"
-      class="patient-add-feedback__button"
-      [disabled]="feedbackForm.invalid"
-    >
-      Submit Feedback
-    </button>
-  </form>
+        <textarea
+          id="comments"
+          class="patient-feedback__textarea"
+          formControlName="comments"
+          placeholder="Write your feedback here..."
+        ></textarea>
+
+        @if (feedbackForm.get('comments')?.invalid &&
+        feedbackForm.get('comments')?.touched) {
+        <p class="patient-feedback__error">Comments are required.</p>
+        }
+      </div>
+
+      <!-- Anonymous switch -->
+      <div class="patient-feedback__group patient-feedback__group--inline">
+        <label class="patient-feedback__label">Privacy</label>
+
+        <label class="toggle">
+          <input
+            type="checkbox"
+            class="toggle__input"
+            formControlName="isAnonymous"
+          />
+          <span class="toggle__slider"></span>
+          <span class="toggle__label-text">Submit feedback anonymously</span>
+        </label>
+      </div>
+
+      <!-- Submit -->
+      <div class="patient-feedback__actions">
+        <button
+          type="submit"
+          class="patient-feedback__button"
+          [disabled]="feedbackForm.invalid"
+        >
+          Submit Feedback
+        </button>
+      </div>
+    </form>
+  </div>
 </section>

@@ -1,4 +1,4 @@
-namespace Sehaty.APIs
+﻿namespace Sehaty.APIs
 {
     public class Program
     {
