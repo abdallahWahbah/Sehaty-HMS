@@ -4,7 +4,7 @@ namespace Sehaty.APIs.Extensions
 {
     public static class ResultExtensions
     {
-        public static IActionResult ToApiResponse(this Result result)
+        public static ActionResult ToApiResponse(this Result result)
         {
             return result.ErrorType switch
             {
@@ -43,7 +43,7 @@ namespace Sehaty.APIs.Extensions
             };
         }
 
-        public static IActionResult ToApiResponse<T>(this Result<T> result)
+        public static ActionResult ToApiResponse<T>(this Result<T> result)
         {
             return result.IsSuccess
                 ? new OkObjectResult(result.Data)
