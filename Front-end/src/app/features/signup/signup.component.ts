@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule, FormBuilder } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { PatientsService } from '../../core/services/patients.service';
 import { PateintStatusEnum } from '../../core/enums/patient-status-enum';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-signup',
@@ -21,84 +22,135 @@ import { PateintStatusEnum } from '../../core/enums/patient-status-enum';
     Checkbox,
     ButtonModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    DropdownModule
   ],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent {
   serverError: string = '';
-
-  signupForm = new FormGroup({
-    firstName: new FormControl('ebrahim', [Validators.required]),
-    lastName: new FormControl('fron ent', [Validators.required]),
-    email: new FormControl('a@a.a', [Validators.required, Validators.email]),
-    phoneNumber: new FormControl('+201092717902', [Validators.required]),
-    userName: new FormControl('hankosh', [Validators.required]),
-    password: new FormControl('P@ssw0rd', [
-      Validators.required,
-      Validators.minLength(6),
-      Validators.pattern(/^(?=.*[a-z]).*$/),
-      Validators.pattern(/^(?=.*[A-Z]).*$/),
-      Validators.pattern(/^(?=.*\d).*$/),
-      Validators.pattern(/^(?=.*[\W_]).*$/),
-      Validators.pattern(/^\S+$/)
-    ]),
-    confirmPassword: new FormControl('P@ssw0rd', [Validators.required]),
-    agreeTerms: new FormControl(true, [Validators.requiredTrue])
-  });
+  step = 1;
+  signupForm!: FormGroup;
+  genderOptions = [
+    { label: 'Male', value: 'Male' },
+    { label: 'Female', value: 'Female' },
+  ];
 
   constructor(
+    private fb: FormBuilder,
     private _authService: AuthService, 
     private router: Router,
     private _patientServie: PatientsService
   ) {}
 
+  ngOnInit(){
+    this.signupForm = this.fb.group({
+      // FORM 1 — ACCOUNT FORM
+      account: this.fb.group({
+        firstName: ['ebrahim', [Validators.required]],
+        lastName: ['front end', [Validators.required]],
+        email: ['a@a.a', [Validators.required, Validators.email]],
+        phoneNumber: ['+201092717902', [Validators.required]],
+        userName: ['hankosh', [Validators.required]],
+        password: ['P@ssw0rd', [
+          Validators.required,
+          Validators.minLength(6),
+          Validators.pattern(/^(?=.*[a-z]).*$/),
+          Validators.pattern(/^(?=.*[A-Z]).*$/),
+          Validators.pattern(/^(?=.*\d).*$/),
+          Validators.pattern(/^(?=.*[\W_]).*$/),
+          Validators.pattern(/^\S+$/)
+        ]],
+        confirmPassword: ['P@ssw0rd', Validators.required],
+        agreeTerms: [true, Validators.requiredTrue]
+      }),
+
+      // FORM 2 — PATIENT FORM
+      patient: this.fb.group({
+        dateOfBirth: ['2025-12-01', Validators.required],
+        gender: [this.genderOptions[0].value, Validators.required],
+        nationalId: ['298065465418', Validators.required],
+        bloodType: ['A+', Validators.required],
+        allergies: ['None', Validators.required],
+        chrinicConditions: ['None', Validators.required],
+        address: ['Mit Ghamr', Validators.required],
+        emergencyContactName: [''],
+        emergencyContactPhone: [''],
+      })
+    });
+  }
+
+  nextStep() {
+    const account = this.signupForm.get('account');
+    if (account?.invalid) {
+      account.markAllAsTouched();
+      return;
+    }
+    this.step = 2;
+  }
+
+  prevStep() {
+    this.step = 1;
+  }
+  
   onSubmit() {
-    this.serverError = '';
-    if (this.signupForm.invalid) {
-      this.signupForm.markAllAsTouched();
+    const patient = this.signupForm.get('patient');
+    if (patient?.invalid) {
+      patient.markAllAsTouched();
       return;
     }
 
-    const userName = this.signupForm.get('userName')?.value as string;
-    const email = this.signupForm.get('email')?.value as string;
-    const phoneNumber = "+2" + (this.signupForm.get('phoneNumber')?.value as string).replace("+2", '');
-    const firstName = this.signupForm.get('firstName')?.value as string;
-    const lastName = this.signupForm.get('lastName')?.value as string;
-    const password = this.signupForm.get('password')?.value as string;
-    const confirmPassword = this.signupForm.get('confirmPassword')?.value as string;
+    this.serverError = '';
 
-    const newUser = {userName, email, phoneNumber, firstName, lastName, password, confirmPassword, languagePreference: 'Arabic'}
+    const accountData = this.signupForm.get('account')!.value;
+    const patientData = this.signupForm.get('patient')!.value;
 
-    // create new user
+    const newUser = {
+      userName: accountData.userName,
+      email: accountData.email,
+      phoneNumber: "+2" + accountData.phoneNumber.replace("+2", ''),
+      firstName: accountData.firstName,
+      lastName: accountData.lastName,
+      password: accountData.password,
+      confirmPassword: accountData.confirmPassword,
+      languagePreference: 'Arabic'
+    };
+
     this._authService.register(newUser).subscribe({
       next: data => {
-
-        // add the new user to patient table
         this._patientServie.addPatient({
-          firstName: newUser.firstName,
-          lastName: newUser.lastName,
-          dateOfBirth: new Date(),
-          gender: 'Male',
-          nationalId: '',
-          bloodType: '',
-          allergies: '',
-          chrinicConditions: '',
-          address: '',
-          emergencyContactName: '',
-          emergencyContactPhone: '',
+          firstName: accountData.firstName,
+          lastName: accountData.lastName,
+          dateOfBirth: patientData.dateOfBirth,
+          gender: patientData.gender,
+          nationalId: patientData.nationalId,
+          bloodType: patientData.bloodType,
+          allergies: patientData.allergies,
+          chrinicConditions: patientData.chrinicConditions,
+          address: patientData.address,
+          emergencyContactName: patientData.emergencyContactName,
+          emergencyContactPhone: patientData.emergencyContactPhone,
           status: PateintStatusEnum.Active,
           userId: data.userId
         }).subscribe({
           next: patientResponse => {
             this.router.navigate(['login']);
           },
-          error: err => this.serverError = err.error?.message
+          error: patientError => {
+            this.serverError = patientError.error?.message;
+          }
         })
-
       },
-      error: err => this.serverError = err.error?.message || 'Registration failed'
-    });
+      error: err => {
+        this.serverError = err.error?.message
+      }
+    })
+  }
+  get accountForm(): FormGroup {
+    return this.signupForm.get('account') as FormGroup;
+  }
+  get patientForm(): FormGroup {
+    return this.signupForm.get('patient') as FormGroup;
   }
 }

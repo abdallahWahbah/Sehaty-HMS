@@ -1,0 +1,6 @@
+input[type="date"]:not(:placeholder-shown) + label {
+  transform: translateY(-0.75rem);
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  top: 0;
+}
