@@ -1,6 +1,4 @@
-﻿using Sehaty.Core.Specifications.Appointment_Specs;
-using Sehaty.Core.Specifications.BillingSpec;
-namespace Sehaty.Application.Services
+﻿namespace Sehaty.Application.Services
 {
     public class PaymentService : IPaymentService
     {
@@ -8,20 +6,88 @@ namespace Sehaty.Application.Services
         private readonly IPaymobService paymobEgy2Service;
         private readonly PaymentSettings paymentSettings;
 
-        public PaymentService(IUnitOfWork unit, IPaymobService paymobEgy2Service, IOptions<PaymentSettings> paymentSettings)
+        public PaymentService(IUnitOfWork unit,IPaymobService paymobEgy2Service,IOptions<PaymentSettings> paymentSettings)
         {
             this.unit = unit;
             this.paymobEgy2Service = paymobEgy2Service;
             this.paymentSettings = paymentSettings.Value;
         }
+        public async Task<Result> CancelConfirmedAppointmentByDoctor(int appointmentId)
+        {
+            var appointment = await unit.Repository<Appointment>()
+                .GetByIdAsync(appointmentId);
 
-        public async Task<(string link, int? billingId)> GetPaymentLinkAsync(int appointmentId, int totalAmount)
+            if(appointment is null)
+
+                // تأكيد الحالة
+                if(appointment.Status != AppointmentStatus.Confirmed)
+                    return Result.Failure(ErrorType.BadRequest,"Only confirmed appointments can be cancelled");
+
+            var doctor = await unit.Repository<Doctor>()
+                .GetByIdAsync(appointment.DoctorId);
+            if(doctor is null)
+                return Result.Failure(ErrorType.NotFound,"Doctor not found");
+
+
+            var billing = await unit.Repository<Billing>()
+                .GetByIdWithSpecAsync(
+                    new BillingSpec(b => b.AppointmentId == appointmentId)
+                );
+
+            if(billing is null || billing.Status != BillingStatus.Paid)
+                return Result.Failure(ErrorType.NotFound,"No paid billing found");
+
+            // حساب الخصم
+            decimal refundAmount = CalculateRefund(
+                appointment.AppointmentDateTime,
+                billing.PaidAmount
+            );
+
+            // تنفيذ Refund
+            bool refundSuccess = await paymobEgy2Service.RefundPaymentAsync(
+                billing.TransactionId,
+                refundAmount
+            );
+
+            if(!refundSuccess)
+                return Result.Failure(ErrorType.BadRequest,"Refund failed");
+
+
+            // تحديث BILLING
+            billing.PaidAmount -= refundAmount;
+            billing.Status = billing.PaidAmount == 0
+                ? BillingStatus.Refunded
+                : BillingStatus.Partially;
+            billing.DiscountAmount += refundAmount;
+
+            billing.Notes +=
+                $"\nDoctor cancellation refund: {refundAmount} EGP at {DateTime.UtcNow}";
+
+            unit.Repository<Billing>().Update(billing);
+
+            // تحديث APPOINTMENT
+            appointment.Status = AppointmentStatus.Canceled;
+            appointment.CancellationReason = "Canceled by doctor";
+
+            unit.Repository<Appointment>().Update(appointment);
+
+            // تحديث DOCTOR STAT
+            doctor.CancelledAppointmentsCount++;
+
+            unit.Repository<Doctor>().Update(doctor);
+
+            // SAVE ALL
+            await unit.CommitAsync();
+            return Result.Success();
+        }
+
+        public async Task<(string link, int? billingId)> GetPaymentLinkAsync(int appointmentId,int totalAmount)
         {
             var specBilling = new BillingSpec(b => b.AppointmentId == appointmentId);
             var existeingBilling = await unit.Repository<Billing>().GetByIdWithSpecAsync(specBilling);
-            if (existeingBilling != null)
+            if(existeingBilling != null)
             {
-                if (existeingBilling.PaymentLink != null &&
+                if(existeingBilling.PaymentLink != null &&
                     existeingBilling.Status == BillingStatus.Pending)
                     return (existeingBilling.PaymentLink, existeingBilling.Id);
             }
@@ -29,28 +95,29 @@ namespace Sehaty.Application.Services
             var spec = new AppointmentSpecifications(a => a.Id == appointmentId);
             var appointment = await unit.Repository<Appointment>()
                 .GetByIdWithSpecAsync(spec)
-                ?? throw new InvalidOperationException("Appointment not found"); ;
+                ?? throw new InvalidOperationException("Appointment not found");
+            ;
 
             var doctor = await unit.Repository<Doctor>().GetByIdAsync(appointment.DoctorId)
                 ?? throw new InvalidOperationException("Doctor not found");
 
-            if (appointment?.Status != AppointmentStatus.Pending)
+            if(appointment?.Status != AppointmentStatus.Pending)
                 throw new InvalidOperationException("The appointment is not valid for payment!");
 
-            if (!paymentSettings.AcceptOnlinePayments)
+            if(!paymentSettings.AcceptOnlinePayments)
                 throw new InvalidOperationException("payment is not enabled");
 
-            if (totalAmount <= 0)
-                throw new ArgumentException("Amount must Be Larger Than Zero!", nameof(totalAmount));
+            if(totalAmount <= 0)
+                throw new ArgumentException("Amount must Be Larger Than Zero!",nameof(totalAmount));
 
             Billing billing = new();
-            if (paymentSettings.PaymentProvider == (int)PaymentProvider.PaymobEgy2)
+            if(paymentSettings.PaymentProvider == (int) PaymentProvider.PaymobEgy2)
             {
-                var (link, orderId) = await paymobEgy2Service.GetPaymentLinkAsync(appointmentId, totalAmount);
+                var (link, orderId) = await paymobEgy2Service.GetPaymentLinkAsync(appointmentId,totalAmount);
 
-                if (!string.IsNullOrEmpty(link))
+                if(!string.IsNullOrEmpty(link))
                 {
-                    billing = await CreatePendingBilling(appointment, totalAmount, orderId);
+                    billing = await CreatePendingBilling(appointment,totalAmount,orderId);
                     billing.Notes = $"Payment Link Generated at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}";
                     billing.PaymentLink = link;
                     unit.Repository<Billing>().Update(billing);
@@ -63,7 +130,7 @@ namespace Sehaty.Application.Services
             throw new NotSupportedException("Payment is Not Aviliable");
         }
 
-        private async Task<Billing> CreatePendingBilling(Appointment appointment, int totalAmount, int orderId)
+        private async Task<Billing> CreatePendingBilling(Appointment appointment,int totalAmount,int orderId)
         {
             var existingBillingSpec = new BillingSpec(b => b.AppointmentId == appointment.Id &&
                 (b.Status == BillingStatus.Pending || b.Status == BillingStatus.Paid)
@@ -71,9 +138,9 @@ namespace Sehaty.Application.Services
 
             var existingBilling = await unit.Repository<Billing>().GetByIdWithSpecAsync(existingBillingSpec);
 
-            if (existingBilling != null)
+            if(existingBilling != null)
             {
-                if (existingBilling.Status == BillingStatus.Paid)
+                if(existingBilling.Status == BillingStatus.Paid)
                 {
                     throw new InvalidOperationException("Billing is Paid");
                 }
@@ -110,7 +177,7 @@ namespace Sehaty.Application.Services
             return billing;
         }
 
-        public async Task<bool> ProcessRefundAsync(int billingId, decimal? partialAmount = null)
+        public async Task<bool> ProcessRefundAsync(int billingId,decimal? partialAmount = null)
         {
             var billing = await unit.Repository<Billing>().GetByIdAsync(billingId);
 
@@ -118,15 +185,15 @@ namespace Sehaty.Application.Services
             var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(appointmentSpec)
                 ?? throw new InvalidOperationException("Appointment Not Found");
 
-            if (appointment.Status == AppointmentStatus.Completed)
+            if(appointment.Status == AppointmentStatus.Completed)
                 throw new InvalidOperationException(" Refund is not allowed for an Completed Appointment");
-            if (billing == null)
+            if(billing == null)
                 throw new InvalidOperationException(" Billing not found!");
 
-            if (billing.Status != BillingStatus.Paid && billing.Status != BillingStatus.Partially)
+            if(billing.Status != BillingStatus.Paid && billing.Status != BillingStatus.Partially)
                 throw new InvalidOperationException(" Refund is not allowed for an unpaid billing!");
 
-            if (string.IsNullOrEmpty(billing.TransactionId))
+            if(string.IsNullOrEmpty(billing.TransactionId))
                 throw new InvalidOperationException(" Transaction ID is missing!");
 
             decimal amountToRefund = partialAmount ?? billing.PaidAmount;
@@ -134,7 +201,7 @@ namespace Sehaty.Application.Services
             decimal alreadyRefunded = billing.TotalAmount - billing.PaidAmount;
             decimal refundableAmount = billing.PaidAmount;
 
-            if (amountToRefund <= 0 || amountToRefund > refundableAmount)
+            if(amountToRefund <= 0 || amountToRefund > refundableAmount)
                 throw new ArgumentException($" Invalid refund amount! Available refundable amount: {refundableAmount} EGP");
 
             bool refundSuccess = await paymobEgy2Service.RefundPaymentAsync(
@@ -142,13 +209,13 @@ namespace Sehaty.Application.Services
                 amountToRefund
             );
 
-            if (!refundSuccess)
+            if(!refundSuccess)
                 return false;
 
             billing.PaidAmount -= amountToRefund;
             decimal totalRefunded = alreadyRefunded + amountToRefund;
 
-            if (billing.PaidAmount <= 0)
+            if(billing.PaidAmount <= 0)
             {
                 billing.Status = BillingStatus.Refunded;
                 billing.Notes += $"\n [Full Refund] {amountToRefund} EGP on {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}";
@@ -168,6 +235,19 @@ namespace Sehaty.Application.Services
 
             return true;
         }
+        private static decimal CalculateRefund(DateTime appointmentTime,decimal paidAmount)
+        {
+            var diff = appointmentTime - DateTime.UtcNow;
+
+            if(diff.TotalHours < 2)
+                return paidAmount * 0.5m;
+
+            if(diff.TotalHours < 12)
+                return paidAmount * 0.7m;
+
+            return paidAmount * 0.9m;
+        }
+
 
     }
 

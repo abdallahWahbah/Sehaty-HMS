@@ -30,9 +30,9 @@
         // Navigation Properties
         public Patient Patient { get; set; }
         public Doctor Doctor { get; set; }
-        public List<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
-        public List<Prescription> Prescriptions { get; set; } = new List<Prescription>();
-        public List<Billing> Billings { get; set; } = new List<Billing>();
-        public List<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+        public List<MedicalRecord> MedicalRecords { get; set; } = [];
+        public List<Prescription> Prescriptions { get; set; } = [];
+        public List<Billing> Billings { get; set; } = [];
+        public List<Feedback> Feedbacks { get; set; } = [];
     }
 }

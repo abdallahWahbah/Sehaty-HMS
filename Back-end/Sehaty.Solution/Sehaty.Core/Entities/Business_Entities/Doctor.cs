@@ -1,6 +1,4 @@
-﻿using Sehaty.Core.Entities.Business_Entities.DoctorAvailabilitySlots;
-
-namespace Sehaty.Core.Entites
+﻿namespace Sehaty.Core.Entites
 {
     public class Doctor : BaseEntity
     {
@@ -15,6 +13,7 @@ namespace Sehaty.Core.Entites
         public bool IsDeleted { get; set; }
         public int UserId { get; set; }
         public int DetectionPrice { get; set; }
+        public int CancelledAppointmentsCount { get; set; }
         public ApplicationUser User { get; set; }
         public int? DepartmentId { get; set; }
         public Department Department { get; set; }
