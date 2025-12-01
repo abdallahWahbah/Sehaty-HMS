@@ -1,4 +1,7 @@
-﻿namespace Sehaty.Application.Services
+﻿using Sehaty.Application.Dtos.OpenAIDto;
+using Sehaty.Core.Specifications.MedicalRecordSpec;
+
+namespace Sehaty.Application.Services
 {
     public class OpenAIService : IOpenAIService
     {
@@ -48,6 +51,140 @@
             return Result<PrescriptionAnalysisResponseDto>.Success(analysisResponse);
         }
 
+
+        public async Task<Result<PatientHistoryAnalysisResponseDto>> AnalyzePatientHistoryAsync(int patientId, int doctorId)
+        {
+            var spec = new MedicalRecordSpec(m => m.PatientId == patientId);
+            var medicalRecords = await _unitOfWork.Repository<MedicalRecord>().GetAllWithSpecAsync(spec);
+
+            if (!medicalRecords.Any())
+                return Result<PatientHistoryAnalysisResponseDto>.Failure(
+                    ErrorType.NotFound,
+                    "No medical records found for this patient");
+
+            var specPatient = new PatientSpecifications(mr => mr.Id == patientId);
+            var patient = await _unitOfWork.Repository<Patient>().GetByIdWithSpecAsync(specPatient);
+
+            if (patient == null)
+                return Result<PatientHistoryAnalysisResponseDto>.Failure(
+                    ErrorType.NotFound,
+                    "Patient not found");
+
+            var specprescriptions = new PrescriptionSpecifications(mr => mr.PatientId == patientId);
+
+            var prescriptions = await _unitOfWork.Repository<Prescription>().GetAllWithSpecAsync(specprescriptions);
+
+            string prompt = BuildPatientHistoryPrompt(patient, medicalRecords, prescriptions);
+
+            var aiResult = await CallOpenAiAsync(prompt);
+            if (!aiResult.IsSuccess)
+                return Result<PatientHistoryAnalysisResponseDto>.Failure(
+                    aiResult.ErrorType,
+                    aiResult.Error);
+
+            #region Response
+            var response = new PatientHistoryAnalysisResponseDto
+            {
+                PatientId = patientId,
+                PatientName = $"{patient.FirstName} {patient.LastName}",
+                TotalPrescriptions = prescriptions.Count(),
+                AISummary = aiResult.Data,
+                Records = medicalRecords.Select(r => new RecordSummaryDto
+                {
+                    RecordId = r.Id,
+                    RecordDate = r.RecordDate,
+                    RecordType = r.RecordType.ToString(),
+                    Diagnosis = r.Diagnosis ?? "N/A",
+                    Symptoms = r.Symptoms ?? "N/A",
+                    TreatmentPlan = r.TreatmentPlan ?? "N/A",
+                    Medications = prescriptions
+                        .Where(p => p.MedicalRecordId == r.Id)
+                        .SelectMany(p => p.Medications)
+                        .Select(m => m.Medication?.Name ?? "Unknown")
+                        .Distinct()
+                        .ToList()
+                }).ToList()
+                #endregion
+            };
+
+            return Result<PatientHistoryAnalysisResponseDto>.Success(response);
+        }
+
+        private string BuildPatientHistoryPrompt(Patient patient, IEnumerable<MedicalRecord> records, IEnumerable<Prescription> prescriptions)
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine("أنت مساعد طبي ذكي. قم بتحليل التاريخ المرضي الكامل للمريض التالي وقدم ملخصاً طبياً شاملاً للدكتور.");
+            sb.AppendLine($"\n--- بيانات المريض ---");
+            sb.AppendLine($"الاسم: {patient.FirstName} {patient.LastName}");
+            sb.AppendLine($"العمر: {CalculateAge(patient.DateOfBirth)} سنة");
+            sb.AppendLine($"الجنس: {patient.Gender}");
+            sb.AppendLine($"فصيلة الدم: {patient.BloodType ?? "غير محدد"}");
+
+            sb.AppendLine($"\n--- السجلات الطبية ({records.Count()}) ---");
+
+            foreach (var record in records.OrderBy(r => r.RecordDate))
+            {
+                sb.AppendLine($"\n📅 التاريخ: {record.RecordDate:dd/MM/yyyy}");
+                sb.AppendLine($"النوع: {record.RecordType}");
+
+                if (!string.IsNullOrEmpty(record.Symptoms))
+                    sb.AppendLine($"الأعراض: {record.Symptoms}");
+
+                if (!string.IsNullOrEmpty(record.Diagnosis))
+                    sb.AppendLine($"التشخيص: {record.Diagnosis}");
+
+                if (!string.IsNullOrEmpty(record.TreatmentPlan))
+                    sb.AppendLine($"خطة العلاج: {record.TreatmentPlan}");
+
+                if (record.BpSystolic.HasValue || record.BpDiastolic.HasValue)
+                    sb.AppendLine($"ضغط الدم: {record.BpSystolic}/{record.BpDiastolic}");
+
+                if (record.Temperature.HasValue)
+                    sb.AppendLine($"الحرارة: {record.Temperature}°C");
+
+                if (record.HeartRate.HasValue)
+                    sb.AppendLine($"النبض: {record.HeartRate} bpm");
+
+                if (record.Weight.HasValue)
+                    sb.AppendLine($"الوزن: {record.Weight} kg");
+
+                var recordPrescriptions = prescriptions.Where(p => p.MedicalRecordId == record.Id);
+                if (recordPrescriptions.Any())
+                {
+                    sb.AppendLine("الأدوية الموصوفة:");
+                    foreach (var pres in recordPrescriptions)
+                    {
+                        foreach (var med in pres.Medications)
+                        {
+                            sb.AppendLine($"  • {med.Medication?.Name ?? "Unknown"} - {med.Dosage} - {med.Frequency}");
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(record.Notes))
+                    sb.AppendLine($"ملاحظات: {record.Notes}");
+            }
+
+            sb.AppendLine("\n\n--- المطلوب من التحليل ---");
+            sb.AppendLine("1. ملخص الحالة الطبية العامة للمريض");
+            sb.AppendLine("2. الأمراض أو الحالات المزمنة إن وجدت");
+            sb.AppendLine("3. تطور الحالة عبر الزمن");
+            sb.AppendLine("4. الأدوية المتكررة أو طويلة الأمد");
+            sb.AppendLine("5. أي ملاحظات مهمة أو تحذيرات طبية");
+            sb.AppendLine("6. توصيات للمتابعة أو الفحوصات المقترحة");
+            sb.AppendLine("\nالرجاء تقديم التحليل باللغة العربية بأسلوب طبي احترافي.");
+
+            return sb.ToString();
+        }
+
+        private int CalculateAge(DateTime dateOfBirth)
+        {
+            var today = DateTime.Today;
+            var age = today.Year - dateOfBirth.Year;
+            if (dateOfBirth.Date > today.AddYears(-age)) age--;
+            return age;
+        }
         private string BuildAnalysisPrompt(Prescription prescription)
         {
             var sb = new StringBuilder();
