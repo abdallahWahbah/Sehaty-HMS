@@ -15,6 +15,7 @@
             _openAiApiKey = config["OpenAI:ApiKey"] ?? Environment.GetEnvironmentVariable("ApiKey");
         }
 
+
         public async Task<Result<PrescriptionAnalysisResponseDto>> AnalyzePrescriptionAsync(int prescriptionId)
         {
             var spec = new PrescriptionSpecifications(prescriptionId);
@@ -105,7 +106,100 @@
             return Result<PatientHistoryAnalysisResponseDto>.Success(response);
         }
 
-        private static string BuildPatientHistoryPrompt(Patient patient, IEnumerable<MedicalRecord> records, IEnumerable<Prescription> prescriptions)
+
+        public async Task<Result<SymptomsAnalysisResponseDto>> AnalyzeSymptomsAndSuggestAppointmentAsync(SymptomsAnalysisRequestDto request)
+        {
+            var patient = await _unitOfWork.Repository<Patient>().GetByIdAsync(request.PatientId);
+            if (patient == null)
+                return Result<SymptomsAnalysisResponseDto>.Failure(ErrorType.NotFound, "Patient not found");
+
+            string prompt = BuildSymptomsAnalysisPrompt(request.Symptoms);
+
+            var aiResult = await CallOpenAiAsync(prompt);
+            if (!aiResult.IsSuccess)
+                return Result<SymptomsAnalysisResponseDto>.Failure(aiResult.ErrorType, aiResult.Error);
+
+            string suggestedSpecialization = aiResult.Data;
+
+            var doctorSpec = new DoctorSpecifications(d =>
+                d.Department.Name.ToLower().Contains(suggestedSpecialization.ToLower()));
+
+            var doctors = await _unitOfWork.Repository<Doctor>().GetAllWithSpecAsync(doctorSpec);
+
+            if (!doctors.Any())
+                return Result<SymptomsAnalysisResponseDto>.Failure(
+                    ErrorType.NotFound,
+                    $"No doctors found for specialization: {suggestedSpecialization}");
+
+            var allAvailableSlots = new List<SuggestedSlotDto>();
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            var currentTime = TimeOnly.FromDateTime(DateTime.Now);
+
+            foreach (var doctor in doctors)
+            {
+                var slotSpec = new DoctorAppointmentSlotspec(s => s.DoctorId == doctor.Id && !s.IsBooked && s.Date >= today);
+
+                var slots = await _unitOfWork.Repository<DoctorAppointmentSlot>()
+                    .GetAllWithSpecAsync(slotSpec);
+
+                foreach (var slot in slots)
+                {
+                    if (slot.Date == today && slot.StartTime <= currentTime)
+                        continue;
+
+                    allAvailableSlots.Add(new SuggestedSlotDto
+                    {
+                        SlotId = slot.Id,
+                        DoctorId = doctor.Id,
+                        DoctorName = $"{doctor.FirstName} {doctor.LastName}",
+                        Specialization = doctor.Specialty,
+                        Date = slot.Date,
+                        StartTime = slot.StartTime,
+                        EndTime = slot.EndTime,
+                        ConsultationFee = doctor.DetectionPrice
+                    });
+                }
+            }
+
+            if (!allAvailableSlots.Any())
+                return Result<SymptomsAnalysisResponseDto>.Failure(
+                    ErrorType.NotFound,
+                    "No available appointments found for this specialization");
+
+            var nearestSlot = allAvailableSlots
+                .OrderBy(s => s.Date)
+                .ThenBy(s => s.StartTime)
+                .FirstOrDefault();
+
+            var response = new SymptomsAnalysisResponseDto
+            {
+                AnalyzedSymptoms = $"تم تحليل الأعراض: {request.Symptoms}",
+                SuggestedSpecialization = suggestedSpecialization,
+                AvailableSlots = nearestSlot != null
+                    ? new List<SuggestedSlotDto> { nearestSlot }
+                    : new List<SuggestedSlotDto>()
+            };
+
+            return Result<SymptomsAnalysisResponseDto>.Success(response);
+        }
+
+
+
+
+        #region Helper Function
+
+        private string BuildSymptomsAnalysisPrompt(string symptoms)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("أنت مساعد طبي ذكي متخصص في تحليل الأعراض واقتراح التخصص الطبي المناسب.");
+            sb.AppendLine($"\nالأعراض المذكورة: {symptoms}");
+            sb.AppendLine("\nبناءً على هذه الأعراض، ما هو التخصص الطبي الأنسب؟");
+            sb.AppendLine("الرجاء الرد بكلمة واحدة فقط تمثل التخصص بالإنجليزية (مثل: Cardiology, Dermatology, Orthopedics, Neurology, إلخ)");
+            sb.AppendLine("إذا لم تكن متأكداً، اختر 'General'");
+
+            return sb.ToString();
+        }
+        private string BuildPatientHistoryPrompt(Patient patient, IEnumerable<MedicalRecord> records, IEnumerable<Prescription> prescriptions)
         {
             var sb = new StringBuilder();
 
@@ -291,5 +385,7 @@
 
             return text.Trim();
         }
+
+        #endregion
     }
 }
