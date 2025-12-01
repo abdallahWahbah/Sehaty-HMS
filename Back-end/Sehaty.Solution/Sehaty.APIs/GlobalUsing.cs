@@ -8,6 +8,7 @@ global using Microsoft.OpenApi.Models;
 global using Sehaty.APIs.Errors;
 global using Sehaty.APIs.Extensions;
 global using Sehaty.APIs.Middlewares;
+global using Sehaty.Application.Dtos.AiDto;
 global using Sehaty.Application.Dtos.AppointmentDTOs;
 global using Sehaty.Application.Dtos.BillngDto;
 global using Sehaty.Application.Dtos.DepartmentDtos;
@@ -17,6 +18,8 @@ global using Sehaty.Application.Dtos.FeedbackDtos;
 global using Sehaty.Application.Dtos.IdentityDtos;
 global using Sehaty.Application.Dtos.MedicalRecordDto;
 global using Sehaty.Application.Dtos.NotificationsDTOs;
+global using Sehaty.Application.Dtos.OpenAIDto;
+global using Sehaty.Application.Dtos.OpenAIDto.SuggestAppointmentBySymptomsDto;
 global using Sehaty.Application.Dtos.PatientDto;
 global using Sehaty.Application.Dtos.PrescriptionsDTOs;
 global using Sehaty.Application.Helper;
@@ -50,5 +53,3 @@ global using System.Security.Claims;
 global using System.Text;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
-
-
