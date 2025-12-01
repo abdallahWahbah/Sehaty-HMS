@@ -554,3 +554,51 @@ $radius-lg: 1.4rem;
   font-family: "Tajawal", system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
 }
+// 🌈 Vibrant Rainbow Animated Border
+.rainbow-border {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+  border-radius: 999px; // مهم عشان يلف صح
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 2px; // سمك البوردر
+    border-radius: inherit;
+    background: linear-gradient(
+      120deg,
+      #ff0000,
+      #ff7a00,
+      #ffee00,
+      #00ff00,
+      #00ffee,
+      #007bff,
+      #8a00ff,
+      #ff00c8,
+      #ff0000
+    );
+    background-size: 300% 300%;
+    animation: rainbowMove 2.5s linear infinite;
+
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+
+    z-index: -1;
+  }
+}
+
+@keyframes rainbowMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
