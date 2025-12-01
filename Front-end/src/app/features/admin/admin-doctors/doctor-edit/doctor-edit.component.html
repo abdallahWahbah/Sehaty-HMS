@@ -56,37 +56,32 @@
           </p-floatlabel>
 
           <p-floatlabel class="patient-edit__input">
-            <input pInputText formControlName="userId" />
-            <label>User Id</label>
-          </p-floatlabel>
-
-          <div class="patient-edit__input patient-edit__input--select">
-            <label for="departmentId" class="patient-edit__select-label">
-              Department
-            </label>
             <select
               id="departmentId"
               class="patient-edit__select"
-              formControlName="departmentId"
+              formControlName="departmentId"placeholder=" "
             >
               <option value="" disabled>Select Department</option>
               @for(dept of departments; track dept.id){
-              <option [value]="dept.id">
-                {{ dept.en_Name }}
-              </option>
+                <option [value]="dept.id">
+                  {{ dept.en_Name }}
+                </option>
               }
             </select>
-          </div>
+            <label for="departmentId">Department</label>
+          </p-floatlabel>
         </div>
 
         <div class="patient-edit__button-container">
           <p-button type="submit" label="Update Doctor"></p-button>
 
-          <p-button
-            label="Delete Doctor"
-            styleClass="p-button-danger"
-            (click)="onDelete()"
-          ></p-button>
+          @if(storedUser.role === 'Admin'){
+            <p-button
+              label="Delete Doctor"
+              styleClass="p-button-danger"
+              (click)="onDelete()"
+            ></p-button>
+          }
         </div>
       </form>
     </div>

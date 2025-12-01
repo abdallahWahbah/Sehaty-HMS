@@ -155,3 +155,28 @@ $doc-radius-lg: 1.4rem;
     padding-inline: 1.4rem;
   }
 }
+.patient-edit__select {
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  padding: 0.9rem 1.2rem;
+  font-size: 1.4rem;
+  color: $doc-text-main;
+  background: #ffffff;
+  outline: none;
+  appearance: none;
+
+  &:focus {
+    border-color: $doc-primary-soft;
+    box-shadow: 0 0 0 1px rgba(37, 43, 97, 0.15);
+  }
+}
+
+::ng-deep p-floatlabel select {
+  width: 100%;
+}
+::ng-deep p-floatlabel select:not(:placeholder-shown) + label,
+::ng-deep p-floatlabel select:focus + label {
+  top: -0.7rem !important;
+  font-size: 1.1rem !important;
+}
