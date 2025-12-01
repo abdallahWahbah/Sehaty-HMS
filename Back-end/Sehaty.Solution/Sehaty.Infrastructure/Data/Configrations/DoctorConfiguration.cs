@@ -10,6 +10,7 @@
             builder.Property(D => D.Specialty).IsRequired().HasColumnType("nvarchar").HasMaxLength(100);
             builder.Property(D => D.LicenseNumber).IsRequired().HasColumnType("nvarchar").HasMaxLength(50);
             builder.Property(D => D.Qualifications).HasColumnType("nvarchar(max)");
+            builder.Property(D => D.CancelledAppointmentsCount).HasDefaultValue(0);
             builder.Property(D => D.IsDeleted).HasDefaultValue(false);
 
             builder.HasMany(D => D.DoctorAvailabilitySlots)

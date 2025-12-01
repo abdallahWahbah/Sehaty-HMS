@@ -1,11 +1,4 @@
-﻿using Sehaty.Application.Dtos.OpenAIDto;
-using Sehaty.Application.Dtos.OpenAIDto.SuggestAppointmentBySymptomsDto;
-using Sehaty.Core.Entities.Business_Entities.DoctorAvailabilitySlots;
-using Sehaty.Core.Specifications.DoctorAvailabilitySlotSpec;
-using Sehaty.Core.Specifications.DoctorSpec;
-using Sehaty.Core.Specifications.MedicalRecordSpec;
-
-namespace Sehaty.Application.Services
+﻿namespace Sehaty.Application.Services
 {
     public class OpenAIService : IOpenAIService
     {
@@ -40,7 +33,7 @@ namespace Sehaty.Application.Services
             string aiResponse = result.Data;
             var analysisResponse = mapper.Map<PrescriptionAnalysisResponseDto>(prescription);
             analysisResponse.AnalysisResult = aiResponse;
-            analysisResponse.MedicationsAnalysis = ParseMedicationsFromAI(aiResponse, prescription);
+            analysisResponse.MedicationsAnalysis = ParseMedicationsFromAI(prescription);
 
             //var analysisResponse = new PrescriptionAnalysisResponseDto
             //{
@@ -57,7 +50,7 @@ namespace Sehaty.Application.Services
         }
 
 
-        public async Task<Result<PatientHistoryAnalysisResponseDto>> AnalyzePatientHistoryAsync(int patientId, int doctorId)
+        public async Task<Result<PatientHistoryAnalysisResponseDto>> AnalyzePatientHistoryAsync(int patientId)
         {
             var spec = new MedicalRecordSpec(m => m.PatientId == patientId);
             var medicalRecords = await _unitOfWork.Repository<MedicalRecord>().GetAllWithSpecAsync(spec);
@@ -71,9 +64,8 @@ namespace Sehaty.Application.Services
             var patient = await _unitOfWork.Repository<Patient>().GetByIdWithSpecAsync(specPatient);
 
             if (patient == null)
-                return Result<PatientHistoryAnalysisResponseDto>.Failure(
-                    ErrorType.NotFound,
-                    "Patient not found");
+                return Result<PatientHistoryAnalysisResponseDto>
+                    .Failure(ErrorType.NotFound, "Patient not found");
 
             var specprescriptions = new PrescriptionSpecifications(mr => mr.PatientId == patientId);
 
@@ -94,7 +86,7 @@ namespace Sehaty.Application.Services
                 PatientName = $"{patient.FirstName} {patient.LastName}",
                 TotalPrescriptions = prescriptions.Count(),
                 AISummary = aiResult.Data,
-                Records = medicalRecords.Select(r => new RecordSummaryDto
+                Records = [.. medicalRecords.Select(r => new RecordSummaryDto
                 {
                     RecordId = r.Id,
                     RecordDate = r.RecordDate,
@@ -102,13 +94,12 @@ namespace Sehaty.Application.Services
                     Diagnosis = r.Diagnosis ?? "N/A",
                     Symptoms = r.Symptoms ?? "N/A",
                     TreatmentPlan = r.TreatmentPlan ?? "N/A",
-                    Medications = prescriptions
+                    Medications = [.. prescriptions
                         .Where(p => p.MedicalRecordId == r.Id)
                         .SelectMany(p => p.Medications)
                         .Select(m => m.Medication?.Name ?? "Unknown")
-                        .Distinct()
-                        .ToList()
-                }).ToList()
+                        .Distinct()]
+                })]
                 #endregion
             };
 
@@ -276,14 +267,14 @@ namespace Sehaty.Application.Services
             return sb.ToString();
         }
 
-        private int CalculateAge(DateTime dateOfBirth)
+        private static int CalculateAge(DateTime dateOfBirth)
         {
             var today = DateTime.Today;
             var age = today.Year - dateOfBirth.Year;
             if (dateOfBirth.Date > today.AddYears(-age)) age--;
             return age;
         }
-        private string BuildAnalysisPrompt(Prescription prescription)
+        private static string BuildAnalysisPrompt(Prescription prescription)
         {
             var sb = new StringBuilder();
 
@@ -323,7 +314,7 @@ namespace Sehaty.Application.Services
                 model = "gpt-4o",
                 messages = new[]
                 {
-                    new { role = "system", content = "أنت مساعد طبي متخصص في شرح الروشتات الطبية للمرضى بطريقة مبسطة." },
+                    new { role = "system", content = "أنت مساعد طبي متخصص في شرح الروشتات الطبية ومساعدة الأطباء فى بعض الحالات الطبية والتشخصيات الطبية المُحتملة." },
                     new { role = "user", content = prompt }
                 },
                 temperature = 0.7,
@@ -361,7 +352,7 @@ namespace Sehaty.Application.Services
 
         }
 
-        private List<MedicationAnalysisDto> ParseMedicationsFromAI(string aiResponse, Prescription prescription)
+        private static List<MedicationAnalysisDto> ParseMedicationsFromAI(Prescription prescription)
         {
             var result = new List<MedicationAnalysisDto>();
 
@@ -375,10 +366,10 @@ namespace Sehaty.Application.Services
                     Duration = med.Duration
                 });
             }
-
             return result;
         }
-        private string CleanMarkdown(string text)
+
+        private static string CleanMarkdown(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
                 return text;
@@ -396,7 +387,5 @@ namespace Sehaty.Application.Services
         }
 
         #endregion
-
-
     }
 }

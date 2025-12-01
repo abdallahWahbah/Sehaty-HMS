@@ -1,8 +1,4 @@
-﻿using Sehaty.Application.Dtos.AiDto;
-using Sehaty.Application.Dtos.OpenAIDto;
-using Sehaty.Application.Dtos.OpenAIDto.SuggestAppointmentBySymptomsDto;
-
-namespace Sehaty.Application.Services.Contract.BusinessServices.Contract
+﻿namespace Sehaty.Application.Services.Contract.BusinessServices.Contract
 {
     public interface IOpenAIService
     {

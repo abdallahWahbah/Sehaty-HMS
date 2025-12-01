@@ -13,34 +13,34 @@
             apiSecretKey = !String.IsNullOrWhiteSpace(settings.SKey) ? settings.SKey : Environment.GetEnvironmentVariable("PaymobSKey");
         }
 
-        public async Task<(string, int)> GetPaymentLinkAsync(int appointmentId, int totalAmount)
+        public async Task<(string, int)> GetPaymentLinkAsync(int appointmentId,int totalAmount)
         {
-            var (clientSecret, orderId) = await CreateIntentionRequest(appointmentId, totalAmount);
+            var (clientSecret, orderId) = await CreateIntentionRequest(totalAmount);
 
-            if (string.IsNullOrEmpty(clientSecret))
+            if(string.IsNullOrEmpty(clientSecret))
                 return (null, 0);
 
             string url = $"https://accept.paymob.com/unifiedcheckout/?publicKey={settings.PublicKey}&clientSecret={clientSecret}";
             return (url, orderId);
         }
 
-        public bool ValidateHMAC(string dataString, string expectedHmac)
+        public bool ValidateHMAC(string dataString,string expectedHmac)
         {
-            if (string.IsNullOrEmpty(settings.AccountHMAC) ||
+            if(string.IsNullOrEmpty(settings.AccountHMAC) ||
                 string.IsNullOrEmpty(dataString) ||
                 string.IsNullOrEmpty(expectedHmac))
                 return false;
 
-            var computedHmac = GenerateHmacSHA512(settings.AccountHMAC, dataString);
-            return string.Equals(computedHmac, expectedHmac, StringComparison.OrdinalIgnoreCase);
+            var computedHmac = GenerateHmacSHA512(settings.AccountHMAC,dataString);
+            return string.Equals(computedHmac,expectedHmac,StringComparison.OrdinalIgnoreCase);
         }
 
-        private async Task<(string, int)> CreateIntentionRequest(int appointmentId, int totalAmount)
+        private async Task<(string, int)> CreateIntentionRequest(int totalAmount)//int appointmentId,
         {
             try
             {
                 using HttpClient client = new();
-                client.DefaultRequestHeaders.Add("Authorization", $"Token {apiSecretKey}");
+                client.DefaultRequestHeaders.Add("Authorization",$"Token {apiSecretKey}");
 
                 int amountInCents = totalAmount * 100;
 
@@ -73,7 +73,7 @@
                 var content = await response.Content.ReadAsStringAsync();
 
 
-                if (!response.IsSuccessStatusCode)
+                if(!response.IsSuccessStatusCode)
                 {
                     return (null, 0);
                 }
@@ -85,30 +85,30 @@
 
                 return (result?.client_secret, orderId);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Console.WriteLine($"{ex.Message}");
                 return (null, 0);
             }
         }
-        private static string GenerateHmacSHA512(string key, string message)
+        private static string GenerateHmacSHA512(string key,string message)
         {
             var keyBytes = Encoding.UTF8.GetBytes(key);
             var messageBytes = Encoding.UTF8.GetBytes(message);
 
             using var hmac = new HMACSHA512(keyBytes);
             var hashBytes = hmac.ComputeHash(messageBytes);
-            return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+            return BitConverter.ToString(hashBytes).Replace("-","").ToLower();
         }
 
-        public async Task<bool> RefundPaymentAsync(string transactionId, decimal amountToRefund)
+        public async Task<bool> RefundPaymentAsync(string transactionId,decimal amountToRefund)
         {
             try
             {
                 using HttpClient client = new();
-                client.DefaultRequestHeaders.Add("Authorization", $"Token {apiSecretKey}");
+                client.DefaultRequestHeaders.Add("Authorization",$"Token {apiSecretKey}");
 
-                int amountInCents = (int)(amountToRefund * 100);
+                int amountInCents = (int) (amountToRefund * 100);
 
                 var body = new
                 {
@@ -122,10 +122,10 @@
                 Console.WriteLine($"Transaction ID: {transactionId}");
                 Console.WriteLine($"Amount: {amountToRefund} EGP ({amountInCents} cents)");
 
-                var response = await client.PostAsJsonAsync(apiUrl, body);
+                var response = await client.PostAsJsonAsync(apiUrl,body);
                 var content = await response.Content.ReadAsStringAsync();
 
-                if (response.IsSuccessStatusCode)
+                if(response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"Refund Successful: {content}");
                     return true;
@@ -136,7 +136,7 @@
                     return false;
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Console.WriteLine($"Refund Exception: {ex.Message}");
                 return false;
