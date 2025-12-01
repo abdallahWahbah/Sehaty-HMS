@@ -15,20 +15,21 @@ namespace Sehaty.Application.Services
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
             User = httpContextAccessor.HttpContext?.User;
+            QuestPDF.Settings.License = LicenseType.Community;
         }
-        public async Task<Prescription> CreatePrescriptionAsync(CreatePrescriptionsDto dto)
+        public async Task<Result<Prescription>> CreatePrescriptionAsync(CreatePrescriptionsDto dto)
         {
             bool isAppointmentAlreadyHasPrescription = await unit.Repository<Prescription>()
                             .AnyAsync(P => P.AppointmentId == dto.AppointmentId);
 
             if (isAppointmentAlreadyHasPrescription)
-                throw new Exception("This Appointment Already Has Its Prescription You Can Edit It If You Need.");
+                return Result<Prescription>.Failure(ErrorType.BadRequest, "This Appointment Already Has Its Prescription You Can Edit It If You Need.");
+
 
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(dto.AppointmentId);
 
             if (appointment is null)
-                throw new Exception("Appointment not found");
-
+                return Result<Prescription>.Failure(ErrorType.NotFound, "Appointment not found");
             //if (appointment?.Status != AppointmentStatus.InProgress || appointment?.Status != AppointmentStatus.Completed)
             //    return BadRequest(new ApiResponse(400,
             //        "Oops! You can add a prescription only when the appointment is In Progress or Completed."));
@@ -38,13 +39,14 @@ namespace Sehaty.Application.Services
             var doctor = await unit.Repository<Doctor>().GetFirstOrDefaultAsync(D => D.UserId == doctorUserId);
 
             if (doctor is null)
-                throw new Exception("Doctor not found");
+                return Result<Prescription>.Failure(ErrorType.NotFound, "Doctor not found");
+
 
             var medicalRecord = await unit.Repository<MedicalRecord>()
                 .GetFirstOrDefaultAsync(M => M.PatientId == dto.PatientId);
 
             if (medicalRecord is null)
-                throw new Exception("Medical record not found");
+                return Result<Prescription>.Failure(ErrorType.NotFound, "Medical record not found");
 
             var prescription = mapper.Map<Prescription>(dto);
 
@@ -57,44 +59,63 @@ namespace Sehaty.Application.Services
             unit.Repository<Appointment>().Update(appointment);
 
             await unit.CommitAsync();
-            return prescription;
+            return Result<Prescription>.Success(prescription);
         }
 
-        public async Task<IEnumerable<Prescription>> GetPatientPrescriptionsAsync(int patientId)
+        public async Task<Result<IEnumerable<Prescription>>> GetPatientPrescriptionsAsync(int patientId)
         {
             var spec = new PrescriptionSpecifications(P => P.PatientId == patientId);
             var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
             if (prescriptions == null)
-                throw new Exception("Patient Has No Prescription Yet");
+                return Result<IEnumerable<Prescription>>.Failure(ErrorType.NotFound, "Patient Has No Prescription Yet");
             var sortedprescriptions = prescriptions
                     .OrderByDescending(p => p.DateIssued)
                     .ToList();
-            return sortedprescriptions;
+            return Result<IEnumerable<Prescription>>.Success(sortedprescriptions);
         }
 
-        public async Task<Prescription> GetPrescriptionDetailsAsync(int id)
+        public async Task<Result<Prescription>> GetPrescriptionDetailsAsync(int id)
         {
             var doctorUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var doctorId = unit.Repository<Doctor>().FindBy(D => D.UserId == doctorUserId).Select(D => D.Id).FirstOrDefault();
             var spec = new PrescriptionSpecifications(P => P.Id == id && P.DoctorId == doctorId);
             var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
             if (prescription == null)
-                throw new Exception("Prescription Not Found");
-            return prescription;
+                return Result<Prescription>.Failure(ErrorType.NotFound, "Prescription Not Found");
+            return Result<Prescription>.Success(prescription); ;
         }
 
-        public async Task UpdatePrescriptionAsync(int id, UpdatePrescriptionDto dto)
+        public async Task<Result> UpdatePrescriptionAsync(int id, UpdatePrescriptionDto dto)
         {
             var spec = new PrescriptionSpecifications(id);
             var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
-            if (prescription == null) throw new Exception("Prescription Not Found");
+            if (prescription == null) return Result.Failure(ErrorType.NotFound, "Prescription Not Found");
             mapper.Map(dto, prescription);
             unit.Repository<Prescription>().Update(prescription);
             await unit.CommitAsync();
+            return Result.Success();
 
         }
 
-        public byte[] GeneratePrescriptionPdf(Prescription prescription)
+        public async Task<Result> DeletePrescriptionAsync(int id)
+        {
+            var prescription = await unit.Repository<Prescription>().GetByIdAsync(id);
+            if (prescription == null) return Result.Failure(ErrorType.NotFound, "Prescription Not Found");
+            unit.Repository<Prescription>().Delete(prescription);
+            await unit.CommitAsync();
+            return Result.Success();
+        }
+
+        public async Task<Result<byte[]>> GetPrescriptionPdfFile(int id)
+        {
+            PrescriptionSpecifications spec = new(id);
+            var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
+            if (prescription is null)
+                return Result<byte[]>.Failure(ErrorType.NotFound, "Prescription Not Found");
+
+            return Result<byte[]>.Success(GeneratePrescriptionPdf(prescription));
+        }
+        private byte[] GeneratePrescriptionPdf(Prescription prescription)
         {
             var document = QuestPDF.Fluent.Document.Create(container =>
             {
@@ -160,12 +181,5 @@ namespace Sehaty.Application.Services
             return document.GeneratePdf();
         }
 
-        public async Task DeletePrescriptionAsync(int id)
-        {
-            var prescription = await unit.Repository<Prescription>().GetByIdAsync(id);
-            if (prescription == null) throw new Exception("Prescription Not Found");
-            unit.Repository<Prescription>().Delete(prescription);
-            await unit.CommitAsync();
-        }
     }
 }

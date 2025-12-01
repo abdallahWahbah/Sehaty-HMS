@@ -1,7 +1,7 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
 
-    public class PrescriptionsController(IUnitOfWork unit, IMapper map, IPrescriptionPdfService pdfService, INotificationService notificationService, IPrescriptionService prescriptionService) : ApiBaseController
+    public class PrescriptionsController(IUnitOfWork unit, IMapper map, INotificationService notificationService, IPrescriptionService prescriptionService) : ApiBaseController
     {
 
         [HttpGet]
@@ -44,113 +44,101 @@
         [HttpGet("doctorprescriptions/{id}")]
         public async Task<IActionResult> GetPrescriptionDetails(int id)
         {
-            try
+
+            var result = await prescriptionService.GetPrescriptionDetailsAsync(id);
+            if (result.IsSuccess)
             {
-                var prescription = await prescriptionService.GetPrescriptionDetailsAsync(id);
+                var prescription = result.Data;
                 return Ok(map.Map<GetPrescriptionsDto>(prescription));
             }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiResponse(400, ex.Message));
-            }
+            return result.ToApiResponse();
         }
 
         [Authorize(Roles = "Patient")]
         [HttpGet("patientprescriptions")]
-        public async Task<IActionResult> GetByPatientId()
+        public async Task<IActionResult> GetRegisterdPatientPrescriptions()
         {
-            try
+
+            var patientUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var patientId = (await unit.Repository<Patient>().GetFirstOrDefaultAsync(P => P.UserId == patientUserId)).Id;
+            var result = await prescriptionService.GetPatientPrescriptionsAsync(patientId);
+
+            if (result.IsSuccess)
             {
-                var patientUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-                var patientId = (await unit.Repository<Patient>().GetFirstOrDefaultAsync(P => P.UserId == patientUserId)).Id;
-
-                var prescription = await prescriptionService.GetPatientPrescriptionsAsync(patientId);
-
+                var prescription = result.Data;
                 return Ok(map.Map<IEnumerable<PatientPrescriptionsDto>>(prescription));
             }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiResponse(400, ex.Message));
-            }
+            return result.ToApiResponse();
+
         }
 
-        [Authorize(Roles = "Doctor")]
+        //[Authorize(Roles = "Doctor")]
         [HttpPost]
         public async Task<IActionResult> CreatePrescription([FromBody] CreatePrescriptionsDto model)
         {
-            try
+            var result = await prescriptionService.CreatePrescriptionAsync(model);
+
+            if (result.IsSuccess)
             {
-                var prescription = await prescriptionService.CreatePrescriptionAsync(model);
+                var prescription = result.Data;
                 await notificationService.NotifyPrescriptionComplation(prescription);
 
                 return CreatedAtAction(nameof(GetById), new { id = prescription.Id }, map.Map<GetPrescriptionsDto>(prescription));
             }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiResponse(400, ex.Message));
-            }
+            return result.ToApiResponse<Prescription>();
 
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePrescription(int id, [FromBody] UpdatePrescriptionDto model)
         {
-            try
-            {
-                await prescriptionService.UpdatePrescriptionAsync(id, model);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiResponse(400, ex.Message));
-            }
+
+            var result = await prescriptionService.UpdatePrescriptionAsync(id, model);
+
+            return result.ToApiResponse();
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePrescription(int id)
         {
 
-            try
-            {
-                await prescriptionService.DeletePrescriptionAsync(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
 
-                return NotFound(new ApiResponse(404, ex.Message));
-            }
+            var result = await prescriptionService.DeletePrescriptionAsync(id);
+            if (result.IsSuccess)
+                return Ok();
+
+            return result.ToApiResponse();
+
         }
 
         //[Authorize(Roles = "Admin,Patient,Doctor")]
         [HttpGet("prescriptions/{id}/download")]
         public async Task<IActionResult> DownloadPrescription(int id)
         {
-            PrescriptionSpecifications spec = new(id);
-            var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
-            if (prescription is null)
-                return NotFound(new ApiResponse(404));
+            var result = await prescriptionService.GetPrescriptionPdfFile(id);
+            if (result.IsSuccess)
+            {
+                var prescriptionPdfFile = result.Data;
 
-            var pdfBytes = prescriptionService.GeneratePrescriptionPdf(prescription);
-            return File(pdfBytes, "application/pdf", $"Prescription_{id}.pdf");
+                return File(prescriptionPdfFile, "application/pdf", $"Prescription_{id}.pdf");
+            }
+            return result.ToApiResponse();
         }
 
-        [Authorize(Roles = "Doctor,Admin")]
+        //[Authorize(Roles = "Doctor,Admin")]
         [HttpGet("patient/{patientId}/history")]
         public async Task<IActionResult> GetPrescriptionHistoryForPatient(int patientId)
         {
-            try
+            var result = await prescriptionService.GetPatientPrescriptionsAsync(patientId);
+            if (result.IsSuccess)
             {
-                var prescription = await prescriptionService.GetPatientPrescriptionsAsync(patientId);
+                var prescription = result.Data;
 
                 return Ok(map.Map<IEnumerable<PatientPrescriptionsDto>>(prescription));
             }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiResponse(400, ex.Message));
-            }
+            return result.ToApiResponse();
         }
-
 
     }
 
