@@ -131,9 +131,61 @@
                     var appointment = await appointmentService.ConfirmAppointment(id);
                     if (appointment == null)
                         return NotFound(new ApiResponse(404, "Cannot Find Appointment"));
-                    if (await notificationService.NotifyAppointmentConfirmation(appointment))
-                        return Ok(new { message = "Appointment Confirmed Check Your Email" });
-                    return Ok(new { message = "Appointment Confirmed" });
+
+                    string message = await notificationService.NotifyAppointmentConfirmation(appointment)
+                        ? "Appointment Confirmed - Check Your Email"
+                        : "Appointment Confirmed";
+                    string html = $@"
+<!DOCTYPE html>
+<html lang='ar' dir='rtl'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>تأكيد الحجز</title>
+    <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }}
+        .container {{
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 400px;
+        }}
+        .success-icon {{
+            font-size: 60px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }}
+        h1 {{
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }}
+        p {{
+            color: #666;
+            font-size: 16px;
+        }}
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='success-icon'>✓</div>
+        <h1>{message}</h1>
+        <p>Your appointment has been successfully confirmed!</p>
+    </div>
+</body>
+</html>";
+
+                    return Content(html, "text/html");
 
                 }
                 catch (Exception ex)
