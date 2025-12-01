@@ -1,5 +1,4 @@
-﻿
-namespace Sehaty.Application.Services.IdentityService
+﻿namespace Sehaty.Application.Services.IdentityService
 {
     public class AdminService(IUnitOfWork unit) : IAdminService
     {
@@ -12,6 +11,8 @@ namespace Sehaty.Application.Services.IdentityService
                 Id = result.user.Id,
                 UserName = result.user.UserName,
                 Email = result.user.Email,
+                FirstName = result.user.FirstName,
+                LastNAme = result.user.LastName,
                 PhoneNumber = result.user.PhoneNumber,
                 Role = result.role
             }).ToList();
@@ -30,6 +31,8 @@ namespace Sehaty.Application.Services.IdentityService
                 Id = user.user.Id,
                 UserName = user.user.UserName,
                 Email = user.user.Email,
+                FirstName = user.user.FirstName,
+                LastNAme = user.user.LastName,
                 PhoneNumber = user.user.PhoneNumber,
                 Role = user.role
             };
