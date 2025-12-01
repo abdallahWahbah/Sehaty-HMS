@@ -2,7 +2,7 @@
 {
     public interface IAdminService
     {
-        Task<AppUserDto> GetUserWithRolesByIdAsync(int userId);
-        Task<IEnumerable<AppUserDto>> GetAllUsersWithRolesAsync();
+        Task<Result<AppUserDto>> GetUserWithRolesByIdAsync(int userId);
+        Task<Result<IEnumerable<AppUserDto>>> GetAllUsersWithRolesAsync();
     }
 }
