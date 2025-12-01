@@ -43,8 +43,4 @@ export class AdminAppointmentsComponent implements OnInit {
     this.router.navigate(['/admin/appointments', appointment.id]);
   }
 
-  // Route to edit page
-  editAppointment(appointment: AppointmentResponseModel): void {
-    this.router.navigate(['/admin/appointments/update', appointment.id]);
-  }
 }

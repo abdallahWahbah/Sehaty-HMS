@@ -36,6 +36,7 @@ export class DoctorEditComponent {
   doctorForm!: FormGroup;
   departments: Department[] = [];
   serverError: string = '';
+  storedUser: any;
 
   constructor(
     private location: Location,
@@ -46,6 +47,9 @@ export class DoctorEditComponent {
   ) {}
 
   ngOnInit() {
+    this.storedUser = localStorage.getItem('userData');
+    this.storedUser = JSON.parse(this.storedUser);
+
     this.doctorForm = this.formBuilder.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
