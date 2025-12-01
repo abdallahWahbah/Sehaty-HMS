@@ -24,6 +24,7 @@ global using Sehaty.Application.Helper;
 global using Sehaty.Application.Services.Contract;
 global using Sehaty.Application.Services.Contract.AuthService.Contract;
 global using Sehaty.Application.Services.Contract.BusinessServices.Contract;
+global using Sehaty.Application.Shared;
 global using Sehaty.Application.Shared.AuthShared;
 global using Sehaty.Core.Entites;
 global using Sehaty.Core.Entities.Business_Entities;
