@@ -1,47 +1,51 @@
-﻿using Sehaty.Application.Dtos.AiDto;
-using Sehaty.Core.Specifications.Prescription_Specs;
-using System.Text.Json;
-
-
-namespace Sehaty.Application.Services
+﻿namespace Sehaty.Application.Services
 {
     public class OpenAIService : IOpenAIService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper mapper;
         private readonly HttpClient _httpClient;
         private readonly string _openAiApiKey;
 
-        public OpenAIService(IUnitOfWork unitOfWork, IHttpClientFactory httpClientFactory, IConfiguration config)
+        public OpenAIService(IUnitOfWork unitOfWork, IHttpClientFactory httpClientFactory, IConfiguration config, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            this.mapper = mapper;
             _httpClient = httpClientFactory.CreateClient();
             _openAiApiKey = config["OpenAI:ApiKey"] ?? Environment.GetEnvironmentVariable("ApiKey");
         }
 
-        public async Task<PrescriptionAnalysisResponseDto> AnalyzePrescriptionAsync(int prescriptionId)
+        public async Task<Result<PrescriptionAnalysisResponseDto>> AnalyzePrescriptionAsync(int prescriptionId)
         {
             var spec = new PrescriptionSpecifications(prescriptionId);
             var prescription = await _unitOfWork.Repository<Prescription>().GetByIdWithSpecAsync(spec);
 
             if (prescription == null)
-                throw new Exception("Prescription not found");
+                return Result<PrescriptionAnalysisResponseDto>.Failure(ErrorType.NotFound, "Prescription not found");
 
             string prompt = BuildAnalysisPrompt(prescription);
 
-            string aiResponse = await CallOpenAiAsync(prompt);
+            var result = await CallOpenAiAsync(prompt);
+            if (!result.IsSuccess)
+                return Result<PrescriptionAnalysisResponseDto>.Failure(result.ErrorType, result.Error);
 
-            var analysisResponse = new PrescriptionAnalysisResponseDto
-            {
-                PrescriptionId = prescription.Id,
-                PatientName = prescription.Patient?.FirstName + "" + prescription.Patient?.LastName ?? "غير متوفر",
-                DoctorName = prescription.Doctor?.FirstName + "" + prescription.Doctor?.LastName ?? "غير متوفر",
-                DateIssued = prescription.DateIssued,
-                AnalysisResult = aiResponse,
-                MedicationsAnalysis = ParseMedicationsFromAI(aiResponse, prescription),
-                GeneralInstructions = prescription.SpecialInstructions ?? "لا توجد تعليمات خاصة"
-            };
+            string aiResponse = result.Data;
+            var analysisResponse = mapper.Map<PrescriptionAnalysisResponseDto>(prescription);
+            analysisResponse.AnalysisResult = aiResponse;
+            analysisResponse.MedicationsAnalysis = ParseMedicationsFromAI(aiResponse, prescription);
 
-            return analysisResponse;
+            //var analysisResponse = new PrescriptionAnalysisResponseDto
+            //{
+            //    PrescriptionId = prescription.Id,
+            //    PatientName = prescription.Patient?.FirstName + " " + prescription.Patient?.LastName ?? "غير متوفر",
+            //    DoctorName = prescription.Doctor?.FirstName + " " + prescription.Doctor?.LastName ?? "غير متوفر",
+            //    DateIssued = prescription.DateIssued,
+            //    AnalysisResult = aiResponse,
+            //    MedicationsAnalysis = ParseMedicationsFromAI(aiResponse, prescription),
+            //    GeneralInstructions = prescription.SpecialInstructions ?? "لا توجد تعليمات خاصة"
+            //};
+
+            return Result<PrescriptionAnalysisResponseDto>.Success(analysisResponse);
         }
 
         private string BuildAnalysisPrompt(Prescription prescription)
@@ -77,7 +81,7 @@ namespace Sehaty.Application.Services
             return sb.ToString();
         }
 
-        private async Task<string> CallOpenAiAsync(string prompt)
+        private async Task<Result<string>> CallOpenAiAsync(string prompt)
         {
             var requestBody = new
             {
@@ -102,7 +106,7 @@ namespace Sehaty.Application.Services
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();
-                throw new Exception($"OpenAI API Error: {error}");
+                return Result<string>.Failure(ErrorType.BadRequest, $"OpenAI API Error: {error}");
             }
 
             var responseJson = await response.Content.ReadAsStringAsync();
@@ -113,7 +117,13 @@ namespace Sehaty.Application.Services
                 .GetProperty("content")
                 .GetString();
 
-            return aiMessage ?? "No response from AI";
+            if (aiMessage != null)
+            {
+                aiMessage = CleanMarkdown(aiMessage);
+                return Result<string>.Success(aiMessage);
+            }
+            return Result<string>.Success("No response from AI");
+
         }
 
         private List<MedicationAnalysisDto> ParseMedicationsFromAI(string aiResponse, Prescription prescription)
@@ -133,6 +143,23 @@ namespace Sehaty.Application.Services
 
             return result;
         }
+        private string CleanMarkdown(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return text;
+
+            // Remove Markdown headings #### ### ##
+            text = Regex.Replace(text, @"#{1,6}\s*", "");
+
+            // Remove bold & italics symbols **, *, __, _
+            text = Regex.Replace(text, @"(\*\*|\*|__|_)", "");
+
+            // Remove extra backticks ```
+            text = text.Replace("```", "");
+
+            return text.Trim();
+        }
+
 
     }
 }
