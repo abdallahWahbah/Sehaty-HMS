@@ -52,11 +52,6 @@
             if (userIsUsed)
                 return BadRequest(new ApiResponse(400, "User Id Is Already Used !!"));
 
-            userIsUsed = await unit.Repository<Patient>().AnyAsync(P => P.UserId == dto.UserId);
-            if (userIsUsed)
-                return BadRequest(new ApiResponse(400, "User Id Is Already Used !!"));
-
-
             //var doctor = await doctorService.AddDoctorAsync(dto);
             var doctorToAdd = mapper.Map<Doctor>(dto);
 

@@ -1,6 +1,4 @@
-﻿using Sehaty.Core.Entites;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
 
     public class AppointmentsController(INotificationService notificationService, IPaymentService paymentService, IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService) : ApiBaseController
@@ -10,7 +8,7 @@ namespace Sehaty.APIs.Controllers
         public async Task<ActionResult<IEnumerable<AppointmentReadDto>>> GetAllAppointments()
         {
             var spec = new AppointmentSpecifications();
-            var appointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(spec);
+            var appointments = (await unit.Repository<Appointment>().GetAllWithSpecAsync(spec)).OrderBy(A => A.AppointmentDateTime);
             return Ok(mapper.Map<List<AppointmentReadDto>>(appointments));
         }
 
@@ -19,7 +17,7 @@ namespace Sehaty.APIs.Controllers
         {
             var spec = new AppointmentSpecifications(A => A.Status != AppointmentStatus.Pending ||
             A.Status != AppointmentStatus.NoShow);
-            var appointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(spec);
+            var appointments = (await unit.Repository<Appointment>().GetAllWithSpecAsync(spec)).OrderBy(A => A.AppointmentDateTime);
             return Ok(mapper.Map<List<AppointmentReadDto>>(appointments));
         }
 
@@ -31,7 +29,7 @@ namespace Sehaty.APIs.Controllers
             var doctorId = unit.Repository<Doctor>().FindBy(D => D.UserId == doctorUserId).Select(D => D.Id).FirstOrDefault();
             var spec = new AppointmentSpecifications(A => (A.Status != AppointmentStatus.Pending ||
             A.Status == AppointmentStatus.NoShow) && A.DoctorId == doctorId);
-            var appointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(spec);
+            var appointments = (await unit.Repository<Appointment>().GetAllWithSpecAsync(spec)).OrderBy(A => A.AppointmentDateTime);
             return Ok(mapper.Map<List<AppointmentReadDto>>(appointments));
         }
 
