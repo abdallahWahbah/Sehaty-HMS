@@ -1,278 +1,294 @@
 .appointment-details {
   min-height: 100vh;
-  background: #f5f7fa;
-  padding: 2rem;
+  background: #f5f6ff;
+  padding: 3rem 2rem;
 
-  .details-header {
-    margin-bottom: 2rem;
-
-    .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .btn-back {
-      background: #fff;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-
-      &:hover {
-        background: #f0f0f0;
-        border-color: #007bff;
-      }
-
-      i {
-        color: #333;
-        font-size: 1rem;
-      }
-    }
-
-    .page-title {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #f0f0f0;
-      margin: 0;
-    }
-
-    .page-subtitle {
-      color: #f0f0f0;
-      margin: 0.25rem 0 0 0;
-      font-size: 0.9rem;
-    }
-  }
-}
-
-// ------------------------------------
-// 2. Main Content Container
-// ------------------------------------
-
-.details-container {
-  max-width: 1200px;
-  margin: 0 auto;
-
-  .details-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  &__wrapper {
+    max-width: 110rem;
+    margin: 0 auto 4rem;
   }
 
-  // Status Section
-  .status-section {
+  /* ===== Header ===== */
+  &__header {
     margin-bottom: 2rem;
     display: flex;
-    justify-content: center;
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1.5rem;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.9rem;
-
-      i {
-        font-size: 0.6rem;
-      }
-    }
-
-    // Status Modifiers
-    .status-confirmed {
-      background: #d4edda;
-      color: #155724;
-    }
-
-    .status-pending {
-      background: #fff3cd;
-      color: #856404;
-    }
-
-    .status-delayed {
-      background: #f8d7da;
-      color: #721c24;
-    }
-  }
-
-  // Info Fields Section
-  .info-section {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    margin-bottom: 2rem;
-
-    .info-field {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-
-      .field-label {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-weight: 600;
-        color: #555;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-
-        i {
-          color: #007bff;
-        }
-      }
-
-      .field-value {
-        margin-top: 0.5rem;
-
-        h2 {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: #1a1a1a;
-          margin: 0;
-        }
-
-        .date-time {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          font-size: 1.1rem;
-          color: #333;
-          margin: 0.5rem 0;
-
-          i {
-            color: #007bff;
-            width: 20px;
-          }
-        }
-      }
-    }
-  }
-
-  // Reason & Notes Text Block Styles
-  .reason-text,
-  .notes-text {
-    font-size: 1rem;
-    color: #555;
-    line-height: 1.6;
-    margin: 0;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-    border-left: 3px solid #007bff;
-  }
-
-  // Actions (Buttons) Section
-  .actions-section {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid #e0e0e0;
-
-    .btn-edit,
-    .btn-back-list {
-      flex: 1;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      transition: all 0.3s ease;
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
-      }
-    }
-
-    .btn-edit {
-      background: #007bff;
-      color: #fff;
-
-      &:hover {
-        background: #0056b3;
-      }
-    }
-
-    .btn-back-list {
-      background: #6c757d;
-      color: #fff;
-
-      &:hover {
-        background: #5a6268;
-        box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
-      }
-    }
-  }
-
-  // Loading & Error States
-  .loading-container,
-  .error-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
+    gap: 1.4rem;
     align-items: center;
-    min-height: 50vh;
-    font-size: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #252b61;
+    margin: 0 0 0.4rem;
+  }
+
+  &__subtitle {
+    font-size: 1.4rem;
+    color: #4b56a3;
+    margin: 0;
+  }
+
+  &__header-actions {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  /* ===== Card ===== */
+  &__card {
+    background: #ffffff;
+    border-radius: 1.4rem;
+    padding: 2rem 2.2rem 2.2rem;
+    box-shadow: 0 14px 40px rgba(25, 39, 79, 0.16);
+    border: 1px solid rgba(37, 43, 97, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  /* ===== Card header (patient + doctor + status) ===== */
+  &__card-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.4fr) auto;
+    gap: 1.6rem;
+    align-items: center;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: flex-start;
+    }
+  }
+
+  &__person {
+    display: flex;
     gap: 1rem;
+    align-items: center;
   }
 
-  .loading-container {
-    color: #666;
+  &__avatar {
+    width: 4.2rem;
+    height: 4.2rem;
+    border-radius: 50%;
+    background: #eef2ff;
+    color: #252b61;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
   }
 
-  .error-container {
-    color: #dc3545;
-    padding: 2rem;
-    text-align: center;
-  }
-}
-
-// ------------------------------------
-// 3. Responsive Design (Media Queries)
-// ------------------------------------
-
-@media (max-width: 768px) {
-  .appointment-details {
-    padding: 1rem;
+  &__label {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #9ca3af;
+    margin: 0 0 0.2rem;
   }
 
-  .details-container {
-    .details-card {
-      padding: 1.5rem;
+  &__patient-name {
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+  }
+
+  &__doctor {
+    display: flex;
+    gap: 0.9rem;
+    align-items: center;
+  }
+
+  &__doctor-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+  }
+
+  &__status {
+    display: flex;
+    justify-content: flex-end;
+
+    @media (max-width: 768px) {
+      justify-content: flex-start;
     }
+  }
 
-    .details-header {
-      .page-title {
-        font-size: 1.5rem;
-      }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1.4rem;
+    border-radius: 999px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+
+    &__dot {
+      font-size: 0.7rem;
     }
+  }
 
-    .actions-section {
+  /* لو بتستخدم getStatusClass ترجع classes زي status-confirmed / status-pending */
+  .status-confirmed {
+    background: #d1fae5;
+    color: #047857;
+  }
+
+  .status-pending {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .status-delayed {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+  .status-cancelled {
+    background: #f3e8ff;
+    color: #7e22ce;
+  }
+
+  /* ===== Meta grid (date / time / duration) ===== */
+  &__meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.4rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__meta-item {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 0.9rem 1.2rem;
+  }
+
+  &__meta-label {
+    margin: 0 0 0.2rem;
+    font-size: 1.2rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  &__meta-value {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #111827;
+  }
+
+  &__icon {
+    font-size: 1.4rem;
+    color: #4b56a3;
+  }
+
+  /* ===== Section (Reason) ===== */
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  &__section-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #252b61;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  &__section-text {
+    margin: 0;
+    padding: 1rem 1.2rem;
+    background: #f9fafb;
+    border-radius: 0.8rem;
+    border-left: 4px solid #252b61;
+    font-size: 1.4rem;
+    color: #374151;
+    line-height: 1.6;
+  }
+
+  /* ===== Footer buttons ===== */
+  &__footer {
+    margin-top: 1.4rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
       flex-direction: column;
+      align-items: stretch;
+    }
+  }
 
-      .btn-edit,
-      .btn-back-list {
-        width: 100%;
+  &__btn {
+    border-radius: 999px;
+    padding: 0.8rem 1.6rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: 0.18s ease all;
+    white-space: nowrap;
+
+    i {
+      font-size: 1.3rem;
+    }
+
+    &--primary {
+      background: linear-gradient(135deg, #252b61, #4b56a3);
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(25, 39, 79, 0.35);
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 26px rgba(25, 39, 79, 0.5);
       }
     }
+
+    &--outline {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      color: #252b61;
+
+      &:hover {
+        background: #f5f6ff;
+      }
+    }
+
+    &--ghost {
+      background: transparent;
+      border: 1px dashed #cbd5e1;
+      color: #4b5563;
+
+      &:hover {
+        background: #f9fafb;
+      }
+    }
+  }
+
+  /* ===== Responsive tweaks ===== */
+  @media (max-width: 768px) {
+    padding-inline: 1.4rem;
   }
 }

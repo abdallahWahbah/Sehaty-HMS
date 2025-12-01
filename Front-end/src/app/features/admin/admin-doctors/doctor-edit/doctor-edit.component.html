@@ -1,15 +1,24 @@
 <section id="dashboard" class="dashboard">
+  <!-- Title -->
   <div class="dashboard__title">
     <h2 class="dashboard__title-main">
       Edit Doctor: {{ doctor?.firstName }} {{ doctor?.lastName }}
     </h2>
-    <div class="patient-edit">
+    <p class="dashboard__title-sub">
+      Update doctor information and professional details
+    </p>
+  </div>
+
+  <!-- Edit Card -->
+  <div class="doctor-edit">
+    <div class="doctor-edit__card">
       <form [formGroup]="doctorForm" (ngSubmit)="onSubmit()">
         @if(serverError){
-        <div class="server-error" style="margin-bottom: 3rem">
+        <div class="server-error">
           <span>{{ serverError }}</span>
         </div>
         }
+
         <div class="patient-edit__grid">
           <p-floatlabel class="patient-edit__input">
             <input pInputText formControlName="firstName" />
@@ -23,12 +32,12 @@
 
           <p-floatlabel class="patient-edit__input">
             <input pInputText formControlName="specialty" />
-            <label>speciality</label>
+            <label>Speciality</label>
           </p-floatlabel>
 
           <p-floatlabel class="patient-edit__input">
             <input pInputText formControlName="licenseNumber" />
-            <label>license Number</label>
+            <label>License Number</label>
           </p-floatlabel>
 
           <p-floatlabel class="patient-edit__input">
@@ -48,30 +57,29 @@
 
           <p-floatlabel class="patient-edit__input">
             <input pInputText formControlName="userId" />
-            <label>userId</label>
+            <label>User Id</label>
           </p-floatlabel>
-          
-          <div class="patient-edit__input">
-            <label for="departmentId">Department</label>
+
+          <div class="patient-edit__input patient-edit__input--select">
+            <label for="departmentId" class="patient-edit__select-label">
+              Department
+            </label>
             <select
               id="departmentId"
-              class="form-select"
+              class="patient-edit__select"
               formControlName="departmentId"
             >
               <option value="" disabled>Select Department</option>
               @for(dept of departments; track dept.id){
-                <option [value]="dept.id">
-                  {{ dept.en_Name }}
-                </option>
+              <option [value]="dept.id">
+                {{ dept.en_Name }}
+              </option>
               }
             </select>
           </div>
         </div>
 
-        <div
-          class="patient-edit__button-container"
-          style="display: flex; gap: 1rem"
-        >
+        <div class="patient-edit__button-container">
           <p-button type="submit" label="Update Doctor"></p-button>
 
           <p-button

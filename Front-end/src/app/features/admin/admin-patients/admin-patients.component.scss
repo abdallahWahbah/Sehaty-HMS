@@ -1,182 +1,311 @@
-.patients-dashboard {
-  margin-left: 2rem;
-  color: var(--color-primary);
-  margin-top: 3.5rem;
+$patients-primary: #252b61;
+$patients-primary-soft: #4b56a3;
+$patients-text-main: #1f2933;
+$patients-text-muted: #6b7280;
+$patients-bg-soft: #f5f6ff;
+$patients-shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+$patients-radius-lg: 1.4rem;
 
+.patients-dashboard {
+  max-width: 110rem;
+  margin: 0 auto 4rem;
+  padding: 3.5rem 2rem 4rem;
+  color: $patients-primary;
+
+  &__wrapper {
+    width: 100%;
+  }
+
+  /* ===== Header ===== */
   &__header {
     display: flex;
     justify-content: space-between;
+    gap: 1.4rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  &__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
   }
 
   &__title {
     font-size: 2.4rem;
     font-weight: 700;
     margin: 0;
+    color: $patients-primary;
   }
 
   &__subtitle {
     font-size: 1.4rem;
     font-weight: 400;
     margin: 0;
+    color: $patients-text-muted;
   }
 
-  &__search {
-    width: 120.5rem;
-    height: 9rem;
-    border: 0.1rem solid #00000040;
-    border-radius: 1rem;
+  &__content {
+    margin-top: 2.4rem;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  /* ===== Empty State ===== */
+  &__empty {
     margin-top: 3rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 2.4rem 1.8rem;
+    border-radius: $patients-radius-lg;
+    background: #f9fafb;
+    border: 1px dashed #d1d5db;
+    text-align: center;
   }
 
-  &__search-box {
-    width: 117rem;
-    height: 4.9rem;
-    background-color: #9a9a9a40;
-    border-radius: .5rem;
-    display: flex;
-    align-items: center;
-    padding-left: 2rem;
-
-    input {
-      flex: 1;
-      border: none;
-      outline: none;
-      background-color: transparent;
-      font-size: 1.4rem;
-      color: #0f002dbf;
-      margin-left: 1rem;
-    }
-
-    i {
-      font-size: 2.4rem;
-      color: #0f002dbf;
-    }
+  &__empty-icon {
+    font-size: 3rem;
+    color: #a5b4fc;
+    margin-bottom: 0.8rem;
   }
 
-  &__cards {
-    display: flex;
-    gap: 3rem;
-    flex-wrap: wrap;
-    margin-top: 5rem;
+  &__empty-title {
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: $patients-primary;
+    margin: 0 0 0.4rem;
+  }
+
+  &__empty-subtitle {
+    font-size: 1.4rem;
+    color: $patients-text-muted;
+    margin: 0;
+  }
+
+  &__dialog {
+    margin-top: 2rem;
   }
 }
 
-/* ---------------- PATIENT CARD --------------- */
+/* =========================
+   Patient Card
+========================= */
 
 .patient-card {
-  width: 36.9rem;
-  height: 34.2rem;
-  border: 0.1rem solid #00000040;
-  border-radius: 1.5rem;
-  padding-top: 2rem;
+  background: #ffffff;
+  border-radius: $patients-radius-lg;
+  border: 1px solid rgba(37, 43, 97, 0.08);
+  box-shadow: $patients-shadow-card;
+  padding: 1.8rem 2rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
 
+  /* Header */
   &__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) auto;
+    gap: 1.4rem;
+    align-items: center;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: flex-start;
+    }
+  }
+
+  &__identity {
     display: flex;
-    justify-content: space-around;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__avatar {
+    width: 4.2rem;
+    height: 4.2rem;
+    border-radius: 50%;
+    background: #eef2ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $patients-primary;
+    font-size: 2rem;
   }
 
   &__name {
-    font-size: 1.8rem;
-    color: var(--color-primary);
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: $patients-text-main;
+    margin: 0 0 0.2rem;
+  }
+
+  &__dob {
+    font-size: 1.3rem;
+    color: $patients-text-muted;
     margin: 0;
   }
 
-  &__mrn,
-  &__dob {
-    font-size: 1.2rem;
-    color: var(--color-primary);
-    margin: 0;
+  &__status-wrapper {
+    display: flex;
+    justify-content: flex-end;
+
+    @media (max-width: 768px) {
+      justify-content: flex-start;
+    }
   }
 
   &__status {
-    width: 6rem;
-    height: 2.6rem;
-    border-radius: 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--color-primary);
+    padding: 0.4rem 1.4rem;
+    border-radius: 999px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: #e5e7eb;
+    color: #374151;
+    white-space: nowrap;
 
     &--active {
-      background-color: var(--color-green-1);
+      background: #d1fae5;
+      color: #047857;
     }
 
     &--discharged {
-      background-color: #f8d47b;
+      background: #fef3c7;
+      color: #92400e;
     }
 
     &--readmitted {
-      background-color: #5cb9ff;
+      background: #dbeafe;
+      color: #1d4ed8;
     }
   }
 
-  &__section {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 2rem;
+  /* Body */
+  &__body {
+    padding-bottom: 1.1rem;
+    border-bottom: 1px dashed #e5e7eb;
   }
 
-  &__labels p,
-  &__values p {
+  &__info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.2rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__info-item {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 0.9rem 1.1rem;
+  }
+
+  &__info-label {
+    margin: 0 0 0.2rem;
     font-size: 1.2rem;
-    color: var(--color-primary);
-    margin: .5rem 0;
+    color: $patients-text-muted;
   }
 
-  &__divider {
-    width: 27rem;
-    height: 0.1rem;
-    background-color: #0f002d80;
-    margin: 2rem auto;
+  &__info-value {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: $patients-text-main;
   }
 
+  /* Contact */
   &__contact {
-    margin-left: 4.5rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
   }
 
   &__contact-item {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    margin-top: 1.5rem;
-
-    i {
-      margin-right: 1rem;
-      font-size: 1.2rem;
-    }
-
-    p {
-      margin: 0;
-      font-size: 1.2rem;
-      color: #000000;
-    }
+    gap: 0.6rem;
   }
 
+  &__contact-icon {
+    font-size: 1.3rem;
+    color: $patients-primary-soft;
+  }
+
+  &__contact-text {
+    margin: 0;
+    font-size: 1.4rem;
+    color: $patients-text-main;
+  }
+
+  /* Footer */
   &__footer {
+    margin-top: 0.8rem;
     display: flex;
-    justify-content: space-evenly;
-    margin-top: 1.5rem;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
   }
 
-  &__action {
-    width: 13.7rem;
-    height: 2.8rem;
-    border: 0.1rem solid #0f002d80;
-    border-radius: 0.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--color-primary);
+  &__btn {
+    border-radius: 999px;
+    padding: 0.7rem 1.6rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border: none;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: 0.18s ease all;
+    white-space: nowrap;
 
     i {
-      margin-right: .5rem;
+      font-size: 1.3rem;
     }
 
-    p {
-      margin: 0;
+    &--outline {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      color: $patients-primary;
+
+      &:hover {
+        background: #f5f6ff;
+      }
     }
+
+    &--primary {
+      background: linear-gradient(
+        135deg,
+        $patients-primary,
+        $patients-primary-soft
+      );
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(25, 39, 79, 0.35);
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 26px rgba(25, 39, 79, 0.5);
+      }
+    }
+  }
+}
+
+/* ===== Responsive tweaks ===== */
+
+@media (max-width: 768px) {
+  .patients-dashboard {
+    padding-inline: 1.4rem;
   }
 }
