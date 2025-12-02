@@ -67,6 +67,7 @@
             //add background service
             services.AddHostedService<AppointmentReminderService>();
             services.AddHostedService<OldNotificationsCleanupService>();
+            services.AddHostedService<CancelUnpaidAppointmentsService>();
 
             services.AddHttpContextAccessor();
 
