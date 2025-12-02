@@ -118,6 +118,16 @@
                 View Medical Record
               </button>
 
+              <!-- زرار View History with AI -->
+              <button
+                type="button"
+                class="appointment-card__btn appointment-card__btn--outline rainbow-border"
+                (click)="openHistoryAiModal(appointment.patientId)"
+              >
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                View History with AI
+              </button>
+
               <button
                 type="button"
                 class="appointment-card__btn appointment-card__btn--ghost"
@@ -167,7 +177,104 @@
         </article>
         }
       </div>
-      }
+      <!-- ========== Patient History AI Modal ========== -->
+      @if (isHistoryAiModalOpen) {
+      <div class="ai-modal-backdrop" (click)="closeHistoryAiModal()">
+        <div class="ai-modal" (click)="$event.stopPropagation()">
+          <!-- Header -->
+          <header class="ai-modal__header">
+            <div class="ai-modal__title-block">
+              <div class="ai-modal__icon">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+              </div>
+              <div>
+                <h3 class="ai-modal__title">Patient History Analysis</h3>
+                <p class="ai-modal__subtitle">
+                  AI-powered summary of the patient's medical history.
+                </p>
+              </div>
+            </div>
+
+            <button class="ai-modal__close" (click)="closeHistoryAiModal()">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </header>
+
+          <!-- Body -->
+          <section class="ai-modal__body">
+            @if (historyLoading) {
+            <div class="ai-modal__loading">
+              <span class="ai-modal__spinner"></span>
+              <p>Analyzing patient history...</p>
+            </div>
+            } @else if (historyError) {
+            <div class="ai-modal__error">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <p>{{ historyError }}</p>
+            </div>
+            } @else if (historyData) {
+
+            <div class="ai-modal__meta">
+              <p>
+                <span>Patient:</span>
+                <strong>{{ historyData.patientName }}</strong>
+              </p>
+              <p>
+                <span>Total Prescriptions:</span>
+                <strong>{{ historyData.totalPrescriptions }}</strong>
+              </p>
+            </div>
+
+            <!-- AI Summary (عربي / RTL زي المودال التاني) -->
+            <div class="ai-modal__content">
+              <pre class="ai-modal__text"
+                >{{ historyData.aiSummary }}
+            </pre
+              >
+            </div>
+
+            @if (historyData && historyData.records &&
+            historyData.records.length > 0) {
+
+            <div class="ai-modal__meds">
+              <h4>Recorded medical visits</h4>
+              <ul>
+                @for (record of historyData.records; track record.recordId) {
+                <li>
+                  <strong>
+                    {{ record.recordDate | date : "medium" }}
+                    - {{ record.recordType }}
+                  </strong>
+                  <span>
+                    Diagnosis: {{ record.diagnosis }} • Symptoms:
+                    {{ record.symptoms }}
+                  </span>
+                </li>
+                }
+              </ul>
+            </div>
+            } }
+          </section>
+
+          <!-- Footer -->
+          <footer class="ai-modal__footer">
+            <div class="ai-modal__badge">
+              <span class="ai-modal__badge-icon">
+                <i class="fa-solid fa-bolt"></i>
+              </span>
+              <span>Powered by Gen AI</span>
+            </div>
+
+            <button
+              class="ai-modal__footer-btn"
+              (click)="closeHistoryAiModal()"
+            >
+              Close
+            </button>
+          </footer>
+        </div>
+      </div>
+      } }
     </div>
   </div>
 </section>
