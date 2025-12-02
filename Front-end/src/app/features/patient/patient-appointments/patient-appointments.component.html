@@ -101,7 +101,7 @@
         </div>
       </section>
 
-      @if((appointment.status !== 'Confirmed' && appointment.status !== 'NoShow')){
+      @if(appointment.status === 'Pending'){
         <!-- Footer -->
         <footer class="appointment-card__footer">
           <button
