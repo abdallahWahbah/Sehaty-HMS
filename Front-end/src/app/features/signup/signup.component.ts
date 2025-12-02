@@ -70,7 +70,7 @@ export class SignupComponent {
       patient: this.fb.group({
         dateOfBirth: ['2025-12-01', Validators.required],
         gender: [this.genderOptions[0].value, Validators.required],
-        nationalId: ['298065465418', Validators.required],
+        nationalId: ['25687419354716', Validators.required],
         bloodType: ['A+', Validators.required],
         allergies: ['None', Validators.required],
         chrinicConditions: ['None', Validators.required],
@@ -88,10 +88,12 @@ export class SignupComponent {
       return;
     }
     this.step = 2;
+    this.serverError = '';
   }
 
   prevStep() {
     this.step = 1;
+    this.serverError = '';
   }
   
   onSubmit() {
@@ -114,36 +116,27 @@ export class SignupComponent {
       lastName: accountData.lastName,
       password: accountData.password,
       confirmPassword: accountData.confirmPassword,
-      languagePreference: 'Arabic'
+      languagePreference: 'Arabic',
+      dateOfBirth: new Date(patientData.dateOfBirth).toISOString(),
+      gender: patientData.gender,
+      nationalId: patientData.nationalId,
+      bloodType: patientData.bloodType,
+      allergies: patientData.allergies,
+      chrinicConditions: patientData.chrinicConditions,
+      address: patientData.address,
+      emergencyContactName: patientData.emergencyContactName,
+      emergencyContactPhone: patientData.emergencyContactPhone,
     };
-
+    console.log(newUser.phoneNumber);
     this._authService.register(newUser).subscribe({
       next: data => {
-        this._patientServie.addPatient({
-          firstName: accountData.firstName,
-          lastName: accountData.lastName,
-          dateOfBirth: patientData.dateOfBirth,
-          gender: patientData.gender,
-          nationalId: patientData.nationalId,
-          bloodType: patientData.bloodType,
-          allergies: patientData.allergies,
-          chrinicConditions: patientData.chrinicConditions,
-          address: patientData.address,
-          emergencyContactName: patientData.emergencyContactName,
-          emergencyContactPhone: patientData.emergencyContactPhone,
-          status: PateintStatusEnum.Active,
-          userId: data.userId
-        }).subscribe({
-          next: patientResponse => {
-            this.router.navigate(['login']);
-          },
-          error: patientError => {
-            this.serverError = patientError.error?.message;
-          }
-        })
+        this.router.navigate(['login']);
       },
       error: err => {
-        this.serverError = err.error?.message
+        let concatenatedError = '';
+        if(err.error.errors)
+          for(let i = 0; i < err.error.errors.length; i++) concatenatedError += err.error.errors[i]
+        this.serverError = err.error?.errors?.length > 0 ? concatenatedError : err.error?.message
       }
     })
   }

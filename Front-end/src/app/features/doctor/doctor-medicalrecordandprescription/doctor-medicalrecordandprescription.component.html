@@ -189,7 +189,7 @@
               Special Instructions
             </span>
             <span class="medical-prescription-card__value">
-              {{ pres.specialInstructions || "-" }}
+              {{ pres.doctorNotes || "-" }}
             </span>
           </div>
 
@@ -200,15 +200,14 @@
               <span class="medical-prescription-card__label">
                 Medications
               </span>
-              @if (pres.medicationNames && pres.medicationNames.length > 0) {
-
-              <ul class="medical-prescription-card__meds-list">
-                @for (med of pres.medicationNames; track med) {
-                <li>{{ med }}</li>
-                }
-              </ul>
+              @if (pres.medications && pres.medications.length > 0) {
+                <ul class="medical-prescription-card__meds-list">
+                  @for (med of pres.medications; track med) {
+                    <li>{{ med.medicationName }} - {{med.dosage}} - {{med.duration}} - {{med.frequency}}</li>
+                  }
+                </ul>
               } @else {
-              <p class="medical-prescription-card__value">-</p>
+                <p class="medical-prescription-card__value">-</p>
               }
             </div>
           </div>

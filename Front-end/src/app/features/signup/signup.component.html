@@ -11,7 +11,13 @@
             </div>
         }
         <h3 class="auth__header">Sign up</h3>
-        <p class="auth__sub--header">Let’s get you all st up so you can access your personal account.</p>
+        <p class="auth__sub--header">
+            @if(step === 1){
+                Let's get you all st up so you can access your personal account.
+            }@else {
+                please provide us with some data about you
+            }
+        </p>
 
         @if(step === 1){
             <form [formGroup]="accountForm" (ngSubmit)="nextStep()">
@@ -247,7 +253,6 @@
                                 formControlName="nationalId" 
                                 autocomplete="off" 
                                 class="form-control" 
-                                type="number"
                             />
                             <label>National Id</label>
                         </p-floatlabel>

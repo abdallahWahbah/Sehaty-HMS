@@ -31,7 +31,7 @@ export class LoginComponent {
 
   loginForm = new FormGroup({
     
-    username: new FormControl('Receptionist', [ // Admin Doctor1 Patient1, Receptionist
+    username: new FormControl('Admin', [ // Admin, Doctor1, Patient1, Receptionist
       Validators.required,
     ]),
     password: new FormControl('P@ssw0rd', [ 

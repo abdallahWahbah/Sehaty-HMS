@@ -1,8 +1,11 @@
+import { Medication } from "./medication-response-model";
+
 export interface PrescriptionHistory {
   prescriptionId: number;
   dateIssued: Date;
   doctorName: string;
   specialInstructions: string;
-  medicationNames: string[];
+  medications: Medication[];
   status: string;
+  doctorNotes?: string,
 }
