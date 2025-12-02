@@ -5,7 +5,6 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { DoctorService } from '../../../../core/services/doctor.service';
 import { Router } from '@angular/router';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ButtonModule } from 'primeng/button';
@@ -13,6 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule } from '@angular/common';
 import { DepartmentService } from '../../../../core/services/department.service';
 import { Department } from '../../../../core/models/department-response.model';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-add-doctor',
@@ -33,19 +33,18 @@ export class AddDoctorComponent {
 
   constructor(
     private fb: FormBuilder,
-    private doctorService: DoctorService,
     private router: Router,
     private _departmentService: DepartmentService,
-  
+    private _authService: AuthService,
   ) {}
 
   ngOnInit(): void {
     this.doctorForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.maxLength(50)]],
-      lastName: ['', [Validators.required, Validators.maxLength(50)]],
-      userName: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['', [Validators.required]],
+      firstName: ['hala', [Validators.required, Validators.maxLength(50)]],
+      lastName: ['sedky', [Validators.required, Validators.maxLength(50)]],
+      userName: ['halaSedky', [Validators.required]],
+      email: ['halaSedky@example.com', [Validators.required, Validators.email]],
+      phoneNumber: ['+201092717902', [Validators.required]],
       password: ['P@ssw0rd', [
           Validators.required,
           Validators.minLength(6),
@@ -56,13 +55,13 @@ export class AddDoctorComponent {
           Validators.pattern(/^\S+$/)
       ]],
       confirmPassword: ['P@ssw0rd', Validators.required],
-      specialty: ['', [Validators.required, Validators.maxLength(100)]],
-      licenseNumber: ['', [Validators.required, Validators.maxLength(50)]],
-      detectionPrice: [0, Validators.required],
-      qualifications: [''],
-      yearsOfExperience: [''],
-      availabilityNotes: [''],
-      departmentId: ['', [Validators.required]],
+      specialty: ['No knowledge', [Validators.required, Validators.maxLength(100)]],
+      licenseNumber: ['Ajhakj', [Validators.required, Validators.maxLength(50)]],
+      detectionPrice: [150, Validators.required],
+      qualifications: ['no qualifications'],
+      yearsOfExperience: ['10'],
+      availabilityNotes: ['kjashdkjashd'],
+      departmentId: ['2', [Validators.required]],
     });
 
     this._departmentService.getAllDepartments().subscribe({
@@ -82,15 +81,23 @@ export class AddDoctorComponent {
       return;
     }
 
-    console.log("111111111111", this.doctorForm.value);
+    const formValue = this.doctorForm.value;
+    const newDoctorData = {
+      ...formValue,
+      departmentId: +formValue.departmentId,
+      languagePreference: "Arabic",
+    }
 
-    // this.doctorService.addDoctor(this.doctorForm.value).subscribe({
-    //   next: () => {
-    //     this.router.navigate(['/admin/doctors']);
-    //   },
-    //   error: (err) => {
-    //     this.serverError = err.error?.message || 'Something went wrong!';
-    //   },
-    // });
+    this._authService.registerDoctor(newDoctorData).subscribe({
+      next: () => {
+        this.router.navigate(['/admin/doctors']);
+      },
+      error: (err) => {
+        let concatenatedError = '';
+        if(err.error.errors)
+          for(let i = 0; i < err.error.errors.length; i++) concatenatedError += err.error.errors[i]
+        this.serverError = err.error?.errors?.length > 0 ? concatenatedError : err.error?.message
+      },
+    });
   }
 }

@@ -171,19 +171,6 @@
               }
           </div>
           <div>
-            <p-floatlabel class="patient-edit__input">
-              <input pInputText formControlName="detectionPrice" type="number" />
-              <label>Detection Price</label>
-            </p-floatlabel>
-            @if(doctorForm.get('detectionPrice')?.touched && doctorForm.get('detectionPrice')?.invalid){
-              <div class="error-text">
-                @if(doctorForm.get('detectionPrice')?.errors?.['required']){
-                  <span>detectionPrice is required</span>
-                }
-              </div>
-            }
-          </div>
-          <div>
             <p-floatlabel class="patient-edit__input" style="width: 100%">
               <select
                 id="departmentId"
@@ -204,6 +191,19 @@
               <div class="error-text">
                 @if(doctorForm.get('departmentId')?.errors?.['required']){
                   <span>Department is required</span>
+                }
+              </div>
+            }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="detectionPrice" type="number" />
+              <label>Detection Price</label>
+            </p-floatlabel>
+            @if(doctorForm.get('detectionPrice')?.touched && doctorForm.get('detectionPrice')?.invalid){
+              <div class="error-text">
+                @if(doctorForm.get('detectionPrice')?.errors?.['required']){
+                  <span>detectionPrice is required</span>
                 }
               </div>
             }

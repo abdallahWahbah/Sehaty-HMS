@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoginResponseModel } from '../models/login-response-model';
 import { RegisterPatientModel } from '../models/register-patient-model';
+import { DoctorAddBodyModel } from '../models/doctor-add-body-model';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,10 @@ export class AuthService {
   
   register(newUser: RegisterPatientModel) {
     return this._http.post<any>(this.baseUrl + 'register', newUser);
+  }
+  
+  registerDoctor(newDoctor: DoctorAddBodyModel){
+    return this._http.post<any>(this.baseUrl + 'register-doctor', newDoctor);
   }
 
   requestPasswordReset(email: string){
