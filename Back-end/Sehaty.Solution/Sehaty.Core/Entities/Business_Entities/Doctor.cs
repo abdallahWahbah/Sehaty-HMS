@@ -15,7 +15,7 @@
         public int DetectionPrice { get; set; }
         public int CancelledAppointmentsCount { get; set; }
         public ApplicationUser User { get; set; }
-        public int? DepartmentId { get; set; }
+        public int DepartmentId { get; set; }
         public Department Department { get; set; }
         public List<Appointment> Appointments { get; set; }
         public List<DoctorAvailabilitySlot> DoctorAvailabilitySlots { get; set; }

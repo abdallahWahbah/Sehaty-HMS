@@ -2,7 +2,8 @@
 {
     public interface IAuthService
     {
-        Task<Result<GetRegisterPatientDto>> RegisterPatientAsync(RegisterPatientDto dto);
+        Task<Result> RegisterPatientAsync(RegisterPatientDto dto);
+        Task<Result> RegisterDoctorAsync(RegisterDoctorDto dto);
         Task<AuthResponseDto> LoginAsync(LoginDto loginDto);
 
         //Task<Result<AuthResponseDto>> RegisterAsync(RegisterDto registerDto);

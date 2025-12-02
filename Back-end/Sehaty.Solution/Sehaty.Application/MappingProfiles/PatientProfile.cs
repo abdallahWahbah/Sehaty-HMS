@@ -20,7 +20,7 @@
 
             CreateMap<RegisterPatientDto,Patient>();
 
-            CreateMap<PatientAddDto,GetRegisterPatientDto>();
+            //CreateMap<Patient,GetRegisterPatientDto>();
 
 
         }
