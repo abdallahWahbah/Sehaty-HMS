@@ -1,34 +1,24 @@
 ﻿namespace Sehaty.Application.Services
 {
-    public class OpenAIService : IOpenAIService
+    public class OpenAIService(IUnitOfWork unitOfWork,IHttpClientFactory httpClientFactory,IConfiguration config,IMapper mapper) : IOpenAIService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper mapper;
-        private readonly HttpClient _httpClient;
-        private readonly string _openAiApiKey;
 
-        public OpenAIService(IUnitOfWork unitOfWork, IHttpClientFactory httpClientFactory, IConfiguration config, IMapper mapper)
-        {
-            _unitOfWork = unitOfWork;
-            this.mapper = mapper;
-            _httpClient = httpClientFactory.CreateClient();
-            _openAiApiKey = config["OpenAI:ApiKey"] ?? Environment.GetEnvironmentVariable("ApiKey");
-        }
-
+        private readonly HttpClient _httpClient = httpClientFactory.CreateClient();
+        private readonly string _openAiApiKey = config["OpenAI:ApiKey"] ?? Environment.GetEnvironmentVariable("ApiKey");
 
         public async Task<Result<PrescriptionAnalysisResponseDto>> AnalyzePrescriptionAsync(int prescriptionId)
         {
             var spec = new PrescriptionSpecifications(prescriptionId);
-            var prescription = await _unitOfWork.Repository<Prescription>().GetByIdWithSpecAsync(spec);
+            var prescription = await unitOfWork.Repository<Prescription>().GetByIdWithSpecAsync(spec);
 
-            if (prescription == null)
-                return Result<PrescriptionAnalysisResponseDto>.Failure(ErrorType.NotFound, "Prescription not found");
+            if(prescription == null)
+                return Result<PrescriptionAnalysisResponseDto>.Failure(ErrorType.NotFound,"Prescription not found");
 
             string prompt = BuildAnalysisPrompt(prescription);
 
             var result = await CallOpenAiAsync(prompt);
-            if (!result.IsSuccess)
-                return Result<PrescriptionAnalysisResponseDto>.Failure(result.ErrorType, result.Error);
+            if(!result.IsSuccess)
+                return Result<PrescriptionAnalysisResponseDto>.Failure(result.ErrorType,result.Error);
 
             string aiResponse = result.Data;
             var analysisResponse = mapper.Map<PrescriptionAnalysisResponseDto>(prescription);
@@ -53,28 +43,28 @@
         public async Task<Result<PatientHistoryAnalysisResponseDto>> AnalyzePatientHistoryAsync(int patientId)
         {
             var spec = new MedicalRecordSpec(m => m.PatientId == patientId);
-            var medicalRecords = await _unitOfWork.Repository<MedicalRecord>().GetAllWithSpecAsync(spec);
+            var medicalRecords = await unitOfWork.Repository<MedicalRecord>().GetAllWithSpecAsync(spec);
 
-            if (!medicalRecords.Any())
+            if(!medicalRecords.Any())
                 return Result<PatientHistoryAnalysisResponseDto>.Failure(
                     ErrorType.NotFound,
                     "No medical records found for this patient");
 
             var specPatient = new PatientSpecifications(mr => mr.Id == patientId);
-            var patient = await _unitOfWork.Repository<Patient>().GetByIdWithSpecAsync(specPatient);
+            var patient = await unitOfWork.Repository<Patient>().GetByIdWithSpecAsync(specPatient);
 
-            if (patient == null)
+            if(patient == null)
                 return Result<PatientHistoryAnalysisResponseDto>
-                    .Failure(ErrorType.NotFound, "Patient not found");
+                    .Failure(ErrorType.NotFound,"Patient not found");
 
             var specprescriptions = new PrescriptionSpecifications(mr => mr.PatientId == patientId);
 
-            var prescriptions = await _unitOfWork.Repository<Prescription>().GetAllWithSpecAsync(specprescriptions);
+            var prescriptions = await unitOfWork.Repository<Prescription>().GetAllWithSpecAsync(specprescriptions);
 
-            string prompt = BuildPatientHistoryPrompt(patient, medicalRecords, prescriptions);
+            string prompt = BuildPatientHistoryPrompt(patient,medicalRecords,prescriptions);
 
             var aiResult = await CallOpenAiAsync(prompt);
-            if (!aiResult.IsSuccess)
+            if(!aiResult.IsSuccess)
                 return Result<PatientHistoryAnalysisResponseDto>.Failure(
                     aiResult.ErrorType,
                     aiResult.Error);
@@ -109,24 +99,24 @@
 
         public async Task<Result<SymptomsAnalysisResponseDto>> AnalyzeSymptomsAndSuggestAppointmentAsync(SymptomsAnalysisRequestDto request)
         {
-            var patient = await _unitOfWork.Repository<Patient>().GetByIdAsync(request.PatientId);
-            if (patient == null)
-                return Result<SymptomsAnalysisResponseDto>.Failure(ErrorType.NotFound, "Patient not found");
+            var patient = await unitOfWork.Repository<Patient>().GetByIdAsync(request.PatientId);
+            if(patient == null)
+                return Result<SymptomsAnalysisResponseDto>.Failure(ErrorType.NotFound,"Patient not found");
 
             string prompt = BuildSymptomsAnalysisPrompt(request.Symptoms);
 
             var aiResult = await CallOpenAiAsync(prompt);
-            if (!aiResult.IsSuccess)
-                return Result<SymptomsAnalysisResponseDto>.Failure(aiResult.ErrorType, aiResult.Error);
+            if(!aiResult.IsSuccess)
+                return Result<SymptomsAnalysisResponseDto>.Failure(aiResult.ErrorType,aiResult.Error);
 
             string suggestedSpecialization = aiResult.Data;
 
             var doctorSpec = new DoctorSpecifications(d =>
-                d.Department.Name.ToLower().Contains(suggestedSpecialization.ToLower()));
+                d.Department.Name.Contains(suggestedSpecialization,StringComparison.OrdinalIgnoreCase));
 
-            var doctors = await _unitOfWork.Repository<Doctor>().GetAllWithSpecAsync(doctorSpec);
+            var doctors = await unitOfWork.Repository<Doctor>().GetAllWithSpecAsync(doctorSpec);
 
-            if (!doctors.Any())
+            if(!doctors.Any())
                 return Result<SymptomsAnalysisResponseDto>.Failure(
                     ErrorType.NotFound,
                     $"No doctors found for specialization: {suggestedSpecialization}");
@@ -135,16 +125,16 @@
             var today = DateOnly.FromDateTime(DateTime.Now);
             var currentTime = TimeOnly.FromDateTime(DateTime.Now);
 
-            foreach (var doctor in doctors)
+            foreach(var doctor in doctors)
             {
                 var slotSpec = new DoctorAppointmentSlotspec(s => s.DoctorId == doctor.Id && !s.IsBooked && s.Date >= today);
 
-                var slots = await _unitOfWork.Repository<DoctorAppointmentSlot>()
+                var slots = await unitOfWork.Repository<DoctorAppointmentSlot>()
                     .GetAllWithSpecAsync(slotSpec);
 
-                foreach (var slot in slots)
+                foreach(var slot in slots)
                 {
-                    if (slot.Date == today && slot.StartTime <= currentTime)
+                    if(slot.Date == today && slot.StartTime <= currentTime)
                         continue;
 
                     allAvailableSlots.Add(new SuggestedSlotDto
@@ -161,7 +151,7 @@
                 }
             }
 
-            if (!allAvailableSlots.Any())
+            if(!(allAvailableSlots.Count == 0))
                 return Result<SymptomsAnalysisResponseDto>.Failure(
                     ErrorType.NotFound,
                     "No available appointments found for this specialization");
@@ -176,8 +166,8 @@
                 AnalyzedSymptoms = $"تم تحليل الأعراض: {request.Symptoms}",
                 SuggestedSpecialization = suggestedSpecialization,
                 AvailableSlots = nearestSlot != null
-                    ? new List<SuggestedSlotDto> { nearestSlot }
-                    : new List<SuggestedSlotDto>()
+                    ? [nearestSlot]
+                    : []
             };
 
             return Result<SymptomsAnalysisResponseDto>.Success(response);
@@ -188,7 +178,7 @@
 
         #region Helper Function
 
-        private string BuildSymptomsAnalysisPrompt(string symptoms)
+        private static string BuildSymptomsAnalysisPrompt(string symptoms)
         {
             var sb = new StringBuilder();
             sb.AppendLine("أنت مساعد طبي ذكي متخصص في تحليل الأعراض واقتراح التخصص الطبي المناسب.");
@@ -199,7 +189,7 @@
 
             return sb.ToString();
         }
-        private string BuildPatientHistoryPrompt(Patient patient, IEnumerable<MedicalRecord> records, IEnumerable<Prescription> prescriptions)
+        private static string BuildPatientHistoryPrompt(Patient patient,IEnumerable<MedicalRecord> records,IEnumerable<Prescription> prescriptions)
         {
             var sb = new StringBuilder();
 
@@ -212,46 +202,46 @@
 
             sb.AppendLine($"\n--- السجلات الطبية ({records.Count()}) ---");
 
-            foreach (var record in records.OrderBy(r => r.RecordDate))
+            foreach(var record in records.OrderBy(r => r.RecordDate))
             {
                 sb.AppendLine($"\n📅 التاريخ: {record.RecordDate:dd/MM/yyyy}");
                 sb.AppendLine($"النوع: {record.RecordType}");
 
-                if (!string.IsNullOrEmpty(record.Symptoms))
+                if(!string.IsNullOrEmpty(record.Symptoms))
                     sb.AppendLine($"الأعراض: {record.Symptoms}");
 
-                if (!string.IsNullOrEmpty(record.Diagnosis))
+                if(!string.IsNullOrEmpty(record.Diagnosis))
                     sb.AppendLine($"التشخيص: {record.Diagnosis}");
 
-                if (!string.IsNullOrEmpty(record.TreatmentPlan))
+                if(!string.IsNullOrEmpty(record.TreatmentPlan))
                     sb.AppendLine($"خطة العلاج: {record.TreatmentPlan}");
 
-                if (record.BpSystolic.HasValue || record.BpDiastolic.HasValue)
+                if(record.BpSystolic.HasValue || record.BpDiastolic.HasValue)
                     sb.AppendLine($"ضغط الدم: {record.BpSystolic}/{record.BpDiastolic}");
 
-                if (record.Temperature.HasValue)
+                if(record.Temperature.HasValue)
                     sb.AppendLine($"الحرارة: {record.Temperature}°C");
 
-                if (record.HeartRate.HasValue)
+                if(record.HeartRate.HasValue)
                     sb.AppendLine($"النبض: {record.HeartRate} bpm");
 
-                if (record.Weight.HasValue)
+                if(record.Weight.HasValue)
                     sb.AppendLine($"الوزن: {record.Weight} kg");
 
                 var recordPrescriptions = prescriptions.Where(p => p.MedicalRecordId == record.Id);
-                if (recordPrescriptions.Any())
+                if(recordPrescriptions.Any())
                 {
                     sb.AppendLine("الأدوية الموصوفة:");
-                    foreach (var pres in recordPrescriptions)
+                    foreach(var pres in recordPrescriptions)
                     {
-                        foreach (var med in pres.Medications)
+                        foreach(var med in pres.Medications)
                         {
                             sb.AppendLine($"  • {med.Medication?.Name ?? "Unknown"} - {med.Dosage} - {med.Frequency}");
                         }
                     }
                 }
 
-                if (!string.IsNullOrEmpty(record.Notes))
+                if(!string.IsNullOrEmpty(record.Notes))
                     sb.AppendLine($"ملاحظات: {record.Notes}");
             }
 
@@ -271,7 +261,8 @@
         {
             var today = DateTime.Today;
             var age = today.Year - dateOfBirth.Year;
-            if (dateOfBirth.Date > today.AddYears(-age)) age--;
+            if(dateOfBirth.Date > today.AddYears(-age))
+                age--;
             return age;
         }
         private static string BuildAnalysisPrompt(Prescription prescription)
@@ -285,7 +276,7 @@
             sb.AppendLine($"تاريخ الروشتة: {prescription.DateIssued:dd/MM/yyyy}");
             sb.AppendLine("\n--- الأدوية الموصوفة ---");
 
-            foreach (var med in prescription.Medications)
+            foreach(var med in prescription.Medications)
             {
                 sb.AppendLine($"\n{med.Medication?.Name ?? "Unknown"}:");
                 sb.AppendLine($"  - الجرعة: {med.Dosage}");
@@ -293,7 +284,7 @@
                 sb.AppendLine($"  - المدة: {med.Duration}");
             }
 
-            if (!string.IsNullOrEmpty(prescription.SpecialInstructions))
+            if(!string.IsNullOrEmpty(prescription.SpecialInstructions))
             {
                 sb.AppendLine($"\nتعليمات خاصة: {prescription.SpecialInstructions}");
             }
@@ -322,17 +313,17 @@
             };
 
             var jsonContent = JsonSerializer.Serialize(requestBody);
-            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            var httpContent = new StringContent(jsonContent,Encoding.UTF8,"application/json");
 
             _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_openAiApiKey}");
+            _httpClient.DefaultRequestHeaders.Add("Authorization",$"Bearer {_openAiApiKey}");
 
-            var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", httpContent);
+            var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions",httpContent);
 
-            if (!response.IsSuccessStatusCode)
+            if(!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();
-                return Result<string>.Failure(ErrorType.BadRequest, $"OpenAI API Error: {error}");
+                return Result<string>.Failure(ErrorType.BadRequest,$"OpenAI API Error: {error}");
             }
 
             var responseJson = await response.Content.ReadAsStringAsync();
@@ -343,7 +334,7 @@
                 .GetProperty("content")
                 .GetString();
 
-            if (aiMessage != null)
+            if(aiMessage != null)
             {
                 aiMessage = CleanMarkdown(aiMessage);
                 return Result<string>.Success(aiMessage);
@@ -356,7 +347,7 @@
         {
             var result = new List<MedicationAnalysisDto>();
 
-            foreach (var med in prescription.Medications)
+            foreach(var med in prescription.Medications)
             {
                 result.Add(new MedicationAnalysisDto
                 {
@@ -371,17 +362,17 @@
 
         private static string CleanMarkdown(string text)
         {
-            if (string.IsNullOrWhiteSpace(text))
+            if(string.IsNullOrWhiteSpace(text))
                 return text;
 
             // Remove Markdown headings #### ### ##
-            text = Regex.Replace(text, @"#{1,6}\s*", "");
+            text = Regex.Replace(text,@"#{1,6}\s*","");
 
             // Remove bold & italics symbols **, *, __, _
-            text = Regex.Replace(text, @"(\*\*|\*|__|_)", "");
+            text = Regex.Replace(text,@"(\*\*|\*|__|_)","");
 
             // Remove extra backticks ```
-            text = text.Replace("```", "");
+            text = text.Replace("```","");
 
             return text.Trim();
         }

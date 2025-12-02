@@ -1,7 +1,9 @@
 ﻿namespace Sehaty.Application.Services
 {
-    public class PatientService(IMapper mapper, IUnitOfWork unit) : IPatientService
+    public class PatientService(IMapper mapper,IUnitOfWork unit,IAuthService authService) : IPatientService
     {
+
+
         public async Task<Patient> AddPatientAsync(PatientAddDto dto)
         {
 
@@ -31,13 +33,13 @@
 
             int sequence = 1;
 
-            if (lastPatient != null)
+            if(lastPatient != null)
             {
                 var lastSeq = lastPatient.Patient_Id.Split('-').Last();
                 sequence = int.Parse(lastSeq) + 1;
             }
 
-            return $"{prefix}{sequence.ToString().PadLeft(4, '0')}";
+            return $"{prefix}{sequence.ToString().PadLeft(4,'0')}";
         }
 
     }
