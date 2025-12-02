@@ -1,4 +1,6 @@
-﻿namespace Sehaty.Infrastructure.UnitOfWork
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
+namespace Sehaty.Infrastructure.UnitOfWork
 {
 
     public class UnitOfWork : IUnitOfWork
@@ -6,11 +8,11 @@
         private readonly SehatyDbContext context;
 
         // Dictionary Of Repos That Every Repo Created To Pass It To User If He Ask For It Again
-        private readonly Dictionary<string, object> repositories = new();
+        private readonly Dictionary<string,object> repositories = new();
         private readonly UserManager<ApplicationUser> userManager;
 
         private IUserRepository users;
-        public UnitOfWork(SehatyDbContext context, UserManager<ApplicationUser> userManager)
+        public UnitOfWork(SehatyDbContext context,UserManager<ApplicationUser> userManager)
         {
             this.context = context;
             this.userManager = userManager;
@@ -20,24 +22,27 @@
         public IRepository<T> Repository<T>() where T : BaseEntity
         {
             var key = typeof(T).Name;
-            if (!repositories.ContainsKey(key))
+            if(!repositories.ContainsKey(key))
             {
                 var repo = new Repository<T>(context);
-                repositories.Add(key, repo);
+                repositories.Add(key,repo);
             }
 
-            return (IRepository<T>)repositories[key];
+            return (IRepository<T>) repositories[key];
         }
         public IUserRepository Users
         {
             get
             {
-                if (users == null)
+                if(users == null)
                     users = new UserRepository(userManager);
 
                 return users;
             }
         }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+            => await context.Database.BeginTransactionAsync();
 
         public async Task<int> CommitAsync() // This Is To Save All Changes Happened At Once
             => await context.SaveChangesAsync();
