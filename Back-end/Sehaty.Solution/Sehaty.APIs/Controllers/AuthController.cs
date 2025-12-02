@@ -4,13 +4,10 @@
     public class AuthController(IAuthService authService) : ApiBaseController
     {
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterPatientDto model)
+        public async Task<ActionResult<GetRegisterPatientDto>> Register(RegisterPatientDto model)
         {
             var result = await authService.RegisterPatientAsync(model);
-            if(!result.IsSuccess)
-                return result.ToApiResponse();
-            var patient = result.Data;
-            return CreatedAtAction(nameof(PatientsController.GetPatientById),new { id = patient.Id },patient);
+            return result.ToApiResponse();
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto model)

@@ -20,9 +20,9 @@
         public string Address { get; set; }
         public string EmergencyContactName { get; set; }
         public string EmergencyContactPhone { get; set; }
-        public PatientStatus Status { get; set; }
+        public PatientStatus Status { get; set; } = PatientStatus.Active;
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
         public MedicalRecord MedicalRecord { get; set; }
         public int UserId { get; set; }
         public ApplicationUser User { get; set; }

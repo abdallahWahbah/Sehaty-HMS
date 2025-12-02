@@ -1,8 +1,10 @@
-﻿namespace Sehaty.Application.Services.IdentityService
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
+namespace Sehaty.Application.Services.IdentityService
 {
     public class AuthService(IMapper mapper,IUnitOfWork unit,UserManager<ApplicationUser> userManager,RoleManager<ApplicationRole> roleManager,IOptions<JwtOptions> options,SehatyDbContext context,IEmailSender emailSender) : IAuthService
     {
-        public async Task<Result<GetPatientDto>> RegisterPatientAsync(RegisterPatientDto dto)
+        public async Task<Result<GetRegisterPatientDto>> RegisterPatientAsync(RegisterPatientDto dto)
         {
             using var transaction = await unit.BeginTransactionAsync();
 
@@ -12,29 +14,33 @@
 
                 var authResult = await RegisterAsync(registerDto);
                 if(!authResult.IsSuccess)
-                    return Result<GetPatientDto>.Failure(authResult.ErrorType,authResult.Error);
+                    return Result<GetRegisterPatientDto>.Failure(authResult.ErrorType,authResult.Error);
+                var userData = authResult.Data;
 
-                var patientDto = mapper.Map<PatientAddDto>(dto);
-                patientDto.UserId = authResult.Data.UserId;
+                var patientToAdd = mapper.Map<Patient>(dto);
+                patientToAdd.UserId = userData.UserId;
 
-                await AddPatientAsync(patientDto);
+                var patientAdded = await AddPatientAsync(patientToAdd);
 
                 await transaction.CommitAsync();
 
-                var patient = mapper.Map<GetPatientDto>(patientDto);
-                return Result<GetPatientDto>.Success(patient);
-                //return authResult;
+                var result = mapper.Map<GetRegisterPatientDto>(patientAdded);
+                result.UserName = userData.UserName;
+                result.Email = userData.Email;
+
+                return Result<GetRegisterPatientDto>.Success(result);
             }
             catch(Exception ex)
             {
-                await transaction.RollbackAsync();
-                return Result<GetPatientDto>.Failure(ErrorType.BadRequest,ex.Message);
+                if(transaction.GetDbTransaction().Connection != null)
+                    await transaction.RollbackAsync();
+                return Result<GetRegisterPatientDto>.Failure(ErrorType.BadRequest,ex.Message);
             }
         }
         private async Task<Result<AuthResponseDto>> RegisterAsync(RegisterDto registerDto)
         {
             if(registerDto.Password != registerDto.ConfirmPassword)
-                return Result<AuthResponseDto>.Failure(ErrorType.BadRequest,"Password And Confirm Password Do Not Match");
+                return Result<AuthResponseDto>.Failure(ErrorType.Validation,"Password And Confirm Password Do Not Match");
 
             var existingEmail = await userManager.FindByEmailAsync(registerDto.Email);
             if(existingEmail is not null)
@@ -42,12 +48,12 @@
 
 
             var existingUserName = await userManager.FindByNameAsync(registerDto.UserName);
-            if(existingUserName != null)
+            if(existingUserName is not null)
                 return Result<AuthResponseDto>.Failure(ErrorType.BadRequest,"Username already exists");
 
             var defaultRole = await roleManager.FindByNameAsync("Patient");
             if(defaultRole is null)
-                Result<AuthResponseDto>.Failure(ErrorType.BadRequest,"Default Role 'Patient' not found. Please seed roles.");
+                return Result<AuthResponseDto>.Failure(ErrorType.BadRequest,"Default Role 'Patient' not found. Please seed roles.");
 
             ApplicationUser user = new ApplicationUser
             {
@@ -66,7 +72,7 @@
             if(!result.Succeeded)
             {
                 var errors = string.Join(", ",result.Errors.Select(e => e.Description));
-                Result<AuthResponseDto>.Failure(ErrorType.BadRequest,$"User Registration Failed: {errors}");
+                return Result<AuthResponseDto>.Failure(ErrorType.BadRequest,$"User Registration Failed: {errors}");
             }
 
             // إزالة أي أدوار موجودة (إذا كان فيه أي رول سابق)
@@ -77,7 +83,13 @@
             }
 
             // إضافة الدور الافتراضي
-            await userManager.AddToRoleAsync(user,defaultRole.Name);
+            var roleResult = await userManager.AddToRoleAsync(user,defaultRole.Name);
+
+            if(!roleResult.Succeeded)
+            {
+                var errors = string.Join(", ",roleResult.Errors.Select(e => e.Description));
+                return Result<AuthResponseDto>.Failure(ErrorType.BadRequest,$"Adding role failed: {errors}");
+            }
 
             // جلب الدور الحالي بعد الإضافة
             var userRole = (await userManager.GetRolesAsync(user)).FirstOrDefault() ?? defaultRole.Name;
@@ -418,19 +430,19 @@
     ");
         }
 
-        public async Task<Patient> AddPatientAsync(PatientAddDto dto)
+        public async Task<Patient> AddPatientAsync(Patient patient)
         {
 
 
-            var patientToAdd = mapper.Map<Patient>(dto);
+            //var patientToAdd = mapper.Map<Patient>(dto);
 
 
-            patientToAdd.Patient_Id = await GeneratePatientIdAsync();
+            patient.Patient_Id = await GeneratePatientIdAsync();
 
-            await unit.Repository<Patient>().AddAsync(patientToAdd);
+            await unit.Repository<Patient>().AddAsync(patient);
             await unit.CommitAsync();
 
-            return patientToAdd;
+            return patient;
 
 
         }
