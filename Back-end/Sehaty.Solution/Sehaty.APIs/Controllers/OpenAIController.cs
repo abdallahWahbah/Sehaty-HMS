@@ -1,8 +1,4 @@
-﻿using Sehaty.Application.Dtos.AiDto;
-using Sehaty.Application.Dtos.OpenAIDto;
-using Sehaty.Application.Dtos.OpenAIDto.SuggestAppointmentBySymptomsDto;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
 
     public class OpenAIController(IOpenAIService aiService,IUnitOfWork unit) : ApiBaseController
@@ -71,22 +67,22 @@ namespace Sehaty.APIs.Controllers
                 var patient = await unit.Repository<Patient>()
                     .GetFirstOrDefaultAsync(p => p.UserId == patientUserId);
 
-                if (patient == null)
-                    return NotFound(new ApiResponse(404, "Patient not found"));
+                if(patient == null)
+                    return NotFound(new ApiResponse(404,"Patient not found"));
 
-                if (patient.Id != request.PatientId)
-                    return Unauthorized(new ApiResponse(401, "You can only request appointments for yourself"));
+                if(patient.Id != request.PatientId)
+                    return Unauthorized(new ApiResponse(401,"You can only request appointments for yourself"));
 
                 var result = await aiService.AnalyzeSymptomsAndSuggestAppointmentAsync(request);
 
-                if (!result.IsSuccess)
-                    return StatusCode((int)result.ErrorType, new ApiResponse((int)result.ErrorType, result.Error));
+                if(!result.IsSuccess)
+                    return StatusCode((int) result.ErrorType,new ApiResponse((int) result.ErrorType,result.Error));
 
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                return BadRequest(new ApiResponse(400, ex.Message));
+                return BadRequest(new ApiResponse(400,ex.Message));
             }
         }
     }
