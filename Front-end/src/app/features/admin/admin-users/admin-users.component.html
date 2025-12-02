@@ -36,14 +36,14 @@
               Phone
             </th>
             <th class="user-management__cell user-management__cell--header">
-              Current Role
+              User Role
             </th>
-            <th class="user-management__cell user-management__cell--header">
+            <!-- <th class="user-management__cell user-management__cell--header">
               Change Role
             </th>
             <th class="user-management__cell user-management__cell--header">
               Action
-            </th>
+            </th> -->
           </tr>
         </thead>
         <tbody class="user-management__tbody">
@@ -75,15 +75,13 @@
               {{ user.phoneNumber || "-" }}
             </td>
 
-            <!-- Current role pill -->
             <td class="user-management__cell">
               <span class="user-management__role-pill">
                 {{ user.role }}
               </span>
             </td>
 
-            <!-- Change role dropdown (modern) -->
-            <td class="user-management__cell">
+            <!-- <td class="user-management__cell">
               <div class="user-management__select-wrapper">
                 <select
                   class="user-management__select"
@@ -98,8 +96,6 @@
                 </span>
               </div>
             </td>
-
-            <!-- Action button -->
             <td class="user-management__cell">
               <button
                 class="user-management__button"
@@ -107,7 +103,7 @@
               >
                 Change Role
               </button>
-            </td>
+            </td> -->
           </tr>
         </tbody>
       </table>

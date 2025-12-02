@@ -46,22 +46,22 @@ export class AdminUsersComponent implements OnInit {
       },
     });
   }
-  changeRole(userId: number) {
-    const selectedRoleName = this.selectedRoles[userId];
-    const newRoleId = this.rolesMap[selectedRoleName];
+  // changeRole(userId: number) {
+  //   const selectedRoleName = this.selectedRoles[userId];
+  //   const newRoleId = this.rolesMap[selectedRoleName];
 
-    if (!newRoleId) {
-      alert('Invalid role selected!');
-      return;
-    }
+  //   if (!newRoleId) {
+  //     alert('Invalid role selected!');
+  //     return;
+  //   }
 
-    this.userService.changeUserRole(userId, newRoleId).subscribe({
-      next: () => {
-        console.log(`Role updated to ${selectedRoleName} successfully.`);
-      },
-      error: (err) => {
-        console.error(err);
-      },
-    });
-  }
+  //   this.userService.changeUserRole(userId, newRoleId).subscribe({
+  //     next: () => {
+  //       console.log(`Role updated to ${selectedRoleName} successfully.`);
+  //     },
+  //     error: (err) => {
+  //       console.error(err);
+  //     },
+  //   });
+  // }
 }
