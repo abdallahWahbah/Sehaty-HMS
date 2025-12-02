@@ -9,6 +9,14 @@
             var result = await authService.RegisterPatientAsync(model);
             return result.ToApiResponse();
         }
+        [HttpPost("register-doctor")]
+        public async Task<ActionResult<GetRegisterPatientDto>> RegisterDoctor(RegisterDoctorDto model)
+        {
+            var result = await authService.RegisterDoctorAsync(model);
+            return result.ToApiResponse();
+        }
+
+
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto model)
         {

@@ -4,7 +4,7 @@ namespace Sehaty.Application.Services.IdentityService
 {
     public class AuthService(IMapper mapper,IUnitOfWork unit,UserManager<ApplicationUser> userManager,RoleManager<ApplicationRole> roleManager,IOptions<JwtOptions> options,SehatyDbContext context,IEmailSender emailSender) : IAuthService
     {
-        public async Task<Result<GetRegisterPatientDto>> RegisterPatientAsync(RegisterPatientDto dto)
+        public async Task<Result> RegisterPatientAsync(RegisterPatientDto dto)
         {
             using var transaction = await unit.BeginTransactionAsync();
 
@@ -12,9 +12,9 @@ namespace Sehaty.Application.Services.IdentityService
             {
                 var registerDto = mapper.Map<RegisterDto>(dto);
 
-                var authResult = await RegisterAsync(registerDto);
+                var authResult = await RegisterAsync(registerDto,"Patient");
                 if(!authResult.IsSuccess)
-                    return Result<GetRegisterPatientDto>.Failure(authResult.ErrorType,authResult.Error);
+                    return Result.Failure(authResult.ErrorType,authResult.Error);
                 var userData = authResult.Data;
 
                 var patientToAdd = mapper.Map<Patient>(dto);
@@ -24,20 +24,49 @@ namespace Sehaty.Application.Services.IdentityService
 
                 await transaction.CommitAsync();
 
-                var result = mapper.Map<GetRegisterPatientDto>(patientAdded);
-                result.UserName = userData.UserName;
-                result.Email = userData.Email;
-
-                return Result<GetRegisterPatientDto>.Success(result);
+                return Result.Success();
             }
             catch(Exception ex)
             {
                 if(transaction.GetDbTransaction().Connection != null)
                     await transaction.RollbackAsync();
-                return Result<GetRegisterPatientDto>.Failure(ErrorType.BadRequest,ex.Message);
+                return Result.Failure(ErrorType.BadRequest,ex.Message);
             }
         }
-        private async Task<Result<AuthResponseDto>> RegisterAsync(RegisterDto registerDto)
+        public async Task<Result> RegisterDoctorAsync(RegisterDoctorDto dto)
+        {
+            using var transaction = await unit.BeginTransactionAsync();
+
+            try
+            {
+                var registerDto = mapper.Map<RegisterDto>(dto);
+
+                var authResult = await RegisterAsync(registerDto,"Doctor");
+                if(!authResult.IsSuccess)
+                    return Result.Failure(authResult.ErrorType,authResult.Error);
+                var userData = authResult.Data;
+
+                var doctorToAdd = mapper.Map<Doctor>(dto);
+                doctorToAdd.UserId = userData.UserId;
+
+                var docResult = await AddDoctorAsync(doctorToAdd);
+                if(!docResult.IsSuccess)
+                    return Result.Failure(docResult.ErrorType,docResult.Error);
+
+                var doctorAdded = docResult.Data;
+
+                await transaction.CommitAsync();
+
+                return Result.Success();
+            }
+            catch(Exception ex)
+            {
+                if(transaction.GetDbTransaction().Connection != null)
+                    await transaction.RollbackAsync();
+                return Result<GetRegisterDoctorDto>.Failure(ErrorType.BadRequest,ex.Message);
+            }
+        }
+        private async Task<Result<AuthResponseDto>> RegisterAsync(RegisterDto registerDto,string roleName)
         {
             if(registerDto.Password != registerDto.ConfirmPassword)
                 return Result<AuthResponseDto>.Failure(ErrorType.Validation,"Password And Confirm Password Do Not Match");
@@ -51,9 +80,9 @@ namespace Sehaty.Application.Services.IdentityService
             if(existingUserName is not null)
                 return Result<AuthResponseDto>.Failure(ErrorType.BadRequest,"Username already exists");
 
-            var defaultRole = await roleManager.FindByNameAsync("Patient");
+            var defaultRole = await roleManager.FindByNameAsync(roleName);
             if(defaultRole is null)
-                return Result<AuthResponseDto>.Failure(ErrorType.BadRequest,"Default Role 'Patient' not found. Please seed roles.");
+                return Result<AuthResponseDto>.Failure(ErrorType.BadRequest,$"Default Role '{roleName}' not found. Please seed roles.");
 
             ApplicationUser user = new ApplicationUser
             {
@@ -432,19 +461,21 @@ namespace Sehaty.Application.Services.IdentityService
 
         public async Task<Patient> AddPatientAsync(Patient patient)
         {
-
-
-            //var patientToAdd = mapper.Map<Patient>(dto);
-
-
             patient.Patient_Id = await GeneratePatientIdAsync();
 
             await unit.Repository<Patient>().AddAsync(patient);
             await unit.CommitAsync();
 
             return patient;
-
-
+        }
+        public async Task<Result<Doctor>> AddDoctorAsync(Doctor doctor)
+        {
+            var dept = await unit.Repository<Department>().GetByIdAsync(doctor.DepartmentId);
+            if(dept == null)
+                return Result<Doctor>.Failure(ErrorType.NotFound,"Department Not Found");
+            await unit.Repository<Doctor>().AddAsync(doctor);
+            await unit.CommitAsync();
+            return Result<Doctor>.Success(doctor);
         }
         private async Task<string> GeneratePatientIdAsync()
         {
