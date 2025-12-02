@@ -1,6 +1,8 @@
-﻿namespace Sehaty.APIs.Controllers
+﻿using Sehaty.Core.Entities.Business_Entities;
+
+namespace Sehaty.APIs.Controllers
 {
-    public class PaymentsController(IAppointmentService appointmentService, INotificationService notificationService, IPaymentService paymentService, IUnitOfWork unit) : ApiBaseController
+    public class PaymentsController(IMapper mapper, IAppointmentService appointmentService, INotificationService notificationService, IPaymentService paymentService, IUnitOfWork unit) : ApiBaseController
     {
 
         [HttpGet("GetLink")]

@@ -278,8 +278,15 @@ namespace Sehaty.Application.Services
             if (!allSlots.Any())
                 throw new Exception($"No slots found for doctor on {model.Date:yyyy-MM-dd}. Please generate slots first.");
 
-            var availableSlots = allSlots.Where(s => !s.IsBooked).ToList();
             var bookedSlots = allSlots.Where(s => s.IsBooked).ToList();
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            var currentTime = TimeOnly.FromDateTime(DateTime.Now);
+
+            var availableSlots = allSlots
+                .Where(s => !s.IsBooked &&
+                            (s.Date > today ||
+                            (s.Date == today && s.StartTime > currentTime)))
+                .ToList();
 
             var slotDtos = availableSlots
                 .OrderBy(s => s.StartTime)
