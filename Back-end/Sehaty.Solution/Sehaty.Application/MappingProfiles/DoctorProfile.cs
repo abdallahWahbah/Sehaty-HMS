@@ -4,12 +4,17 @@
     {
         public DoctorProfile()
         {
-            CreateMap<Doctor, GetDoctorDto>()
-                .ForMember(D => D.Department, O => O.MapFrom(S => S.Department.Name))
-                .ForMember(D => D.User, O => O.MapFrom(S => S.User.UserName));
+            CreateMap<Doctor,GetDoctorDto>()
+                .ForMember(D => D.Department,O => O.MapFrom(S => S.Department.Name))
+                .ForMember(D => D.User,O => O.MapFrom(S => S.User.UserName));
             //.ForMember(D => D.ProfilePhotoUrl, O => O.MapFrom<DoctorProfileImageResolver<GetDoctorDto>>());
-            CreateMap<DoctorAddUpdateDto, Doctor>();
+            CreateMap<DoctorAddUpdateDto,Doctor>();
             //.ForMember(D => D.ProfilePhoto, O => O.Ignore());
+
+            CreateMap<RegisterDoctorDto,RegisterDto>();
+            CreateMap<RegisterDoctorDto,Doctor>();
+
+            //CreateMap<Doctor,GetRegisterDoctorDto>();
         }
     }
 }
