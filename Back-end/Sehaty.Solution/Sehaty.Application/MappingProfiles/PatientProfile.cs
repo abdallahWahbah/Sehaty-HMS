@@ -15,11 +15,12 @@
             CreateMap<PatientUpdateByStaffDto,Patient>();
             CreateMap<PatientUpdateDto,Patient>();
 
-            CreateMap<PatientAddDto,GetPatientDto>();
 
             CreateMap<RegisterPatientDto,RegisterDto>();
 
-            CreateMap<RegisterPatientDto,PatientAddDto>();
+            CreateMap<RegisterPatientDto,Patient>();
+
+            CreateMap<PatientAddDto,GetRegisterPatientDto>();
 
 
         }
