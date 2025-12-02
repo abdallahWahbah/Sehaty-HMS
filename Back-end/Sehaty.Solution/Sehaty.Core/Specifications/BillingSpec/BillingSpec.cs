@@ -21,6 +21,7 @@
         {
             Includes.Add(P => P.Appointment);
             Includes.Add(P => P.Patient);
+            Includes.Add(b => b.Appointment.Doctor);
         }
     }
 }

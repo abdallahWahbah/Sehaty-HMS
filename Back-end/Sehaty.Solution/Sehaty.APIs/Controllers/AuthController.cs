@@ -4,20 +4,19 @@
     public class AuthController(IAuthService authService) : ApiBaseController
     {
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto model)
+        public async Task<ActionResult<GetRegisterPatientDto>> Register(RegisterPatientDto model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new ApiResponse(400));
-            try
-            {
-                var result = await authService.RegisterAsync(model);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            var result = await authService.RegisterPatientAsync(model);
+            return result.ToApiResponse();
         }
+        [HttpPost("register-doctor")]
+        public async Task<ActionResult<GetRegisterPatientDto>> RegisterDoctor(RegisterDoctorDto model)
+        {
+            var result = await authService.RegisterDoctorAsync(model);
+            return result.ToApiResponse();
+        }
+
+
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto model)
         {
@@ -27,7 +26,7 @@
                 var result = await authService.LoginAsync(model);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
@@ -40,10 +39,10 @@
             {
                 var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
                 var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-                await authService.ChangePasswordAsync(userId, model, ipAddress);
+                await authService.ChangePasswordAsync(userId,model,ipAddress);
                 return Ok(new { message = "Password changed successfully." });
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
@@ -54,10 +53,10 @@
             try
             {
                 var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-                var response = await authService.RefreshTokenAsync(model.Token, model.RefreshToken, ipAddress);
+                var response = await authService.RefreshTokenAsync(model.Token,model.RefreshToken,ipAddress);
                 return Ok(response);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
@@ -69,10 +68,10 @@
             try
             {
                 var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-                await authService.LogoutAsync(userId, model.RefreshToken);
+                await authService.LogoutAsync(userId,model.RefreshToken);
                 return Ok(new { message = "Logged out successfully." });
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
@@ -86,7 +85,7 @@
                 await authService.RequestResetPasswordAsync(model.Email);
                 return Ok(new { message = "Password reset OTP has been sent to your email." });
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
@@ -95,7 +94,7 @@
         [AllowAnonymous]
         public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpDto dto)
         {
-            var isValid = await authService.VerifyOptAsync(dto.Email, dto.Otp);
+            var isValid = await authService.VerifyOptAsync(dto.Email,dto.Otp);
             return Ok(new { isValid });
         }
 
@@ -105,10 +104,10 @@
         {
             try
             {
-                await authService.ResetPasswordAsync(model.Email, model.Otp, model.NewPassword);
+                await authService.ResetPasswordAsync(model.Email,model.Otp,model.NewPassword);
                 return Ok(new { message = "Password has been reset successfully." });
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
@@ -122,7 +121,7 @@
                 await authService.ResendOtpAsync(model.Email);
                 return Ok(new { message = "OTP has been resent successfully." });
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }

@@ -3,7 +3,7 @@
 
     public class OpenAIController(IOpenAIService aiService,IUnitOfWork unit) : ApiBaseController
     {
-        [HttpGet("analyze/{prescriptionId}")]
+        [HttpGet("analyze-prescription/{prescriptionId}")]
         [Authorize(Roles = "Patient")]
         public async Task<ActionResult<PrescriptionAnalysisResponseDto>> AnalyzePrescription(int prescriptionId)
         {
