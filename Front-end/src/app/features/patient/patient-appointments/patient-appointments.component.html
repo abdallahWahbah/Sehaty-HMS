@@ -101,16 +101,18 @@
         </div>
       </section>
 
-      <!-- Footer -->
-      <footer class="appointment-card__footer">
-        <button
-          class="appointment-card__btn-pay"
-          (click)="goToPayment(appointment.id)"
-        >
-          <i class="fa-solid fa-credit-card"></i>
-          <span>Pay Now</span>
-        </button>
-      </footer>
+      @if((appointment.status !== 'Confirmed' && appointment.status !== 'NoShow')){
+        <!-- Footer -->
+        <footer class="appointment-card__footer">
+          <button
+            class="appointment-card__btn-pay"
+            (click)="goToPayment(appointment.id)"
+          >
+            <i class="fa-solid fa-credit-card"></i>
+            <span>Pay Now</span>
+          </button>
+        </footer>
+      }
     </article>
 
     }

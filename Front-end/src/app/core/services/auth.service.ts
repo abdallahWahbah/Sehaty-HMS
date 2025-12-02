@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoginResponseModel } from '../models/login-response-model';
+import { RegisterPatientModel } from '../models/register-patient-model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class AuthService {
     );
   }
   
-  register(newUser: any) {
+  register(newUser: RegisterPatientModel) {
     return this._http.post<any>(this.baseUrl + 'register', newUser);
   }
 

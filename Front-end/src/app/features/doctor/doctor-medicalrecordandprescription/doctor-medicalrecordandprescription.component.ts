@@ -39,9 +39,12 @@ export class DoctorMedicalrecordandprescriptionComponent implements OnInit {
     this.prescriptionService
       .getPatientPrescriptionHistory(this.patientId)
       .subscribe({
-        next: (history) => (this.prescriptions = history),
+        next: data => {
+          this.prescriptions = data;
+          console.log("dddddddddd", this.prescriptions);
+        },
         error: (err) => console.error('Error fetching prescriptions', err),
-      });
+    });
 
     this.loading = false;
   }
