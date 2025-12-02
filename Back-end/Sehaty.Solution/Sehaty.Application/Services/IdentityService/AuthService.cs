@@ -1,26 +1,55 @@
 ﻿namespace Sehaty.Application.Services.IdentityService
 {
-    public class AuthService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IOptions<JwtOptions> options, SehatyDbContext context, IEmailSender emailSender) : IAuthService
+    public class AuthService(IMapper mapper,IUnitOfWork unit,UserManager<ApplicationUser> userManager,RoleManager<ApplicationRole> roleManager,IOptions<JwtOptions> options,SehatyDbContext context,IEmailSender emailSender) : IAuthService
     {
-
-        public async Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto)
+        public async Task<Result<GetPatientDto>> RegisterPatientAsync(RegisterPatientDto dto)
         {
-            if (registerDto.Password != registerDto.ConfirmPassword)
-                throw new Exception("Password And Confirm Password Do Not Match");
+            using var transaction = await unit.BeginTransactionAsync();
+
+            try
+            {
+                var registerDto = mapper.Map<RegisterDto>(dto);
+
+                var authResult = await RegisterAsync(registerDto);
+                if(!authResult.IsSuccess)
+                    return Result<GetPatientDto>.Failure(authResult.ErrorType,authResult.Error);
+
+                var patientDto = mapper.Map<PatientAddDto>(dto);
+                patientDto.UserId = authResult.Data.UserId;
+
+                await AddPatientAsync(patientDto);
+
+                await transaction.CommitAsync();
+
+                var patient = mapper.Map<GetPatientDto>(patientDto);
+                return Result<GetPatientDto>.Success(patient);
+                //return authResult;
+            }
+            catch(Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return Result<GetPatientDto>.Failure(ErrorType.BadRequest,ex.Message);
+            }
+        }
+        private async Task<Result<AuthResponseDto>> RegisterAsync(RegisterDto registerDto)
+        {
+            if(registerDto.Password != registerDto.ConfirmPassword)
+                return Result<AuthResponseDto>.Failure(ErrorType.BadRequest,"Password And Confirm Password Do Not Match");
 
             var existingEmail = await userManager.FindByEmailAsync(registerDto.Email);
-            if (existingEmail is not null)
-                throw new Exception("Email already exists");
+            if(existingEmail is not null)
+                return Result<AuthResponseDto>.Failure(ErrorType.BadRequest,"Email already exists");
+
 
             var existingUserName = await userManager.FindByNameAsync(registerDto.UserName);
-            if (existingUserName != null)
-                throw new Exception("Username already exists");
+            if(existingUserName != null)
+                return Result<AuthResponseDto>.Failure(ErrorType.BadRequest,"Username already exists");
 
             var defaultRole = await roleManager.FindByNameAsync("Patient");
-            if (defaultRole is null)
-                throw new Exception("Default Role 'Patient' not found. Please seed roles.");
+            if(defaultRole is null)
+                Result<AuthResponseDto>.Failure(ErrorType.BadRequest,"Default Role 'Patient' not found. Please seed roles.");
 
-            var user = new ApplicationUser
+            ApplicationUser user = new ApplicationUser
             {
                 UserName = registerDto.UserName,
                 Email = registerDto.Email,
@@ -30,33 +59,33 @@
                 LanguagePreference = registerDto.LanguagePreference,
                 CreatedAt = DateTime.UtcNow,
                 LastLogin = DateTime.UtcNow,
+                IsActive = true
             };
 
-            var result = await userManager.CreateAsync(user, registerDto.Password);
-            if (!result.Succeeded)
+            var result = await userManager.CreateAsync(user,registerDto.Password);
+            if(!result.Succeeded)
             {
-                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                throw new Exception($"User Registration Failed: {errors}");
+                var errors = string.Join(", ",result.Errors.Select(e => e.Description));
+                Result<AuthResponseDto>.Failure(ErrorType.BadRequest,$"User Registration Failed: {errors}");
             }
 
             // إزالة أي أدوار موجودة (إذا كان فيه أي رول سابق)
             var currentRoles = await userManager.GetRolesAsync(user);
-            if (currentRoles.Any())
+            if(currentRoles.Any())
             {
-                await userManager.RemoveFromRolesAsync(user, currentRoles);
+                await userManager.RemoveFromRolesAsync(user,currentRoles);
             }
 
             // إضافة الدور الافتراضي
-            await userManager.AddToRoleAsync(user, defaultRole.Name);
+            await userManager.AddToRoleAsync(user,defaultRole.Name);
 
             // جلب الدور الحالي بعد الإضافة
             var userRole = (await userManager.GetRolesAsync(user)).FirstOrDefault() ?? defaultRole.Name;
 
             // إنشاء JWT
-            var token = await GenerateJwtTokenAsync(user, userRole);
+            var token = await GenerateJwtTokenAsync(user,userRole);
             var jwtOptions = options.Value;
-
-            return new AuthResponseDto
+            var res = new AuthResponseDto
             {
                 Token = token,
                 Expiration = DateTime.UtcNow.AddMinutes(jwtOptions.AccessTokenExpirationInMinutes),
@@ -65,11 +94,12 @@
                 Email = user.Email,
                 Role = userRole,
             };
+            return Result<AuthResponseDto>.Success(res);
         }
         public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
         {
             var user = await userManager.Users.Include(r => r.RefreshTokens).FirstOrDefaultAsync(u => u.UserName == loginDto.UserName);
-            if (user is null || !await userManager.CheckPasswordAsync(user, loginDto.Password))
+            if(user is null || !await userManager.CheckPasswordAsync(user,loginDto.Password))
             {
                 throw new Exception("Invalid UserName Or Password");
             }
@@ -78,9 +108,9 @@
 
             var roles = await userManager.GetRolesAsync(user);
             var userRole = roles.FirstOrDefault() ?? "Patient";
-            var token = await GenerateJwtTokenAsync(user, userRole);
+            var token = await GenerateJwtTokenAsync(user,userRole);
 
-            var refreshToken = await AddRefreshTokenAsync(user, loginDto.IpAddress);
+            var refreshToken = await AddRefreshTokenAsync(user,loginDto.IpAddress);
             var jwtOptions = options.Value;
             return new AuthResponseDto
             {
@@ -96,7 +126,7 @@
             };
 
         }
-        private async Task<string> GenerateJwtTokenAsync(ApplicationUser user, string role)
+        private async Task<string> GenerateJwtTokenAsync(ApplicationUser user,string role)
         {
             var claims = new[]
             {
@@ -106,7 +136,7 @@
             };
             var jwtOptions = options.Value;
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
                 issuer: jwtOptions.Issuer,
                 audience: jwtOptions.Audience,
@@ -129,31 +159,31 @@
                 IsRevoked = false
             };
         }
-        private async Task<RefreshToken> AddRefreshTokenAsync(ApplicationUser user, string ipAddress)
+        private async Task<RefreshToken> AddRefreshTokenAsync(ApplicationUser user,string ipAddress)
         {
             var refreshToken = CreateRefreshToken(ipAddress);
             user.RefreshTokens.Add(refreshToken);
             await userManager.UpdateAsync(user);
             return refreshToken;
         }
-        public async Task<AuthResponseDto> RefreshTokenAsync(string token, string refreshToken, string ipAdrees)
+        public async Task<AuthResponseDto> RefreshTokenAsync(string token,string refreshToken,string ipAdrees)
         {
             var user = await userManager.Users.Include(r => r.RefreshTokens)
                 .FirstOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == refreshToken));
-            if (user is null)
+            if(user is null)
             {
                 throw new Exception("Invalid Refresh Token");
             }
             var existingRefreshToken = user.RefreshTokens.FirstOrDefault(t => t.Token == refreshToken);
 
-            if (existingRefreshToken is null || existingRefreshToken.IsRevoked || existingRefreshToken.Expires <= DateTime.UtcNow)
+            if(existingRefreshToken is null || existingRefreshToken.IsRevoked || existingRefreshToken.Expires <= DateTime.UtcNow)
             {
                 throw new Exception("Invalid or Expired Refresh Token");
             }
             existingRefreshToken.IsRevoked = true;
             var roles = await userManager.GetRolesAsync(user);
             var userRole = roles.FirstOrDefault() ?? "Patient";
-            var newAccessToken = await GenerateJwtTokenAsync(user, userRole);
+            var newAccessToken = await GenerateJwtTokenAsync(user,userRole);
 
             var newRefreshToken = CreateRefreshToken(ipAdrees);
             user.RefreshTokens.Add(newRefreshToken);
@@ -172,17 +202,17 @@
             };
 
         }
-        public async Task LogoutAsync(int userId, string refreshToken)
+        public async Task LogoutAsync(int userId,string refreshToken)
         {
             var user = await userManager.Users
                 .Include(u => u.RefreshTokens)
                 .FirstOrDefaultAsync(u => u.Id == userId);
-            if (user is null)
+            if(user is null)
             {
                 throw new Exception("User Not Found");
             }
             var existingRefreshToken = user.RefreshTokens.FirstOrDefault(t => t.Token == refreshToken);
-            if (existingRefreshToken is null)
+            if(existingRefreshToken is null)
             {
                 throw new Exception("Invalid refresh token");
             }
@@ -190,21 +220,21 @@
             existingRefreshToken.RevokedAt = DateTime.UtcNow;
             await userManager.UpdateAsync(user);
         }
-        public async Task ChangePasswordAsync(int userId, ChangePasswordDto dto, string ipAddress)
+        public async Task ChangePasswordAsync(int userId,ChangePasswordDto dto,string ipAddress)
         {
             var user = await userManager.FindByIdAsync(userId.ToString());
-            if (user is null)
+            if(user is null)
             {
                 throw new Exception("User Not Found");
             }
-            if (dto.NewPassword != dto.ConfirmNewPassword)
+            if(dto.NewPassword != dto.ConfirmNewPassword)
             {
                 throw new Exception("New Password And Confirm New Password Do Not Match");
             }
-            var result = await userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
-            if (!result.Succeeded)
+            var result = await userManager.ChangePasswordAsync(user,dto.CurrentPassword,dto.NewPassword);
+            if(!result.Succeeded)
             {
-                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                var errors = string.Join(", ",result.Errors.Select(e => e.Description));
                 throw new Exception($"Password Change Failed: {errors}");
             }
             var audit = new AuditLog
@@ -218,12 +248,12 @@
         private string GenerateOtp()
         {
             var randomNumber = new Random();
-            return randomNumber.Next(100000, 999999).ToString();
+            return randomNumber.Next(100000,999999).ToString();
         }
         public async Task RequestResetPasswordAsync(string email)
         {
             var user = await userManager.FindByEmailAsync(email);
-            if (user is null)
+            if(user is null)
             {
                 throw new Exception("User Not Found");
             }
@@ -273,10 +303,10 @@
     </div>
     ");
         }
-        public async Task<bool> VerifyOptAsync(string email, string code)
+        public async Task<bool> VerifyOptAsync(string email,string code)
         {
             var user = await userManager.FindByEmailAsync(email);
-            if (user is null)
+            if(user is null)
             {
                 return false;
             }
@@ -284,16 +314,16 @@
                 .Where(u => u.UserId == user.Id && u.CodeHash == code && !u.IsUsed)
                 .OrderByDescending(u => u.CreatedAt)
                 .FirstOrDefaultAsync();
-            if (otpEntry is null || otpEntry.ExpiresAt < DateTime.UtcNow)
+            if(otpEntry is null || otpEntry.ExpiresAt < DateTime.UtcNow)
             {
                 return false;
             }
             return true;
         }
-        public async Task ResetPasswordAsync(string email, string otp, string newPassword)
+        public async Task ResetPasswordAsync(string email,string otp,string newPassword)
         {
             var user = await userManager.FindByEmailAsync(email);
-            if (user is null)
+            if(user is null)
             {
                 throw new Exception("Invaild Request!");
             }
@@ -301,18 +331,18 @@
                 .Where(u => u.UserId == user.Id && u.CodeHash == otp && !u.IsUsed)
                 .OrderByDescending(u => u.CreatedAt)
                 .FirstOrDefaultAsync();
-            if (otpEntry is null || otpEntry.ExpiresAt < DateTime.UtcNow)
+            if(otpEntry is null || otpEntry.ExpiresAt < DateTime.UtcNow)
             {
                 throw new Exception("Invaild Or Expired OTP Code!");
             }
             var remove = await userManager.RemovePasswordAsync(user);
-            if (!remove.Succeeded)
+            if(!remove.Succeeded)
             {
 
                 throw new Exception($"Faild to reset Password");
             }
-            var add = await userManager.AddPasswordAsync(user, newPassword);
-            if (!add.Succeeded)
+            var add = await userManager.AddPasswordAsync(user,newPassword);
+            if(!add.Succeeded)
             {
                 throw new Exception($"Faild to reset new Password");
             }
@@ -329,7 +359,7 @@
         public async Task ResendOtpAsync(string email)
         {
             var user = await userManager.FindByEmailAsync(email);
-            if (user is null)
+            if(user is null)
             {
                 throw new Exception("User Not Found");
             }
@@ -337,7 +367,7 @@
                 .Where(u => u.UserId == user.Id)
                 .OrderByDescending(u => u.CreatedAt)
                 .FirstOrDefaultAsync();
-            if (lastOtp != null && (DateTime.UtcNow - lastOtp.CreatedAt).TotalMinutes < 1)
+            if(lastOtp != null && (DateTime.UtcNow - lastOtp.CreatedAt).TotalMinutes < 1)
             {
                 throw new Exception("Please wait before requesting a new OTP.");
             }
@@ -386,6 +416,44 @@
         </p>
     </div>
     ");
+        }
+
+        public async Task<Patient> AddPatientAsync(PatientAddDto dto)
+        {
+
+
+            var patientToAdd = mapper.Map<Patient>(dto);
+
+
+            patientToAdd.Patient_Id = await GeneratePatientIdAsync();
+
+            await unit.Repository<Patient>().AddAsync(patientToAdd);
+            await unit.CommitAsync();
+
+            return patientToAdd;
+
+
+        }
+        private async Task<string> GeneratePatientIdAsync()
+        {
+            var currentYear = DateTime.Now.Year;
+            var prefix = $"PT-{currentYear}-";
+
+
+            var lastPatient = await unit.Repository<Patient>()
+                .FindBy(p => p.Patient_Id.StartsWith(prefix))
+                .OrderByDescending(p => p.Patient_Id)
+                .FirstOrDefaultAsync();
+
+            int sequence = 1;
+
+            if(lastPatient != null)
+            {
+                var lastSeq = lastPatient.Patient_Id.Split('-').Last();
+                sequence = int.Parse(lastSeq) + 1;
+            }
+
+            return $"{prefix}{sequence.ToString().PadLeft(4,'0')}";
         }
     }
 }
