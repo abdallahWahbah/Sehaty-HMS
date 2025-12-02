@@ -18,7 +18,7 @@ export class PrescriptionAnalysisService {
     prescriptionId: number
   ): Observable<PrescriptionAnalysis> {
     const headers = this.getAuthHeaders();
-    const url = `${this.baseUrl}/analyze/${prescriptionId}`;
+    const url = `${this.baseUrl}/analyze-prescription/${prescriptionId}`;
 
     return this.http
       .get<ApiResponse<PrescriptionAnalysis>>(url, { headers })
