@@ -15,6 +15,8 @@
         public string Gender { get; set; }
         public string Address { get; set; }
         public string EmergencyContactName { get; set; }
+        [Phone]
+        [RegularExpression(@"^\+20(10|11|12|15)\d{8}$")]
         public string EmergencyContactPhone { get; set; }
 
     }

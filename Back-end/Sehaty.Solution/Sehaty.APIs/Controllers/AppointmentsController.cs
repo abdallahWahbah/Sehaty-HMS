@@ -227,7 +227,8 @@
             var oldDateTime = appointment.AppointmentDateTime;
             appointment.AppointmentDateTime = model.NewAppointmentDateTime;
 
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "Admin";
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+            //var userRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "Admin";
             var changedBy = userRole switch
             {
                 "Patient" => ChangedByRole.Patient,

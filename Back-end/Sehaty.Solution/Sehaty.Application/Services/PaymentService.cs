@@ -54,7 +54,7 @@
                 return Result.Failure(ErrorType.BadRequest,"Refund failed");
 
 
-            // تحديث BILLING
+
             billing.PaidAmount -= refundAmount;
             billing.Status = billing.PaidAmount == 0
                 ? BillingStatus.Refunded
@@ -66,23 +66,23 @@
 
             unit.Repository<Billing>().Update(billing);
 
-            // تحديث APPOINTMENT
+
             appointment.Status = AppointmentStatus.Canceled;
             appointment.CancellationReason = "Canceled by doctor";
 
             unit.Repository<Appointment>().Update(appointment);
 
-            // تحديث DOCTOR STAT
+
             doctor.CancelledAppointmentsCount++;
 
             unit.Repository<Doctor>().Update(doctor);
 
-            // SAVE ALL
+
             await unit.CommitAsync();
             return Result.Success();
         }
 
-        public async Task<(string link, int? billingId)> GetPaymentLinkAsync(int appointmentId,int totalAmount)
+        public async Task<Result<(string link, int? billingId)>> GetPaymentLinkAsync(int appointmentId,int totalAmount)
         {
             var specBilling = new BillingSpec(b => b.AppointmentId == appointmentId);
             var existeingBilling = await unit.Repository<Billing>().GetByIdWithSpecAsync(specBilling);
@@ -90,26 +90,30 @@
             {
                 if(existeingBilling.PaymentLink != null &&
                     existeingBilling.Status == BillingStatus.Pending)
-                    return (existeingBilling.PaymentLink, existeingBilling.Id);
+                    return Result<(string link, int? billingId)>.Success((existeingBilling.PaymentLink, existeingBilling.Id));
             }
 
             var spec = new AppointmentSpecifications(a => a.Id == appointmentId);
             var appointment = await unit.Repository<Appointment>()
-                .GetByIdWithSpecAsync(spec)
-                ?? throw new InvalidOperationException("Appointment not found");
+                .GetByIdWithSpecAsync(spec);
+            if(appointment is null)
+                return Result<(string link, int? billingId)>.Failure(ErrorType.NotFound,"Appointment not found");
             ;
 
-            var doctor = await unit.Repository<Doctor>().GetByIdAsync(appointment.DoctorId)
-                ?? throw new InvalidOperationException("Doctor not found");
+            var doctor = await unit.Repository<Doctor>().GetByIdAsync(appointment.DoctorId);
+
+            if(doctor is null)
+                return Result<(string link, int? billingId)>.Failure(ErrorType.NotFound,"Doctor not found");
+
 
             if(appointment?.Status != AppointmentStatus.Pending)
-                throw new InvalidOperationException("The appointment is not valid for payment!");
+                return Result<(string link, int? billingId)>.Failure(ErrorType.BadRequest,"Only Pending Appointments Can Be Confirmed");
 
             if(!paymentSettings.AcceptOnlinePayments)
-                throw new InvalidOperationException("payment is not enabled");
+                return Result<(string link, int? billingId)>.Failure(ErrorType.BadRequest,"payment is not enabled");
 
             if(totalAmount <= 0)
-                throw new ArgumentException("Amount must Be Larger Than Zero!",nameof(totalAmount));
+                return Result<(string link, int? billingId)>.Failure(ErrorType.BadRequest,"Amount must Be Larger Than Zero!");
 
             Billing billing = new();
             if(paymentSettings.PaymentProvider == (int) PaymentProvider.PaymobEgy2)
@@ -125,7 +129,7 @@
                     await unit.CommitAsync();
                 }
 
-                return (link, billing.Id);
+                return Result<(string link, int? billingId)>.Success((link, billing.Id));
             }
 
             throw new NotSupportedException("Payment is Not Aviliable");
