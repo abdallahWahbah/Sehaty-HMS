@@ -18,10 +18,11 @@
                 .GetByIdAsync(appointmentId);
 
             if(appointment is null)
+                return Result.Failure(ErrorType.NotFound,"Appointment not found");
 
-                // تأكيد الحالة
-                if(appointment.Status != AppointmentStatus.Confirmed)
-                    return Result.Failure(ErrorType.BadRequest,"Only confirmed appointments can be cancelled");
+            // تأكيد الحالة
+            if(appointment.Status != AppointmentStatus.Confirmed)
+                return Result.Failure(ErrorType.BadRequest,"Only confirmed appointments can be cancelled");
 
             var doctor = await unit.Repository<Doctor>()
                 .GetByIdAsync(appointment.DoctorId);
