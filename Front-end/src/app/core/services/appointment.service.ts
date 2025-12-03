@@ -11,6 +11,7 @@ import { CreateAppointmentDto } from '../models/appointment-create-model';
 import { RescheduleAppointmentDto } from '../models/appointment-updateDate-model';
 import { ConfirmAppointmentResponse } from '../models/confirmappoitment.model';
 import { raw } from 'express';
+import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
 @Injectable({
   providedIn: 'root',
 })
@@ -93,7 +94,7 @@ export class AppointmentService {
   }
 
   cancel(id: number) {
-    return this.http.post(`${this.baseUrl}CancelAppointment/${id}`, {})
+    return this.http.post(`${this.baseUrl}CancelAppointment/${id}`, {});
   }
 
   reschedule(id: number, dto: RescheduleAppointmentDto): Observable<void> {
@@ -127,11 +128,29 @@ export class AppointmentService {
         catchError(this.handleError)
       );
   }
-  bookAppointmentByReception(doctorId: number, appointmentDateTime: string, reasonForVisit: string){
+  bookAppointmentByReception(
+    doctorId: number,
+    appointmentDateTime: string,
+    reasonForVisit: string
+  ) {
     return this.http.post<any>(this.baseUrl + 'ReceptionistCreate', {
       doctorId,
       appointmentDateTime,
-      reasonForVisit
+      reasonForVisit,
     });
+  }
+  apologizeForDoctor(id: number): Observable<{ message: string }> {
+    const token = localStorage.getItem('token');
+    const headers = token
+      ? new HttpHeaders({ Authorization: `Bearer ${token}` })
+      : new HttpHeaders();
+
+    return this.http
+      .post<{ message: string }>(
+        `${this.baseUrl}${id}/doctor-cancel`,
+        {},
+        { headers }
+      )
+      .pipe(catchError(this.handleError));
   }
 }

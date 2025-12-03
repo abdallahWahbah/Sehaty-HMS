@@ -26,7 +26,9 @@ export class DoctorAppointmentsComponent {
   selectedFeedbackMap: {
     [appointmentId: number]: FeedbackResponseModel | null;
   } = {};
-
+  showApologyPopup = false;
+  apologyMessage = '';
+  isApologyError = false;
   // ====== AI History Modal state ======
   isHistoryAiModalOpen = false;
   historyLoading = false;
@@ -183,5 +185,41 @@ export class DoctorAppointmentsComponent {
 
   closeHistoryAiModal(): void {
     this.isHistoryAiModalOpen = false;
+  }
+  apologize(appointment: AppointmentResponseModel) {
+    if (!appointment.id) {
+      console.warn('Appointment id is missing for apologize');
+      return;
+    }
+
+    this._appointmentsService.apologizeForDoctor(appointment.id).subscribe({
+      next: (res) => {
+        this.isApologyError = false; // ✅ نجاح
+        this.apologyMessage =
+          res?.message || 'Appointment cancelled and refund processed.';
+        this.showApologyPopup = true;
+
+        setTimeout(() => {
+          this.showApologyPopup = false;
+        }, 2500);
+
+        this.loadAppointments();
+      },
+      error: (err) => {
+        console.error('Error apologizing for appointment', err);
+        this.isApologyError = true; // ❌ خطأ
+        this.apologyMessage = 'Something went wrong while cancelling.';
+        this.showApologyPopup = true;
+
+        setTimeout(() => {
+          this.showApologyPopup = false;
+        }, 2500);
+      },
+    });
+  }
+  isAppointmentPassed(date: Date | string): boolean {
+    const now = new Date();
+    const appDate = new Date(date);
+    return appDate.getTime() < now.getTime();
   }
 }

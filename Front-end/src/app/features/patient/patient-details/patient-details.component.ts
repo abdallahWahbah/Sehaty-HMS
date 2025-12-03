@@ -28,6 +28,6 @@ export class PatientDetailsComponent implements OnInit {
     });
   }
   goToEdit() {
-    this.router.navigate(['/patient/edit', this.patient.id]);
+    this.router.navigate(['/home/edit', this.patient.id]);
   }
 }

@@ -51,6 +51,6 @@ export class ViewDepartmentsComponent implements OnInit {
   }
 
   viewDoctors(departmentId: number) {
-    this.router.navigate(['/patient/appointments/doctors', departmentId]);
+    this.router.navigate(['/home/appointments/doctors', departmentId]);
   }
 }

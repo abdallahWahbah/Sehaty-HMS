@@ -148,6 +148,14 @@ $radius-lg: 1.4rem;
     gap: 0.4rem;
   }
 
+  // صف العنوان + الزرار
+  &__meds-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
   // ===== Medications table =====
   &__meds-table {
     margin-top: 0.4rem;
@@ -237,6 +245,17 @@ $radius-lg: 1.4rem;
   }
 }
 
+// ====== زرار صغير جوه سكشن الأدوية ======
+.small-btn {
+  padding: 0.5rem 1.4rem !important;
+  font-size: 1.2rem !important;
+  box-shadow: 0 4px 12px rgba(25, 39, 79, 0.2) !important;
+
+  i {
+    font-size: 1.2rem !important;
+  }
+}
+
 // ====== Responsive tweaks ======
 @media (max-width: 768px) {
   .prescriptions-list {
@@ -256,6 +275,18 @@ $radius-lg: 1.4rem;
   .prescription-card__meds-header,
   .prescription-card__meds-row {
     grid-template-columns: 1.8fr 1.2fr 1.2fr 1.2fr;
+  }
+
+  .prescription-card__meds-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .small-btn {
+      align-self: stretch;
+      justify-content: center;
+      width: 100%;
+      text-align: center;
+    }
   }
 }
 
@@ -416,6 +447,10 @@ $radius-lg: 1.4rem;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   padding: 1.2rem 1.4rem;
+
+  // RTL للمحتوى النصي (نتائج الـ AI بالعربي)
+  direction: rtl;
+  text-align: right;
 }
 
 .ai-modal__text {
@@ -424,8 +459,8 @@ $radius-lg: 1.4rem;
   line-height: 1.6;
   color: $text-main;
   white-space: pre-wrap;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  font-family: "Tajawal", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
 }
 
 .ai-modal__meds {
@@ -534,32 +569,13 @@ $radius-lg: 1.4rem;
     }
   }
 }
-.ai-modal__content {
-  border-radius: 1rem;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  padding: 1.2rem 1.4rem;
 
-  // خلي كل اللي جواها RTL
-  direction: rtl;
-  text-align: right;
-}
-
-.ai-modal__text {
-  margin: 0;
-  font-size: 1.35rem;
-  line-height: 1.6;
-  color: $text-main;
-  white-space: pre-wrap;
-  font-family: "Tajawal", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
-}
 // 🌈 Vibrant Rainbow Animated Border
 .rainbow-border {
   position: relative;
   overflow: hidden;
   z-index: 0;
-  border-radius: 999px; // مهم عشان يلف صح
+  border-radius: 999px;
 
   &::before {
     content: "";

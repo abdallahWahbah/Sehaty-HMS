@@ -52,7 +52,18 @@
 
         <!-- Medications (Table) -->
         <div class="prescription-card__row prescription-card__meds-block">
-          <span class="prescription-card__label">Medications</span>
+          <div class="prescription-card__meds-header-row">
+            <span class="prescription-card__label">Medications</span>
+
+            <!-- 🆕 زرار Find Alternative جوه سكشن الأدوية -->
+            <button
+              class="prescription-card__btn-ai rainbow-border small-btn"
+              (click)="openAnalysisModal(prescription.id, 'alternative')"
+            >
+              <i class="fa-solid fa-arrows-rotate"></i>
+              Find Alternative
+            </button>
+          </div>
 
           @if (prescription?.medications && prescription.medications.length > 0)
           {
@@ -82,14 +93,16 @@
       <!-- Actions (AI + Download) -->
       @if (prescription?.id) {
       <div class="prescription-card__footer">
+        <!-- 🔍 AI Analysis -->
         <button
           class="prescription-card__btn-ai rainbow-border"
-          (click)="openAnalysisModal(prescription.id)"
+          (click)="openAnalysisModal(prescription.id, 'analysis')"
         >
           <i class="fa-solid fa-wand-magic-sparkles"></i>
           Analysis with AI
         </button>
 
+        <!-- ⬇ Download -->
         <button
           class="prescription-card__btn-download"
           (click)="downloadPrescription(prescription.id)"
@@ -112,7 +125,7 @@
     }
   </section>
 
-  <!-- ========== AI Analysis Modal ========== -->
+  <!-- ========== AI Analysis / Alternatives Modal ========== -->
   @if (isAnalysisModalOpen) {
   <div class="ai-modal-backdrop" (click)="closeAnalysisModal()">
     <div class="ai-modal" (click)="$event.stopPropagation()">
@@ -123,9 +136,14 @@
             <i class="fa-solid fa-wand-magic-sparkles"></i>
           </div>
           <div>
-            <h3 class="ai-modal__title">Prescription Analysis</h3>
+            <h3 class="ai-modal__title">
+              @if (analysisMode === 'analysis') { Prescription Analysis } @else
+              { Prescription Alternatives }
+            </h3>
             <p class="ai-modal__subtitle">
-              Personalized explanation of your prescription, powered by AI.
+              @if (analysisMode === 'analysis') { Personalized explanation of
+              your prescription, powered by AI. } @else { Smart AI-powered
+              alternatives and safety insights for your prescription. }
             </p>
           </div>
         </div>
@@ -147,8 +165,9 @@
           <i class="fa-solid fa-triangle-exclamation"></i>
           <p>{{ analysisError }}</p>
         </div>
-        } @else if (analysisData) {
+        } @else if (analysisMode === 'analysis' && analysisData) {
 
+        <!-- 🔍 Mode: Prescription Analysis -->
         <div class="ai-modal__meta">
           <p>
             <span>Patient:</span>
@@ -165,7 +184,10 @@
         </div>
 
         <div class="ai-modal__content">
-          <pre class="ai-modal__text">{{ analysisData.analysisResult }}</pre>
+          <pre class="ai-modal__text"
+            >{{ analysisData.analysisResult }}
+              </pre
+          >
         </div>
 
         @if (analysisData?.medicationsAnalysis &&
@@ -184,7 +206,28 @@
             }
           </ul>
         </div>
-        } }
+        } } @else if (analysisMode === 'alternative' && alternativeData) {
+
+        <!-- 🆕 Mode: Alternatives -->
+        <div class="ai-modal__meta">
+          <p>
+            <span>Patient:</span>
+            <strong>{{ alternativeData.patientName }}</strong>
+          </p>
+          <p>
+            <span>Doctor:</span>
+            <strong>Dr. {{ alternativeData.doctorName }}</strong>
+          </p>
+        </div>
+
+        <div class="ai-modal__content">
+          <pre class="ai-modal__text"
+            >{{ alternativeData.alternativesAndSideEffects }}
+              </pre
+          >
+        </div>
+
+        }
       </section>
 
       <!-- Footer -->

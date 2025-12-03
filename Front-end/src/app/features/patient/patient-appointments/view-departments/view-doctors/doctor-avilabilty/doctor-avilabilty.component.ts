@@ -64,18 +64,14 @@ export class DoctorAvailabilityComponent implements OnInit {
 
   viewSlots(date: string) {
     // استخدم المتغير date وليس selectedDate
-    this.router.navigate([
-      '/patient/appointments/available-slots',
-      this.doctorId,
-      date,
-      
-    ], 
-    {
-      state: 
+    this.router.navigate(
+      ['/home/appointments/available-slots', this.doctorId, date],
       {
-        reschedule: history.state.reschedule,
-        appointmentId: history.state.appointmentId
+        state: {
+          reschedule: history.state.reschedule,
+          appointmentId: history.state.appointmentId,
+        },
       }
-    });
+    );
   }
 }

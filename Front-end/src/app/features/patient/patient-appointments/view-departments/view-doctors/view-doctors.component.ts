@@ -58,6 +58,6 @@ export class ViewDoctorsComponent implements OnInit {
     }
 
     // Navigate لصفحة الأيام المتاحة للدكتور
-    this.router.navigate(['/patient/appointments/available-days', doctor.id]);
+    this.router.navigate(['/home/appointments/available-days', doctor.id]);
   }
 }

@@ -238,6 +238,22 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
         background: #f9fafb;
       }
     }
+
+    // 🆕 زرار Apologize
+    &--danger {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+
+      i {
+        color: inherit;
+      }
+
+      &:hover {
+        background: #fee2e2;
+        border-color: #fca5a5;
+      }
+    }
   }
 
   // Feedback
@@ -321,18 +337,19 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
     transform: rotate(360deg);
   }
 }
-// 🌈 Vibrant Rainbow Animated Border (لنفس شكل زرار Analysis with AI)
+
+// 🌈 Vibrant Rainbow Animated Border
 .rainbow-border {
   position: relative;
   overflow: hidden;
   z-index: 0;
-  border-radius: 999px; // مهم علشان البوردر يبقى راوند زي الزرار
+  border-radius: 999px;
 
   &::before {
     content: "";
     position: absolute;
     inset: 0;
-    padding: 2px; // سمك البوردر
+    padding: 2px;
     border-radius: inherit;
     background: linear-gradient(
       120deg,
@@ -369,8 +386,8 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
     background-position: 0% 50%;
   }
 }
-// ========== AI Modal Styles ==========
 
+// ========== AI Modal Styles ==========
 .ai-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -505,10 +522,6 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
     margin: 0;
     color: $text-muted;
 
-    span {
-      color: $text-muted;
-    }
-
     strong {
       color: $text-main;
       margin-left: 0.2rem;
@@ -521,8 +534,6 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   padding: 1.2rem 1.4rem;
-
-  // نخلي اللي جواها RTL عشان الـ aiSummary بالعربي
   direction: rtl;
   text-align: right;
 }
@@ -533,35 +544,7 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
   line-height: 1.6;
   color: $text-main;
   white-space: pre-wrap;
-  font-family: "Tajawal", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
-}
-
-.ai-modal__meds {
-  h4 {
-    margin: 0 0 0.6rem;
-    font-size: 1.4rem;
-    color: $primary;
-  }
-
-  ul {
-    margin: 0;
-    padding-left: 1.4rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-  }
-
-  li {
-    font-size: 1.25rem;
-    color: $text-main;
-
-    span {
-      margin-left: 0.4rem;
-      color: $text-muted;
-      font-size: 1.2rem;
-    }
-  }
+  font-family: "Tajawal", system-ui;
 }
 
 // Footer
@@ -584,8 +567,6 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
   color: $primary-soft;
   font-size: 1.15rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
 }
 
 .ai-modal__badge-icon {
@@ -642,4 +623,89 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
       width: 100%;
     }
   }
+}
+
+// ========== Apology Popup ==========
+
+.apology-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1300;
+}
+
+.apology-popup {
+  background: #ffffff;
+  border-radius: 1.4rem;
+  padding: 1.6rem 2.2rem;
+  box-shadow: 0 22px 50px rgba(15, 23, 42, 0.4);
+  text-align: center;
+  max-width: 32rem;
+  width: 100%;
+  animation: apologyPopupIn 0.35s ease-out;
+}
+
+.apology-popup__icon {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 999px;
+  background: #ecfdf3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.8rem;
+
+  i {
+    font-size: 2.2rem;
+    color: #16a34a;
+    animation: apologyCheckPop 0.45s ease-out;
+  }
+}
+
+.apology-popup__title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.apology-popup__message {
+  margin: 0.4rem 0 0;
+  font-size: 1.35rem;
+  color: #4b5563;
+}
+
+// Animations
+@keyframes apologyPopupIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes apologyCheckPop {
+  0% {
+    transform: scale(0);
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.appointment-card__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: #e5e7eb !important;
+  color: #9ca3af !important;
+  border-color: #e5e7eb !important;
+  pointer-events: none;
 }

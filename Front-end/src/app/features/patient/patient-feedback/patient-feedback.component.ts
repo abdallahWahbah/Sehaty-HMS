@@ -61,7 +61,9 @@ export class PatientFeedbackComponent implements OnInit {
 
         this.appointmentService.getAll().subscribe({
           next: (appointments) => {
-            this.appointments = appointments.filter((a) => (a.patientId === patientId) && (a.status !== "NoShow"));
+            this.appointments = appointments.filter(
+              (a) => a.patientId === patientId && a.status !== 'NoShow'
+            );
             console.log('Filtered appointments:', this.appointments);
           },
           error: (err) => console.error('Error loading appointments', err),
@@ -101,7 +103,7 @@ export class PatientFeedbackComponent implements OnInit {
   // 3) Add feedback -> صفحة الإضافة
   //-----------------------------------------------------
   addFeedback(appointmentId: number) {
-    this.router.navigate(['/patient/feedback/add', appointmentId]);
+    this.router.navigate(['/home/feedback/add', appointmentId]);
   }
 
   //-----------------------------------------------------
