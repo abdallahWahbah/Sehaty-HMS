@@ -13,7 +13,15 @@
                 return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<IEnumerable<GetDoctorDto>>(doctors));
         }
-
+        [HttpGet("Deleted")]
+        public async Task<ActionResult<IEnumerable<GetDoctorDto>>> GetAllDeletedDoctors()
+        {
+            var spec = new DoctorSpecifications(D => D.IsDeleted);
+            var doctors = await unit.Repository<Doctor>().GetAllWithSpecAsync(spec);
+            if (doctors is null)
+                return NotFound(new ApiResponse(404));
+            return Ok(mapper.Map<IEnumerable<GetDoctorDto>>(doctors));
+        }
         [HttpGet("{id}")]
         public async Task<ActionResult<GetDoctorDto>> GetDoctorById(int id)
         {

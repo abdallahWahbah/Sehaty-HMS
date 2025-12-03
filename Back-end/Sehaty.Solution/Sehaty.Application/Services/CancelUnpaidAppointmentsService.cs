@@ -21,7 +21,6 @@ namespace Sehaty.Application.Services
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                Console.WriteLine("from");
                 using (var scope = serviceProvider.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SehatyDbContext>();
