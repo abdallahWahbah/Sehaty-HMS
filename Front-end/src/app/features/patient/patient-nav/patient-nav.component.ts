@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-patient-nav',
@@ -9,8 +9,21 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class PatientNavComponent {
   isMobileMenuOpen = false;
+  storedData: any = localStorage.getItem('userData');
 
-  toggleMobileMenu() {
+  constructor(private router:Router){}
+
+  ngOnInit(){
+    this.storedData = JSON.parse(this.storedData);
+    console.log(this.storedData);
+  }
+  toggleMobileMenu(isLoggingout = false) {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    if(isLoggingout){
+      localStorage.removeItem('refreshToken')
+      localStorage.removeItem('token')
+      localStorage.removeItem('userData')
+      this.router.navigate(['/login'])
+    }
   }
 }

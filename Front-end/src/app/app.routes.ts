@@ -53,6 +53,7 @@ import { patientReceptionGuard } from './core/guards/patient-reception.guard';
 import { DoctorMedicalrecordandprescriptionComponent } from './features/doctor/doctor-medicalrecordandprescription/doctor-medicalrecordandprescription.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 import { PatientHomeComponent } from './features/patient/patient-home/patient-home.component';
+import { landingPageGuard } from './core/guards/landingPage.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -97,7 +98,7 @@ export const routes: Routes = [
     canActivate: [doctorGuard],
     component: DoctorNavigationComponent,
     children: [
-      { path: '', redirectTo: 'appointments', pathMatch: 'full' },
+      { path: '', redirectTo: 'details', pathMatch: 'full' },
       { path: 'appointments', component: DoctorAppointmentsComponent },
       { path: 'details', component: DoctorDetailsComponent },
       { path: ':id/edit', component: DoctorEditComponent },
@@ -178,7 +179,7 @@ export const routes: Routes = [
       { path: 'new/appointment', component: ViewDepartmentsComponent },
     ],
   },
-  { path: 'home', component: LandingPageComponent },
+  { path: 'home', component: LandingPageComponent, canActivate: [landingPageGuard]},
   { path: 'patient-home', component: PatientHomeComponent },
   { path: 'not-found', component: NotFoundComponent },
   { path: 'not-allowed', component: NotAllowedComponent },

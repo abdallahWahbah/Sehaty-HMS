@@ -314,3 +314,13 @@ $doctors-radius-lg: 1.4rem;
     padding-inline: 1.4rem;
   }
 }
+
+.doctor-card__btn--danger {
+  background-color: #e63946;
+  color: #fff;
+  border: none;
+
+  &:hover {
+    background-color: #c92d39;
+  }
+}

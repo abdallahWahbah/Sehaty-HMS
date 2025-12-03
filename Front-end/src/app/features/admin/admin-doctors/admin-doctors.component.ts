@@ -42,4 +42,14 @@ export class AdminDoctorsComponent {
   navigateToAdd() {
     this.router.navigate(['/admin/doctors/add']);
   }
+  deleteDoctor(id: number){
+    this._doctorService.deleteDoctor(id).subscribe({
+      next: data => {
+        window.location.reload();
+      },
+      error: err => {
+        console.log("error deleting doctor");
+      }
+    }) 
+  }
 }
