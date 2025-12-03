@@ -88,7 +88,7 @@
 
 
         [HttpGet("analyze-prescription-alternatives/{prescriptionId}")]
-
+        [Authorize("Patient")]
         public async Task<ActionResult<PrescriptionAlternativesResponseDto>> AnalyzePrescriptionAlternatives(int prescriptionId)
         {
             try
