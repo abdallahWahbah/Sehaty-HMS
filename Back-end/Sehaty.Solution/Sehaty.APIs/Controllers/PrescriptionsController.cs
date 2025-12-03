@@ -1,7 +1,7 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
 
-    public class PrescriptionsController(IUnitOfWork unit, IMapper map, INotificationService notificationService, IPrescriptionService prescriptionService) : ApiBaseController
+    public class PrescriptionsController(IUnitOfWork unit,IMapper map,INotificationService notificationService,IPrescriptionService prescriptionService) : ApiBaseController
     {
 
         [HttpGet]
@@ -9,7 +9,7 @@
         {
             var spec = new PrescriptionSpecifications();
             var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
-            if (prescriptions != null)
+            if(prescriptions != null)
                 return Ok(map.Map<IEnumerable<GetPrescriptionsDto>>(prescriptions));
             return NotFound(new ApiResponse(404));
         }
@@ -20,7 +20,7 @@
         {
             var spec = new PrescriptionSpecifications(id);
             var prescription = await unit.Repository<Prescription>().GetByIdWithSpecAsync(spec);
-            if (prescription != null)
+            if(prescription != null)
                 return Ok(map.Map<GetPrescriptionsDto>(prescription));
             return NotFound(new ApiResponse(404));
         }
@@ -35,7 +35,7 @@
 
             var prescriptions = await unit.Repository<Prescription>().GetAllWithSpecAsync(spec);
             var sortedprescriptions = prescriptions.OrderByDescending(p => p.DateIssued).ToList();
-            if (sortedprescriptions.Count > 0)
+            if(sortedprescriptions.Count > 0)
                 return Ok(map.Map<IEnumerable<GetPrescriptionsDto>>(sortedprescriptions));
             return NotFound(new ApiResponse(404));
         }
@@ -46,7 +46,7 @@
         {
 
             var result = await prescriptionService.GetPrescriptionDetailsAsync(id);
-            if (result.IsSuccess)
+            if(result.IsSuccess)
             {
                 var prescription = result.Data;
                 return Ok(map.Map<GetPrescriptionsDto>(prescription));
@@ -63,7 +63,7 @@
             var patientId = (await unit.Repository<Patient>().GetFirstOrDefaultAsync(P => P.UserId == patientUserId)).Id;
             var result = await prescriptionService.GetPatientPrescriptionsAsync(patientId);
 
-            if (result.IsSuccess)
+            if(result.IsSuccess)
             {
                 var prescription = result.Data;
                 return Ok(map.Map<IEnumerable<PatientPrescriptionsDto>>(prescription));
@@ -78,22 +78,22 @@
         {
             var result = await prescriptionService.CreatePrescriptionAsync(model);
 
-            if (result.IsSuccess)
+            if(result.IsSuccess)
             {
                 var prescription = result.Data;
                 await notificationService.NotifyPrescriptionComplation(prescription);
 
-                return CreatedAtAction(nameof(GetById), new { id = prescription.Id }, map.Map<GetPrescriptionsDto>(prescription));
+                return CreatedAtAction(nameof(GetById),new { id = prescription.Id },map.Map<GetPrescriptionsDto>(prescription));
             }
             return result.ToApiResponse<Prescription>();
 
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePrescription(int id, [FromBody] UpdatePrescriptionDto model)
+        public async Task<IActionResult> UpdatePrescription(int id,[FromBody] UpdatePrescriptionDto model)
         {
 
-            var result = await prescriptionService.UpdatePrescriptionAsync(id, model);
+            var result = await prescriptionService.UpdatePrescriptionAsync(id,model);
 
             return result.ToApiResponse();
         }
@@ -105,9 +105,6 @@
 
 
             var result = await prescriptionService.DeletePrescriptionAsync(id);
-            if (result.IsSuccess)
-                return Ok();
-
             return result.ToApiResponse();
 
         }
@@ -117,11 +114,11 @@
         public async Task<IActionResult> DownloadPrescription(int id)
         {
             var result = await prescriptionService.GetPrescriptionPdfFile(id);
-            if (result.IsSuccess)
+            if(result.IsSuccess)
             {
                 var prescriptionPdfFile = result.Data;
 
-                return File(prescriptionPdfFile, "application/pdf", $"Prescription_{id}.pdf");
+                return File(prescriptionPdfFile,"application/pdf",$"Prescription_{id}.pdf");
             }
             return result.ToApiResponse();
         }
@@ -131,11 +128,11 @@
         public async Task<IActionResult> GetPrescriptionHistoryForPatient(int patientId)
         {
             var result = await prescriptionService.GetPatientPrescriptionsAsync(patientId);
-            if (result.IsSuccess)
+            if(result.IsSuccess)
             {
-                var prescription = result.Data;
+                var prescriptions = result.Data;
 
-                return Ok(map.Map<IEnumerable<PatientPrescriptionsDto>>(prescription));
+                return Ok(map.Map<IEnumerable<PatientPrescriptionsDto>>(prescriptions));
             }
             return result.ToApiResponse();
         }

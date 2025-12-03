@@ -1,7 +1,7 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
     //[Authorize(Roles = "Admin")]
-    public class DoctorsController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
+    public class DoctorsController(IUnitOfWork unit,IMapper mapper) : ApiBaseController
     {
 
         [HttpGet]
@@ -9,7 +9,7 @@
         {
             var spec = new DoctorSpecifications(D => !D.IsDeleted);
             var doctors = await unit.Repository<Doctor>().GetAllWithSpecAsync(spec);
-            if (doctors is null)
+            if(doctors is null)
                 return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<IEnumerable<GetDoctorDto>>(doctors));
         }
@@ -27,7 +27,7 @@
         {
             var spec = new DoctorSpecifications(D => D.Id == id && !D.IsDeleted);
             var doctor = await unit.Repository<Doctor>().GetByIdWithSpecAsync(spec);
-            if (doctor is null)
+            if(doctor is null)
                 return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<GetDoctorDto>(doctor));
         }
@@ -37,7 +37,7 @@
         {
             var spec = new DoctorSpecifications(D => D.Id == id && D.IsDeleted);
             var doctor = await unit.Repository<Doctor>().GetByIdWithSpecAsync(spec);
-            if (doctor is null)
+            if(doctor is null)
                 return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<GetDoctorDto>(doctor));
         }
@@ -45,20 +45,20 @@
         [HttpPost]
         public async Task<ActionResult> AddDoctor([FromBody] DoctorAddUpdateDto dto)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var userExists = await unit.Users.ExistsByIdAsync(dto.UserId);
-            if (!userExists)
-                return BadRequest(new ApiResponse(400, "Invalid User Id"));
+            if(!userExists)
+                return BadRequest(new ApiResponse(400,"Invalid User Id"));
 
             var departmentExists = await unit.Repository<Department>().AnyAsync(D => D.Id == dto.DepartmentId);
-            if (!departmentExists)
-                return BadRequest(new ApiResponse(400, "Invalid Department Id"));
+            if(!departmentExists)
+                return BadRequest(new ApiResponse(400,"Invalid Department Id"));
 
             var userIsUsed = await unit.Repository<Doctor>().AnyAsync(D => D.UserId == dto.UserId);
-            if (userIsUsed)
-                return BadRequest(new ApiResponse(400, "User Id Is Already Used !!"));
+            if(userIsUsed)
+                return BadRequest(new ApiResponse(400,"User Id Is Already Used !!"));
 
             //var doctor = await doctorService.AddDoctorAsync(dto);
             var doctorToAdd = mapper.Map<Doctor>(dto);
@@ -72,17 +72,17 @@
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateDoctor(int id, [FromBody] DoctorAddUpdateDto dto)
+        public async Task<ActionResult> UpdateDoctor(int id,[FromBody] DoctorAddUpdateDto dto)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             //var doctor = await doctorService.UpdateDoctorAsync(id, dto);
             var doctor = await unit.Repository<Doctor>().GetByIdAsync(id);
 
-            if (doctor == null)
+            if(doctor == null)
                 return NotFound(new ApiResponse(404));
-            mapper.Map(dto, doctor);
+            mapper.Map(dto,doctor);
             unit.Repository<Doctor>().Update(doctor);
             await unit.CommitAsync();
             return NoContent();
@@ -94,7 +94,7 @@
             //var success = await doctorService.DeleteDoctorAsync(id);
             //if (!success)
             var doctor = await unit.Repository<Doctor>().GetByIdAsync(id);
-            if (doctor == null)
+            if(doctor == null)
                 return NotFound(new ApiResponse(404));
             doctor.IsDeleted = true;
             unit.Repository<Doctor>().Update(doctor);
@@ -106,11 +106,18 @@
         public async Task<ActionResult> PermanentDelete(int id)
         {
             var doctor = await unit.Repository<Doctor>().GetByIdAsync(id);
-            if (doctor == null)
+            if(doctor == null)
                 return NotFound(new ApiResponse(404));
-            unit.Repository<Doctor>().Delete(doctor);
-            await unit.CommitAsync();
-            return NoContent();
+            try
+            {
+                unit.Repository<Doctor>().Delete(doctor);
+                await unit.CommitAsync();
+                return NoContent();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new ApiResponse(400,ex.Message));
+            }
         }
     }
 }
