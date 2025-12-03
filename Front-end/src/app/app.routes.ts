@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/login/login.component';
-import { HomeComponent } from './pages/home/home.component';
 import { SignupComponent } from './features/signup/signup.component';
 import { ForgetComponent } from './features/forget-password/forget/forget.component';
 import { VerifyOtpComponent } from './features/forget-password/verify-otp/verify-otp.component';
@@ -52,9 +51,11 @@ import { ReceptionAppointmentsComponent } from './features/reception/reception-a
 import { ReceptionNewAppointmentComponent } from './features/reception/reception-new-appointment/reception-new-appointment.component';
 import { patientReceptionGuard } from './core/guards/patient-reception.guard';
 import { DoctorMedicalrecordandprescriptionComponent } from './features/doctor/doctor-medicalrecordandprescription/doctor-medicalrecordandprescription.component';
+import { LandingPageComponent } from './pages/landing-page/landing-page.component';
+import { PatientHomeComponent } from './features/patient/patient-home/patient-home.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'forgetPassword', component: ForgetComponent },
@@ -177,7 +178,8 @@ export const routes: Routes = [
       { path: 'new/appointment', component: ViewDepartmentsComponent },
     ],
   },
-  { path: 'home', component: HomeComponent },
+  { path: 'home', component: LandingPageComponent },
+  { path: 'patient-home', component: PatientHomeComponent },
   { path: 'not-found', component: NotFoundComponent },
   { path: 'not-allowed', component: NotAllowedComponent },
   { path: '**', redirectTo: '/not-found' },
