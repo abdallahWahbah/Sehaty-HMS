@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -8,12 +9,17 @@ import { Router } from '@angular/router';
   styleUrl: './not-allowed.component.scss'
 })
 export class NotAllowedComponent {
-  constructor(private router: Router) {}
+  
+  constructor(private router: Router, private location: Location) {}
 
   goHome() {
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("token");
     localStorage.removeItem("userData");
-    this.router.navigate(['/']);
+    this.router.navigate(['/login']);
+  }
+  
+  goBack() {
+    this.location.back();
   }
 }

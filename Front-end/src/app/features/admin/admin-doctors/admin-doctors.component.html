@@ -88,6 +88,15 @@
             <i class="fa-solid fa-pen-to-square"></i>
             <span>Edit</span>
           </button>
+
+          <button
+            type="button"
+            class="doctor-card__btn doctor-card__btn--danger"
+            (click)="deleteDoctor(doctor.id)"
+          >
+            <i class="fa-solid fa-trash"></i>
+            <span>Delete</span>
+          </button>
         </footer>
       </article>
       }
