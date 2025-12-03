@@ -30,8 +30,8 @@ namespace Sehaty.Application.Services
                     var targetTime = DateTime.UtcNow.AddHours(24);
                     var filteredAppointments = appointments
                         .Where(a =>
-                               a.Status != AppointmentStatus.Canceled &&
-                                Math.Abs((a.AppointmentDateTime - targetTime).TotalMinutes) <= 1
+                               a.Status == AppointmentStatus.Confirmed &&
+                                Math.Abs((a.AppointmentDateTime - targetTime).TotalMinutes) <= 30
                         ).ToList();
 
                     foreach (var item in filteredAppointments)
