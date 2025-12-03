@@ -1,50 +1,7 @@
-﻿using Sehaty.Core.Entities.Business_Entities;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
-    public class PaymentsController(IMapper mapper, IAppointmentService appointmentService, INotificationService notificationService, IPaymentService paymentService, IUnitOfWork unit) : ApiBaseController
+    public class PaymentsController(IMapper mapper,IAppointmentService appointmentService,INotificationService notificationService,IPaymentService paymentService,IUnitOfWork unit) : ApiBaseController
     {
-
-        [HttpGet("GetLink")]
-        public async Task<IActionResult> GetPaymentLink([FromQuery] int appointmentId)
-        {
-            try
-            {
-                var spec = new AppointmentSpecifications(a => a.Id == appointmentId);
-                var appointment = await unit.Repository<Appointment>()
-                    .GetByIdWithSpecAsync(spec);
-
-                if (appointment == null)
-                    return NotFound(new { error = "Appointment not found" });
-
-                var doctor = await unit.Repository<Doctor>().GetByIdAsync(appointment.DoctorId);
-
-                if (doctor == null)
-                    return NotFound(new { error = "Doctor not found" });
-
-                int totalAmount = (int)doctor.DetectionPrice;
-
-                var (link, billingId) = await paymentService.GetPaymentLinkAsync(appointmentId, totalAmount);
-                if (string.IsNullOrEmpty(appointmentId.ToString()))
-                    return BadRequest(new { error = "AppointmentId Is Required" });
-
-                if (string.IsNullOrEmpty(link))
-                    return StatusCode(500, new { error = "Cann't Create PaymentLink" });
-
-                return Ok(new
-                {
-                    success = true,
-                    payment_link = link,
-                    totalAmount,
-                    order_id = appointmentId,
-                    billingId
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message });
-            }
-        }
 
 
         [HttpPost("Callback")]
@@ -54,7 +11,7 @@ namespace Sehaty.APIs.Controllers
             {
                 Console.WriteLine(" Callback received from Paymob");
 
-                if (model?.obj == null)
+                if(model?.obj == null)
                 {
                     Console.WriteLine(" Invalid callback data");
                     return Ok(new { message = "Invalid data" });
@@ -68,13 +25,13 @@ namespace Sehaty.APIs.Controllers
 
                 var billing = await unit.Repository<Billing>().GetByIdWithSpecAsync(billingSpec);
 
-                if (billing == null)
+                if(billing == null)
                 {
                     Console.WriteLine($" No pending billing found for Appointment #{transactionId}");
                     return Ok(new { message = "Billing not found" });
                 }
 
-                if (model.obj.success)
+                if(model.obj.success)
                 {
                     billing.Status = BillingStatus.Paid;
                     billing.PaidAmount = model.obj.amount_cents / 100;
@@ -100,7 +57,7 @@ namespace Sehaty.APIs.Controllers
 
                 return Ok(new { message = "Callback processed successfully" });
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Console.WriteLine($" Callback Error: {ex.Message}");
                 Console.WriteLine($" StackTrace: {ex.StackTrace}");
@@ -112,10 +69,10 @@ namespace Sehaty.APIs.Controllers
         {
             string method = model.obj?.data?.message?.ToLower();
 
-            if (method?.Contains("wallet") == true)
+            if(method?.Contains("wallet") == true)
                 return PaymentMethod.MobileWallet;
 
-            if (method?.Contains("card") == true || method?.Contains("credit") == true)
+            if(method?.Contains("card") == true || method?.Contains("credit") == true)
                 return PaymentMethod.CreditCard;
 
             return PaymentMethod.CreditCard;
@@ -123,18 +80,20 @@ namespace Sehaty.APIs.Controllers
 
 
         [HttpGet("Success")]
-        public async Task<IActionResult> PaymentSuccess([FromQuery] int id, [FromQuery] bool success, [FromQuery] string order, [FromQuery] int? amount_cents)
+        public async Task<IActionResult> PaymentSuccess([FromQuery] int id,[FromQuery] bool success)//,[FromQuery] string order,[FromQuery] int? amount_cents   
         {
-            if (success)
+            if(success)
             {
 
                 try
                 {
-                    var appointment = await appointmentService.ConfirmAppointment(id);
-                    if (appointment == null)
-                        return NotFound(new ApiResponse(404, "Cannot Find Appointment"));
+                    var appointment = unit.Repository<Appointment>().GetByIdAsync(id);
+                    if(appointment == null)
+                        return NotFound(new ApiResponse(404,"Cannot Find Appointment"));
 
-                    string message = await notificationService.NotifyAppointmentConfirmation(appointment)
+                    var ConfirmedAppointment = await appointmentService.ConfirmAppointment(id);
+
+                    string message = await notificationService.NotifyAppointmentConfirmation(ConfirmedAppointment)
                         ? "Appointment Confirmed - Check Your Email"
                         : "Appointment Confirmed";
                     string html = $@"
@@ -187,13 +146,13 @@ namespace Sehaty.APIs.Controllers
 </body>
 </html>";
 
-                    return Content(html, "text/html");
+                    return Content(html,"text/html");
 
                 }
-                catch (Exception ex)
+                catch(Exception ex)
                 {
 
-                    return BadRequest(new ApiResponse(400, ex.Message));
+                    return BadRequest(new ApiResponse(400,ex.Message));
                 }
 
 
@@ -209,7 +168,7 @@ namespace Sehaty.APIs.Controllers
             {
                 bool success = await paymentService.ProcessRefundAsync(billingId);
 
-                if (success)
+                if(success)
                 {
                     return Ok(new
                     {
@@ -220,35 +179,35 @@ namespace Sehaty.APIs.Controllers
                 }
                 else
                 {
-                    return StatusCode(500, new
+                    return StatusCode(500,new
                     {
                         success = false,
                         error = " Failed to recover the amount from Paymob"
                     });
                 }
             }
-            catch (InvalidOperationException ex)
+            catch(InvalidOperationException ex)
             {
-                return BadRequest(new { success = false, error = ex.Message });
+                return BadRequest(new { success = false,error = ex.Message });
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Console.WriteLine($"❌ Refund Error: {ex.Message}");
-                return StatusCode(500, new { success = false, error = ex.Message });
+                return StatusCode(500,new { success = false,error = ex.Message });
             }
         }
 
         [HttpPost("PartialRefund")]
-        public async Task<IActionResult> PartialRefund([FromQuery] int billingId, [FromQuery] decimal amount)
+        public async Task<IActionResult> PartialRefund([FromQuery] int billingId,[FromQuery] decimal amount)
         {
             try
             {
-                if (amount <= 0)
+                if(amount <= 0)
                     return BadRequest(new { error = "The amount must be greater than zero!" });
 
-                bool success = await paymentService.ProcessRefundAsync(billingId, amount);
+                bool success = await paymentService.ProcessRefundAsync(billingId,amount);
 
-                if (success)
+                if(success)
                 {
                     return Ok(new
                     {
@@ -260,25 +219,25 @@ namespace Sehaty.APIs.Controllers
                 }
                 else
                 {
-                    return StatusCode(500, new
+                    return StatusCode(500,new
                     {
                         success = false,
                         error = "Failed to recover the amount from Paymob"
                     });
                 }
             }
-            catch (InvalidOperationException ex)
+            catch(InvalidOperationException ex)
             {
-                return BadRequest(new { success = false, error = ex.Message });
+                return BadRequest(new { success = false,error = ex.Message });
             }
-            catch (ArgumentException ex)
+            catch(ArgumentException ex)
             {
-                return BadRequest(new { success = false, error = ex.Message });
+                return BadRequest(new { success = false,error = ex.Message });
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Console.WriteLine($"Partial Refund Error: {ex.Message}");
-                return StatusCode(500, new { success = false, error = ex.Message });
+                return StatusCode(500,new { success = false,error = ex.Message });
             }
         }
 
@@ -289,7 +248,7 @@ namespace Sehaty.APIs.Controllers
             {
                 var billing = await unit.Repository<Billing>().GetByIdAsync(billingId);
 
-                if (billing == null)
+                if(billing == null)
                     return NotFound(new { error = " Billing Not Found" });
 
                 bool canRefund = billing.Status == BillingStatus.Paid &&
@@ -325,9 +284,9 @@ namespace Sehaty.APIs.Controllers
                     }
                 });
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                return StatusCode(500, new { error = ex.Message });
+                return StatusCode(500,new { error = ex.Message });
             }
         }
     }
