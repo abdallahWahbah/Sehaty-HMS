@@ -20,9 +20,6 @@ export class LandingPageComponent {
   }
 
   navigateToAppointments(){
-    // if(this.storedData.token && this.storedData.role === "Patient") 
-      this.router.navigate(["/patient/appointments"]);
-    // else 
-    //   this.router.navigate(["/login"]);
+    this.router.navigate(["/patient/appointments"]);
   }
 }
