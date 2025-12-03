@@ -1,17 +1,17 @@
-<div class="departments-dashboard">
+<section class="departments-dashboard">
   <!-- Header Section -->
-  <div class="dashboard-header">
-    <div class="header-content">
-      <div>
-        <h1 class="page-title">Medical Departments</h1>
-        <p class="page-subtitle">
+  <header class="departments-dashboard__header">
+    <div class="departments-dashboard__header-content">
+      <div class="departments-dashboard__header-text">
+        <h1 class="departments-dashboard__title">Medical Departments</h1>
+        <p class="departments-dashboard__subtitle">
           Explore our specialized healthcare departments
         </p>
       </div>
-      <div class="header-actions">
-        <!-- Search Box -->
-        <div class="header-search">
-          <div class="search-box">
+
+      <div class="departments-dashboard__header-actions">
+        <div class="departments-dashboard__search">
+          <div class="departments-dashboard__search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input
               type="text"
@@ -23,47 +23,65 @@
         </div>
       </div>
     </div>
-  </div>
+  </header>
 
-  <!-- Departments Grid -->
-  <div class="departments-grid">
-    <!-- Show message if no departments found -->
-    <div
-      *ngIf="
-        !loading && filteredDepartments.length === 0 && departments.length === 0
-      "
-    >
-      No departments found.
-    </div>
+  <!-- Main / Grid -->
+  <main class="departments-dashboard__main">
+    <div class="departments-dashboard__grid">
+      @if (!loading && filteredDepartments.length === 0 && departments.length
+      === 0) {
+      <p class="departments-dashboard__empty">No departments found.</p>
+      } @for ( dept of filteredDepartments.length ? filteredDepartments :
+      departments; track dept.id ) {
+      <article class="departments-dashboard__card">
+        <!-- Accent Bar -->
+        <div class="departments-dashboard__card-accent"></div>
 
-    <div
-      class="department-card mint"
-      *ngFor="
-        let dept of filteredDepartments.length
-          ? filteredDepartments
-          : departments
-      "
-    >
-      <!-- Card Header -->
-      <div class="card-header-section">
-        <div class="department-icon">
-          <i class="fa-solid fa-heart-pulse"></i>
+        <!-- Card Inner -->
+        <div class="departments-dashboard__card-inner">
+          <!-- Header -->
+          <div class="departments-dashboard__card-header">
+            <div class="departments-dashboard__card-icon-wrap">
+              <div class="departments-dashboard__card-icon">
+                <i class="fa-solid fa-heart-pulse"></i>
+              </div>
+
+              <div class="departments-dashboard__card-title-block">
+                <span class="departments-dashboard__card-eyebrow">
+                  Department
+                </span>
+                <h3 class="departments-dashboard__card-name">
+                  {{ dept.en_Name }}
+                </h3>
+              </div>
+            </div>
+
+            <span class="departments-dashboard__card-badge"> Available </span>
+          </div>
+
+          <!-- Body -->
+          <div class="departments-dashboard__card-body">
+            <p class="departments-dashboard__card-description">
+              {{
+                dept.description ||
+                  "No description provided for this department."
+              }}
+            </p>
+          </div>
+
+          <!-- Footer -->
+          <div class="departments-dashboard__card-footer">
+            <button
+              class="departments-dashboard__btn-view"
+              (click)="viewDoctors(dept.id)"
+            >
+              <span>View Doctors</span>
+              <i class="fa-solid fa-arrow-right-long"></i>
+            </button>
+          </div>
         </div>
-        <span class="department-badge">Available</span>
-      </div>
-
-      <!-- Card Body -->
-      <div class="card-body">
-        <h3 class="department-name">{{ dept.en_Name }}</h3>
-        <p class="department-description">{{ dept.description }}</p>
-      </div>
-
-      <!-- Card Footer -->
-      <div class="card-footer">
-        <button class="btn-view" (click)="viewDoctors(dept.id)">
-          View Doctors
-        </button>
-      </div>
+      </article>
+      }
     </div>
-  </div>
-</div>
+  </main>
+</section>

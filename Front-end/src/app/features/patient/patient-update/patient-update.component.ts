@@ -42,7 +42,6 @@ export class PatientUpdateComponent {
     });
   }
   initForm() {
-
     let formattedDob = this.patient.dateOfBirth
       ? new Date(this.patient.dateOfBirth).toISOString().split('T')[0]
       : '';
@@ -79,7 +78,7 @@ export class PatientUpdateComponent {
     this.patientService.editByPatient(this.patient.id, body, token).subscribe({
       next: () => {
         Object.assign(this.patient, body);
-        this.router.navigate(['/patient/details']);
+        this.router.navigate(['/home/details']);
       },
       error: (err) => console.error(err),
     });

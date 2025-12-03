@@ -128,6 +128,19 @@
                 View History with AI
               </button>
 
+              <!-- 🆕 زرار Apologize -->
+              <button
+                type="button"
+                class="appointment-card__btn appointment-card__btn--danger"
+                (click)="apologize(appointment)"
+                [disabled]="
+                  isAppointmentPassed(appointment.appointmentDateTime)
+                "
+              >
+                <i class="fa-regular fa-face-frown"></i>
+                Apologize
+              </button>
+
               <button
                 type="button"
                 class="appointment-card__btn appointment-card__btn--ghost"
@@ -177,6 +190,7 @@
         </article>
         }
       </div>
+
       <!-- ========== Patient History AI Modal ========== -->
       @if (isHistoryAiModalOpen) {
       <div class="ai-modal-backdrop" (click)="closeHistoryAiModal()">
@@ -229,8 +243,7 @@
             <div class="ai-modal__content">
               <pre class="ai-modal__text"
                 >{{ historyData.aiSummary }}
-            </pre
-              >
+              </pre>
             </div>
 
             @if (historyData && historyData.records &&
@@ -277,4 +290,19 @@
       } }
     </div>
   </div>
+
+  <!-- 🆕 Apologize Done Popup -->
+  @if (showApologyPopup) {
+  <div class="apology-popup-backdrop">
+    <div class="apology-popup">
+      <div class="apology-popup__icon">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <h4 class="apology-popup__title">Apologize done</h4>
+      <p class="apology-popup__message">
+        {{ apologyMessage }}
+      </p>
+    </div>
+  </div>
+  }
 </section>

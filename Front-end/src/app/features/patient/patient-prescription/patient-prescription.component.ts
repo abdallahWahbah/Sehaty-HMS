@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { saveAs } from 'file-saver';
 import { PrescriptionAnalysisService } from '../../../core/services/prescription-analysis.service';
 import { PrescriptionAnalysis } from '../../../core/models/prescription-analysis.model';
+import { PrescriptionAnalysisAlternative } from '../../../core/models/prescriptionAnalysisalternative-model';
 
 @Component({
   selector: 'app-patient-prescription',
@@ -21,6 +22,9 @@ export class PatientPrescriptionComponent implements OnInit {
   analysisLoading = false;
   analysisError: string | null = null;
   analysisData: PrescriptionAnalysis | null = null;
+  analysisMode: 'analysis' | 'alternative' = 'analysis';
+  alternativeData: PrescriptionAnalysisAlternative | null = null;
+  currentPrescriptionDate: Date | null = null;
 
   constructor(
     private prescriptionService: PrescriptionService,
@@ -78,27 +82,51 @@ export class PatientPrescriptionComponent implements OnInit {
       },
     });
   }
-
-  // ====== AI Analysis Handlers ======
-  openAnalysisModal(prescriptionId: number) {
+  // ====== AI Analysis / Alternatives Handlers ======
+  openAnalysisModal(
+    prescriptionId: number,
+    mode: 'analysis' | 'alternative' = 'analysis'
+  ) {
     if (!prescriptionId) return;
 
     this.isAnalysisModalOpen = true;
     this.analysisLoading = true;
     this.analysisError = null;
-    this.analysisData = null;
 
-    this.analysisService.analyzePrescription(prescriptionId).subscribe({
-      next: (res) => {
-        this.analysisData = res;
-        this.analysisLoading = false;
-      },
-      error: (err) => {
-        console.error('AI analysis error:', err);
-        this.analysisError = 'حدث خطأ أثناء جلب تحليل الروشتة بالـ AI.';
-        this.analysisLoading = false;
-      },
-    });
+    this.analysisData = null;
+    this.alternativeData = null;
+    this.analysisMode = mode;
+
+    if (mode === 'analysis') {
+      // 🔍 تحليل الروشتة
+      this.analysisService.analyzePrescription(prescriptionId).subscribe({
+        next: (res) => {
+          console.log('AI analysis response:', res);
+          this.analysisData = res;
+          this.analysisLoading = false;
+        },
+        error: (err) => {
+          console.error('AI analysis error:', err);
+          this.analysisError = 'حدث خطأ أثناء جلب تحليل الروشتة بالـ AI.';
+          this.analysisLoading = false;
+        },
+      });
+    } else {
+      // 🆕 بدائل الأدوية
+      this.analysisService.findalternative(prescriptionId).subscribe({
+        next: (res) => {
+          console.log('AI alternatives response:', res);
+          this.alternativeData = res;
+          this.analysisLoading = false;
+        },
+        error: (err) => {
+          console.error('AI alternatives error:', err);
+          this.analysisError =
+            'حدث خطأ أثناء جلب بدائل الأدوية وتحليلها بالـ AI.';
+          this.analysisLoading = false;
+        },
+      });
+    }
   }
 
   closeAnalysisModal() {

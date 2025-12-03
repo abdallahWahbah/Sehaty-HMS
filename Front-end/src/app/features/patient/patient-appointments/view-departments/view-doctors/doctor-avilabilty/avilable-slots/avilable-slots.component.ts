@@ -128,53 +128,68 @@ export class AvailableSlotsComponent implements OnInit {
       next: (patientId) => {
         const appointmentDateTime = `${slotParam.date}T${slotParam.startTime}.000Z`;
         const reasonForVisit = 'Checkup';
-        if(patientId === null){ // receptionist --> book 
-          if(this.isRescheduling){ // receptionist --> reschedule
+        if (patientId === null) {
+          // receptionist --> book
+          if (this.isRescheduling) {
+            // receptionist --> reschedule
             this._appointmentService
-            .reschedule(history.state.appointmentId, {newAppointmentDateTime: appointmentDateTime})
-            .subscribe({
-              next: data => {
-                this.openPopup( `Appointment rescheduled successfully at ${new Date()}`);
+              .reschedule(history.state.appointmentId, {
+                newAppointmentDateTime: appointmentDateTime,
+              })
+              .subscribe({
+                next: (data) => {
+                  this.openPopup(
+                    `Appointment rescheduled successfully at ${new Date()}`
+                  );
 
-                setTimeout(() => {
-                  this.router?.navigate(['reception/appointments']);
-                }, 1000);
-              },
-              error: err => {
-                this.serverError = err.error?.message;
-              }
-            })
+                  setTimeout(() => {
+                    this.router?.navigate(['reception/appointments']);
+                  }, 1000);
+                },
+                error: (err) => {
+                  this.serverError = err.error?.message;
+                },
+              });
+          } else {
+            // receptionist --> book
+            this._appointmentService
+              .bookAppointmentByReception(
+                this.doctorId,
+                appointmentDateTime,
+                reasonForVisit
+              )
+              .subscribe({
+                next: (data) => {
+                  this.openPopup(
+                    `Appointment booked successfully at ${data.startTime}`
+                  );
+                  setTimeout(() => {
+                    this.router?.navigate(['reception/appointments']);
+                  }, 1000);
+                },
+                error: (err) => {
+                  this.serverError = err.error?.message;
+                },
+              });
           }
-          else { // receptionist --> book 
-            this._appointmentService.bookAppointmentByReception(this.doctorId, appointmentDateTime, reasonForVisit)
-            .subscribe({
-              next: data => {
-                this.openPopup( `Appointment booked successfully at ${data.startTime}`);
-                setTimeout(() => {
-                  this.router?.navigate(['reception/appointments']);
-                }, 1000);
-              },
-              error: err => {
-                this.serverError = err.error?.message;
-              }
-            })
-          }
-        }
-        else { // patient -- > book 
+        } else {
+          // patient -- > book
           this.doctorSlotsService
             .bookSlot(slotId, patientId || 5, reasonForVisit) // "5" fixed patient for (elder) people not having account
             .subscribe({
               next: (res) => {
-                this.openPopup( `Appointment booked successfully at ${res.startTime}`);
+                this.openPopup(
+                  `Appointment booked successfully at ${res.startTime}`
+                );
                 setTimeout(() => {
-                  this.router?.navigate(['/patient/appointments']);
+                  this.router?.navigate(['/home/appointments']);
                 }, 1000);
                 this.loadSlots(this.selectedDate);
               },
               error: (err) => {
-                this.serverError = err.error.message
+                this.serverError = err.error.message;
               },
-          });
+            });
         }
       },
       error: () => {

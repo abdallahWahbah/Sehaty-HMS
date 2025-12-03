@@ -1,6 +1,13 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FloatLabelModule } from "primeng/floatlabel"
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  NgForm,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { Checkbox } from 'primeng/checkbox';
@@ -11,42 +18,42 @@ import { Router, RouterModule } from '@angular/router';
 @Component({
   selector: 'app-login',
   imports: [
-    FloatLabelModule, 
-    InputTextModule, 
-    FormsModule, 
-    PasswordModule, 
-    Checkbox, 
-    ButtonModule, 
+    FloatLabelModule,
+    InputTextModule,
+    FormsModule,
+    PasswordModule,
+    Checkbox,
+    ButtonModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  username: string= '';
+  username: string = '';
   password: string = '';
   rememberMe: boolean = false;
   serverError: string = '';
 
   loginForm = new FormGroup({
-    
-    username: new FormControl('Admin', [ // Admin, Doctor1, Patient1, Receptionist
+    username: new FormControl('Admin', [
+      // Admin, Doctor1, Patient1, Receptionist
       Validators.required,
     ]),
-    password: new FormControl('P@ssw0rd', [ 
+    password: new FormControl('P@ssw0rd', [
       Validators.required,
       Validators.minLength(6),
-      Validators.pattern(/^(?=.*[a-z]).*$/),     // at least 1 lowercase
-      Validators.pattern(/^(?=.*[A-Z]).*$/),     // at least 1 uppercase
-      Validators.pattern(/^(?=.*\d).*$/),        // at least 1 number
-      Validators.pattern(/^(?=.*[\W_]).*$/),     // at least 1 special character
-      Validators.pattern(/^\S+$/)                // no spaces allowed
+      Validators.pattern(/^(?=.*[a-z]).*$/), // at least 1 lowercase
+      Validators.pattern(/^(?=.*[A-Z]).*$/), // at least 1 uppercase
+      Validators.pattern(/^(?=.*\d).*$/), // at least 1 number
+      Validators.pattern(/^(?=.*[\W_]).*$/), // at least 1 special character
+      Validators.pattern(/^\S+$/), // no spaces allowed
     ]),
-    rememberMe: new FormControl(false)
+    rememberMe: new FormControl(false),
   });
 
-  constructor(private _authService: AuthService, private router: Router){}
+  constructor(private _authService: AuthService, private router: Router) {}
 
   onSubmit() {
     this.serverError = '';
@@ -58,29 +65,31 @@ export class LoginComponent {
     const password = this.loginForm.get('password')?.value as string;
     this._authService.login(username, password).subscribe({
       next: (data: any) => {
-        localStorage.setItem("userData", JSON.stringify(data));
-        localStorage.setItem("token", data['token']);
-        localStorage.setItem("refreshToken", data['refreshToken']);
-        switch(data['role']){
-          case "Admin":{
+        localStorage.setItem('userData', JSON.stringify(data));
+        localStorage.setItem('token', data['token']);
+        localStorage.setItem('refreshToken', data['refreshToken']);
+        switch (data['role']) {
+          case 'Admin': {
             this.router.navigate(['admin']);
             break;
           }
-          case "Doctor":{
+          case 'Doctor': {
             this.router.navigate(['doctor']);
             break;
           }
-          case "Patient":{
-            this.router.navigate(['patient']);
+          case 'Patient': {
+            this.router.navigate(['home']);
             break;
           }
-          case "Receptionist":{
+          case 'Receptionist': {
             this.router.navigate(['reception']);
             break;
           }
         }
       },
-      error: err => this.serverError = err.error?.message || 'Invalid username or password'
+      error: (err) =>
+        (this.serverError =
+          err.error?.message || 'Invalid username or password'),
     });
   }
 }

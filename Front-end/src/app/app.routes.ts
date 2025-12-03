@@ -52,9 +52,9 @@ import { ReceptionNewAppointmentComponent } from './features/reception/reception
 import { patientReceptionGuard } from './core/guards/patient-reception.guard';
 import { DoctorMedicalrecordandprescriptionComponent } from './features/doctor/doctor-medicalrecordandprescription/doctor-medicalrecordandprescription.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
-import { PatientHomeComponent } from './features/patient/patient-home/patient-home.component';
+// import { PatientHomeComponent } from './features/patient/patient-home/patient-home.component';
 import { landingPageGuard } from './core/guards/landingPage.guard';
-
+import { PatientHomeComponent } from './pages/patient-home/patient-home.component';
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -179,7 +179,69 @@ export const routes: Routes = [
       { path: 'new/appointment', component: ViewDepartmentsComponent },
     ],
   },
-  { path: 'home', component: LandingPageComponent, canActivate: [landingPageGuard]},
+  {
+    path: 'home',
+    component: PatientHomeComponent,
+    // مهم: شيل canActivate من هنا علشان مايتطبّقش على كل الأطفال
+    // وسيب الجاردز على الأطفال نفسهم
+    children: [
+      // 🔹 Landing page جوّه /home
+      {
+        path: '',
+        component: LandingPageComponent,
+        canActivate: [landingPageGuard], // لو عايز تمنع ناس معينة من اللاندنج
+      },
+
+      // 🔹 Routes المريض (كانت تحت /patient وبقت تحت /home)
+      {
+        path: 'medicalRecords',
+        canActivate: [patientGuard],
+        component: PatientMedicalRecordsComponent,
+      },
+      {
+        path: 'appointments',
+        canActivate: [patientGuard],
+        component: PatientAppointmentsComponent,
+      },
+      {
+        path: 'details',
+        canActivate: [patientGuard],
+        component: PatientDetailsComponent,
+      },
+      {
+        path: 'edit/:id',
+        canActivate: [patientGuard],
+        component: PatientUpdateComponent,
+      },
+      { path: 'payment/:id', component: PatientPaymentComponent },
+      { path: 'prescription', component: PatientPrescriptionComponent },
+      { path: 'feedback', component: PatientFeedbackComponent },
+      { path: 'feedback/add/:id', component: PatientAddFeedbackComponent },
+
+      // 🔹 اللي كانوا patientReceptionGuard
+      {
+        path: 'appointments/add',
+        canActivate: [patientReceptionGuard],
+        component: ViewDepartmentsComponent,
+      },
+      {
+        path: 'appointments/doctors/:departmentId',
+        canActivate: [patientReceptionGuard],
+        component: ViewDoctorsComponent,
+      },
+      {
+        path: 'appointments/available-days/:doctorId',
+        canActivate: [patientReceptionGuard],
+        component: DoctorAvailabilityComponent,
+      },
+      {
+        path: 'appointments/available-slots/:doctorId/:date',
+        canActivate: [patientReceptionGuard],
+        component: AvailableSlotsComponent,
+      },
+    ],
+  },
+
   { path: 'patient-home', component: PatientHomeComponent },
   { path: 'not-found', component: NotFoundComponent },
   { path: 'not-allowed', component: NotAllowedComponent },

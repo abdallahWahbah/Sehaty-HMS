@@ -87,6 +87,6 @@ export class PatientAppointmentsComponent implements OnInit {
     this.router.navigate(['add'], { relativeTo: this.route });
   }
   goToPayment(appointmentId: number) {
-    this.router.navigate(['/patient/payment', appointmentId]);
+    this.router.navigate(['/home/payment', appointmentId]);
   }
 }

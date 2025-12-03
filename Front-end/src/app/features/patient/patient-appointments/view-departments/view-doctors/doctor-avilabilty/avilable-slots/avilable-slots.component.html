@@ -1,63 +1,99 @@
-<div class="available-slots">
-  <!-- Loading -->
-  <div *ngIf="loading" class="available-slots__loading">Loading slots...</div>
+<section class="available-slots">
+  <div class="available-slots__panel">
+    <!-- Loading -->
+    @if (loading) {
+    <p class="available-slots__state available-slots__state--loading">
+      Loading slots...
+    </p>
+    }
 
-  <!-- Error message -->
-  <div *ngIf="!loading && serverError" class="available-slots__error">
-    {{ serverError }}
+    <!-- Error message -->
+    @if (!loading && serverError) {
+    <p class="available-slots__state available-slots__state--error">
+      {{ serverError }}
+    </p>
+    }
+
+    <!-- Date selector -->
+    @if (!loading && availableDays.length > 0) {
+    <section class="available-slots__dates">
+      <header class="available-slots__header">
+        <h3 class="available-slots__title">Select date</h3>
+        <p class="available-slots__subtitle">
+          Choose a day to see all available appointment slots.
+        </p>
+      </header>
+
+      <div class="available-slots__buttons">
+        @for (day of availableDays[0].recurringSchedule; track $index) {
+        <button
+          class="available-slots__button"
+          [class.available-slots__button--selected]="selectedDate === day.date"
+          [disabled]="day.available === 'Not Available'"
+          (click)="loadSlots(day.date)"
+        >
+          <span class="available-slots__button-day">{{ day.day }}</span>
+          <span class="available-slots__button-status">
+            {{ day.available }}
+          </span>
+        </button>
+        }
+      </div>
+    </section>
+    }
+
+    <!-- Slots list -->
+    @if (!loading && slots.length > 0) {
+    <section class="available-slots__list">
+      <h3 class="available-slots__title available-slots__title--slots">
+        Available slots for {{ selectedDate }}:
+      </h3>
+
+      @for (slot of slots; track slot.slotId) {
+      <article class="available-slots__slot">
+        <div class="available-slots__slot-info">
+          <span class="available-slots__time">
+            {{ slot.timeRange }}
+          </span>
+
+          @if (slot.isBooked) {
+          <span
+            class="available-slots__slot-badge available-slots__slot-badge--booked"
+          >
+            Booked
+          </span>
+          }
+        </div>
+
+        <button
+          class="available-slots__book-btn"
+          [disabled]="slot.isBooked"
+          (click)="bookSlot(slot.slotId, slot)"
+        >
+          {{
+            isRescheduling ? "Reschedule" : slot.isBooked ? "Booked" : "Book"
+          }}
+        </button>
+      </article>
+      }
+    </section>
+    }
+
+    <!-- No slots message -->
+    @if (!loading && slots.length === 0 && !serverError) {
+    <p class="available-slots__state available-slots__state--no-slots">
+      No available slots for this date.
+    </p>
+    }
   </div>
 
-  <!-- Date selector -->
-  <div
-    *ngIf="!loading && availableDays.length > 0"
-    class="available-slots__dates"
-  >
-    <h3 class="available-slots__title">Select Date:</h3>
-    <div class="available-slots__buttons">
-      <button
-        *ngFor="let day of availableDays[0].recurringSchedule"
-        class="available-slots__button"
-        [class.available-slots__button--selected]="selectedDate === day.date"
-        [disabled]="day.available === 'Not Available'"
-        (click)="loadSlots(day.date)"
-      >
-        {{ day.day }} ({{ day.available }})
-      </button>
-    </div>
-  </div>
-
-  <!-- Slots list -->
-  <div *ngIf="!loading && slots.length > 0" class="available-slots__list">
-    <h3 class="available-slots__title">
-      Available Slots for {{ selectedDate }}:
-    </h3>
-    <div *ngFor="let slot of slots" class="available-slots__slot">
-      <span class="available-slots__time">{{ slot.timeRange }}</span>
-      <button
-        class="available-slots__book-btn"
-        [disabled]="slot.isBooked"
-        (click)="bookSlot(slot.slotId, slot)"
-      >
-        {{ isRescheduling ? 
-          "Reschedule" : 
-          slot.isBooked ? 
-          "Booked" : 
-          "Book"}}
-      </button>
-    </div>
-  </div>
-
-  <!-- No slots message -->
-  <div
-    *ngIf="!loading && slots.length === 0 && !serverError"
-    class="available-slots__no-slots"
-  >
-    No available slots for this date.
-  </div>
-  <div class="popup" *ngIf="showPopup">
+  <!-- Popup -->
+  @if (showPopup) {
+  <div class="popup">
     <div class="popup__content">
       <div class="popup__icon">✔</div>
       <div class="popup__text">{{ popupMessage }}</div>
     </div>
   </div>
-</div>
+  }
+</section>
