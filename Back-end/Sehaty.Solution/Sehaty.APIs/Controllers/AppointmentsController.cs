@@ -262,7 +262,7 @@
 
             var result = await paymentService.CancelConfirmedAppointmentByDoctor(id);
             if(result.IsSuccess)
-                return Ok(new { message = "Appointment cancelled and refund processed." });
+                return Ok(new ApiResponse(200,"Appointment cancelled and refund processed."));
             return result.ToApiResponse();
         }
 
