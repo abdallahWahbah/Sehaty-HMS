@@ -4,6 +4,7 @@ import { DepartmentService } from '../../../../core/services/department.service'
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { AuthService, UserRole } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-view-departments',
@@ -16,14 +17,29 @@ export class ViewDepartmentsComponent implements OnInit {
   departments: any[] = [];
   filteredDepartments: any[] = [];
   searchTerm: string = '';
-  loading: boolean = true; // <--- أضفنا هنا
+  loading: boolean = true;
+
+  currentRole: UserRole = null;
+
+  get isPatient(): boolean {
+    return this.currentRole === 'Patient';
+  }
+
+  get isReception(): boolean {
+    return this.currentRole === 'Receptionist'; // 👈 خلي بالك من الاسم هنا
+  }
 
   constructor(
     private departmentsService: DepartmentService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    this.currentRole = this.authService.getCurrentUserRole();
+
+    console.log('🧪 Current Role = ', this.currentRole); // 👈 جرّب تشوفها في الكونسل
+
     this.loadDepartments();
   }
 
@@ -51,6 +67,15 @@ export class ViewDepartmentsComponent implements OnInit {
   }
 
   viewDoctors(departmentId: number) {
-    this.router.navigate(['/home/appointments/doctors', departmentId]);
+    if (this.isReception) {
+      // مسار الريسيبشن
+      this.router.navigate([
+        '/reception/new/appointments/doctors',
+        departmentId,
+      ]);
+    } else {
+      // Patient أو لو الـ role مش معروف
+      this.router.navigate(['/home/appointments/doctors', departmentId]);
+    }
   }
 }

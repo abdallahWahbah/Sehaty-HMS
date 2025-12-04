@@ -8,6 +8,12 @@ import {
 } from '../../../../../../core/models/available-day.model';
 import { CommonModule } from '@angular/common';
 
+// 👇 استدعاء AuthService (بنفس اللي عملناه قبل كده)
+import {
+  AuthService,
+  UserRole,
+} from '../../../../../../core/services/auth.service';
+
 @Component({
   selector: 'app-doctor-availability',
   standalone: true,
@@ -21,13 +27,28 @@ export class DoctorAvailabilityComponent implements OnInit {
   loading = true;
   errorMessage: string = '';
 
+  currentRole: UserRole = null;
+
+  get isPatient(): boolean {
+    return this.currentRole === 'Patient';
+  }
+
+  get isReception(): boolean {
+    return this.currentRole === 'Receptionist';
+  }
+
   constructor(
     private route: ActivatedRoute,
     private doctorAvailabilityService: DoctorAvailabilityService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService // 👈 Inject
   ) {}
 
   ngOnInit(): void {
+    // نقرأ الـ Role مرة واحدة
+    this.currentRole = this.authService.getCurrentUserRole();
+    console.log('🧪 [DoctorAvailability] Current Role = ', this.currentRole);
+
     // استلام doctorId من الـ route
     this.route.params.subscribe((params) => {
       this.doctorId = +params['doctorId'];
@@ -64,14 +85,15 @@ export class DoctorAvailabilityComponent implements OnInit {
 
   viewSlots(date: string) {
     // استخدم المتغير date وليس selectedDate
-    this.router.navigate(
-      ['/home/appointments/available-slots', this.doctorId, date],
-      {
-        state: {
-          reschedule: history.state.reschedule,
-          appointmentId: history.state.appointmentId,
-        },
-      }
-    );
+    const baseRoute = this.isReception
+      ? '/reception/new/appointments/available-slots'
+      : '/home/appointments/available-slots';
+
+    this.router.navigate([baseRoute, this.doctorId, date], {
+      state: {
+        reschedule: history.state.reschedule,
+        appointmentId: history.state.appointmentId,
+      },
+    });
   }
 }
