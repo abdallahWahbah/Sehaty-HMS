@@ -4,10 +4,11 @@ import { AppointmentResponseModel } from '../../../core/models/appointment-respo
 import { AppointmentService } from '../../../core/services/appointment.service';
 import { PatientsService } from '../../../core/services/patients.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LoadingSpinnerComponent } from "../../../layout/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-patient-appointments',
-  imports: [CommonModule],
+  imports: [CommonModule, LoadingSpinnerComponent],
   templateUrl: './patient-appointments.component.html',
   styleUrls: ['./patient-appointments.component.scss'], // صححت styleUrls
 })

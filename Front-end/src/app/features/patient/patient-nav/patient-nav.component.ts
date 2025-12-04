@@ -15,7 +15,6 @@ export class PatientNavComponent {
 
   ngOnInit(){
     this.storedData = JSON.parse(this.storedData);
-    console.log(this.storedData);
   }
   toggleMobileMenu(isLoggingout = false) {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;

@@ -73,11 +73,12 @@ export class DoctorPrescriptionsComponent implements OnInit {
     ) {
       this.prescriptionService.deletePrescription(prescription.id).subscribe({
         next: () => {
-          this.prescriptions = this.prescriptions.filter(
-            (p) => p.id !== prescription.id
-          );
+          window.location.reload();
         },
-        error: (err) => console.error('Failed to delete prescription', err),
+        error: (err) => {
+          this.isLoading = false;
+          console.error('Failed to delete prescription', err)
+        }
       });
     }
   }

@@ -1,3 +1,6 @@
+@if(loading){
+  <app-loading-spinner></app-loading-spinner>
+}@else {
 <section class="dashboard_appointments">
   <!-- Title + Add Button -->
   <div class="title_dashboard">
@@ -14,15 +17,8 @@
     </button>
   </div>
 
-  <!-- Loading State -->
-  @if (loading) {
-  <div class="loading-state">
-    <p>Loading your appointments...</p>
-  </div>
-  }
-
   <!-- Empty State -->
-  @if (!loading && (!appointments || appointments.length === 0)) {
+  @if ((!appointments || appointments.length === 0)) {
   <div class="empty-state">
     <i class="fa-regular fa-calendar-xmark empty-state__icon"></i>
     <p class="empty-state__title">No appointments found</p>
@@ -31,7 +27,7 @@
   }
 
   <!-- Appointments List -->
-  @if (!loading && appointments && appointments.length > 0) {
+  @if (appointments && appointments.length > 0) {
   <section class="appointments-list">
     @for (appointment of appointments; track appointment.id) {
 
@@ -119,3 +115,4 @@
   </section>
   }
 </section>
+}

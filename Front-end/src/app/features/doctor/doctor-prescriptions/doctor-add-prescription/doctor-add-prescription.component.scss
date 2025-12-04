@@ -218,6 +218,7 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
     background: rgba($danger, 0.08);
     color: $danger;
     transition: 0.2s ease all;
+    margin-left: auto;
 
     &:hover:not([disabled]) {
       background: rgba($danger, 0.16);

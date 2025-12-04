@@ -1,4 +1,7 @@
-<div class="auth">
+@if(loading){
+  <app-loading-spinner></app-loading-spinner>
+}@else {
+    <div class="auth">
   <div class="auth__logo">
     <img src="/images/logo.png" alt="main logo" class="auth__logo--image">
   </div>
@@ -392,3 +395,4 @@
     </div>
   </div>
 </div>
+}

@@ -3,15 +3,17 @@ import { PatientResponseModel } from '../../../core/models/patient-response-mode
 import { PatientsService } from '../../../core/services/patients.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { LoadingSpinnerComponent } from "../../../layout/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-patient-details',
-  imports: [CommonModule],
+  imports: [CommonModule, LoadingSpinnerComponent],
   templateUrl: './patient-details.component.html',
   styleUrl: './patient-details.component.scss',
 })
 export class PatientDetailsComponent implements OnInit {
   patient!: PatientResponseModel;
+  loading: boolean = true;
 
   constructor(
     private _patientService: PatientsService,
@@ -24,6 +26,7 @@ export class PatientDetailsComponent implements OnInit {
     this._patientService.getAll().subscribe({
       next: (data) => {
         this.patient = data.find((p) => p.userId === storedUser.userId)!;
+        this.loading = false;
       },
     });
   }

@@ -14,6 +14,7 @@ import { Checkbox } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../core/services/auth.service';
 import { Router, RouterModule } from '@angular/router';
+import { LoadingSpinnerComponent } from "../../layout/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,8 @@ import { Router, RouterModule } from '@angular/router';
     ButtonModule,
     ReactiveFormsModule,
     RouterModule,
-  ],
+    LoadingSpinnerComponent
+],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -35,6 +37,7 @@ export class LoginComponent {
   password: string = '';
   rememberMe: boolean = false;
   serverError: string = '';
+  loading: boolean = false;
 
   loginForm = new FormGroup({
     username: new FormControl('Admin', [
@@ -56,6 +59,7 @@ export class LoginComponent {
   constructor(private _authService: AuthService, private router: Router) {}
 
   onSubmit() {
+    this.loading = true;
     this.serverError = '';
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -87,9 +91,10 @@ export class LoginComponent {
           }
         }
       },
-      error: (err) =>
-        (this.serverError =
-          err.error?.message || 'Invalid username or password'),
+      error: (err) => {
+        this.serverError = err.error?.message || 'Invalid username or password'
+        this.loading = false;
+      }
     });
   }
 }

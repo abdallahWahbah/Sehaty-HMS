@@ -7,10 +7,12 @@ import { WeekDays } from '../../../core/enums/week-days-enum';
 import { DoctorAvailableSlotService } from '../../../core/services/doctor-available-slot.service';
 import { DoctorAvailableSlotsModel } from '../../../core/models/availability-slot-model';
 import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
+import { LoadingSpinnerComponent } from "../../../layout/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-doctor-available-slots',
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [FormsModule, ReactiveFormsModule, LoadingSpinnerComponent],
   templateUrl: './doctor-available-slots.component.html',
   styleUrl: './doctor-available-slots.component.scss'
 })
@@ -172,7 +174,9 @@ export class DoctorAvailableSlotsComponent {
   }
 
   onSubmit() {
+    this.serverError = '';
     const formValue = this.slotsForm.value;
+    this.isLoading = true;
 
     // convert days back to bitmask
     let daysBitmask = 0;
@@ -206,7 +210,7 @@ export class DoctorAvailableSlotsComponent {
 
     let dates = this.getSelectedDates();
 
-    // add availability slots
+    // // add availability slots
     this._doctorAvailabilitySlot.addAvailabilitySlot({
       doctorId: this.currentDoctor.id,
       days: payload.days.toString(),
@@ -215,42 +219,63 @@ export class DoctorAvailableSlotsComponent {
       isRecurring: payload.isRecurring,
       date: payload.isRecurring ? null : payload.date
     }).subscribe({
-      next: data => console.log(data),
+      next: data => {
+        if (formValue.isRecurring) {
+          const requests = dates.map(date =>
+            this._doctorAvailabilitySlot.generateSlots({
+              doctorId: this.currentDoctor.id,
+              date: date
+            })
+          );
+          forkJoin(requests).subscribe({
+            next: results => {
+              this.router.navigate(['/doctor/appointments']);
+            },
+            error: err => {
+              this.serverError = err.error?.message;
+            }
+          });
+        }
+        else{
+          this._doctorAvailabilitySlot.generateSlots({
+            doctorId: this.currentDoctor.id,
+            date: formValue.date,
+          }).subscribe({
+            next: data => {
+              this.router.navigate(['/doctor/appointments']);
+            },
+            error: err => {
+              console.log(err);
+              this.serverError = err.error?.message
+            }
+          })
+        }
+        this.isLoading = false;
+      },
       error: err => {
         this.serverError = err.error?.message;
+        this.isLoading = false;
       }
     })
 
-    // generate slots
-    if(formValue.isRecurring){
-      dates.forEach(date => {
-        this._doctorAvailabilitySlot.generateSlots({
-          doctorId: this.currentDoctor.id,
-          date: date,
-        }).subscribe({
-        next: data => {
-          this.router.navigate(['/doctor/appointments']);
-        },
-        error: err => {
-          this.serverError = err.error?.message
-        }
-      })
-      })
-    }
-    else{
-      this._doctorAvailabilitySlot.generateSlots({
-        doctorId: this.currentDoctor.id,
-        date: formValue.date,
-      }).subscribe({
-        next: data => {
-          this.router.navigate(['/doctor/appointments']);
-        },
-        error: err => {
-          console.log(err);
-          this.serverError = err.error?.message
-        }
-      })
-    }    
+    // // // generate slots
+    // // if(formValue.isRecurring){
+    // //   dates.forEach(date => {
+    // //     this._doctorAvailabilitySlot.generateSlots({
+    // //       doctorId: this.currentDoctor.id,
+    // //       date: date,
+    // //     }).subscribe({
+    // //       next: data => {
+    // //         this.hasGeneratedSlots = true;
+    // //       },
+    // //       error: err => {
+    // //         this.serverError = err.error?.message
+    // //         this.hasGeneratedSlots = false;
+    // //       }
+    // //     });
+    // //   });
+    // //   if(this.hasGeneratedSlots) this.router.navigate(['/doctor/appointments']);
+    // // }
   }
 
 }

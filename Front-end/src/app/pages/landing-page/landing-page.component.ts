@@ -18,7 +18,6 @@ export class LandingPageComponent {
 
   ngOnInit() {
     this.storedData = JSON.parse(this.storedData);
-    console.log(this.storedData);
   }
 
   navigateToAppointments() {

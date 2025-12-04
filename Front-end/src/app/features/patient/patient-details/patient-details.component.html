@@ -1,4 +1,7 @@
-<section id="dashboard" class="dashboard">
+@if(loading){
+  <app-loading-spinner></app-loading-spinner>
+}@else {
+  <section id="dashboard" class="dashboard">
   <div class="dashboard__title">
     <h2 class="dashboard__title-main">Patient Details</h2>
   </div>
@@ -89,3 +92,4 @@
   </section>
   }
 </section>
+}
