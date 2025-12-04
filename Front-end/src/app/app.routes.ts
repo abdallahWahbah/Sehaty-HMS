@@ -177,6 +177,20 @@ export const routes: Routes = [
       { path: '', redirectTo: 'appointments', pathMatch: 'full' },
       { path: 'appointments', component: ReceptionAppointmentsComponent },
       { path: 'new/appointment', component: ViewDepartmentsComponent },
+      {
+        path: 'new/appointments/doctors/:departmentId',
+        component: ViewDoctorsComponent,
+      },
+      {
+        path: 'new/appointments/available-days/:doctorId',
+
+        component: DoctorAvailabilityComponent,
+      },
+      {
+        path: 'new/appointments/available-slots/:doctorId/:date',
+
+        component: AvailableSlotsComponent,
+      },
     ],
   },
   {
