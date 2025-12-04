@@ -1,10 +1,7 @@
-﻿using Sehaty.Core.Entities.Business_Entities.DoctorAvailabilitySlots;
-using Sehaty.Core.Specifications.DoctorAvailabilitySlotSpec;
-
-namespace Sehaty.APIs.Controllers
+﻿namespace Sehaty.APIs.Controllers
 {
 
-    public class AppointmentsController(INotificationService notificationService, IPaymentService paymentService, IUnitOfWork unit, IMapper mapper, IAppointmentService appointmentService) : ApiBaseController
+    public class AppointmentsController(INotificationService notificationService,IPaymentService paymentService,IUnitOfWork unit,IMapper mapper,IAppointmentService appointmentService) : ApiBaseController
     {
 
         [HttpGet("GetAll")]
@@ -41,7 +38,7 @@ namespace Sehaty.APIs.Controllers
         {
             var specs = new AppointmentSpecifications(id);
             var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(specs);
-            if (appointment is null)
+            if(appointment is null)
                 return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<AppointmentReadDto>(appointment));
 
@@ -53,7 +50,7 @@ namespace Sehaty.APIs.Controllers
             var patient = await unit.Repository<Appointment>().GetByIdAsync(patientId);
             var specs = new AppointmentSpecifications(A => A.PatientId == patientId);
             var appointments = await unit.Repository<Appointment>().GetAllWithSpecAsync(specs);
-            if (appointments is null)
+            if(appointments is null)
                 return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<IEnumerable<PatientAppointmentDto>>(appointments));
 
@@ -64,7 +61,7 @@ namespace Sehaty.APIs.Controllers
         [HttpPost]
         public async Task<ActionResult<AppointmentReadDto>> CreateAppointment([FromBody] AppointmentAddDto dto)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
                 return BadRequest(new ApiResponse(400));
             try
             {
@@ -74,16 +71,16 @@ namespace Sehaty.APIs.Controllers
                     new { id = appointment.Id },
                     mapper.Map<AppointmentReadDto>(appointment));
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                return BadRequest(new ApiResponse(400, ex.Message));
+                return BadRequest(new ApiResponse(400,ex.Message));
             }
         }
 
         [HttpPost("ReceptionistCreate")]
         public async Task<ActionResult<AppointmentReadDto>> CreateAppointmentForReceptionist([FromBody] AppointmentAddForAnonymousDto dto)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
                 return BadRequest(new ApiResponse(400));
             try
             {
@@ -93,9 +90,9 @@ namespace Sehaty.APIs.Controllers
                     new { id = appointment.Id },
                     mapper.Map<AppointmentReadDto>(appointment));
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                return BadRequest(new ApiResponse(400, ex.Message));
+                return BadRequest(new ApiResponse(400,ex.Message));
             }
         }
 
@@ -103,14 +100,14 @@ namespace Sehaty.APIs.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAppointment(int? id)
         {
-            if (id is null)
+            if(id is null)
                 return BadRequest(new ApiResponse(400));
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(id.Value);
-            if (appointment is null)
+            if(appointment is null)
                 return NotFound(new ApiResponse(404));
             unit.Repository<Appointment>().Delete(appointment);
             var rowsAffected = await unit.CommitAsync();
-            return rowsAffected > 0 ? Ok(new ApiResponse(200, "Deleted successfully")) : BadRequest(new ApiResponse(404));
+            return rowsAffected > 0 ? Ok(new ApiResponse(200,"Deleted successfully")) : BadRequest(new ApiResponse(404));
         }
 
 
@@ -120,25 +117,25 @@ namespace Sehaty.APIs.Controllers
         public async Task<IActionResult> MarkedStatusAsNoShow(int id)
         {
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
-            if (appointment is null)
+            if(appointment is null)
                 return NotFound(new ApiResponse(404));
             var currentDateTime = DateTime.UtcNow;
-            if (currentDateTime < appointment.AppointmentDateTime)
+            if(currentDateTime < appointment.AppointmentDateTime)
             {
-                return BadRequest(new ApiResponse(400, "Cann't mark as No Show before Appointment time"));
+                return BadRequest(new ApiResponse(400,"Cann't mark as No Show before Appointment time"));
             }
-            if (appointment.Status == AppointmentStatus.InProgress ||
+            if(appointment.Status == AppointmentStatus.InProgress ||
                 appointment.Status == AppointmentStatus.NoShow ||
                 appointment.Status == AppointmentStatus.Completed ||
                 appointment.Status == AppointmentStatus.Canceled)
             {
-                return BadRequest(new ApiResponse(400, "Appointment Status cann't be marked as No Show."));
+                return BadRequest(new ApiResponse(400,"Appointment Status cann't be marked as No Show."));
             }
             appointment.Status = AppointmentStatus.NoShow;
             appointment.NoShowTimestamp = currentDateTime;
             unit.Repository<Appointment>().Update(appointment);
             var rowsAffected = await unit.CommitAsync();
-            return rowsAffected > 0 ? Ok(new ApiResponse(200, "Status changed successfully")) : BadRequest(new ApiResponse(400, "Failed"));
+            return rowsAffected > 0 ? Ok(new ApiResponse(200,"Status changed successfully")) : BadRequest(new ApiResponse(400,"Failed"));
         }
 
 
@@ -148,74 +145,42 @@ namespace Sehaty.APIs.Controllers
         public async Task<IActionResult> CheckInAppointment(int id)
         {
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
-            if (appointment is null)
+            if(appointment is null)
                 return NotFound(new ApiResponse(404));
-            if (appointment.Status != AppointmentStatus.Confirmed)
+            if(appointment.Status != AppointmentStatus.Confirmed)
             {
-                return BadRequest(new ApiResponse(400, "only confirmed Appointments can be checkedIn"));
+                return BadRequest(new ApiResponse(400,"only confirmed Appointments can be checkedIn"));
             }
             appointment.Status = AppointmentStatus.InProgress;
             unit.Repository<Appointment>().Update(appointment);
             var rowsAffected = await unit.CommitAsync();
-            return rowsAffected > 0 ? Ok(new ApiResponse(200, "Patient checkedIn successfully")) : BadRequest(new ApiResponse(400, "Failed"));
+            return rowsAffected > 0 ? Ok(new ApiResponse(200,"Patient checkedIn successfully")) : BadRequest(new ApiResponse(400,"Failed"));
 
         }
 
         //Cancel Appointment With Policy
         //[Authorize(Roles = "Patient,Reception")]
         [HttpPost("CancelAppointment/{id}")]
-        public async Task<IActionResult> CancelAppointment(int id)
+        public async Task<ActionResult> CancelAppointment(int id)
         {
-            var spec = new AppointmentSpecifications(id);
-            var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
+            var result = await appointmentService.CancelConfirmedAppointmentByPatient(id);
+            if(result.IsSuccess)
+                return Ok(new ApiResponse(200,"Your Appointments Has Been Canceled Successfuly"));
 
-            if (appointment is null)
-                return NotFound(new ApiResponse(404));
-            if (appointment.Status == AppointmentStatus.Canceled)
-                return BadRequest(new ApiResponse(400, "This appointment has already been canceled."));
-
-
-            var requestTime = DateTime.UtcNow;
-            if (appointment.AppointmentDateTime < requestTime)
-                return BadRequest(new ApiResponse(400, "You cannot cancel an appointment that has already passed."));
-
-            var timeBeforeCancel = appointment.AppointmentDateTime - requestTime;
-            if (timeBeforeCancel >= TimeSpan.FromHours(24))
-            {
-                var specBilling = new BillingSpec(B => B.AppointmentId == appointment.Id);
-                var specSlot = new DoctorAppointmentSlotspec(B => B.AppointmentId == appointment.Id);
-                var slot = await unit.Repository<DoctorAppointmentSlot>().GetByIdWithSpecAsync(specSlot);
-                var billing = await unit.Repository<Billing>().GetByIdWithSpecAsync(specBilling);
-                bool success = await paymentService.ProcessRefundAsync(billing.Id);
-                if (success)
-                {
-                    slot.IsBooked = false;
-                    unit.Repository<DoctorAppointmentSlot>().Update(slot);
-                    appointment.Status = AppointmentStatus.Canceled;
-                    unit.Repository<Appointment>().Update(appointment);
-                    var rowsAffected = await unit.CommitAsync();
-
-                    if (rowsAffected <= 0)
-                        return BadRequest(new ApiResponse(400, "Failed to cancel appointment"));
-
-                    return Ok(new ApiResponse(200, "Appointment canceled successfully && Amount Refunded"));
-                }
-
-            }
-            return BadRequest(new ApiResponse(400, "Cannot cancel appointment within 24 hours unless marked as Emergency"));
+            return result.ToApiResponse();
         }
 
         //[Authorize(Roles = "Patient,Receptionist")]
         [HttpPut("RescheduleAppointment/{id}")]
-        public async Task<IActionResult> RescheduleAppointment(int id, [FromBody] RescheduleAppointmentDto model)
+        public async Task<IActionResult> RescheduleAppointment(int id,[FromBody] RescheduleAppointmentDto model)
         {
             var spec = new AppointmentSpecifications(id);
             var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
-            if (appointment is null)
+            if(appointment is null)
                 return NotFound(new ApiResponse(404));
 
 
-            if (appointment.AppointmentDateTime < DateTime.Now)
+            if(appointment.AppointmentDateTime < DateTime.Now)
             {
                 return BadRequest(new ApiResponse(400,
                     "Cannot reschedule an appointment that has already passed"));
@@ -226,9 +191,9 @@ namespace Sehaty.APIs.Controllers
             bool isLessThan24Hours = timeBeforeEdit < TimeSpan.FromHours(24);
             bool notEmergency = appointment.Status != AppointmentStatus.Emergency;
 
-            if (isLessThan24Hours && notEmergency)
+            if(isLessThan24Hours && notEmergency)
             {
-                return BadRequest(new ApiResponse(400, "Cannot reschedule appointment within 24 hours unless marked as Emergency"));
+                return BadRequest(new ApiResponse(400,"Cannot reschedule appointment within 24 hours unless marked as Emergency"));
             }
 
             var oldDateTime = appointment.AppointmentDateTime;
@@ -259,7 +224,7 @@ namespace Sehaty.APIs.Controllers
 
             await notificationService.NotifyAppointmentUpdated(appointment);
 
-            return rowsAffected > 0 ? Ok(new ApiResponse(200, "Appointment rescheduled successfully")) : BadRequest(new ApiResponse(400, "Failed to reschedule appointment"));
+            return rowsAffected > 0 ? Ok(new ApiResponse(200,"Appointment rescheduled successfully")) : BadRequest(new ApiResponse(400,"Failed to reschedule appointment"));
 
         }
 
@@ -268,9 +233,9 @@ namespace Sehaty.APIs.Controllers
         public async Task<IActionResult> DoctorCancel(int id)
         {
 
-            var result = await paymentService.CancelConfirmedAppointmentByDoctor(id);
-            if (result.IsSuccess)
-                return Ok(new ApiResponse(200, "Appointment cancelled and refund processed."));
+            var result = await appointmentService.CancelConfirmedAppointmentByDoctor(id);
+            if(result.IsSuccess)
+                return Ok(new ApiResponse(200,"Appointment cancelled and refund processed."));
             return result.ToApiResponse();
         }
 
@@ -278,30 +243,30 @@ namespace Sehaty.APIs.Controllers
         public async Task<IActionResult> ConfirmAppointment(int appointmentId)
         {
 
-            if (string.IsNullOrEmpty(appointmentId.ToString()))
+            if(string.IsNullOrEmpty(appointmentId.ToString()))
                 return BadRequest(new { error = "AppointmentId Is Required" });
 
             var spec = new AppointmentSpecifications(a => a.Id == appointmentId);
             var appointment = await unit.Repository<Appointment>()
                 .GetByIdWithSpecAsync(spec);
 
-            if (appointment == null)
-                return NotFound(new ApiResponse(404, "Appointment Not Found"));
+            if(appointment == null)
+                return NotFound(new ApiResponse(404,"Appointment Not Found"));
 
             var doctor = await unit.Repository<Doctor>().GetByIdAsync(appointment.DoctorId);
 
-            if (doctor == null)
-                return NotFound(new ApiResponse(404, "Doctor not found"));
+            if(doctor == null)
+                return NotFound(new ApiResponse(404,"Doctor not found"));
 
             int totalAmount = doctor.DetectionPrice;
 
-            var result = await paymentService.GetPaymentLinkAsync(appointmentId, totalAmount);
-            if (!result.IsSuccess)
+            var result = await paymentService.GetPaymentLinkAsync(appointmentId,totalAmount);
+            if(!result.IsSuccess)
                 return result.ToApiResponse();
             var (link, billingId) = result.Data;
 
-            if (string.IsNullOrEmpty(link))
-                return BadRequest(new ApiResponse(5055, "Cann't Create PaymentLink"));
+            if(string.IsNullOrEmpty(link))
+                return BadRequest(new ApiResponse(5055,"Cann't Create PaymentLink"));
 
             return Ok(new
             {

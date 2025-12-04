@@ -4,6 +4,6 @@
     {
         Task<Result<(string link, int? billingId)>> GetPaymentLinkAsync(int appointmentId,int totalAmount);
         Task<bool> ProcessRefundAsync(int billingId,decimal? partialAmount = null);
-        Task<Result> CancelConfirmedAppointmentByDoctor(int appointmentId);
+        //Task<Result> CancelConfirmedAppointmentByDoctor(int appointmentId);
     }
 }
