@@ -1,6 +1,6 @@
 ﻿namespace Sehaty.Application.Services
 {
-    public class AppointmentService(IUnitOfWork unit,IMapper mapper,IPaymobService paymobEgy2Service,IPaymentService paymentService) : IAppointmentService
+    public class AppointmentService(IUnitOfWork unit, IMapper mapper, IPaymobService paymobEgy2Service, IPaymentService paymentService) : IAppointmentService
     {
 
         public async Task<Appointment> CreateAsync(AppointmentAddDto dto)
@@ -14,7 +14,7 @@
                 ?? throw new Exception("Patient not found");
 
 
-            if(dto.AppointmentDateTime < DateTime.Now)
+            if (dto.AppointmentDateTime < DateTime.Now)
                 throw new Exception("Appointment date cannot be in the past");
 
 
@@ -27,7 +27,7 @@
             A.AppointmentDateTime.Date == dto.AppointmentDateTime.Date).ToListAsync();
 
 
-            if(doctorAppointments.Any(A =>
+            if (doctorAppointments.Any(A =>
                 dto.AppointmentDateTime < A.AppointmentDateTime.AddMinutes(A.DurationMinutes) &&
                 dto.AppointmentDateTime.AddMinutes(30) > A.AppointmentDateTime))
                 throw new Exception("Doctor Already Has An Overlapping Appointment");
@@ -39,7 +39,7 @@
             var patientAppointments = await unit.Repository<Appointment>().FindBy(a => a.PatientId == dto.PatientId &&
                                           a.AppointmentDateTime.Date == dto.AppointmentDateTime.Date).ToListAsync();
 
-            if(patientAppointments.Any(a =>
+            if (patientAppointments.Any(a =>
                 dto.AppointmentDateTime < a.AppointmentDateTime.AddMinutes(a.DurationMinutes) &&
                 dto.AppointmentDateTime.AddMinutes(30) > a.AppointmentDateTime))
                 throw new Exception("Cannot Book More Than 1 Appointment At This Time");
@@ -63,7 +63,7 @@
             var doctor = await unit.Repository<Doctor>().GetByIdAsync(dto.DoctorId)
                 ?? throw new Exception("Doctor not found");
 
-            if(dto.AppointmentDateTime.Date < DateTime.Now.Date)
+            if (dto.AppointmentDateTime.Date < DateTime.Now.Date)
                 throw new Exception("Appointment date cannot be in the past");
 
             var doctorAppointments = await unit.Repository<Appointment>()
@@ -71,7 +71,7 @@
                 .ToListAsync();
 
 
-            if(doctorAppointments.Any(a =>
+            if (doctorAppointments.Any(a =>
                 dto.AppointmentDateTime < a.AppointmentDateTime.AddMinutes(a.DurationMinutes) &&
                 dto.AppointmentDateTime.AddMinutes(30) > a.AppointmentDateTime))
                 throw new Exception("Doctor Already Has An Overlapping Appointment");
@@ -97,10 +97,10 @@
 
             var spec = new AppointmentSpecifications(A => A.Id == billing.AppointmentId);
             var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
-            if(appointment == null)
+            if (appointment == null)
                 return null;
 
-            if(appointment.Status != AppointmentStatus.Pending)
+            if (appointment.Status != AppointmentStatus.Pending)
                 throw new Exception("Appointment cannot be confirmed");
 
 
@@ -109,7 +109,7 @@
             appointment.ConfirmationDateTime = DateTime.Now;
             var rowsAffected = await unit.CommitAsync();
 
-            if(rowsAffected <= 0)
+            if (rowsAffected <= 0)
                 throw new Exception("Failed to confirm appointment");
             return appointment;
         }
@@ -119,39 +119,48 @@
             var spec = new AppointmentSpecifications(appointmentId);
             var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
 
-            if(appointment is null)
-                return Result.Failure(ErrorType.NotFound,"Appointment Not Found");
-            if(appointment.Status == AppointmentStatus.Canceled)
-                return Result.Failure(ErrorType.BadRequest,"This appointment has already been canceled.");
+            if (appointment is null)
+                return Result.Failure(ErrorType.NotFound, "Appointment Not Found");
+            if (appointment.Status == AppointmentStatus.Canceled)
+                return Result.Failure(ErrorType.BadRequest, "This appointment has already been canceled.");
 
             var requestTime = DateTime.UtcNow;
-            if(appointment.AppointmentDateTime < requestTime)
-                return Result.Failure(ErrorType.BadRequest,"You cannot cancel an appointment that has already passed.");
+            if (appointment.AppointmentDateTime < requestTime)
+                return Result.Failure(ErrorType.BadRequest, "You cannot cancel an appointment that has already passed.");
 
             var timeBeforeCancel = appointment.AppointmentDateTime - requestTime;
-            if(timeBeforeCancel >= TimeSpan.FromHours(24))
+            var specBilling = new BillingSpec(B => B.AppointmentId == appointment.Id);
+            var specSlot = new DoctorAppointmentSlotspec(B => B.AppointmentId == appointment.Id);
+            var slot = await unit.Repository<DoctorAppointmentSlot>().GetByIdWithSpecAsync(specSlot);
+            var billing = await unit.Repository<Billing>().GetByIdWithSpecAsync(specBilling);
+            if (billing is null)
+                return Result.Failure(ErrorType.BadRequest, "Billing not found");
+            bool refundSuccess = false;
+            if (timeBeforeCancel >= TimeSpan.FromHours(24))
             {
-                var specBilling = new BillingSpec(B => B.AppointmentId == appointment.Id);
-                var specSlot = new DoctorAppointmentSlotspec(B => B.AppointmentId == appointment.Id);
-                var slot = await unit.Repository<DoctorAppointmentSlot>().GetByIdWithSpecAsync(specSlot);
-                var billing = await unit.Repository<Billing>().GetByIdWithSpecAsync(specBilling);
-                bool success = await paymentService.ProcessRefundAsync(billing.Id);
-                if(success)
-                {
-                    slot.IsBooked = false;
-                    unit.Repository<DoctorAppointmentSlot>().Update(slot);
-                    appointment.Status = AppointmentStatus.Canceled;
-                    unit.Repository<Appointment>().Update(appointment);
-                    var rowsAffected = await unit.CommitAsync();
-
-                    if(rowsAffected <= 0)
-                        return Result.Failure(ErrorType.BadRequest,"Failed to cancel appointment");
-
-                    return Result.Success();
-                }
-
+                refundSuccess = await paymentService.ProcessRefundAsync(billing.Id);
             }
-            return Result.Failure(ErrorType.BadRequest,"Cannot cancel appointment within 24 hours");
+            else
+            {
+                var refundAmount = billing.PaidAmount * 0.6m;
+
+                refundSuccess = await paymentService.ProcessRefundAsync(billing.Id, refundAmount);
+
+                if (!refundSuccess)
+                    return Result.Failure(ErrorType.BadRequest, "Failed to process partial refund 60%!");
+            }
+            if (!refundSuccess)
+                return Result.Failure(ErrorType.BadRequest, "Failed to process refund");
+
+            slot.IsBooked = false;
+            appointment.Status = AppointmentStatus.Canceled;
+            unit.Repository<DoctorAppointmentSlot>().Update(slot);
+            unit.Repository<Appointment>().Update(appointment);
+            var rowsAffected = await unit.CommitAsync();
+
+            if (rowsAffected <= 0)
+                return Result.Failure(ErrorType.BadRequest, "Failed to cancel appointment");
+            return Result.Success();
         }
 
         public async Task<Result> CancelConfirmedAppointmentByDoctor(int appointmentId)
@@ -159,17 +168,17 @@
             var appointment = await unit.Repository<Appointment>()
                 .GetByIdAsync(appointmentId);
 
-            if(appointment is null)
-                return Result.Failure(ErrorType.NotFound,"Appointment not found");
+            if (appointment is null)
+                return Result.Failure(ErrorType.NotFound, "Appointment not found");
 
             // تأكيد الحالة
-            if(appointment.Status != AppointmentStatus.Confirmed)
-                return Result.Failure(ErrorType.BadRequest,"Only confirmed appointments can be cancelled");
+            if (appointment.Status != AppointmentStatus.Confirmed)
+                return Result.Failure(ErrorType.BadRequest, "Only confirmed appointments can be cancelled");
 
             var doctor = await unit.Repository<Doctor>()
                 .GetByIdAsync(appointment.DoctorId);
-            if(doctor is null)
-                return Result.Failure(ErrorType.NotFound,"Doctor not found");
+            if (doctor is null)
+                return Result.Failure(ErrorType.NotFound, "Doctor not found");
 
 
             var billing = await unit.Repository<Billing>()
@@ -177,8 +186,8 @@
                     new BillingSpec(b => b.AppointmentId == appointmentId)
                 );
 
-            if(billing is null || billing.Status != BillingStatus.Paid)
-                return Result.Failure(ErrorType.NotFound,"No paid billing found");
+            if (billing is null || billing.Status != BillingStatus.Paid)
+                return Result.Failure(ErrorType.NotFound, "No paid billing found");
 
             // حساب الخصم
             decimal refundAmount = CalculateRefund(
@@ -192,8 +201,8 @@
                 refundAmount
             );
 
-            if(!refundSuccess)
-                return Result.Failure(ErrorType.BadRequest,"Refund failed");
+            if (!refundSuccess)
+                return Result.Failure(ErrorType.BadRequest, "Refund failed");
 
 
 
@@ -210,7 +219,7 @@
 
 
             appointment.Status = AppointmentStatus.Canceled;
-            appointment.CancellationReason = $"Canceled by doctor {String.Concat(doctor.FirstName," ",doctor.LastName)}";
+            appointment.CancellationReason = $"Canceled by doctor {String.Concat(doctor.FirstName, " ", doctor.LastName)}";
 
             unit.Repository<Appointment>().Update(appointment);
 
@@ -223,14 +232,14 @@
             await unit.CommitAsync();
             return Result.Success();
         }
-        private static decimal CalculateRefund(DateTime appointmentTime,decimal paidAmount)
+        private static decimal CalculateRefund(DateTime appointmentTime, decimal paidAmount)
         {
             var diff = appointmentTime - DateTime.UtcNow;
 
-            if(diff.TotalHours < 2)
+            if (diff.TotalHours < 2)
                 return paidAmount * 0.5m;
 
-            if(diff.TotalHours < 12)
+            if (diff.TotalHours < 12)
                 return paidAmount * 0.7m;
 
             return paidAmount * 0.9m;
