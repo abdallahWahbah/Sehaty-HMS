@@ -33,7 +33,7 @@ import { LoadingSpinnerComponent } from "../../layout/loading-spinner/loading-sp
 export class SignupComponent {
   serverError: string = '';
   loading: boolean = false;
-  step = 1;
+  step = 2;
   signupForm!: FormGroup;
   genderOptions = [
     { label: 'Male', value: 'Male' },
