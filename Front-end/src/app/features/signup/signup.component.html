@@ -179,7 +179,7 @@
           }
         </div>
 
-        <div class="card flex justify-center auth__button--container mt-3">
+        <div class="card flex justify-center auth__button--container mt-3 auth__next--button">
           <p-button type="submit" label="Next"></p-button>
         </div>
 
@@ -213,15 +213,10 @@
           </div>
 
           <div class="col-6">
-            <p-floatlabel variant="on" class="auth__input--container">
-              <p-dropdown
-                [options]="genderOptions"
-                placeholder="Select Gender"
-                formControlName="gender"
-              >
-              </p-dropdown>
-              <label>Gender</label>
-            </p-floatlabel>
+            <p-dropdown 
+              formControlName="gender" 
+              [options]="genderOptions"
+              />
             @if(patientForm.get('gender')?.touched &&
             patientForm.get('gender')?.invalid){
             <div class="error-text">
@@ -377,7 +372,7 @@
             }
           </div>
         </div>
-        <div class="card flex justify-center auth__button--container mt-3">
+        <div class="flex justify-content-between  auth__button--container mt-3">
           <p-button (click)="prevStep()" label="Back"></p-button>
           <p-button type="submit" label="Create Account"></p-button>
         </div>
