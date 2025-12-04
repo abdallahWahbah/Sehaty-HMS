@@ -108,7 +108,7 @@ $radius-lg: 1.4rem;
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); // ✅ كده صح
     gap: 2rem;
   }
 
@@ -138,6 +138,9 @@ $radius-lg: 1.4rem;
     overflow: hidden;
     transition: transform 0.22s ease, box-shadow 0.22s ease,
       border-color 0.22s ease;
+
+    /* ⭐ تكبير كل الخطوط بداخل الكارد */
+    font-size: 1.15rem;
 
     &:hover {
       transform: translateY(-6px);
@@ -192,7 +195,7 @@ $radius-lg: 1.4rem;
   }
 
   &__card-eyebrow {
-    font-size: 0.82rem;
+    font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: $primary-soft;
@@ -200,7 +203,7 @@ $radius-lg: 1.4rem;
 
   &__card-name {
     margin: 0;
-    font-size: 1.4rem;
+    font-size: 2rem;
     font-weight: 800;
     color: $primary;
   }
@@ -208,7 +211,7 @@ $radius-lg: 1.4rem;
   &__card-badge {
     padding: 0.35rem 1rem;
     border-radius: 999px;
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: 600;
     background: rgba(52, 211, 153, 0.1);
     color: #047857;
@@ -221,7 +224,7 @@ $radius-lg: 1.4rem;
 
   &__card-description {
     margin: 0;
-    font-size: 0.98rem;
+    font-size: 1.5rem;
     line-height: 1.7;
     color: $text-muted;
   }
@@ -241,7 +244,7 @@ $radius-lg: 1.4rem;
     border: none;
     background: $primary;
     color: #ffffff;
-    font-size: 0.95rem;
+    font-size: 1.5rem;
     font-weight: 600;
     cursor: pointer;
     box-shadow: 0 12px 24px rgba(37, 43, 97, 0.35);

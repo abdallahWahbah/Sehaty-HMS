@@ -122,6 +122,9 @@
   margin-bottom: 2.5rem;
 }
 
+/* -----------------------------
+   Overview Cards
+------------------------------ */
 .overview-card {
   background: white;
   border-radius: 28px;
@@ -132,6 +135,7 @@
   box-shadow: 0 25px 35px rgba(25, 24, 45, 0.1);
   transition: transform 0.35s ease, box-shadow 0.35s ease;
   cursor: pointer;
+  /* شيلنا الـ font-size العام هنا علشان الديزاين مايبظش */
 }
 
 .overview-card:hover {
@@ -151,14 +155,14 @@
 }
 
 .overview-content h3 {
-  font-size: 2.2rem;
+  font-size: 2.3rem; /* أكبر شوية من العادي بس مش مبالغ فيه */
   font-weight: 700;
   color: #252b61;
   margin: 0 0 0.25rem 0;
 }
 
 .overview-content p {
-  font-size: 0.95rem;
+  font-size: 1.05rem; /* تكبير بسيط بدل 0.95rem */
   color: #5c5e7b;
   margin: 0;
 }
@@ -167,27 +171,21 @@
 .mint {
   background: #a8f6d5;
 }
-
 .yellow {
   background: #fbe27f;
 }
-
 .lilac {
   background: #e2c2f5;
 }
-
 .blue {
   background: #9ec9ff;
 }
-
 .teal {
   background: #5bc0be;
 }
-
 .blush {
   background: #f5b7c8;
 }
-
 .indigo {
   background: #4648b1;
 }
@@ -199,6 +197,9 @@
   gap: 1.5rem;
 }
 
+/* -----------------------------
+   Department Cards
+------------------------------ */
 .department-card {
   background: white;
   border-radius: 28px;
@@ -210,6 +211,7 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  /* شيلنا font-size: 1.1rem; عشان ما يكبرش كل حاجة مرة واحدة */
 }
 
 .department-card::before {
@@ -254,7 +256,7 @@
 .department-badge {
   padding: 0.4rem 1rem;
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 600;
   background: rgba(37, 43, 97, 0.1);
   color: #252b61;
@@ -271,14 +273,14 @@
 }
 
 .department-name {
-  font-size: 1.5rem;
+  font-size: 1.6rem; /* بين 1.5 و1.7 علشان ما يطلعش زيادة */
   font-weight: 700;
   color: #252b61;
   margin: 0 0 0.75rem 0;
 }
 
 .department-description {
-  font-size: 0.95rem;
+  font-size: 1.05rem; /* تكبير بسيط عن 0.95rem */
   color: #5c5e7b;
   margin: 0 0 1.25rem 0;
   line-height: 1.6;
@@ -294,7 +296,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.9rem;
+  font-size: 0.95rem; /* بين القديم والجديد */
   color: #5c5e7b;
 }
 
@@ -318,7 +320,7 @@
   background: #252b61;
   color: white;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1.02rem; /* سنة صغيرة زيادة بس */
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -341,6 +343,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  font-size: 1.2rem;
 }
 
 .btn-view:hover {
