@@ -12,75 +12,7 @@
             this.paymobEgy2Service = paymobEgy2Service;
             this.paymentSettings = paymentSettings.Value;
         }
-        public async Task<Result> CancelConfirmedAppointmentByDoctor(int appointmentId)
-        {
-            var appointment = await unit.Repository<Appointment>()
-                .GetByIdAsync(appointmentId);
 
-            if(appointment is null)
-                return Result.Failure(ErrorType.NotFound,"Appointment not found");
-
-            // تأكيد الحالة
-            if(appointment.Status != AppointmentStatus.Confirmed)
-                return Result.Failure(ErrorType.BadRequest,"Only confirmed appointments can be cancelled");
-
-            var doctor = await unit.Repository<Doctor>()
-                .GetByIdAsync(appointment.DoctorId);
-            if(doctor is null)
-                return Result.Failure(ErrorType.NotFound,"Doctor not found");
-
-
-            var billing = await unit.Repository<Billing>()
-                .GetByIdWithSpecAsync(
-                    new BillingSpec(b => b.AppointmentId == appointmentId)
-                );
-
-            if(billing is null || billing.Status != BillingStatus.Paid)
-                return Result.Failure(ErrorType.NotFound,"No paid billing found");
-
-            // حساب الخصم
-            decimal refundAmount = CalculateRefund(
-                appointment.AppointmentDateTime,
-                billing.PaidAmount
-            );
-
-            // تنفيذ Refund
-            bool refundSuccess = await paymobEgy2Service.RefundPaymentAsync(
-                billing.TransactionId,
-                refundAmount
-            );
-
-            if(!refundSuccess)
-                return Result.Failure(ErrorType.BadRequest,"Refund failed");
-
-
-
-            billing.PaidAmount -= refundAmount;
-            billing.Status = billing.PaidAmount == 0
-                ? BillingStatus.Refunded
-                : BillingStatus.Partially;
-            billing.DiscountAmount += refundAmount;
-
-            billing.Notes +=
-                $"\nDoctor cancellation refund: {refundAmount} EGP at {DateTime.UtcNow}";
-
-            unit.Repository<Billing>().Update(billing);
-
-
-            appointment.Status = AppointmentStatus.Canceled;
-            appointment.CancellationReason = "Canceled by doctor";
-
-            unit.Repository<Appointment>().Update(appointment);
-
-
-            doctor.CancelledAppointmentsCount++;
-
-            unit.Repository<Doctor>().Update(doctor);
-
-
-            await unit.CommitAsync();
-            return Result.Success();
-        }
 
         public async Task<Result<(string link, int? billingId)>> GetPaymentLinkAsync(int appointmentId,int totalAmount)
         {
@@ -239,18 +171,6 @@
             Console.WriteLine($"Billing #{billingId} - Refunded: {amountToRefund} EGP | Remaining: {billing.PaidAmount} EGP");
 
             return true;
-        }
-        private static decimal CalculateRefund(DateTime appointmentTime,decimal paidAmount)
-        {
-            var diff = appointmentTime - DateTime.UtcNow;
-
-            if(diff.TotalHours < 2)
-                return paidAmount * 0.5m;
-
-            if(diff.TotalHours < 12)
-                return paidAmount * 0.7m;
-
-            return paidAmount * 0.9m;
         }
 
 
