@@ -11,13 +11,7 @@ input[type="date"]:not(:placeholder-shown) + label {
 .auth .p-dropdown{
   width: 100%;
   height: 42.5px;
-}
-.auth .p-dropdown{
   display: flex;
   align-items: center;
   font-size: 1.3rem;
-}
-
-.auth .p-select-label.ng-star-inserted{
-  color: red;
 }
