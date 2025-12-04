@@ -1,4 +1,7 @@
-<section class="prescription-edit">
+@if(isLoading){
+  <app-loading-spinner></app-loading-spinner>
+}@else {
+  <section class="prescription-edit">
   @if (isLoading) {
   <div class="prescription-edit__loading">
     <div class="prescription-edit__loading-inner">
@@ -49,10 +52,10 @@
       </div>
     </div>
   </div>
-  } @if (errorMessage) {
+  } @if (serverError) {
   <div class="prescription-edit__alert prescription-edit__alert--error">
     <span class="prescription-edit__alert-dot"></span>
-    <p class="prescription-edit__alert-text">{{ errorMessage }}</p>
+    <p class="prescription-edit__alert-text">{{ serverError }}</p>
   </div>
   } @if (!isLoading && prescription) {
   <article class="prescription-edit__card">
@@ -196,3 +199,4 @@
   </article>
   }
 </section>
+}

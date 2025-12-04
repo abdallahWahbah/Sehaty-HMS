@@ -72,7 +72,7 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
     outline: none;
     background: transparent;
     padding: 0;
-    margin: 0;
+    margin: 0 !important;
     width: 100%;
     font-size: 1.6rem;
     color: $text-main;

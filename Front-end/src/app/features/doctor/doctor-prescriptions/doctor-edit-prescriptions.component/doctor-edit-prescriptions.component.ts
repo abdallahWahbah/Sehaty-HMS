@@ -4,17 +4,18 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PrescriptionService } from '../../../../core/services/prescription.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LoadingSpinnerComponent } from "../../../../layout/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-doctor-edit-prescriptions',
-  imports: [CommonModule, FormsModule,RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, LoadingSpinnerComponent],
   templateUrl: './doctor-edit-prescriptions.component.html',
   styleUrl: './doctor-edit-prescriptions.component.scss'
 })
 export class DoctorEditPrescriptionsComponent implements OnInit {
   prescription!: Prescription;
   isLoading = true;
-  errorMessage = '';
+  serverError = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -26,7 +27,7 @@ export class DoctorEditPrescriptionsComponent implements OnInit {
     const prescriptionId = Number(this.route.snapshot.paramMap.get('id'));
 
     if (!prescriptionId) {
-      this.errorMessage = 'Invalid prescription ID';
+      this.serverError = 'Invalid prescription ID';
       return;
     }
 
@@ -44,7 +45,7 @@ export class DoctorEditPrescriptionsComponent implements OnInit {
     this.prescriptionService.getPrescriptionById(id).subscribe({
       next: (found) => {
         if (!found) {
-          this.errorMessage = 'Prescription not found';
+          this.serverError = 'Prescription not found';
           this.isLoading = false;
           return;
         }
@@ -57,7 +58,7 @@ export class DoctorEditPrescriptionsComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        this.errorMessage = 'Failed to load prescription';
+        this.serverError = 'Failed to load prescription';
         this.isLoading = false;
       }
     });
@@ -65,13 +66,16 @@ export class DoctorEditPrescriptionsComponent implements OnInit {
 
 
   saveChanges() {
-    this.errorMessage = '';
+    this.isLoading = true;
+    this.serverError = '';
     this.prescriptionService.editPrescription(this.prescription.id, this.prescription).subscribe({
       next: () => {
+        this.isLoading = false;
         this.router.navigate(['/doctor/prescription']);
       },
       error: (err) => {
-        this.errorMessage = err.error.errors[0];
+        this.isLoading = false;
+        this.serverError = err.error.errors[0];
         console.error('Update failed', err)
       }
     });

@@ -7,18 +7,19 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Location } from '@angular/common';
 import { stat } from 'fs';
+import { LoadingSpinnerComponent } from "../../../../layout/loading-spinner/loading-spinner.component";
 
 
 @Component({
   selector: 'app-doctor-add-prescription',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LoadingSpinnerComponent],
   templateUrl: './doctor-add-prescription.component.html',
   styleUrl: './doctor-add-prescription.component.scss'
 })
 export class DoctorAddPrescriptionComponent {
 
   isSubmitting = false;
-  errorMessage = '';
+  serverError = '';
   patientId: number = 0;
   appointmentId :number =0;
 
@@ -50,14 +51,14 @@ export class DoctorAddPrescriptionComponent {
   }
 
   savePrescription() {
-    this.errorMessage = '';
+    this.serverError = '';
     if (
       !this.prescription.status ||
       !this.prescription.medications?.length ||
       !this.prescription.digitalSignature ||
       !this.prescription.specialInstructions
     ) {
-      this.errorMessage = 'Please fill all required fields';
+      this.serverError = 'Please fill all required fields';
       return;
     }
     this.isSubmitting = true;
@@ -67,8 +68,9 @@ export class DoctorAddPrescriptionComponent {
       },
       error: (err) => {
         console.error(err);
-        // this.errorMessage = err.error.errors[0];
+        // this.serverError = err.error.errors[0];
         // this
+        this.serverError = err.error.message;
         this.isSubmitting = false;
       }
     });

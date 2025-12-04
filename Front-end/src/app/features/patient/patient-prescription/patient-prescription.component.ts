@@ -7,10 +7,11 @@ import { saveAs } from 'file-saver';
 import { PrescriptionAnalysisService } from '../../../core/services/prescription-analysis.service';
 import { PrescriptionAnalysis } from '../../../core/models/prescription-analysis.model';
 import { PrescriptionAnalysisAlternative } from '../../../core/models/prescriptionAnalysisalternative-model';
+import { LoadingSpinnerComponent } from "../../../layout/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-patient-prescription',
-  imports: [DatePipe, CommonModule, FormsModule],
+  imports: [DatePipe, CommonModule, FormsModule, LoadingSpinnerComponent],
   templateUrl: './patient-prescription.component.html',
   styleUrl: './patient-prescription.component.scss',
 })
@@ -25,6 +26,7 @@ export class PatientPrescriptionComponent implements OnInit {
   analysisMode: 'analysis' | 'alternative' = 'analysis';
   alternativeData: PrescriptionAnalysisAlternative | null = null;
   currentPrescriptionDate: Date | null = null;
+  loading: boolean = true;
 
   constructor(
     private prescriptionService: PrescriptionService,
@@ -55,6 +57,7 @@ export class PatientPrescriptionComponent implements OnInit {
           doctorId: p.doctorId || 0,
           licenseNumber: p.licenseNumber || '',
         }));
+        this.loading = false;
       },
       error: (err) => {
         console.error('Error loading prescriptions', err);

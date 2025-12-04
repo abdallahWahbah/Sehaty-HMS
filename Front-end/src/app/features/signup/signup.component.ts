@@ -11,6 +11,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { PatientsService } from '../../core/services/patients.service';
 import { PateintStatusEnum } from '../../core/enums/patient-status-enum';
 import { DropdownModule } from 'primeng/dropdown';
+import { LoadingSpinnerComponent } from "../../layout/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-signup',
@@ -23,13 +24,15 @@ import { DropdownModule } from 'primeng/dropdown';
     ButtonModule,
     ReactiveFormsModule,
     RouterModule,
-    DropdownModule
-  ],
+    DropdownModule,
+    LoadingSpinnerComponent
+],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent {
   serverError: string = '';
+  loading: boolean = false;
   step = 1;
   signupForm!: FormGroup;
   genderOptions = [
@@ -97,6 +100,7 @@ export class SignupComponent {
   }
   
   onSubmit() {
+    this.loading = true;
     const patient = this.signupForm.get('patient');
     if (patient?.invalid) {
       patient.markAllAsTouched();
@@ -131,12 +135,14 @@ export class SignupComponent {
     this._authService.register(newUser).subscribe({
       next: data => {
         this.router.navigate(['login']);
+        this.loading = false;
       },
       error: err => {
         let concatenatedError = '';
         if(err.error.errors)
           for(let i = 0; i < err.error.errors.length; i++) concatenatedError += err.error.errors[i]
         this.serverError = err.error?.errors?.length > 0 ? concatenatedError : err.error?.message
+        this.loading = false;
       }
     })
   }

@@ -5,10 +5,11 @@ import { PatientResponseModel } from '../../../core/models/patient-response-mode
 import { MedicalRecordService } from '../../../core/services/medical-record.service';
 import { PatientsService } from '../../../core/services/patients.service';
 import { CommonModule } from '@angular/common';
+import { LoadingSpinnerComponent } from "../../../layout/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-patient-medical-records',
-  imports: [CommonModule],
+  imports: [CommonModule, LoadingSpinnerComponent],
   templateUrl: './patient-medical-records.component.html',
   styleUrl: './patient-medical-records.component.scss'
 })
@@ -16,6 +17,7 @@ export class PatientMedicalRecordsComponent implements OnInit{
 
   medicalRecord!: MedicalRecordModel;
   patient!: PatientResponseModel;
+  loading: boolean = true;
 
   constructor(private _medicalRecordService: MedicalRecordService, private _patientService: PatientsService){
   }
@@ -27,15 +29,15 @@ export class PatientMedicalRecordsComponent implements OnInit{
     this._patientService?.getAll().subscribe({
       next: data => {
         this.patient = data.filter(patient => patient.userId === storedUser.userId)[0];
+        this.loading = false;
       }
     });
 
     this._medicalRecordService.getForPatient().subscribe({
       next: (data: MedicalRecordModel) => {
         this.medicalRecord = data;
+        this.loading = false;
       }
     })
-
   }
-
 }

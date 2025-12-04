@@ -33,12 +33,20 @@
           Medical Records
         </a>
         <a
+          routerLink="/home/appointments"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="toggleMobileMenu()"
+        >
+          Appointments
+        </a>
+        <!-- <a
           routerLink="/home/appointments/add"
           routerLinkActive="active"
           class="nav-link"
           (click)="toggleMobileMenu()"
           >Book Now!
-        </a>
+        </a> -->
         <a
           routerLink="/home/prescription"
           routerLinkActive="active"
