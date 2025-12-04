@@ -13,7 +13,7 @@
     "EmergencyContactName": "Ahmed Ibrahim",
     "EmergencyContactPhone": "01000000010",
     "Status": "Active",
-    "UserId": 5
+    "UserId": 11
   },
   {
     "Patient_Id": "PT-2025-0002",
@@ -29,7 +29,7 @@
     "EmergencyContactName": "Ali Khaled",
     "EmergencyContactPhone": "01000000011",
     "Status": "Active",
-    "UserId": 6
+    "UserId": 12
   },
   {
     "Patient_Id": "PT-2025-0003",
@@ -45,6 +45,55 @@
     "EmergencyContactName": "Hany Khaled",
     "EmergencyContactPhone": "01000000012",
     "Status": "Active",
-    "UserId": 7
+    "UserId": 13
+  },
+
+  {
+    "Patient_Id": "PT-2025-0004",
+    "FirstName": "Omar",
+    "LastName": "Sayed",
+    "DateOfBirth": "1995-03-14",
+    "Gender": "Male",
+    "NationalId": "NID12348",
+    "BloodType": "AB+",
+    "Allergies": "None",
+    "ChrinicConditions": "None",
+    "Address": "Nasr City, Cairo",
+    "EmergencyContactName": "Sayed Omar",
+    "EmergencyContactPhone": "01000000013",
+    "Status": "Active",
+    "UserId": 14
+  },
+  {
+    "Patient_Id": "PT-2025-0005",
+    "FirstName": "Nour",
+    "LastName": "Hassan",
+    "DateOfBirth": "1998-09-22",
+    "Gender": "Female",
+    "NationalId": "NID12349",
+    "BloodType": "A-",
+    "Allergies": "Dust",
+    "ChrinicConditions": "None",
+    "Address": "Heliopolis, Cairo",
+    "EmergencyContactName": "Hassan Ahmed",
+    "EmergencyContactPhone": "01000000014",
+    "Status": "Active",
+    "UserId": 15
+  },
+  {
+    "Patient_Id": "PT-2025-0006",
+    "FirstName": "Hala",
+    "LastName": "Mostafa",
+    "DateOfBirth": "1993-12-05",
+    "Gender": "Female",
+    "NationalId": "NID12350",
+    "BloodType": "O-",
+    "Allergies": "None",
+    "ChrinicConditions": "Anemia",
+    "Address": "Dokki, Giza",
+    "EmergencyContactName": "Mostafa Adel",
+    "EmergencyContactPhone": "01000000015",
+    "Status": "Active",
+    "UserId": 16
   }
 ]
