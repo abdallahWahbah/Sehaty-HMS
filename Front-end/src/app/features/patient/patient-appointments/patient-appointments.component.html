@@ -95,6 +95,12 @@
             }}</span>
           </div>
         </div>
+        @if(appointment.status === "Confirmed"){
+          <div class="title_dashboard" style="margin-bottom: 0;">
+            <button class="btn-danger" (click)="cancelAppointment(appointment)">Cancel</button>
+          </div>
+        }
+        <p-toast />
       </section>
 
       @if(appointment.status === 'Pending'){

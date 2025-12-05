@@ -303,3 +303,22 @@ $radius-lg: 1.4rem;
     }
   }
 }
+.btn-danger {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 4px 13px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-danger:hover {
+  background-color: #bb2d3b;
+}
+
+.btn-danger:active {
+  background-color: #a52834;
+}

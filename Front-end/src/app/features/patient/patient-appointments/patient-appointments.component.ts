@@ -5,12 +5,15 @@ import { AppointmentService } from '../../../core/services/appointment.service';
 import { PatientsService } from '../../../core/services/patients.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingSpinnerComponent } from "../../../layout/loading-spinner/loading-spinner.component";
+import { Toast } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-patient-appointments',
-  imports: [CommonModule, LoadingSpinnerComponent],
+  imports: [CommonModule, LoadingSpinnerComponent, Toast],
   templateUrl: './patient-appointments.component.html',
   styleUrls: ['./patient-appointments.component.scss'], // صححت styleUrls
+  providers: [MessageService]
 })
 export class PatientAppointmentsComponent implements OnInit {
   userId!: number;
@@ -22,7 +25,8 @@ export class PatientAppointmentsComponent implements OnInit {
     private appointmentService: AppointmentService,
     private patientsService: PatientsService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -76,18 +80,22 @@ export class PatientAppointmentsComponent implements OnInit {
     });
   }
 
-  viewDetails(appointment: AppointmentResponseModel) {
-    console.log('Appointment Details:', appointment);
-    // هنا ممكن تفتح Dialog أو تروح لصفحة التفاصيل
-  }
-
-  trackById(index: number, item: AppointmentResponseModel) {
-    return item.id;
-  }
   navigateToAddAppointment() {
     this.router.navigate(['add'], { relativeTo: this.route });
   }
   goToPayment(appointmentId: number) {
     this.router.navigate(['/home/payment', appointmentId]);
+  }
+  cancelAppointment(appointment: AppointmentResponseModel){
+    this.appointmentService.cancel(appointment.id).subscribe({
+      next: data => {
+        window.location.reload();
+      },
+      error: err => {
+        console.log("eeeeeee", err);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message });
+
+      }
+    })
   }
 }
