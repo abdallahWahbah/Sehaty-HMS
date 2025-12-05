@@ -4,8 +4,8 @@
     {
         public void Configure(EntityTypeBuilder<Appointment> builder)
         {
-            builder.ToTable("Appointments", T =>
-            T.HasCheckConstraint("CK_Appointments_DurationMinutes_Positive", "[DurationMinutes] > 0"));
+            builder.ToTable("Appointments",T =>
+            T.HasCheckConstraint("CK_Appointments_DurationMinutes_Positive","[DurationMinutes] > 0"));
 
             builder.Property(a => a.PatientId).IsRequired();
             builder.Property(a => a.DoctorId).IsRequired();
@@ -47,8 +47,8 @@
                    .OnDelete(DeleteBehavior.Restrict);
 
             // Indexes / Constraints
-            builder.HasIndex(a => new { a.DoctorId, a.AppointmentDateTime })
-                   .IsUnique()
+            builder.HasIndex(a => new { a.DoctorId,a.AppointmentDateTime })
+                   .IsUnique(false)
                    .HasDatabaseName("IX_Doctor_AppointmentDateTime");
 
 
