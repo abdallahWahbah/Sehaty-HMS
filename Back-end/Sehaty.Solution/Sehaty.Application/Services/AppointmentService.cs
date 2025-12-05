@@ -187,43 +187,44 @@
             if(billing is null || billing.Status != BillingStatus.Paid)
                 return Result.Failure(ErrorType.NotFound,"No paid billing found");
 
-            // حساب الخصم
-            decimal refundAmount = CalculateRefund(
-                appointment.AppointmentDateTime,
-                billing.PaidAmount
-            );
 
-            // تنفيذ Refund
-            bool refundSuccess = await paymobEgy2Service.RefundPaymentAsync(
-                billing.TransactionId,
-                refundAmount
-            );
+            decimal discountValue = CalculateRefund(appointment.AppointmentDateTime,billing.PaidAmount);
+            decimal refundAmount = billing.PaidAmount;
+
+            bool refundSuccess = await paymobEgy2Service.RefundPaymentAsync(billing.TransactionId,refundAmount);
 
             if(!refundSuccess)
                 return Result.Failure(ErrorType.BadRequest,"Refund failed");
 
-
-
-            billing.PaidAmount -= refundAmount;
-            billing.Status = billing.PaidAmount == 0
-                ? BillingStatus.Refunded
-                : BillingStatus.Partially;
-            billing.DiscountAmount += refundAmount;
-
-            billing.Notes +=
-                $"\nDoctor cancellation refund: {refundAmount} EGP at {DateTime.UtcNow}";
-
+            // Update billing
+            billing.Status = BillingStatus.Refunded;
+            billing.DiscountAmount = discountValue;
+            billing.PaidAmount = 0;
+            billing.Notes += $"\nDoctor cancellation refund: {refundAmount} EGP at {DateTime.UtcNow}";
             unit.Repository<Billing>().Update(billing);
 
+            // give credit to patient
+            var patient = await unit.Repository<Patient>()
+                .GetByIdAsync(appointment.PatientId);
+            patient.WalletBalance += discountValue;
+            unit.Repository<Patient>().Update(patient);
+
+            var patinetWalletTransaction = new WalletTransaction
+            {
+                PatientId = patient.Id,
+                Amount = discountValue,
+                Type = WalletTransactionType.Credit,
+                Reference = $"DoctorCancel-{appointment.Id}",
+                Notes = "Wallet credit due to doctor cancellation"
+            };
+
+            await unit.Repository<WalletTransaction>().AddAsync(patinetWalletTransaction);
 
             appointment.Status = AppointmentStatus.Canceled;
-            appointment.CancellationReason = $"Canceled by doctor {String.Concat(doctor.FirstName," ",doctor.LastName)}";
-
+            appointment.CancellationReason = $"Canceled by doctor {String.Concat(doctor.FirstName," ",doctor.LastName)} : {doctor.LicenseNumber}";
             unit.Repository<Appointment>().Update(appointment);
 
-
             doctor.CancelledAppointmentsCount++;
-
             unit.Repository<Doctor>().Update(doctor);
 
 
@@ -248,7 +249,21 @@
                 return Result<ConfirmAppointmentResponseDto>
                     .Failure(ErrorType.NotFound,"Doctor not found");
 
-            int totalAmount = doctor.DetectionPrice;
+            var patient = await unit.Repository<Patient>()
+                .GetByIdAsync(appointment.PatientId);
+
+            if(patient == null)
+                return Result<ConfirmAppointmentResponseDto>
+                    .Failure(ErrorType.NotFound,"Patient not found");
+
+            int doctorPrice = doctor.DetectionPrice;
+
+            decimal walletUsed = 0;
+
+            if(patient.WalletBalance > 0)
+                walletUsed = Math.Min(patient.WalletBalance,doctorPrice);
+
+            int totalAmount = doctorPrice - (int) walletUsed;
 
             var paymentResult =
                 await paymentService.GetPaymentLinkAsync(appointmentId,totalAmount);
@@ -262,6 +277,26 @@
             if(string.IsNullOrEmpty(link))
                 return Result<ConfirmAppointmentResponseDto>
                     .Failure(ErrorType.BadRequest,"Cann't Create Payment Link");
+            using var trx = await unit.BeginTransactionAsync();
+
+            if(walletUsed > 0)
+            {
+                patient.WalletBalance -= walletUsed;
+                unit.Repository<Patient>().Update(patient);
+
+                await unit.Repository<WalletTransaction>().AddAsync(
+                    new WalletTransaction
+                    {
+                        PatientId = patient.Id,
+                        Amount = -walletUsed,
+                        Type = WalletTransactionType.Debit,
+                        Reference = $"AppointmentPayment-{appointment.Id}",
+                        Notes = "Wallet used for appointment payment"
+                    }
+                );
+            }
+            await unit.CommitAsync();
+            await trx.CommitAsync();
 
             var response = new ConfirmAppointmentResponseDto
             {
@@ -275,17 +310,23 @@
             return Result<ConfirmAppointmentResponseDto>.Success(response);
         }
 
+
         private static decimal CalculateRefund(DateTime appointmentTime,decimal paidAmount)
         {
             var diff = appointmentTime - DateTime.UtcNow;
+            decimal discount = 0;
 
             if(diff.TotalHours < 2)
-                return paidAmount * 0.5m;
+                discount = paidAmount * 0.6m;
+
+            if(diff.TotalHours < 6)
+                discount = paidAmount * 0.4m;
 
             if(diff.TotalHours < 12)
-                return paidAmount * 0.7m;
-
-            return paidAmount * 0.9m;
+                discount = paidAmount * 0.3m;
+            else
+                discount = paidAmount * 0.1m;
+            return discount;
         }
 
     }

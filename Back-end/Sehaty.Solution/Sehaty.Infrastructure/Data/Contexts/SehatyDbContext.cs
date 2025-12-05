@@ -29,6 +29,9 @@ namespace Sehaty.Infrastructure.Data.Contexts
         public DbSet<AppointmentAuditLog> AppointmentAuditLogs { get; set; }
         public DbSet<MedicalRecordAuditLog> MedicalRecordAuditLogs { get; set; }
         public DbSet<DoctorAppointmentSlot> DoctorAppointmentSlots { get; set; }
+        public DbSet<WalletTransaction> WalletTransactions { get; set; }
+
+
 
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)

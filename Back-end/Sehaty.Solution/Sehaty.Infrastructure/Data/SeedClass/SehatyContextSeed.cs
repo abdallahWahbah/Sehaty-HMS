@@ -129,6 +129,9 @@
                 var userRolesData = File.ReadAllText("../Sehaty.Infrastructure/Data/SeedDataFiles/UserRoles.json");
                 var userRoles = JsonSerializer.Deserialize<List<IdentityUserRole<int>>>(userRolesData,options)!;
                 context.UserRoles.AddRange(userRoles);
+
+                var anonymousRole = new IdentityUserRole<int>() { UserId = 999999,RoleId = 3 };
+                context.UserRoles.Add(anonymousRole);
                 await context.SaveChangesAsync();
             }
 

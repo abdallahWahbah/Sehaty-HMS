@@ -18,6 +18,7 @@
         public string Allergies { get; set; }
         public string ChrinicConditions { get; set; }
         public string Address { get; set; }
+        public decimal WalletBalance { get; set; } = 0;
         public string EmergencyContactName { get; set; }
         public string EmergencyContactPhone { get; set; }
         public PatientStatus Status { get; set; } = PatientStatus.Active;
@@ -29,5 +30,6 @@
         public List<Appointment> Appointments { get; set; }
         public List<Prescription> Prescriptions { get; set; }
         public List<Billing> Billings { get; set; }
+        public List<WalletTransaction> WalletTransactions { get; set; }
     }
 }
