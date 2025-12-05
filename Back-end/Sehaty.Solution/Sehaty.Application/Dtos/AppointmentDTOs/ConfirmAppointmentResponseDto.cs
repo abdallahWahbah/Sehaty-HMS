@@ -6,7 +6,7 @@
         public string Payment_link { get; set; }
         public int TotalAmount { get; set; }
         public int Order_id { get; set; }
-        public string BillingId { get; set; }
+        public int? BillingId { get; set; }
     }
 
 }
