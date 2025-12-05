@@ -55,8 +55,6 @@
             return Ok(mapper.Map<IEnumerable<PatientAppointmentDto>>(appointments));
 
         }
-
-
         // POST: api/Appointments
         [HttpPost]
         public async Task<ActionResult<AppointmentReadDto>> CreateAppointment([FromBody] AppointmentAddDto dto)

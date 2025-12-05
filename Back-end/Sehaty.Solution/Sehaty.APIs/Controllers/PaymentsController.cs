@@ -87,7 +87,7 @@
 
                 try
                 {
-                    var appointment = unit.Repository<Appointment>().GetByIdAsync(id);
+                    var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
                     if(appointment == null)
                         return NotFound(new ApiResponse(404,"Cannot Find Appointment"));
 
