@@ -242,42 +242,8 @@
         [HttpPost("ConfirmAppointment/{appointmentId}")]
         public async Task<IActionResult> ConfirmAppointment(int appointmentId)
         {
-
-            if(string.IsNullOrEmpty(appointmentId.ToString()))
-                return BadRequest(new { error = "AppointmentId Is Required" });
-
-            var spec = new AppointmentSpecifications(a => a.Id == appointmentId);
-            var appointment = await unit.Repository<Appointment>()
-                .GetByIdWithSpecAsync(spec);
-
-            if(appointment == null)
-                return NotFound(new ApiResponse(404,"Appointment Not Found"));
-
-            var doctor = await unit.Repository<Doctor>().GetByIdAsync(appointment.DoctorId);
-
-            if(doctor == null)
-                return NotFound(new ApiResponse(404,"Doctor not found"));
-
-            int totalAmount = doctor.DetectionPrice;
-
-            var result = await paymentService.GetPaymentLinkAsync(appointmentId,totalAmount);
-            if(!result.IsSuccess)
-                return result.ToApiResponse();
-            var (link, billingId) = result.Data;
-
-            if(string.IsNullOrEmpty(link))
-                return BadRequest(new ApiResponse(5055,"Cann't Create PaymentLink"));
-
-            return Ok(new
-            {
-                success = true,
-                payment_link = link,
-                totalAmount,
-                order_id = appointmentId,
-                billingId
-            });
-
-
+            var result = await appointmentService.GetConfirmationLinkAsync(appointmentId);
+            return result.ToApiResponse();
         }
 
     }

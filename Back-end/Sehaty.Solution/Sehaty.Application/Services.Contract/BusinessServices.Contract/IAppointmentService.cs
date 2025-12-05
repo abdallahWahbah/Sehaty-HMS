@@ -4,7 +4,8 @@
     {
         Task<Appointment> CreateAsync(AppointmentAddDto dto);
         Task<Appointment> CreateAsyncForReceptionist(AppointmentAddForAnonymousDto dto);
-        public Task<Appointment> ConfirmAppointment(int id);
+        Task<Result<Appointment>> MarkAppointmentAsConfirmed(int billingId);
+        Task<Result<ConfirmAppointmentResponseDto>> GetConfirmationLinkAsync(int appointmentId);
         Task<Result> CancelConfirmedAppointmentByDoctor(int appointmentId);
         Task<Result> CancelConfirmedAppointmentByPatient(int appointmentId);
     }
