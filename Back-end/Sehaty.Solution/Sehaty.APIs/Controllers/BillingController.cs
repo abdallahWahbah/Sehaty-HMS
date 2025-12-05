@@ -23,7 +23,7 @@
                     .GetAllWithSpecAsync(spec);
 
                 if(!allBillings.Any())
-                    return Ok(new ApiResponse(200,"No billing history found for patient"));
+                    return NotFound(new ApiResponse(404,"No billing history found for patient"));
 
                 var data = mapper.Map<List<BillingReadDto>>(allBillings);
                 return Ok(data);
@@ -42,7 +42,7 @@
                 .GetAllWithSpecAsync(spec);
 
             if(!allBillings.Any())
-                return Ok(new ApiResponse(200,"No billing found."));
+                return NotFound(new ApiResponse(404,"No billing found."));
 
             var data = mapper.Map<List<BillingReadDto>>(allBillings);
             return Ok(data);
