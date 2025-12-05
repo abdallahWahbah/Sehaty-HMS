@@ -91,7 +91,11 @@
                     if(appointment == null)
                         return NotFound(new ApiResponse(404,"Cannot Find Appointment"));
 
-                    var ConfirmedAppointment = await appointmentService.ConfirmAppointment(id);
+                    var result = await appointmentService.MarkAppointmentAsConfirmed(id);
+                    if(!result.IsSuccess)
+                        return result.ToApiResponse();
+
+                    var ConfirmedAppointment = result.Data;
 
                     string message = await notificationService.NotifyAppointmentConfirmation(ConfirmedAppointment)
                         ? "Appointment Confirmed - Check Your Email"
