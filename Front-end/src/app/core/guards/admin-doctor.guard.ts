@@ -7,7 +7,7 @@ export const adminDoctorGuard: CanActivateFn = (route, state) => {
   let userData: any = localStorage.getItem("userData");
   userData = JSON.parse(userData);
 
-  if(userData?.role === 'Patient' || userData?.role === 'Admin'){
+  if(userData?.role === 'Admin' || userData?.role === 'Doctor'){
     return true;
   }
   else if(!userData){
