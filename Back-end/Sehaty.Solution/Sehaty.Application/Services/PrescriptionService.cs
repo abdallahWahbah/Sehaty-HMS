@@ -46,7 +46,20 @@ namespace Sehaty.Application.Services
                 .GetFirstOrDefaultAsync(M => M.PatientId == dto.PatientId);
 
             if (medicalRecord is null)
-                return Result<Prescription>.Failure(ErrorType.NotFound, "Medical record not found");
+            {
+                var medicalRecordDto = new MedicalRecordAddByDoctorDto
+                {
+                    PatientId = dto.PatientId,
+                    Symptoms = "To be updated",
+                    Diagnosis = "Initial diagnosis pending",
+                    TreatmentPlan = "To be determined",
+                    RecordType = RecordType.Diagnosis
+                };
+
+                medicalRecord = mapper.Map<MedicalRecord>(medicalRecordDto);
+                await unit.Repository<MedicalRecord>().AddAsync(medicalRecord);
+                await unit.CommitAsync();
+            }
 
             var prescription = mapper.Map<Prescription>(dto);
 
