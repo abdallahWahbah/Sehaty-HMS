@@ -9,4 +9,5 @@ export interface AppointmentResponseModel {
   doctorName: string;
   patientName: string;
   notes: string;
+  cancellationReason? :string;
 }

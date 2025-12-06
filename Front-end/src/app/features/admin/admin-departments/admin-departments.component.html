@@ -69,11 +69,7 @@
   <div class="departments-grid">
     <div
       class="department-card mint"
-      *ngFor="
-        let dept of filteredDepartments.length
-          ? filteredDepartments
-          : departments
-      "
+      *ngFor="let dept of filteredDepartments"
     >
       <div class="card-header-section">
         <div class="department-icon">

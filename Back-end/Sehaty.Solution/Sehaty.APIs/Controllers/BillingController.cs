@@ -2,9 +2,9 @@
 {
     public class BillingController(IUnitOfWork unit, IMapper mapper) : ApiBaseController
     {
-        [HttpGet("GetAllForPatient")]
+        [HttpGet("GetAllForPatient/{id}")]
         [Authorize(Roles = "Patient")]
-        public async Task<IActionResult> GetAllBillingsForPatient([FromQuery] int id)
+        public async Task<IActionResult> GetAllBillingsForPatient(int id)
         {
             try
             {

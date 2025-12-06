@@ -40,7 +40,7 @@ export class LoginComponent {
   loading: boolean = false;
 
   loginForm = new FormGroup({
-    username: new FormControl('Admin', [
+    username: new FormControl('Patient1', [
       // Admin, Doctor1, Patient1, Receptionist
       Validators.required,
     ]),

@@ -42,5 +42,8 @@ export class AdminAppointmentsComponent implements OnInit {
   viewDetails(appointment: AppointmentResponseModel): void {
     this.router.navigate(['/admin/appointments', appointment.id]);
   }
+  navigateToMedicalRecords(appointment: AppointmentResponseModel){
+    this.router.navigate(['/doctor/patient/details', appointment.patientId]);
+  }
 
 }

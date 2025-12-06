@@ -8,7 +8,6 @@ import { AdminDashboardComponent } from './features/admin/admin-dashboard/admin-
 import { AdminPatientsComponent } from './features/admin/admin-patients/admin-patients.component';
 import { AdminDoctorsComponent } from './features/admin/admin-doctors/admin-doctors.component';
 import { AdminAppointmentsComponent } from './features/admin/admin-appointments/admin-appointments.component';
-import { AdminMedicalRecordsComponent } from './features/admin/admin-medical-records/admin-medical-records.component';
 import { AdminDepartmentsComponent } from './features/admin/admin-departments/admin-departments.component';
 import { adminGuard } from './core/guards/admin.guard';
 import { PatientMedicalRecordsComponent } from './features/patient/patient-medical-records/patient-medical-records.component';
@@ -23,7 +22,6 @@ import { AdminUpdateDepartmentComponent } from './features/admin/admin-update-de
 import { AdminAddDepartmentComponent } from './features/admin/admin-add-department/admin-add-department.component';
 import { doctorGuard } from './core/guards/doctor.guard';
 import { NotAllowedComponent } from './pages/not-allowed/not-allowed.component';
-import { DoctorNavigationComponent } from './features/doctor/doctor-navigation/doctor-navigation.component';
 import { DoctorAppointmentsComponent } from './features/doctor/doctor-appointments/doctor-appointments.component';
 import { DoctorDetailsComponent } from './features/doctor/doctor-details/doctor-details.component';
 import { DoctorPrescriptionsComponent } from './features/doctor/doctor-prescriptions/doctor-prescriptions.component';
@@ -46,15 +44,17 @@ import { ViewDoctorsComponent } from './features/patient/patient-appointments/vi
 import { DoctorAvailabilityComponent } from './features/patient/patient-appointments/view-departments/view-doctors/doctor-avilabilty/doctor-avilabilty.component';
 import { AvailableSlotsComponent } from './features/patient/patient-appointments/view-departments/view-doctors/doctor-avilabilty/avilable-slots/avilable-slots.component';
 import { receiptionistGuard } from './core/guards/receiptionist.guard';
-import { ReceptionNavigationComponent } from './features/reception/reception-navigation/reception-navigation.component';
 import { ReceptionAppointmentsComponent } from './features/reception/reception-appointments/reception-appointments.component';
-import { ReceptionNewAppointmentComponent } from './features/reception/reception-new-appointment/reception-new-appointment.component';
 import { patientReceptionGuard } from './core/guards/patient-reception.guard';
 import { DoctorMedicalrecordandprescriptionComponent } from './features/doctor/doctor-medicalrecordandprescription/doctor-medicalrecordandprescription.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
-// import { PatientHomeComponent } from './features/patient/patient-home/patient-home.component';
 import { landingPageGuard } from './core/guards/landingPage.guard';
 import { PatientHomeComponent } from './pages/patient-home/patient-home.component';
+import { AllBillingsComponent } from './features/admin/all-billings/all-billings.component';
+import { adminDoctorGuard } from './core/guards/admin-doctor.guard';
+import { adminReceptionGuard } from './core/guards/admin-reception.guard';
+import { PatientBillingComponent } from './features/patient/patient-billing/patient-billing.component';
+
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -64,55 +64,41 @@ export const routes: Routes = [
   { path: 'setPassword', component: SetPasswordComponent },
   {
     path: 'admin',
-    canActivate: [adminGuard],
     component: AdminNavigationComponent,
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: AdminDashboardComponent },
-      { path: 'patients', component: AdminPatientsComponent },
-      { path: 'patients/:id/edit', component: PatientEditComponent },
-      { path: 'doctors', component: AdminDoctorsComponent },
-      { path: 'doctors/add', component: AddDoctorComponent },
-      { path: 'doctors/:id/edit', component: DoctorEditComponent },
-      { path: 'appointments', component: AdminAppointmentsComponent },
-      { path: 'appointments/:id', component: AdminAppointmentDetailsComponent },
-      {
-        path: 'appointments/update/:id',
-        component: AdminUpdateScheduleComponent,
-      },
-      { path: 'medicalRecords', component: AdminMedicalRecordsComponent },
-      { path: 'doctors', component: AdminDoctorsComponent },
-      { path: 'medicalRecords', component: AdminMedicalRecordsComponent },
-      { path: 'departments', component: AdminDepartmentsComponent },
-      { path: 'departments/add', component: AdminAddDepartmentComponent },
-      { path: 'departments/:id', component: AdminDepartmentDetailsComponent },
-      {
-        path: 'departments/update/:id',
-        component: AdminUpdateDepartmentComponent,
-      },
-      { path: 'users', component: AdminUsersComponent },
+      { path: 'dashboard', component: AdminDashboardComponent, canActivate: [adminGuard] },
+      { path: 'patients', component: AdminPatientsComponent, canActivate: [adminGuard] },
+      { path: 'patients/:id/edit', component: PatientEditComponent, canActivate: [adminGuard] },
+      { path: 'doctors', component: AdminDoctorsComponent, canActivate: [adminGuard] },
+      { path: 'doctors/add', component: AddDoctorComponent, canActivate: [adminGuard] },
+      { path: 'doctors/:id/edit', component: DoctorEditComponent, canActivate: [adminGuard] },
+      { path: 'appointments', component: AdminAppointmentsComponent, canActivate: [adminGuard] },
+      { path: 'appointments/:id', component: AdminAppointmentDetailsComponent, canActivate: [adminGuard] },
+      { path: 'appointments/update/:id', component: AdminUpdateScheduleComponent, canActivate: [adminGuard] },
+      { path: 'doctors', component: AdminDoctorsComponent, canActivate: [adminGuard] },
+      // { path: 'medicalRecords', component: AdminMedicalRecordsComponent, canActivate: [adminGuard] },
+      { path: 'departments', component: AdminDepartmentsComponent, canActivate: [adminGuard] },
+      { path: 'departments/add', component: AdminAddDepartmentComponent, canActivate: [adminGuard] },
+      { path: 'departments/:id', component: AdminDepartmentDetailsComponent, canActivate: [adminGuard] },
+      { path: 'departments/update/:id', component: AdminUpdateDepartmentComponent, canActivate: [adminGuard] },
+      { path: 'allBillings', component: AllBillingsComponent, canActivate: [adminReceptionGuard] },
+      { path: 'users', component: AdminUsersComponent, canActivate: [adminGuard] },
     ],
   },
   {
     path: 'doctor',
-    canActivate: [doctorGuard],
-    component: DoctorNavigationComponent,
+    component: AdminNavigationComponent,
     children: [
       { path: '', redirectTo: 'details', pathMatch: 'full' },
-      { path: 'appointments', component: DoctorAppointmentsComponent },
-      { path: 'details', component: DoctorDetailsComponent },
-      { path: ':id/edit', component: DoctorEditComponent },
-      { path: 'prescription', component: DoctorPrescriptionsComponent },
-      {
-        path: 'prescriptions/edit/:id',
-        component: DoctorEditPrescriptionsComponent,
-      },
-      { path: 'prescriptions/add', component: DoctorAddPrescriptionComponent },
-      { path: 'availableSlots', component: DoctorAvailableSlotsComponent },
-      {
-        path: 'patient/details/:id',
-        component: DoctorMedicalrecordandprescriptionComponent,
-      },
+      { path: 'details', component: DoctorDetailsComponent, canActivate: [doctorGuard] },
+      { path: 'appointments', component: DoctorAppointmentsComponent, canActivate: [doctorGuard] },
+      { path: ':id/edit', component: DoctorEditComponent, canActivate: [doctorGuard] },
+      { path: 'prescription', component: DoctorPrescriptionsComponent, canActivate: [doctorGuard] },
+      { path: 'prescriptions/edit/:id', component: DoctorEditPrescriptionsComponent, canActivate: [doctorGuard] },
+      { path: 'prescriptions/add', component: DoctorAddPrescriptionComponent, canActivate: [doctorGuard] },
+      { path: 'availableSlots', component: DoctorAvailableSlotsComponent, canActivate: [doctorGuard] },
+      { path: 'patient/details/:id', component: DoctorMedicalrecordandprescriptionComponent, canActivate: [adminDoctorGuard] },
     ],
   },
   {
@@ -172,7 +158,7 @@ export const routes: Routes = [
   {
     path: 'reception',
     canActivate: [receiptionistGuard],
-    component: ReceptionNavigationComponent,
+    component: AdminNavigationComponent,
     children: [
       { path: '', redirectTo: 'appointments', pathMatch: 'full' },
       { path: 'appointments', component: ReceptionAppointmentsComponent },
@@ -183,12 +169,10 @@ export const routes: Routes = [
       },
       {
         path: 'new/appointments/available-days/:doctorId',
-
         component: DoctorAvailabilityComponent,
       },
       {
         path: 'new/appointments/available-slots/:doctorId/:date',
-
         component: AvailableSlotsComponent,
       },
     ],
@@ -216,6 +200,11 @@ export const routes: Routes = [
         path: 'appointments',
         canActivate: [patientGuard],
         component: PatientAppointmentsComponent,
+      },
+      {
+        path: 'billings',
+        canActivate: [patientGuard],
+        component: PatientBillingComponent,
       },
       {
         path: 'details',
