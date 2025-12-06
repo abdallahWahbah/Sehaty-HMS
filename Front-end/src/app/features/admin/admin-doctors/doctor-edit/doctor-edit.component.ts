@@ -58,6 +58,7 @@ export class DoctorEditComponent {
       qualifications: [''],
       yearsOfExperience: [''],
       availabilityNotes: [''],
+      detectionPrice: [''],
       userId: [''],
       departmentId: [''],
     });
@@ -91,6 +92,7 @@ export class DoctorEditComponent {
       qualifications: [doctor.qualifications],
       yearsOfExperience: [doctor.yearsOfExperience],
       availabilityNotes: [doctor.availabilityNotes],
+      detectionPrice: [doctor.detectionPrice],
       userId: [doctor.userId],
       departmentId: [doctor.departmentId],
     });
@@ -128,31 +130,5 @@ export class DoctorEditComponent {
         },
       }
     );
-  }
-  onDelete() {
-    if (!confirm('Are you sure you want to delete this doctor?')) {
-      return;
-    }
-
-    this._doctorService.deleteDoctor(this.doctor.id).subscribe({
-      next: () => {
-        const url = this.router.url;
-        const navigateTo = url.split('/')[1];
-        switch (navigateTo) {
-          case 'doctor':
-            this.router.navigate(['/doctor/details']);
-            break;
-          case 'admin':
-            this.router.navigate(['/admin/doctors']);
-            break;
-          default:
-            this.router.navigate(['/']);
-        }
-      },
-      error: (err) => {
-        console.error('Error deleting doctor', err);
-        this.serverError = err.error.message || 'Failed to delete doctor.';
-      },
-    });
   }
 }

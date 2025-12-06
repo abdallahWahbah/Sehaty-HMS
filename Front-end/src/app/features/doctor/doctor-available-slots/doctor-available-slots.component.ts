@@ -42,7 +42,6 @@ export class DoctorAvailableSlotsComponent {
   ) {}
 
   ngOnInit() {
-
     // stored data
     let storedUser: any = localStorage.getItem('userData');
     storedUser = JSON.parse(storedUser);
@@ -57,8 +56,6 @@ export class DoctorAvailableSlotsComponent {
         this.isLoading = false;
       },
     });
-
-    this.generateSevenDaysExcludingFriday();
 
     this.slotsForm = this.fb.group({
       startTime: [''],
@@ -94,53 +91,40 @@ export class DoctorAvailableSlotsComponent {
     this.isLoading = false;
   }
 
-  generateSevenDaysExcludingFriday() {
-    const todayIndex = new Date().getDay(); // Sunday=0, Monday=1, ..., Saturday=6
-    const dayMap = [WeekDays.Sunday, WeekDays.Monday, WeekDays.Tuesday, WeekDays.Wednesday, WeekDays.Thursday, WeekDays.Friday, WeekDays.Saturday];
-    const orderedDays = [ 'Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday' ];
-
-    let result: DayOption[] = [];
-    let count = 0;
-    let current = todayIndex;
-
-    while (count < 6) {
-      const dayName = orderedDays[current];
-      if (dayName !== 'Friday') {
-        const option = this.dayOptions.find(d => d.name === dayName);
-        if (option) {
-          result.push(option);
-          count++;
-        }
-      }
-      current = (current + 1) % 7; // loop through the week
-    }
-
-    this.sevenDaysExclFriday = result;
-
-  }
-
   getSelectedDates(): string[] {
-    const today = new Date();
+    const now = new Date();
     const selectedDates: string[] = [];
 
-    this.sevenDaysExclFriday.forEach(dayOption => {
-    const isSelected = this.slotsForm.get('days')?.get(dayOption.controlName)?.value;
-    if (isSelected) {
-    // calculate next occurrence of the selected day starting from today
-    let current = new Date(today);
-    for (let i = 0; i < 7; i++) {
-    const currentDayName = current.toLocaleDateString('en-US', { weekday: 'long' });
-    if (currentDayName === dayOption.name) {
-    selectedDates.push(this.formatDate(current));
-    break;
-    }
-    current.setDate(current.getDate() + 1);
-    }
-    }
+    this.dayOptions.forEach(dayOption => {
+      const isSelected = this.slotsForm.get('days')?.get(dayOption.controlName)?.value;
+      if (isSelected) {
+        let current = new Date(now);
+        for (let i = 0; i < 14; i++) { // look ahead up to 2 weeks
+          const currentDayName = current.toLocaleDateString('en-US', { weekday: 'long' });
+
+          if (currentDayName === dayOption.name) {
+            // If today is the selected day, only allow it if before 12 PM
+            if (
+              current.getDate() === now.getDate() &&
+              current.getMonth() === now.getMonth() &&
+              current.getFullYear() === now.getFullYear() &&
+              now.getHours() >= 12
+            ) {
+              current.setDate(current.getDate() + 7); // move to next week's same day
+            }
+
+            selectedDates.push(this.formatDate(current));
+            break;
+          }
+
+          current.setDate(current.getDate() + 1);
+        }
+      }
     });
 
     return selectedDates;
   }
+
 
   formatDate(date: any): string {
     const dd = String(date.getDate()).padStart(2, '0');
@@ -220,6 +204,7 @@ export class DoctorAvailableSlotsComponent {
       date: payload.isRecurring ? null : payload.date
     }).subscribe({
       next: data => {
+        console.log("days generated");
         if (formValue.isRecurring) {
           const requests = dates.map(date =>
             this._doctorAvailabilitySlot.generateSlots({
@@ -229,9 +214,11 @@ export class DoctorAvailableSlotsComponent {
           );
           forkJoin(requests).subscribe({
             next: results => {
+              console.log("slots generated");
               this.router.navigate(['/doctor/appointments']);
             },
             error: err => {
+              console.log("error generating slots");
               this.serverError = err.error?.message;
             }
           });
@@ -242,9 +229,11 @@ export class DoctorAvailableSlotsComponent {
             date: formValue.date,
           }).subscribe({
             next: data => {
+              console.log("slots for single day generated");
               this.router.navigate(['/doctor/appointments']);
             },
             error: err => {
+              console.log("error generating single day slots");
               console.log(err);
               this.serverError = err.error?.message
             }
@@ -257,25 +246,5 @@ export class DoctorAvailableSlotsComponent {
         this.isLoading = false;
       }
     })
-
-    // // // generate slots
-    // // if(formValue.isRecurring){
-    // //   dates.forEach(date => {
-    // //     this._doctorAvailabilitySlot.generateSlots({
-    // //       doctorId: this.currentDoctor.id,
-    // //       date: date,
-    // //     }).subscribe({
-    // //       next: data => {
-    // //         this.hasGeneratedSlots = true;
-    // //       },
-    // //       error: err => {
-    // //         this.serverError = err.error?.message
-    // //         this.hasGeneratedSlots = false;
-    // //       }
-    // //     });
-    // //   });
-    // //   if(this.hasGeneratedSlots) this.router.navigate(['/doctor/appointments']);
-    // // }
   }
-
 }

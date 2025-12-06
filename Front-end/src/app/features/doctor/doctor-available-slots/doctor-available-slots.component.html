@@ -46,7 +46,7 @@
             @if(slotsForm.get('isRecurring')?.value){
                 <div formGroupName="days" class="dashboard__days mb-3">
                     <div class="btn-group" role="group" aria-label="Days of week">
-                        @for(day of sevenDaysExclFriday; track day.value){
+                        @for(day of dayOptions; track day.value){
                             <input type="checkbox"
                                 class="btn-check"
                                 [formControlName]="day.controlName"

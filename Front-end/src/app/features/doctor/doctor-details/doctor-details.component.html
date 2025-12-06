@@ -5,8 +5,7 @@
     <div class="dashboard__title">
       <h2 class="dashboard__title-main">Profile</h2>
       <p class="dashboard__title-sub">
-        Edit profile of Dr. {{ currentDoctor?.firstName }}
-        {{ currentDoctor?.lastName }}
+        profile of Dr. {{ currentDoctor?.firstName }} {{ currentDoctor?.lastName }}
       </p>
     </div>
 
@@ -44,15 +43,6 @@
             </span>
           </div>
         </div>
-
-        <button
-          type="button"
-          class="doctor-details__edit-btn doctor-details__edit-btn--ghost"
-          (click)="navigateToEdit(currentDoctor.id)"
-        >
-          <i class="fa-solid fa-pen-to-square"></i>
-          <span>Edit</span>
-        </button>
       </header>
 
       <!-- Body -->
@@ -98,18 +88,6 @@
           </div>
         </div>
       </section>
-
-      <!-- Footer -->
-      <footer class="doctor-details__footer">
-        <button
-          type="button"
-          class="doctor-details__edit-btn doctor-details__edit-btn--primary"
-          (click)="navigateToEdit(currentDoctor.id)"
-        >
-          <i class="fa-solid fa-file-pen"></i>
-          <span>Edit Doctor Details</span>
-        </button>
-      </footer>
     </article>
     }
   </div>

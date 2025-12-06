@@ -10,8 +10,7 @@ import { map, catchError } from 'rxjs/operators';
 import { CreateAppointmentDto } from '../models/appointment-create-model';
 import { RescheduleAppointmentDto } from '../models/appointment-updateDate-model';
 import { ConfirmAppointmentResponse } from '../models/confirmappoitment.model';
-import { raw } from 'express';
-import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
+
 @Injectable({
   providedIn: 'root',
 })
