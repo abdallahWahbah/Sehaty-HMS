@@ -4,11 +4,12 @@ import { DoctorAvailabilityService } from '../../../../../../../core/services/do
 import { AvailableDayModel } from '../../../../../../../core/models/available-day.model';
 import { Slot } from '../../../../../../../core/models/available-slot.model';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { PatientsService } from '../../../../../../../core/services/patients.service';
 import { map } from 'rxjs/operators';
 import { AppointmentService } from '../../../../../../../core/services/appointment.service';
 
-// 👇 AuthService + UserRole
+// AuthService + UserRole
 import {
   AuthService,
   UserRole,
@@ -17,7 +18,7 @@ import {
 @Component({
   selector: 'app-available-slots',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './avilable-slots.component.html',
   styleUrls: ['./avilable-slots.component.scss'],
   providers: [PatientsService],
@@ -29,12 +30,15 @@ export class AvailableSlotsComponent implements OnInit {
   slots: Slot[] = [];
   loading: boolean = true;
   serverError: string = '';
-  showPopup = false;
-  popupMessage = '';
+  showPopup: boolean = false;
+  popupMessage: string = '';
   isRescheduling: boolean = false;
 
-  // 👇 Role
-  currentRole: UserRole = null;
+  // لكل slot هنخزن السبب بالـ slotId
+  reasonInputs: { [slotId: number]: string } = {};
+
+  // Role
+  currentRole: UserRole | null = null;
 
   get isPatient(): boolean {
     return this.currentRole === 'Patient';
@@ -50,11 +54,10 @@ export class AvailableSlotsComponent implements OnInit {
     private patientService: PatientsService,
     private router: Router,
     private _appointmentService: AppointmentService,
-    private authService: AuthService // 👈 Inject
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    // 📌 اقرأ الـ Role من localStorage → userData.role
     this.currentRole = this.authService.getCurrentUserRole();
     console.log('🧪 [AvailableSlots] Current Role = ', this.currentRole);
 
@@ -62,12 +65,12 @@ export class AvailableSlotsComponent implements OnInit {
 
     this.route.params.subscribe((params) => {
       this.doctorId = +params['doctorId'];
-      this.selectedDate = params['date']; // ← أهم سطر
+      this.selectedDate = params['date'];
       this.loadSlots(this.selectedDate);
     });
   }
 
-  // ✅ Load available days (ما لمسناهوش تقريباً)
+  // Load available days
   loadAvailableDays(): void {
     this.loading = true;
     this.doctorSlotsService.getAvailableDaysForDoctor(this.doctorId).subscribe({
@@ -100,7 +103,7 @@ export class AvailableSlotsComponent implements OnInit {
     });
   }
 
-  // ✅ Load available slots for selected date
+  // Load slots for selected date
   loadSlots(date: string): void {
     // Replace '/' with '-'
     date = date.replace(/\//g, '-');
@@ -110,6 +113,8 @@ export class AvailableSlotsComponent implements OnInit {
     this.doctorSlotsService.getAvailableSlots(this.doctorId, date).subscribe({
       next: (slotsData) => {
         this.slots = slotsData ?? [];
+        // نفضي الـ reasons القديمة لما التاريخ يتغيّر
+        this.reasonInputs = {};
         this.loading = false;
       },
       error: () => {
@@ -119,7 +124,7 @@ export class AvailableSlotsComponent implements OnInit {
     });
   }
 
-  // ✅ Get logged-in patient's real DB ID using userId from token
+  // Get logged-in patient ID from token
   private getLoggedInPatientId() {
     const storedData = localStorage.getItem('userData');
     if (!storedData) return null;
@@ -137,17 +142,20 @@ export class AvailableSlotsComponent implements OnInit {
     );
   }
 
-  // ✅ Book slot using Role (Receptionist / Patient)
+  // Book slot (Receptionist / Patient) + reason from textbox
   bookSlot(slotId: number, slotParam: any): void {
     this.serverError = '';
 
     const appointmentDateTime = `${slotParam.date}T${slotParam.startTime}.000Z`;
-    const reasonForVisit = 'Checkup';
 
-    // 🟦 1) Receptionist logic (حجز أو Reschedule)
+    // نقرأ السبب من الـ map حسب slotId
+    const reasonRaw = this.reasonInputs[slotId];
+    const reasonForVisit =
+      (reasonRaw && reasonRaw.toString().trim()) || 'General checkup';
+
+    // Receptionist logic
     if (this.isReception) {
       if (this.isRescheduling) {
-        // receptionist --> reschedule
         this._appointmentService
           .reschedule(history.state.appointmentId, {
             newAppointmentDateTime: appointmentDateTime,
@@ -163,11 +171,10 @@ export class AvailableSlotsComponent implements OnInit {
               }, 1000);
             },
             error: (err) => {
-              this.serverError = err.error?.message;
+              this.serverError = err.error?.message || 'Failed to reschedule.';
             },
           });
       } else {
-        // receptionist --> book
         this._appointmentService
           .bookAppointmentByReception(
             this.doctorId,
@@ -184,15 +191,15 @@ export class AvailableSlotsComponent implements OnInit {
               }, 1000);
             },
             error: (err) => {
-              this.serverError = err.error?.message;
+              this.serverError = err.error?.message || 'Failed to book.';
             },
           });
       }
 
-      return; // 👈 مهم جداً: ما نكملش على لوجيك الباشنت
+      return;
     }
 
-    // 🟩 2) Patient logic
+    // Patient logic
     const patientId$ = this.getLoggedInPatientId();
 
     if (!patientId$) {
@@ -202,7 +209,6 @@ export class AvailableSlotsComponent implements OnInit {
 
     patientId$.subscribe({
       next: (patientId) => {
-        // patientId || 5: "5" fixed patient for elder people not having account
         this.doctorSlotsService
           .bookSlot(slotId, patientId || 5, reasonForVisit)
           .subscribe({
@@ -216,7 +222,8 @@ export class AvailableSlotsComponent implements OnInit {
               this.loadSlots(this.selectedDate);
             },
             error: (err) => {
-              this.serverError = err.error.message;
+              this.serverError =
+                err.error?.message || 'Failed to book appointment.';
             },
           });
       },

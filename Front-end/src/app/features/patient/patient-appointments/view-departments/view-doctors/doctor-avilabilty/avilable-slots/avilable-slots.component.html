@@ -65,6 +65,22 @@
           }
         </div>
 
+        <!-- Reason for visit input (only if not booked) -->
+        @if (!slot.isBooked) {
+        <div class="available-slots__reason">
+          <label class="available-slots__reason-label">
+            Reason for visit
+          </label>
+
+          <input
+            type="text"
+            class="available-slots__reason-input"
+            placeholder="e.g. General checkup, Follow up..."
+            [(ngModel)]="reasonInputs[slot.slotId]"
+          />
+        </div>
+        }
+
         <button
           class="available-slots__book-btn"
           [disabled]="slot.isBooked"
