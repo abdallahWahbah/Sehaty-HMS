@@ -212,6 +212,7 @@ export class DoctorAvailableSlotsComponent {
               date: date
             })
           );
+          console.log("111111111111111111", requests);
           forkJoin(requests).subscribe({
             next: results => {
               console.log("slots generated");
