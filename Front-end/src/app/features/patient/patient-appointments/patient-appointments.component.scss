@@ -322,3 +322,9 @@ $radius-lg: 1.4rem;
 .btn-danger:active {
   background-color: #a52834;
 }
+.btn-danger:disabled,
+.btn-danger[disabled] {
+  opacity: 0.5;
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+}

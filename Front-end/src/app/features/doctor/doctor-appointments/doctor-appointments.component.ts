@@ -9,6 +9,9 @@ import { FeedbackResponseModel } from '../../../core/models/feedback.response';
 import { DoctorService } from '../../../core/services/doctor.service';
 import { PrescriptionAnalysisService } from '../../../core/services/prescription-analysis.service';
 import { PatientHistoryAnalysis } from '../../../core/models/PatientHistoryAnalysis.model';
+import { MedicalRecord } from '../../../core/models/medicalrecord-response.model';
+import { MedicalRecordService } from '../../../core/services/medical-record.service';
+import { catchError, map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-doctor-appointments',
@@ -20,6 +23,7 @@ export class DoctorAppointmentsComponent {
   appointments: AppointmentResponseModel[] = [];
   isLoading: boolean = true;
   currentDoctor!: DoctorResponseModel;
+  medicalRecord!: MedicalRecord;
 
   openedAppointmentId: number | null = null;
 
@@ -34,6 +38,7 @@ export class DoctorAppointmentsComponent {
   historyLoading = false;
   historyError: string | null = null;
   historyData: PatientHistoryAnalysis | null = null;
+  medicalRecordExistsMap: { [patientId: number]: boolean } = {};
 
   constructor(
     private _appointmentsService: AppointmentService,
@@ -41,7 +46,8 @@ export class DoctorAppointmentsComponent {
     private router: Router,
     private _doctorService: DoctorService,
     // ✅ حقن السيرفس بتاع الـ AI هنا
-    private prescriptionAnalysisService: PrescriptionAnalysisService
+    private prescriptionAnalysisService: PrescriptionAnalysisService,
+    private medicalRecordService: MedicalRecordService
   ) {}
 
   ngOnInit() {
@@ -83,6 +89,12 @@ export class DoctorAppointmentsComponent {
           return dateA.getTime() - dateB.getTime();
         });
 
+        // check existance of medical record for each patient
+        this.appointments.forEach((appt:any) => {
+          this.checkMedicalRecordExistance(appt.patientId).subscribe(exists => {
+            this.medicalRecordExistsMap[appt.patientId] = exists;
+          });
+        });
         this.isLoading = false;
       },
       error: (err) => {
@@ -95,6 +107,16 @@ export class DoctorAppointmentsComponent {
   trackById(index: number, item: AppointmentResponseModel) {
     return item.id;
   }
+
+  checkMedicalRecordExistance(patientId: any): Observable<boolean> {
+    return this.medicalRecordService
+      .getMedicalRecordByPatientId(patientId)
+      .pipe(
+        map(record => !!record),
+        catchError(() => of(false))
+      );
+  }
+
 
   addPrescription(appointment: AppointmentResponseModel) {
     this.router.navigate(['/doctor/prescriptions/add'], {
@@ -147,6 +169,19 @@ export class DoctorAppointmentsComponent {
     } else {
       console.warn('Patient ID is undefined!');
     }
+  }
+
+  goToEditMedicalRecord(patientId: number){
+    this.medicalRecordService.getMedicalRecordByPatientId(patientId).subscribe({
+      next: data => {
+        this.router.navigate(['/doctor/patient/medicalRecord/edit', data.id], {
+          state: {
+            medicalRecord: data,
+            patientId
+          }
+        })
+      }
+    })
   }
 
   // =========================

@@ -110,14 +110,6 @@
                 Add Prescription
               </button>
 
-              <button
-                type="button"
-                class="appointment-card__btn appointment-card__btn--outline"
-                (click)="goToPatientDetails(appointment.patientId)"
-              >
-                View Medical Record
-              </button>
-
               <!-- زرار View History with AI -->
               <button
                 type="button"
@@ -127,6 +119,24 @@
                 <i class="fa-solid fa-wand-magic-sparkles"></i>
                 View History with AI
               </button>
+              
+              @let recordExists = medicalRecordExistsMap[appointment.patientId!];
+              @if(recordExists) {
+                <button
+                  type="button"
+                  class="appointment-card__btn appointment-card__btn--outline"
+                  (click)="goToPatientDetails(appointment.patientId)"
+                >
+                  View Medical Record
+                </button>
+                <button
+                  type="button"
+                  class="appointment-card__btn appointment-card__btn--outline"
+                  (click)="goToEditMedicalRecord(appointment.patientId!)"
+                >
+                  Edit Medical Record
+                </button>
+              } 
 
               <!-- 🆕 زرار Apologize -->
               <button

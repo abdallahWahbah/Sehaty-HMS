@@ -54,6 +54,7 @@ import { AllBillingsComponent } from './features/admin/all-billings/all-billings
 import { adminDoctorGuard } from './core/guards/admin-doctor.guard';
 import { adminReceptionGuard } from './core/guards/admin-reception.guard';
 import { PatientBillingComponent } from './features/patient/patient-billing/patient-billing.component';
+import { DoctorMedicalRecordEditComponent } from './features/doctor/doctor-medical-record-edit/doctor-medical-record-edit.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -99,6 +100,7 @@ export const routes: Routes = [
       { path: 'prescriptions/add', component: DoctorAddPrescriptionComponent, canActivate: [doctorGuard] },
       { path: 'availableSlots', component: DoctorAvailableSlotsComponent, canActivate: [doctorGuard] },
       { path: 'patient/details/:id', component: DoctorMedicalrecordandprescriptionComponent, canActivate: [adminDoctorGuard] },
+      { path: 'patient/medicalRecord/edit/:id', component: DoctorMedicalRecordEditComponent, canActivate: [doctorGuard] },
     ],
   },
   {
