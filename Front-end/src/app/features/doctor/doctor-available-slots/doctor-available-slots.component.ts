@@ -103,15 +103,15 @@ export class DoctorAvailableSlotsComponent {
           const currentDayName = current.toLocaleDateString('en-US', { weekday: 'long' });
 
           if (currentDayName === dayOption.name) {
-            // If today is the selected day, only allow it if before 12 PM
-            if (
-              current.getDate() === now.getDate() &&
-              current.getMonth() === now.getMonth() &&
-              current.getFullYear() === now.getFullYear() &&
-              now.getHours() >= 12
-            ) {
-              current.setDate(current.getDate() + 7); // move to next week's same day
-            }
+            // // If today is the selected day, only allow it if before 12 PM
+            // if (
+            //   current.getDate() === now.getDate() &&
+            //   current.getMonth() === now.getMonth() &&
+            //   current.getFullYear() === now.getFullYear() &&
+            //   now.getHours() >= 12
+            // ) {
+            //   current.setDate(current.getDate() + 7); // move to next week's same day
+            // }
 
             selectedDates.push(this.formatDate(current));
             break;
@@ -158,9 +158,9 @@ export class DoctorAvailableSlotsComponent {
   }
 
   onSubmit() {
+    this.isLoading = true;
     this.serverError = '';
     const formValue = this.slotsForm.value;
-    this.isLoading = true;
 
     // convert days back to bitmask
     let daysBitmask = 0;
@@ -178,12 +178,14 @@ export class DoctorAvailableSlotsComponent {
     // validation 1: no day selected
     if (daysBitmask === 0 && formValue.isRecurring) {
       this.selectedDaysError = 'Please select at least one day.';
+      this.isLoading = false;
       return;
     }
 
     // validation 2: non-recurring but no date selected
     if (!formValue.isRecurring && !formValue.date) {
       this.dateError = 'Please select a date';
+      this.isLoading = false;
       return;
     }
 
@@ -212,13 +214,16 @@ export class DoctorAvailableSlotsComponent {
               date: date
             })
           );
-          console.log("111111111111111111", requests);
           forkJoin(requests).subscribe({
             next: results => {
               console.log("slots generated");
-              this.router.navigate(['/doctor/appointments']);
+              this.isLoading = true;
+              setTimeout(() => {
+                this.router.navigate(['/doctor/appointments']);
+              }, 1000)
             },
             error: err => {
+              this.isLoading = false;
               console.log("error generating slots");
               this.serverError = err.error?.message;
             }
@@ -234,6 +239,7 @@ export class DoctorAvailableSlotsComponent {
               this.router.navigate(['/doctor/appointments']);
             },
             error: err => {
+              this.isLoading = false;
               console.log("error generating single day slots");
               console.log(err);
               this.serverError = err.error?.message
@@ -247,5 +253,6 @@ export class DoctorAvailableSlotsComponent {
         this.isLoading = false;
       }
     })
+    this.isLoading = false;
   }
 }
