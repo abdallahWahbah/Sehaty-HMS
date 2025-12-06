@@ -92,11 +92,19 @@
           <button
             type="button"
             class="doctor-card__btn doctor-card__btn--danger"
-            (click)="deleteDoctor(doctor.id)"
+            (click)="openDeleteDialog()"
           >
             <i class="fa-solid fa-trash"></i>
             <span>Delete</span>
           </button>
+          @if(showDeleteDialog){
+            <app-confirmation-dialog
+              title="Delete Doctor"
+              header="Are you sure you want to delete this doctor?"
+              (cancel)="closeDialog()"
+              (confirm)="deleteDoctor(doctor.id)"
+            ></app-confirmation-dialog>
+          }
         </footer>
       </article>
       }

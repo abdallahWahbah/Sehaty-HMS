@@ -56,6 +56,11 @@
           </p-floatlabel>
 
           <p-floatlabel class="patient-edit__input">
+            <input pInputText formControlName="detectionPrice" />
+            <label>Detection Price</label>
+          </p-floatlabel>
+
+          <p-floatlabel class="patient-edit__input">
             <select
               id="departmentId"
               class="patient-edit__select"
@@ -74,14 +79,6 @@
 
         <div class="patient-edit__button-container">
           <p-button type="submit" label="Update Doctor"></p-button>
-
-          @if(storedUser.role === 'Admin'){
-            <p-button
-              label="Delete Doctor"
-              styleClass="p-button-danger"
-              (click)="onDelete()"
-            ></p-button>
-          }
         </div>
       </form>
     </div>

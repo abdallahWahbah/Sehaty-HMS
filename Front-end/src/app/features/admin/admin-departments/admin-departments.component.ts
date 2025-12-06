@@ -36,10 +36,11 @@ export class AdminDepartmentsComponent implements OnInit {
       doctors: this.doctorService.getAllDoctors(),
     }).subscribe({
       next: ({ departments, doctors }) => {
-        this.departments = departments.map((dept) => ({
+        this.departments = departments.map(dept => ({
           ...dept,
           doctors: doctors.filter((doc) => doc.departmentId === dept.id),
         }));
+        this.filteredDepartments = this.departments
 
         this.totalDepartments = this.departments.length;
         this.totalDoctors = doctors.length;
@@ -57,10 +58,10 @@ export class AdminDepartmentsComponent implements OnInit {
     if (!this.searchTerm) {
       this.filteredDepartments = [...this.departments];
     } else {
-      this.filteredDepartments = this.departments.filter(
-        (dept) =>
-          dept.en_Name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-          dept.ar_Name.includes(this.searchTerm)
+      console.log("111111111111111111", this.departments, this.searchTerm);
+      this.filteredDepartments = this.departments.filter( dept => {
+        return dept.en_Name.toLowerCase().includes(this.searchTerm.toLowerCase()) 
+      }
       );
     }
   }

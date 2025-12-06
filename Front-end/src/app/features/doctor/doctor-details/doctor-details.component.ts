@@ -24,7 +24,4 @@ export class DoctorDetailsComponent {
       }
     })
   }
-  navigateToEdit(id: number){
-    this.router.navigate([`/doctor/${id}/edit`], {state: {id}});
-  }
 }

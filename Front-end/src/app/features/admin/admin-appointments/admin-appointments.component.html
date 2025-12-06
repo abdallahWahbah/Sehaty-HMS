@@ -119,19 +119,40 @@
                   Dr. {{ appointment.doctorName }}
                 </span>
               </div>
-
-              <div class="appointment-card__actions-buttons">
-                <button
-                  type="button"
-                  class="appointment-card__btn appointment-card__btn--primary"
-                  (click)="viewDetails(appointment)"
-                >
-                  <i class="fa-solid fa-eye"></i>
-                  <span>View details</span>
-                </button>
-              </div>
             </div>
           </section>
+          <!-- cancellation reason if cancelled -->
+          @if(appointment.status === "Canceled"){
+            <div class="appointment-card__reason">
+              <i class="fa-solid fa-xmark appointment-card__icon appointment-card__icon--reason"></i>
+              <div>
+                <p class="appointment-card__label">Cancellation Reason</p>
+                <p class="appointment-card__reason-text">
+                  {{ appointment.cancellationReason || "Not specefied" }}
+                </p>
+              </div>
+            </div>
+          }
+          
+          <div class="appointment-card__actisons">
+            <button
+              type="button"
+              class="appointment-card__btn appointment-card__btn--primary"
+              style="margin-right: 1rem;"
+              (click)="viewDetails(appointment)"
+            >
+              <i class="fa-solid fa-eye"></i>
+              <span>View details</span>
+            </button>
+
+            <button
+              type="button"
+              class="appointment-card__btn appointment-card__btn--outline"
+              (click)="navigateToMedicalRecords(appointment)"
+            >
+              View Medical Record
+            </button>
+          </div>
         </article>
         }
       </div>

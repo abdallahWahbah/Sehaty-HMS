@@ -9,8 +9,13 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class AdminNavigationComponent {
 
+  storedUser: any;
   constructor(private router:Router){}
 
+  ngOnInit(){
+    this.storedUser = localStorage.getItem('userData');
+    this.storedUser = JSON.parse(this.storedUser);
+  }
   logout(){
     localStorage.removeItem('refreshToken')
     localStorage.removeItem('token')

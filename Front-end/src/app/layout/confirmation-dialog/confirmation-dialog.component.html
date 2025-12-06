@@ -1,0 +1,18 @@
+<div class="confirm-dialog">
+  <div class="confirm-dialog__content">
+
+    <h2 class="confirm-dialog__title">{{ title }}</h2>
+    <p class="confirm-dialog__header">{{ header }}</p>
+
+    <div class="confirm-dialog__actions">
+      <button class="btn btn--cancel" (click)="onCancel()">
+        Cancel
+      </button>
+
+      <button class="btn btn--confirm" (click)="onConfirm()">
+        Confirm
+      </button>
+    </div>
+
+  </div>
+</div>
