@@ -78,8 +78,8 @@ export class SignupComponent {
         allergies: ['None', Validators.required],
         chrinicConditions: ['None', Validators.required],
         address: ['Mit Ghamr', Validators.required],
-        emergencyContactName: [''],
-        emergencyContactPhone: [''],
+        emergencyContactName: ['asdasd', Validators.required],
+        emergencyContactPhone: ['01092717902', Validators.required],
       })
     });
   }
@@ -104,6 +104,7 @@ export class SignupComponent {
     const patient = this.signupForm.get('patient');
     if (patient?.invalid) {
       patient.markAllAsTouched();
+      this.loading = false;
       return;
     }
 
@@ -129,7 +130,7 @@ export class SignupComponent {
       chrinicConditions: patientData.chrinicConditions,
       address: patientData.address,
       emergencyContactName: patientData.emergencyContactName,
-      emergencyContactPhone: patientData.emergencyContactPhone,
+      emergencyContactPhone: "+2" + patientData.emergencyContactPhone.replace("+2", ''),
     };
     console.log(newUser.phoneNumber);
     this._authService.register(newUser).subscribe({
