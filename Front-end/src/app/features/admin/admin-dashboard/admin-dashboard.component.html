@@ -9,6 +9,7 @@
 
   <!-- Stats cards -->
   <div class="dashboard__stats">
+    <!-- 🩺 Total Patients -->
     <div class="dashboard__card">
       <div class="dashboard__card--header">
         <div>
@@ -22,17 +23,46 @@
       <p class="dashboard__card-sub">Registered in the system</p>
     </div>
 
+    <!-- 👨‍⚕️ Total Doctors -->
     <div class="dashboard__card">
       <div class="dashboard__card--header">
         <div>
-          <p class="dashboard__card-label">Today's Appointments</p>
-          <p class="dashboard__card-value">{{ numOfTodaysAppointments }}</p>
+          <p class="dashboard__card-label">Total Doctors</p>
+          <p class="dashboard__card-value">{{ numOfDoctors }}</p>
         </div>
         <div class="dashboard__card-icon">
-          <i class="fa-regular fa-calendar-check"></i>
+          <i class="fa-solid fa-user-doctor"></i>
         </div>
       </div>
-      <p class="dashboard__card-sub">Scheduled for today</p>
+      <p class="dashboard__card-sub">Active doctors in hospital</p>
+    </div>
+
+    <!-- 📚 Total Departments -->
+    <div class="dashboard__card">
+      <div class="dashboard__card--header">
+        <div>
+          <p class="dashboard__card-label">Departments</p>
+          <p class="dashboard__card-value">{{ numOfDepartments }}</p>
+        </div>
+        <div class="dashboard__card-icon">
+          <i class="fa-solid fa-building-columns"></i>
+        </div>
+      </div>
+      <p class="dashboard__card-sub">Active hospital departments</p>
+    </div>
+
+    <!-- 🩺👨‍⚕️ Doctors Available Today -->
+    <div class="dashboard__card">
+      <div class="dashboard__card--header">
+        <div>
+          <p class="dashboard__card-label">Available Doctors Today</p>
+          <p class="dashboard__card-value">{{ availableDoctorsTodayCount }}</p>
+        </div>
+        <div class="dashboard__card-icon">
+          <i class="fa-solid fa-user-clock"></i>
+        </div>
+      </div>
+      <p class="dashboard__card-sub">Doctors with free slots available today</p>
     </div>
   </div>
 

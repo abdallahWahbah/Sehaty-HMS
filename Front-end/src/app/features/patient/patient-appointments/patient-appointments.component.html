@@ -1,5 +1,5 @@
 @if(loading){
-  <app-loading-spinner></app-loading-spinner>
+<app-loading-spinner></app-loading-spinner>
 }@else {
 <section class="dashboard_appointments">
   <!-- Title + Add Button -->
@@ -84,8 +84,6 @@
             Dr. {{ appointment.doctorName }}
           </span>
         </div>
-
-        <!-- ⭐ Highlighted Reason for Visit -->
         <div class="appointment-card__row">
           <span class="appointment-card__label">Reason for visit</span>
           <div class="appointment-card__reason">
@@ -96,24 +94,26 @@
           </div>
         </div>
         @if(appointment.status === "Confirmed"){
-          <div class="title_dashboard" style="margin-bottom: 0;">
-            <button class="btn-danger" (click)="cancelAppointment(appointment)">Cancel</button>
-          </div>
+        <div class="title_dashboard" style="margin-bottom: 0">
+          <button class="btn-danger" (click)="cancelAppointment(appointment)">
+            Cancel
+          </button>
+        </div>
         }
         <p-toast />
       </section>
 
       @if(appointment.status === 'Pending'){
-        <!-- Footer -->
-        <footer class="appointment-card__footer">
-          <button
-            class="appointment-card__btn-pay"
-            (click)="goToPayment(appointment.id)"
-          >
-            <i class="fa-solid fa-credit-card"></i>
-            <span>Pay Now</span>
-          </button>
-        </footer>
+      <!-- Footer -->
+      <footer class="appointment-card__footer">
+        <button
+          class="appointment-card__btn-pay"
+          (click)="goToPayment(appointment.id)"
+        >
+          <i class="fa-solid fa-credit-card"></i>
+          <span>Pay Now</span>
+        </button>
+      </footer>
       }
     </article>
 
