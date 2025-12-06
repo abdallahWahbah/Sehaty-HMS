@@ -87,6 +87,7 @@ export class PatientAppointmentsComponent implements OnInit {
     this.router.navigate(['/home/payment', appointmentId]);
   }
   cancelAppointment(appointment: AppointmentResponseModel){
+    this.loading = true;
     this.appointmentService.cancel(appointment.id).subscribe({
       next: data => {
         window.location.reload();
@@ -96,6 +97,7 @@ export class PatientAppointmentsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message });
 
       }
-    })
+    });
+    this.loading = false;
   }
 }

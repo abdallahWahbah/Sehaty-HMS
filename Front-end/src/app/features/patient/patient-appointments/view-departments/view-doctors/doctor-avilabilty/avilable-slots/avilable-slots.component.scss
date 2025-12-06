@@ -160,7 +160,7 @@ $shadow-card: 0 20px 45px rgba(25, 39, 79, 0.18);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.9rem 1.1rem;
+    padding: 2.3rem 1.1rem 0.9rem 1.1rem;
     background: #ffffff;
     border-radius: 1.1rem;
     border: 1px solid #e5e7eb;
@@ -329,6 +329,9 @@ $shadow-card: 0 20px 45px rgba(25, 39, 79, 0.18);
 .available-slots__reason {
   margin: 0.75rem 0 1rem;
   width: 100%;
+  position: relative;;
+  display: flex;
+  justify-content: space-between;
 }
 
 .available-slots__reason-label {
@@ -337,11 +340,14 @@ $shadow-card: 0 20px 45px rgba(25, 39, 79, 0.18);
   font-weight: 600;
   color: #3e3f5e;
   margin-bottom: 0.35rem;
+  position: absolute;
+  top: -1.9rem;
+  left: .5rem;
 }
 
 /* 💙 Input بشكل طبي احترافي */
 .available-slots__reason-input {
-  width: 100%;
+  width: 90% !important;
   padding: 0.65rem 1rem;
   border: 1.5px solid #d6d9e4;
   border-radius: 999px; /* pill shape */
@@ -370,4 +376,7 @@ $shadow-card: 0 20px 45px rgba(25, 39, 79, 0.18);
     color: #9ca3af;
     font-size: 0.85rem;
   }
+}
+input::placeholder {
+  font-size: 1.4rem !important;   // change to any size
 }

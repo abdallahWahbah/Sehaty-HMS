@@ -51,9 +51,12 @@
 
       @for (slot of slots; track slot.slotId) {
       <article class="available-slots__slot">
-        <div class="available-slots__slot-info">
+        <div class="available-slots__slot-info" style="width: 8rem;">
           <span class="available-slots__time">
-            {{ slot.timeRange }}
+            {{ slot.timeRange.split("-")[0] }}
+          </span>
+          <span class="available-slots__time">
+            {{ slot.timeRange.split("-")[1] }}
           </span>
 
           @if (slot.isBooked) {
@@ -67,7 +70,7 @@
 
         <!-- Reason for visit input (only if not booked) -->
         @if (!slot.isBooked) {
-        <div class="available-slots__reason">
+        <div class="available-slots__reason" style="display: flex; align-items: center;">
           <label class="available-slots__reason-label">
             Reason for visit
           </label>
@@ -78,18 +81,17 @@
             placeholder="e.g. General checkup, Follow up..."
             [(ngModel)]="reasonInputs[slot.slotId]"
           />
+          <button
+            class="available-slots__book-btn"
+            [disabled]="slot.isBooked"
+            (click)="bookSlot(slot.slotId, slot)"
+          >
+            {{
+              isRescheduling ? "Reschedule" : slot.isBooked ? "Booked" : "Book"
+            }}
+          </button>
         </div>
         }
-
-        <button
-          class="available-slots__book-btn"
-          [disabled]="slot.isBooked"
-          (click)="bookSlot(slot.slotId, slot)"
-        >
-          {{
-            isRescheduling ? "Reschedule" : slot.isBooked ? "Booked" : "Book"
-          }}
-        </button>
       </article>
       }
     </section>
