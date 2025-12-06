@@ -1,0 +1,153 @@
+$patient-primary: #252b61;
+$patient-primary-soft: #4b56a3;
+$patient-text-main: #1f2933;
+$patient-text-muted: #6b7280;
+$patient-shadow-card: 0 14px 40px rgba(25, 39, 79, 0.14);
+$patient-radius-lg: 1.4rem;
+
+/* ممكن يكون عندك ده أصلاً من شاشات تانية، لو موجود سيب القديم */
+.dashboard {
+  max-width: 110rem;
+  margin: 0 auto 4rem;
+  padding: 3.5rem 2rem 4rem;
+}
+
+.dashboard__title {
+  margin-bottom: 2.4rem;
+
+  &-main {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: $patient-primary;
+    margin: 0 0 0.4rem;
+  }
+
+  &-sub {
+    font-size: 1.4rem;
+    color: $patient-text-muted;
+    margin: 0;
+  }
+}
+
+/* =========================
+   Patient Edit Card
+========================= */
+
+.patient-edit {
+  margin-top: 0.5rem;
+
+  &__card {
+    background: #ffffff;
+    border-radius: $patient-radius-lg;
+    border: 1px solid rgba(37, 43, 97, 0.08);
+    box-shadow: $patient-shadow-card;
+    padding: 2rem 2.4rem 4rem 2.4rem;
+    padding-top: 4rem !important;
+  }
+
+  /* Error من السيرفر */
+  .server-error {
+    margin-bottom: 2rem;
+    padding: 1rem 1.4rem;
+    border-radius: 0.8rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    font-size: 1.3rem;
+
+    span {
+      font-weight: 500;
+    }
+  }
+
+  /* Grid */
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem 1.8rem;
+    margin-bottom: 2.2rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__input {
+    width: 100%;
+
+    /* PrimeNG float label styling */
+    ::ng-deep .p-float-label {
+      width: 100%;
+    }
+
+    ::ng-deep .p-inputtext {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      padding: 0.8rem 1.2rem;
+      font-size: 1.4rem;
+      color: $patient-text-main;
+
+      &:focus {
+        border-color: $patient-primary-soft;
+        box-shadow: 0 0 0 1px rgba(37, 43, 97, 0.15);
+      }
+    }
+
+    ::ng-deep label {
+      font-size: 1.2rem;
+      color: $patient-text-muted;
+    }
+
+    &--status {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      grid-column: 1 / -1; // ياخد الصف كله
+
+      ::ng-deep .p-dropdown {
+        width: 100%;
+        border-radius: 999px;
+        border: 1px solid #e5e7eb;
+        min-height: 3.6rem;
+        font-size: 1.4rem;
+
+        .p-dropdown-label {
+          padding: 0.6rem 1.2rem;
+        }
+
+        &:focus-within {
+          border-color: $patient-primary-soft;
+          box-shadow: 0 0 0 1px rgba(37, 43, 97, 0.15);
+        }
+      }
+    }
+  }
+
+  &__status-label {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: $patient-text-muted;
+  }
+
+  &__button-container {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+
+    ::ng-deep .p-button {
+      border-radius: 999px;
+      padding: 0.7rem 1.8rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+  }
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .dashboard {
+    padding-inline: 1.4rem;
+  }
+}

@@ -41,4 +41,10 @@ export class MedicalRecordService {
       }))
     );
   }
+  updateByDoctor(medicalRecordId: number, data: MedicalRecord){
+    return this.http.put(this.baseUrl + "UpdateByDoctor/" + medicalRecordId, data,
+      {
+        headers: { Authorization: `Bearer ${this.token}` },
+      })
+  }
 }

@@ -20,6 +20,7 @@ export class PatientAppointmentsComponent implements OnInit {
   patientId!: number;
   appointments: AppointmentResponseModel[] = [];
   loading: boolean = true;
+  loadingCancel: boolean = false;
 
   constructor(
     private appointmentService: AppointmentService,
@@ -87,17 +88,16 @@ export class PatientAppointmentsComponent implements OnInit {
     this.router.navigate(['/home/payment', appointmentId]);
   }
   cancelAppointment(appointment: AppointmentResponseModel){
-    this.loading = true;
+    this.loadingCancel = true;
     this.appointmentService.cancel(appointment.id).subscribe({
       next: data => {
+        this.loadingCancel = false;
         window.location.reload();
       },
       error: err => {
-        console.log("eeeeeee", err);
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message });
-
+        this.loadingCancel = false;
       }
     });
-    this.loading = false;
   }
 }
