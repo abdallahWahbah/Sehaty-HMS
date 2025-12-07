@@ -95,11 +95,19 @@
         </div>
         @if(appointment.status === "Confirmed"){
         <div class="title_dashboard" style="margin-bottom: 0">
-          <button class="btn-danger" (click)="cancelAppointment(appointment)" [disabled]="loadingCancel">
+          <button class="btn-danger" (click)="handleCancel(appointment)" [disabled]="loadingCancel">
             Cancel
           </button>
         </div>
         }
+        @if(showDialog){
+            <app-confirmation-dialog
+              title="Payment warning"
+              header="If you canceled the appointment before 24 hours of its date, 20% of the payment will be removed, Are you sure you want to continue?"
+              (cancel)="closeDialog()"
+              (confirm)="cancelAppointment(appointment)"
+            ></app-confirmation-dialog>
+          }
         <p-toast />
       </section>
 

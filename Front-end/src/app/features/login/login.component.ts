@@ -40,11 +40,11 @@ export class LoginComponent {
   loading: boolean = false;
 
   loginForm = new FormGroup({
-    username: new FormControl('Doctor1', [
+    username: new FormControl('', [
       // Admin, Doctor1, Patient1, Receptionist
       Validators.required,
     ]),
-    password: new FormControl('P@ssw0rd', [
+    password: new FormControl('', [ // P@ssw0rd
       Validators.required,
       Validators.minLength(6),
       Validators.pattern(/^(?=.*[a-z]).*$/), // at least 1 lowercase
