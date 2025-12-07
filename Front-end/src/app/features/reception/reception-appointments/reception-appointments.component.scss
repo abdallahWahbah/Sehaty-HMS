@@ -274,6 +274,14 @@
       background: #1a204a;
     }
   }
+  &--3{
+    background: #252b61 !important;
+    color: #ffffff;
+
+    &:hover {
+      background: #1a204a !important;
+    }
+  }
 
   /* Reschedule – outline */
   &:nth-child(2) {
