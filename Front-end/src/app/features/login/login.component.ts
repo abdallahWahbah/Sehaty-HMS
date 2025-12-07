@@ -40,18 +40,18 @@ export class LoginComponent {
   loading: boolean = false;
 
   loginForm = new FormGroup({
-    username: new FormControl('Doctor1', [
+    username: new FormControl('', [
       // Admin, Doctor1, Patient1, Receptionist
       Validators.required,
     ]),
-    password: new FormControl('P@ssw0rd', [
+    password: new FormControl('', [ // P@ssw0rd
       Validators.required,
       Validators.minLength(6),
-      Validators.pattern(/^(?=.*[a-z]).*$/), // at least 1 lowercase
-      Validators.pattern(/^(?=.*[A-Z]).*$/), // at least 1 uppercase
-      Validators.pattern(/^(?=.*\d).*$/), // at least 1 number
-      Validators.pattern(/^(?=.*[\W_]).*$/), // at least 1 special character
-      Validators.pattern(/^\S+$/), // no spaces allowed
+      // Validators.pattern(/^(?=.*[a-z]).*$/), // at least 1 lowercase
+      // Validators.pattern(/^(?=.*[A-Z]).*$/), // at least 1 uppercase
+      // Validators.pattern(/^(?=.*\d).*$/), // at least 1 number
+      // Validators.pattern(/^(?=.*[\W_]).*$/), // at least 1 special character
+      // Validators.pattern(/^\S+$/), // no spaces allowed
     ]),
     // rememberMe: new FormControl(false),
   });
@@ -62,6 +62,7 @@ export class LoginComponent {
     this.loading = true;
     this.serverError = '';
     if (this.loginForm.invalid) {
+      this.loading = false;
       this.loginForm.markAllAsTouched();
       return;
     }

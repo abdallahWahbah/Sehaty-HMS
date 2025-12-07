@@ -40,12 +40,12 @@ export class AddDoctorComponent {
 
   ngOnInit(): void {
     this.doctorForm = this.fb.group({
-      firstName: ['hala', [Validators.required, Validators.maxLength(50)]],
-      lastName: ['sedky', [Validators.required, Validators.maxLength(50)]],
-      userName: ['halaSedky', [Validators.required]],
-      email: ['halaSedky@example.com', [Validators.required, Validators.email]],
-      phoneNumber: ['+201092717902', [Validators.required]],
-      password: ['P@ssw0rd', [
+      firstName: ['', [Validators.required, Validators.maxLength(50)]],
+      lastName: ['', [Validators.required, Validators.maxLength(50)]],
+      userName: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: ['', [Validators.required, Validators.pattern(/^(\+2)?(010|011|012)\d{8}$/)]],
+      password: ['', [
           Validators.required,
           Validators.minLength(6),
           Validators.pattern(/^(?=.*[a-z]).*$/),
@@ -54,14 +54,14 @@ export class AddDoctorComponent {
           Validators.pattern(/^(?=.*[\W_]).*$/),
           Validators.pattern(/^\S+$/)
       ]],
-      confirmPassword: ['P@ssw0rd', Validators.required],
-      specialty: ['No knowledge', [Validators.required, Validators.maxLength(100)]],
-      licenseNumber: ['Ajhakj', [Validators.required, Validators.maxLength(50)]],
+      confirmPassword: ['', Validators.required],
+      specialty: ['', [Validators.required, Validators.maxLength(100)]],
+      licenseNumber: ['', [Validators.required, Validators.maxLength(50)]],
       detectionPrice: [150, Validators.required],
-      qualifications: ['no qualifications'],
-      yearsOfExperience: ['10'],
-      availabilityNotes: ['kjashdkjashd'],
-      departmentId: ['2', [Validators.required]],
+      qualifications: [''],
+      yearsOfExperience: [''],
+      availabilityNotes: [''],
+      departmentId: ['', [Validators.required]],
     });
 
     this._departmentService.getAllDepartments().subscribe({

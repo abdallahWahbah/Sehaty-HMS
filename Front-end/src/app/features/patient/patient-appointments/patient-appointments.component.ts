@@ -7,10 +7,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingSpinnerComponent } from "../../../layout/loading-spinner/loading-spinner.component";
 import { Toast } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { ConfirmationDialogComponent } from "../../../layout/confirmation-dialog/confirmation-dialog.component";
 
 @Component({
   selector: 'app-patient-appointments',
-  imports: [CommonModule, LoadingSpinnerComponent, Toast],
+  imports: [CommonModule, LoadingSpinnerComponent, Toast, ConfirmationDialogComponent],
   templateUrl: './patient-appointments.component.html',
   styleUrls: ['./patient-appointments.component.scss'], // صححت styleUrls
   providers: [MessageService]
@@ -21,6 +22,7 @@ export class PatientAppointmentsComponent implements OnInit {
   appointments: AppointmentResponseModel[] = [];
   loading: boolean = true;
   loadingCancel: boolean = false;
+  showDialog: boolean = false;
 
   constructor(
     private appointmentService: AppointmentService,
@@ -87,8 +89,16 @@ export class PatientAppointmentsComponent implements OnInit {
   goToPayment(appointmentId: number) {
     this.router.navigate(['/home/payment', appointmentId]);
   }
-  cancelAppointment(appointment: AppointmentResponseModel){
+  handleCancel(appointment: AppointmentResponseModel){
     this.loadingCancel = true;
+    if(this.checkLessThanDay(appointment.appointmentDateTime)) {
+      this.showDialog = true;
+    }
+    else {
+      this.cancelAppointment(appointment)
+    }
+  }
+  cancelAppointment(appointment: AppointmentResponseModel){
     this.appointmentService.cancel(appointment.id).subscribe({
       next: data => {
         this.loadingCancel = false;
@@ -99,5 +109,18 @@ export class PatientAppointmentsComponent implements OnInit {
         this.loadingCancel = false;
       }
     });
+  }
+  checkLessThanDay(date1: Date | string){
+    const now = new Date();
+    const diffMs = new Date(date1).getTime() - now.getTime();
+    const diffHours = diffMs / (1000 * 60 * 60);
+    this.loadingCancel = true;
+    if (diffHours < 24 && diffHours > 0){
+      return true
+    }
+    return false;
+  }
+  closeDialog(){
+    this.showDialog = false;
   }
 }
