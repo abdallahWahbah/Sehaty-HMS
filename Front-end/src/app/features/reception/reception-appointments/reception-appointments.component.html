@@ -78,21 +78,23 @@
 
         <div class="name_time_other">
           <div class="name_time btns_container">
-            <button
-              class="appointment__button btn"
-              (click)="cancelAppointment(appointment.id)"
-            >
-              Cancel
-            </button>
-            <button
-              class="appointment__button btn"
-              (click)="handleReschedule(appointment)"
-            >
-              Reschedule
-            </button>
-            @if(appointment.status !== "InProgress"){
+            @if(appointment.patientId !== 999999){
               <button
                 class="appointment__button btn"
+                (click)="cancelAppointment(appointment.id)"
+              >
+                Cancel
+              </button>
+              <button
+                class="appointment__button btn"
+                (click)="handleReschedule(appointment)"
+              >
+                Reschedule
+              </button>
+            }
+            @if(appointment.status !== "InProgress"){
+              <button
+                class="appointment__button appointment__button--3 btn"
                 (click)="checkIn(appointment)"
               >
                 Check in
