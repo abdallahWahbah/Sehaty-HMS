@@ -53,7 +53,7 @@ export class LoginComponent {
       Validators.pattern(/^(?=.*[\W_]).*$/), // at least 1 special character
       Validators.pattern(/^\S+$/), // no spaces allowed
     ]),
-    rememberMe: new FormControl(false),
+    // rememberMe: new FormControl(false),
   });
 
   constructor(private _authService: AuthService, private router: Router) {}

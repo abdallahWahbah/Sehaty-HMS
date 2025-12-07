@@ -96,13 +96,18 @@
               />
               <label>Phone Number</label>
             </p-floatlabel>
-            @if(accountForm.get('phoneNumber')?.touched &&
-            accountForm.get('phoneNumber')?.invalid){
-            <div class="error-text">
-              @if(accountForm.get('phoneNumber')?.errors?.['required']){
-              <span>Phone Number is required</span>
-              }
-            </div>
+            @if(accountForm.get('phoneNumber')?.touched && accountForm.get('phoneNumber')?.invalid){
+              <div class="error-text">
+                @if(accountForm.get('phoneNumber')?.errors?.['required']){
+                <span>Phone Number is required</span>
+                }
+                @if (accountForm.get('phoneNumber')?.errors?.['pattern']) {
+                  <span>
+                    Phone must be 010/011/012 with or without +2  
+                    (Example: +201092717902 or 01092717902)
+                  </span>
+                }
+              </div>
             }
           </div>
         </div>
@@ -362,13 +367,18 @@
               />
               <label>Emergency contact phone</label>
             </p-floatlabel>
-            @if(patientForm.get('emergencyContactPhone')?.touched &&
-            patientForm.get('emergencyContactPhone')?.invalid){
-            <div class="error-text">
-              @if(patientForm.get('emergencyContactPhone')?.errors?.['required']){
-              <span>Emergency contact phone is required</span>
-              }
-            </div>
+            @if(patientForm.get('emergencyContactPhone')?.touched && patientForm.get('emergencyContactPhone')?.invalid){
+              <div class="error-text">
+                @if(patientForm.get('emergencyContactPhone')?.errors?.['required']){
+                <span>Emergency contact phone is required</span>
+                }
+                @if (patientForm.get('emergencyContactPhone')?.errors?.['pattern']) {
+                  <span>
+                    Phone must be 010/011/012 with or without +2  
+                    (Example: +201092717902 or 01092717902)
+                  </span>
+                }
+              </div>
             }
           </div>
         </div>
