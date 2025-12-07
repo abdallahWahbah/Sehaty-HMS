@@ -18,7 +18,7 @@
       </div>
       }
 
-      <!-- Empty state -->
+      <!-- Empty state (no appointments at all from API) -->
       @if (!isLoading && appointments.length === 0) {
       <div class="appointments__state appointments__state--empty">
         <i class="fa-regular fa-calendar-xmark appointments__state-icon"></i>
@@ -29,10 +29,48 @@
       </div>
       }
 
-      <!-- Appointments list -->
+      <!-- Appointments available from API -->
       @if (!isLoading && appointments.length > 0) {
+
+      <!-- Filter buttons -->
+      <div class="appointments__filter">
+        <button
+          type="button"
+          class="appointments__filter-btn"
+          [class.appointments__filter-btn--active]="viewMode === 'active'"
+          (click)="setViewMode('active')"
+        >
+          Upcoming (Confirmed / In progress)
+        </button>
+
+        <button
+          type="button"
+          class="appointments__filter-btn"
+          [class.appointments__filter-btn--active]="viewMode === 'completed'"
+          (click)="setViewMode('completed')"
+        >
+          Completed
+        </button>
+      </div>
+
+      <!-- No appointments in current filter -->
+      @if (filteredAppointments.length === 0) {
+      <div class="appointments__state appointments__state--empty">
+        <i class="fa-regular fa-calendar-xmark appointments__state-icon"></i>
+        <p class="appointments__state-title">No appointments</p>
+        <p class="appointments__state-subtitle">
+          {{
+            viewMode === "active"
+              ? "There are no Confirmed or In progress appointments."
+              : "There are no Completed appointments."
+          }}
+        </p>
+      </div>
+      } @else {
+
+      <!-- Appointments list (filtered) -->
       <div class="appointments__list">
-        @for (appointment of appointments; track appointment.id) {
+        @for (appointment of filteredAppointments; track appointment.id) {
         <article class="appointment-card">
           <!-- Header -->
           <header class="appointment-card__header">
@@ -79,7 +117,11 @@
                   'status-pill--confirmed': appointment.status === 'Confirmed',
                   'status-pill--pending': appointment.status === 'Pending',
                   'status-pill--cancelled': appointment.status === 'Cancelled',
-                  'status-pill--delayed': appointment.status === 'Delayed'
+                  'status-pill--delayed': appointment.status === 'Delayed',
+                  'status-pill--inprogress':
+                    appointment.status === 'InProgress' ||
+                    appointment.status === 'In Progress',
+                  'status-pill--completed': appointment.status === 'Completed'
                 }"
               >
                 {{ appointment.status }}
@@ -106,11 +148,15 @@
                 type="button"
                 class="appointment-card__btn appointment-card__btn--primary"
                 (click)="addPrescription(appointment)"
+                [disabled]="
+                  appointment.status !== 'InProgress' &&
+                  appointment.status !== 'In Progress'
+                "
               >
                 Add Prescription
               </button>
 
-              <!-- زرار View History with AI -->
+              <!-- View History with AI -->
               <button
                 type="button"
                 class="appointment-card__btn appointment-card__btn--outline rainbow-border"
@@ -119,26 +165,27 @@
                 <i class="fa-solid fa-wand-magic-sparkles"></i>
                 View History with AI
               </button>
-              
-              @let recordExists = medicalRecordExistsMap[appointment.patientId!];
-              @if(recordExists) {
-                <button
-                  type="button"
-                  class="appointment-card__btn appointment-card__btn--outline"
-                  (click)="goToPatientDetails(appointment.patientId)"
-                >
-                  View Medical Record
-                </button>
-                <button
-                  type="button"
-                  class="appointment-card__btn appointment-card__btn--outline"
-                  (click)="goToEditMedicalRecord(appointment.patientId!)"
-                >
-                  Edit Medical Record
-                </button>
-              } 
 
-              <!-- 🆕 زرار Apologize -->
+              @let recordExists =
+              medicalRecordExistsMap[appointment.patientId!]; @if (recordExists)
+              {
+              <button
+                type="button"
+                class="appointment-card__btn appointment-card__btn--outline"
+                (click)="goToPatientDetails(appointment.patientId)"
+              >
+                View Medical Record
+              </button>
+              <button
+                type="button"
+                class="appointment-card__btn appointment-card__btn--outline"
+                (click)="goToEditMedicalRecord(appointment.patientId!)"
+              >
+                Edit Medical Record
+              </button>
+              }
+
+              <!-- Apologize -->
               <button
                 type="button"
                 class="appointment-card__btn appointment-card__btn--danger"
@@ -249,7 +296,7 @@
               </p>
             </div>
 
-            <!-- AI Summary (عربي / RTL زي المودال التاني) -->
+            <!-- AI Summary (RTL) -->
             <div class="ai-modal__content">
               <pre class="ai-modal__text"
                 >{{ historyData.aiSummary }}
@@ -298,10 +345,13 @@
         </div>
       </div>
       } }
+      <!-- نهاية @else بتاعة filteredAppointments.length -->
+      }
+      <!-- نهاية @if (!isLoading && appointments.length > 0) -->
     </div>
   </div>
 
-  <!-- 🆕 Apologize Done Popup -->
+  <!-- Apologize Done Popup -->
   @if (showApologyPopup) {
   <div class="apology-popup-backdrop">
     <div class="apology-popup">
