@@ -54,7 +54,7 @@ export class SignupComponent {
         firstName: ['ebrahim', [Validators.required]],
         lastName: ['front end', [Validators.required]],
         email: ['a@a.a', [Validators.required, Validators.email]],
-        phoneNumber: ['+201092717902', [Validators.required]],
+        phoneNumber: ['', [Validators.required, Validators.pattern(/^(\+2)?(010|011|012)\d{8}$/)]],
         userName: ['hankosh', [Validators.required]],
         password: ['P@ssw0rd', [
           Validators.required,
@@ -79,7 +79,7 @@ export class SignupComponent {
         chrinicConditions: ['None', Validators.required],
         address: ['Mit Ghamr', Validators.required],
         emergencyContactName: ['asdasd', Validators.required],
-        emergencyContactPhone: ['01092717902', Validators.required],
+        emergencyContactPhone: ['', [Validators.required, Validators.pattern(/^(\+2)?(010|011|012)\d{8}$/)]],
       })
     });
   }
@@ -133,19 +133,21 @@ export class SignupComponent {
       emergencyContactPhone: "+2" + patientData.emergencyContactPhone.replace("+2", ''),
     };
     console.log(newUser.phoneNumber);
-    this._authService.register(newUser).subscribe({
-      next: data => {
-        this.router.navigate(['login']);
-        this.loading = false;
-      },
-      error: err => {
-        let concatenatedError = '';
-        if(err.error.errors)
-          for(let i = 0; i < err.error.errors.length; i++) concatenatedError += err.error.errors[i]
-        this.serverError = err.error?.errors?.length > 0 ? concatenatedError : err.error?.message
-        this.loading = false;
-      }
-    })
+    setTimeout(()=>{
+      this._authService.register(newUser).subscribe({
+        next: data => {
+          this.router.navigate(['login']);
+          this.loading = false;
+        },
+        error: err => {
+          let concatenatedError = '';
+          if(err.error.errors)
+            for(let i = 0; i < err.error.errors.length; i++) concatenatedError += err.error.errors[i]
+          this.serverError = err.error?.errors?.length > 0 ? concatenatedError : err.error?.message
+          this.loading = false;
+        }
+      })
+    }, 500)
   }
   get accountForm(): FormGroup {
     return this.signupForm.get('account') as FormGroup;

@@ -90,6 +90,9 @@
           @if (patientForm.get('address')?.touched &&
           patientForm.get('address')?.invalid) {
           <div class="patient-update__error">
+            @if (patientForm.get('address')?.errors?.['required']) {
+              <span>Address is required</span>
+            }
             @if (patientForm.get('address')?.errors?.['maxlength']) {
             <span>Max 500 characters</span>
             }
@@ -108,6 +111,9 @@
           @if (patientForm.get('emergencyContactName')?.touched &&
           patientForm.get('emergencyContactName')?.invalid) {
           <div class="patient-update__error">
+            @if (patientForm.get('emergencyContactName')?.errors?.['required']) {
+              <span>Emergency Contact Name is required</span>
+            }
             @if (patientForm.get('emergencyContactName')?.errors?.['maxlength'])
             {
             <span>Max 100 characters</span>
@@ -127,12 +133,14 @@
           @if (patientForm.get('emergencyContactPhone')?.touched &&
           patientForm.get('emergencyContactPhone')?.invalid) {
           <div class="patient-update__error">
-            @if
-            (patientForm.get('emergencyContactPhone')?.errors?.['maxlength']) {
-            <span>Max 20 characters</span>
-            } @if
-            (patientForm.get('emergencyContactPhone')?.errors?.['pattern']) {
-            <span>Must be numbers only</span>
+            @if (patientForm.get('emergencyContactPhone')?.errors?.['required']) {
+              <span>Emergency Contact Phone is required</span>
+            }
+            @if (patientForm.get('emergencyContactPhone')?.errors?.['pattern']) {
+              <span>
+                Phone must be 010/011/012 with or without +2  
+                (Example: +201092717902 or 01092717902)
+              </span>
             }
           </div>
           }
@@ -145,8 +153,8 @@
           type="button"
           class="patient-update__save-btn"
           (click)="saveChanges()"
-          [disabled]="patientForm.invalid"
-        >
+          >
+          <!-- [disabled]="patientForm.invalid" -->
           Save Changes
         </button>
       </div>
