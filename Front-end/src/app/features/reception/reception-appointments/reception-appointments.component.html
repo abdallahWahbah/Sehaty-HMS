@@ -90,12 +90,14 @@
             >
               Reschedule
             </button>
-            <button
-              class="appointment__button btn"
-              (click)="checkIn(appointment)"
-            >
-              Check in
-            </button>
+            @if(appointment.status !== "InProgress"){
+              <button
+                class="appointment__button btn"
+                (click)="checkIn(appointment)"
+              >
+                Check in
+              </button>
+            }
           </div>
         </div>
       </div>
