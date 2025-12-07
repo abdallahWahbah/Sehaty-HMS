@@ -27,7 +27,7 @@
         {
             var doctorUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var doctorId = unit.Repository<Doctor>().FindBy(D => D.UserId == doctorUserId).Select(D => D.Id).FirstOrDefault();
-            var spec = new AppointmentSpecifications(A => (A.Status == AppointmentStatus.Confirmed) && A.DoctorId == doctorId);
+            var spec = new AppointmentSpecifications(A => (A.Status == AppointmentStatus.Confirmed || A.Status == AppointmentStatus.Completed) && A.DoctorId == doctorId);
             var appointments = (await unit.Repository<Appointment>().GetAllWithSpecAsync(spec)).OrderBy(A => A.AppointmentDateTime);
             return Ok(mapper.Map<List<AppointmentReadDto>>(appointments));
         }

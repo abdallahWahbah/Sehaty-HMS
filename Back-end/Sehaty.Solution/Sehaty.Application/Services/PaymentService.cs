@@ -1,15 +1,19 @@
-﻿namespace Sehaty.Application.Services
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace Sehaty.Application.Services
 {
     public class PaymentService : IPaymentService
     {
         private readonly IUnitOfWork unit;
         private readonly IPaymobService paymobEgy2Service;
+        private readonly INotificationService notificationService;
         private readonly PaymentSettings paymentSettings;
 
-        public PaymentService(IUnitOfWork unit,IPaymobService paymobEgy2Service,IOptions<PaymentSettings> paymentSettings)
+        public PaymentService(IUnitOfWork unit,IPaymobService paymobEgy2Service,IOptions<PaymentSettings> paymentSettings,INotificationService notificationService)
         {
             this.unit = unit;
             this.paymobEgy2Service = paymobEgy2Service;
+            this.notificationService = notificationService;
             this.paymentSettings = paymentSettings.Value;
         }
 
@@ -173,7 +177,111 @@
             return true;
         }
 
+        public async Task<Result<ContentResult>> CheckSuccessAsync(int id,bool success)//,[FromQuery] string order,[FromQuery] int? amount_cents   
+        {
+            if(!success)
+                return Result<ContentResult>.Failure(ErrorType.BadRequest,"Payment Failed");
 
+
+            var spec = new BillingSpec(B => B.TransactionId == id.ToString() && B.Status == BillingStatus.Paid);
+            var billing = await unit.Repository<Billing>().GetByIdWithSpecAsync(spec);
+            if(billing == null)
+            {
+                return Result<ContentResult>.Failure(
+                    ErrorType.NotFound,
+                    "Payment processing not completed yet, please refresh page in a few seconds"
+                );
+            }
+            string html = "<html><body><h1>✅ تم تأكيد الحجز بنجاح</h1></body></html>";
+
+            return Result<ContentResult>.Success(new ContentResult() { ContentType = "text/html",Content = html });
+        }
+
+        public async Task<Result<Appointment>> MarkAppointmentAsConfirmedAsync(int appointmentId)
+        {
+
+            var spec = new AppointmentSpecifications(A => A.Id == appointmentId);
+            var appointment = await unit.Repository<Appointment>().GetByIdWithSpecAsync(spec);
+            if(appointment == null)
+                return Result<Appointment>.Failure(ErrorType.NotFound,"Appointment Not Found");
+
+            if(appointment.Status != AppointmentStatus.Pending)
+                return Result<Appointment>.Failure(ErrorType.BadRequest,"Appointment cannot be confirmed");
+
+            appointment.Status = AppointmentStatus.Confirmed;
+            appointment.ConfirmationDateTime = DateTime.Now;
+            var rowsAffected = await unit.CommitAsync();
+
+            if(rowsAffected <= 0)
+                return Result<Appointment>.Failure(ErrorType.BadRequest,"Failed to confirm appointment");
+            return Result<Appointment>.Success(appointment);
+        }
+
+
+        public async Task<Result<string>> CallbackAsync(PaymobCallbackPostModel model)
+        {
+            try
+            {
+                if(model?.obj == null)
+                    return Result<string>.Success("Invalid data");
+
+                var orderId = model.obj.order.id.ToString();
+
+                var billing = await unit.Repository<Billing>()
+                    .GetByIdWithSpecAsync(new BillingSpec(b =>
+                        b.TransactionId == orderId &&
+                        b.Status == BillingStatus.Pending));
+
+                if(billing == null)
+                    return Result<string>.Success("Billing not found");
+
+                if(!model.obj.success)
+                {
+                    billing.Status = BillingStatus.Canceled;
+                    billing.Notes = "Payment failed";
+
+                    unit.Repository<Billing>().Update(billing);
+                    await unit.CommitAsync();
+
+                    return Result<string>.Success("Payment failed");
+                }
+
+                billing.Status = BillingStatus.Paid;
+                billing.PaidAmount = model.obj.amount_cents / 100;
+                billing.PaidAt = DateTime.UtcNow;
+                billing.TransactionId = orderId;
+                billing.PaymentMethod = GetPaymentMethodFromCallback(model);
+
+                unit.Repository<Billing>().Update(billing);
+                await unit.CommitAsync();
+
+                await MarkAppointmentAsConfirmedAsync(billing.AppointmentId);
+
+                var appointment = await unit.Repository<Appointment>().GetByIdAsync(billing.AppointmentId);
+                await notificationService.NotifyAppointmentConfirmation(appointment);
+
+                return Result<string>.Success("Billing & Appointment confirmed");
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                return Result<string>.Failure(ErrorType.BadRequest,"Callback processing error");
+            }
+        }
+
+
+        private static PaymentMethod GetPaymentMethodFromCallback(PaymobCallbackPostModel model)
+        {
+            string method = model.obj?.data?.message?.ToLower();
+
+            if(method?.Contains("wallet") == true)
+                return PaymentMethod.MobileWallet;
+
+            if(method?.Contains("card") == true || method?.Contains("credit") == true)
+                return PaymentMethod.CreditCard;
+
+            return PaymentMethod.CreditCard;
+        }
     }
 
 
