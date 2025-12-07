@@ -51,12 +51,12 @@ export class SignupComponent {
     this.signupForm = this.fb.group({
       // FORM 1 — ACCOUNT FORM
       account: this.fb.group({
-        firstName: ['ebrahim', [Validators.required]],
-        lastName: ['front end', [Validators.required]],
-        email: ['a@a.a', [Validators.required, Validators.email]],
+        firstName: ['', [Validators.required]],
+        lastName: ['', [Validators.required]],
+        email: ['', [Validators.required, Validators.email]],
         phoneNumber: ['', [Validators.required, Validators.pattern(/^(\+2)?(010|011|012)\d{8}$/)]],
-        userName: ['hankosh', [Validators.required]],
-        password: ['P@ssw0rd', [
+        userName: ['', [Validators.required]],
+        password: ['', [
           Validators.required,
           Validators.minLength(6),
           Validators.pattern(/^(?=.*[a-z]).*$/),
@@ -65,20 +65,20 @@ export class SignupComponent {
           Validators.pattern(/^(?=.*[\W_]).*$/),
           Validators.pattern(/^\S+$/)
         ]],
-        confirmPassword: ['P@ssw0rd', Validators.required],
-        agreeTerms: [true, Validators.requiredTrue]
+        confirmPassword: ['', Validators.required],
+        agreeTerms: [false, Validators.requiredTrue]
       }),
 
       // FORM 2 — PATIENT FORM
       patient: this.fb.group({
-        dateOfBirth: ['2025-12-01', Validators.required],
+        dateOfBirth: ['', Validators.required],
         gender: [this.genderOptions[0].value, Validators.required],
-        nationalId: ['25687419354716', Validators.required],
-        bloodType: ['A+', Validators.required],
-        allergies: ['None', Validators.required],
-        chrinicConditions: ['None', Validators.required],
-        address: ['Mit Ghamr', Validators.required],
-        emergencyContactName: ['asdasd', Validators.required],
+        nationalId: ['', Validators.required],
+        bloodType: ['', Validators.required],
+        allergies: ['', Validators.required],
+        chrinicConditions: ['', Validators.required],
+        address: ['', Validators.required],
+        emergencyContactName: ['', Validators.required],
         emergencyContactPhone: ['', [Validators.required, Validators.pattern(/^(\+2)?(010|011|012)\d{8}$/)]],
       })
     });

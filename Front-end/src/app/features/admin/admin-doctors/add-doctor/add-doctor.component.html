@@ -89,6 +89,12 @@
             </p-floatlabel>
             @if(doctorForm.get('phoneNumber')?.touched && doctorForm.get('phoneNumber')?.invalid){
                 <div class="error-text">
+                  @if (doctorForm.get('phoneNumber')?.errors?.['pattern']) {
+                    <span>
+                      Phone must be 010/011/012 with or without +2  
+                      (Example: +201092717902 or 01092717902)
+                    </span>
+                  }
                   @if(doctorForm.get('phoneNumber')?.errors?.['required']){
                     <span>phoneNumber is required</span>
                   }
