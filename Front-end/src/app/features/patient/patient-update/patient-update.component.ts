@@ -60,21 +60,24 @@ export class PatientUpdateComponent {
         this.patient.gender,
         [Validators.required, Validators.maxLength(10)],
       ],
-      address: [this.patient.address, Validators.maxLength(500)],
+      address: [
+        this.patient.address, 
+        [Validators.required, Validators.maxLength(500)]
+      ],
       emergencyContactName: [
         this.patient.emergencyContactName,
-        Validators.maxLength(100),
+        [Validators.required, Validators.maxLength(100)]
       ],
       emergencyContactPhone: [
         this.patient.emergencyContactPhone,
-        [Validators.maxLength(20), Validators.pattern('^[0-9]*$')],
+        [Validators.required, Validators.pattern(/^(\+2)?(010|011|012)\d{8}$/)],
       ],
     });
   }
   saveChanges() {
     const token = localStorage.getItem('token')!;
-    const body = this.patientForm.value;
-
+    let body = this.patientForm.value;
+    body = {...body, emergencyContactPhone: "+2" + body.emergencyContactPhone.replace("+2", "")}
     this.patientService.editByPatient(this.patient.id, body, token).subscribe({
       next: () => {
         Object.assign(this.patient, body);

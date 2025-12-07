@@ -218,10 +218,10 @@ export const routes: Routes = [
         canActivate: [patientGuard],
         component: PatientUpdateComponent,
       },
-      { path: 'payment/:id', component: PatientPaymentComponent },
-      { path: 'prescription', component: PatientPrescriptionComponent },
-      { path: 'feedback', component: PatientFeedbackComponent },
-      { path: 'feedback/add/:id', component: PatientAddFeedbackComponent },
+      { path: 'payment/:id', component: PatientPaymentComponent, canActivate: [patientGuard] },
+      { path: 'prescription', component: PatientPrescriptionComponent, canActivate: [patientGuard] },
+      { path: 'feedback', component: PatientFeedbackComponent, canActivate: [patientGuard] },
+      { path: 'feedback/add/:id', component: PatientAddFeedbackComponent, canActivate: [patientGuard] },
 
       // 🔹 اللي كانوا patientReceptionGuard
       {
