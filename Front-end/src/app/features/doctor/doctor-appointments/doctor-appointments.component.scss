@@ -1,4 +1,4 @@
-// ====== Base tokens (محلية للـ component ده) ======
+// ====== Base tokens ======
 $primary: #252b61;
 $primary-soft: #4b56a3;
 $text-main: #1f2933;
@@ -17,6 +17,38 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
 
 .appointments {
   margin-top: 2rem;
+
+  // ✅ Filter buttons
+  &__filter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  &__filter-btn {
+    border-radius: 999px;
+    padding: 0.5rem 1.4rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #4b5563;
+    cursor: pointer;
+    transition: 0.2s ease all;
+
+    &:hover {
+      background: #f5f6ff;
+    }
+
+    &--active {
+      background: #252b61;
+      color: #ffffff;
+      border-color: #252b61;
+      box-shadow: 0 8px 20px rgba(25, 39, 79, 0.25);
+    }
+  }
 
   &__list {
     display: flex;
@@ -239,7 +271,6 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
       }
     }
 
-    // 🆕 زرار Apologize
     &--danger {
       background: #fef2f2;
       color: #b91c1c;
@@ -330,6 +361,14 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
   &--delayed {
     background: #f97316;
   }
+
+  &--inprogress {
+    background: #3b82f6;
+  }
+
+  &--completed {
+    background: #0ea5e9;
+  }
 }
 
 @keyframes spin {
@@ -388,6 +427,7 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
 }
 
 // ========== AI Modal Styles ==========
+
 .ai-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -700,6 +740,15 @@ $shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
   100% {
     transform: scale(1);
   }
+}
+
+.appointment-card__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: #e5e7eb !important;
+  color: #9ca3af !important;
+  border-color: #e5e7eb !important;
+  pointer-events: none;
 }
 .appointment-card__btn:disabled {
   opacity: 0.55;

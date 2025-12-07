@@ -1,20 +1,24 @@
 import { Component } from '@angular/core';
-import { AppointmentResponseModel } from '../../../core/models/appointment-response-model';
-import { AppointmentService } from '../../../core/services/appointment.service';
-import { DoctorResponseModel } from '../../../core/models/doctor-response-model';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { FeedbackService } from '../../../core/services/feedback.service';
+
+import { AppointmentResponseModel } from '../../../core/models/appointment-response-model';
+import { DoctorResponseModel } from '../../../core/models/doctor-response-model';
 import { FeedbackResponseModel } from '../../../core/models/feedback.response';
-import { DoctorService } from '../../../core/services/doctor.service';
-import { PrescriptionAnalysisService } from '../../../core/services/prescription-analysis.service';
-import { PatientHistoryAnalysis } from '../../../core/models/PatientHistoryAnalysis.model';
 import { MedicalRecord } from '../../../core/models/medicalrecord-response.model';
+import { PatientHistoryAnalysis } from '../../../core/models/PatientHistoryAnalysis.model';
+
+import { AppointmentService } from '../../../core/services/appointment.service';
+import { DoctorService } from '../../../core/services/doctor.service';
+import { FeedbackService } from '../../../core/services/feedback.service';
 import { MedicalRecordService } from '../../../core/services/medical-record.service';
+import { PrescriptionAnalysisService } from '../../../core/services/prescription-analysis.service';
+
 import { catchError, map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-doctor-appointments',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './doctor-appointments.component.html',
   styleUrls: ['./doctor-appointments.component.scss'],
@@ -30,22 +34,29 @@ export class DoctorAppointmentsComponent {
   selectedFeedbackMap: {
     [appointmentId: number]: FeedbackResponseModel | null;
   } = {};
+
   showApologyPopup = false;
   apologyMessage = '';
   isApologyError = false;
+
   // ====== AI History Modal state ======
   isHistoryAiModalOpen = false;
   historyLoading = false;
   historyError: string | null = null;
   historyData: PatientHistoryAnalysis | null = null;
+
   medicalRecordExistsMap: { [patientId: number]: boolean } = {};
+
+  // ✅ مود الفلترة:
+  // active => Confirmed + InProgress
+  // completed => Completed فقط
+  viewMode: 'active' | 'completed' = 'active';
 
   constructor(
     private _appointmentsService: AppointmentService,
     private feedbackService: FeedbackService,
     private router: Router,
     private _doctorService: DoctorService,
-    // ✅ حقن السيرفس بتاع الـ AI هنا
     private prescriptionAnalysisService: PrescriptionAnalysisService,
     private medicalRecordService: MedicalRecordService
   ) {}
@@ -70,6 +81,7 @@ export class DoctorAppointmentsComponent {
 
     this._appointmentsService.getDoctorAppointments().subscribe({
       next: (data: AppointmentResponseModel[]) => {
+        // ترتيب المواعيد
         this.appointments = data.sort((a, b) => {
           const dateA = new Date(a.appointmentDateTime);
           const dateB = new Date(b.appointmentDateTime);
@@ -89,12 +101,15 @@ export class DoctorAppointmentsComponent {
           return dateA.getTime() - dateB.getTime();
         });
 
-        // check existance of medical record for each patient
-        this.appointments.forEach((appt:any) => {
-          this.checkMedicalRecordExistance(appt.patientId).subscribe(exists => {
-            this.medicalRecordExistsMap[appt.patientId] = exists;
-          });
+        // check existence of medical record for each patient
+        this.appointments.forEach((appt: any) => {
+          this.checkMedicalRecordExistance(appt.patientId).subscribe(
+            (exists) => {
+              this.medicalRecordExistsMap[appt.patientId] = exists;
+            }
+          );
         });
+
         this.isLoading = false;
       },
       error: (err) => {
@@ -102,6 +117,27 @@ export class DoctorAppointmentsComponent {
         this.isLoading = false;
       },
     });
+  }
+
+  // ✅ Getter يرجّع الـ appointments المعروضة حسب الـ mode
+  get filteredAppointments(): AppointmentResponseModel[] {
+    return this.appointments.filter((a) => {
+      const rawStatus = a.status || '';
+      // نخليها lowercase ونشيل المسافات عشان نغطي in progress / InProgress
+      const status = rawStatus.toLowerCase().replace(/\s+/g, '');
+
+      if (this.viewMode === 'completed') {
+        return status === 'completed';
+      }
+
+      // viewMode === 'active' -> Confirmed + InProgress
+      return status === 'confirmed' || status === 'inprogress';
+    });
+  }
+
+  // ✅ تغيير الـ mode من الزرارين
+  setViewMode(mode: 'active' | 'completed') {
+    this.viewMode = mode;
   }
 
   trackById(index: number, item: AppointmentResponseModel) {
@@ -112,11 +148,10 @@ export class DoctorAppointmentsComponent {
     return this.medicalRecordService
       .getMedicalRecordByPatientId(patientId)
       .pipe(
-        map(record => !!record),
+        map((record) => !!record),
         catchError(() => of(false))
       );
   }
-
 
   addPrescription(appointment: AppointmentResponseModel) {
     this.router.navigate(['/doctor/prescriptions/add'], {
@@ -171,17 +206,17 @@ export class DoctorAppointmentsComponent {
     }
   }
 
-  goToEditMedicalRecord(patientId: number){
+  goToEditMedicalRecord(patientId: number) {
     this.medicalRecordService.getMedicalRecordByPatientId(patientId).subscribe({
-      next: data => {
+      next: (data) => {
         this.router.navigate(['/doctor/patient/medicalRecord/edit', data.id], {
           state: {
             medicalRecord: data,
-            patientId
-          }
-        })
-      }
-    })
+            patientId,
+          },
+        });
+      },
+    });
   }
 
   // =========================
@@ -201,7 +236,7 @@ export class DoctorAppointmentsComponent {
     this.prescriptionAnalysisService
       .analyzePatientHistory(patientId)
       .subscribe({
-        next: (res) => {
+        next: (res: any) => {
           if (res.isSuccess && res.data) {
             this.historyData = res.data;
           } else {
@@ -221,6 +256,7 @@ export class DoctorAppointmentsComponent {
   closeHistoryAiModal(): void {
     this.isHistoryAiModalOpen = false;
   }
+
   apologize(appointment: AppointmentResponseModel) {
     if (!appointment.id) {
       console.warn('Appointment id is missing for apologize');
@@ -228,8 +264,8 @@ export class DoctorAppointmentsComponent {
     }
 
     this._appointmentsService.apologizeForDoctor(appointment.id).subscribe({
-      next: (res) => {
-        this.isApologyError = false; // ✅ نجاح
+      next: (res: any) => {
+        this.isApologyError = false;
         this.apologyMessage =
           res?.message || 'Appointment cancelled and refund processed.';
         this.showApologyPopup = true;
@@ -242,7 +278,7 @@ export class DoctorAppointmentsComponent {
       },
       error: (err) => {
         console.error('Error apologizing for appointment', err);
-        this.isApologyError = true; // ❌ خطأ
+        this.isApologyError = true;
         this.apologyMessage = 'Something went wrong while cancelling.';
         this.showApologyPopup = true;
 
@@ -252,6 +288,7 @@ export class DoctorAppointmentsComponent {
       },
     });
   }
+
   isAppointmentPassed(date: Date | string): boolean {
     const now = new Date();
     const appDate = new Date(date);

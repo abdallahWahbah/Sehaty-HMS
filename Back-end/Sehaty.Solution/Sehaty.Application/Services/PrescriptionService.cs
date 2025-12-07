@@ -28,7 +28,7 @@
 
             if(appointment is null)
                 return Result<Prescription>.Failure(ErrorType.NotFound,"Appointment not found");
-            if(appointment?.Status != AppointmentStatus.InProgress || appointment?.Status != AppointmentStatus.Completed)
+            if(appointment?.Status != AppointmentStatus.InProgress && appointment?.Status != AppointmentStatus.Completed)
                 return Result<Prescription>.Failure(ErrorType.BadRequest,
                        "Oops! You can add a prescription only when the appointment is In Progress or Completed.");
 
