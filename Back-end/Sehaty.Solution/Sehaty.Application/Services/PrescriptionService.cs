@@ -1,6 +1,4 @@
-﻿using Sehaty.Core.Specifications.Prescription_Specs;
-
-namespace Sehaty.Application.Services
+﻿namespace Sehaty.Application.Services
 {
     public class PrescriptionService : IPrescriptionService
     {
@@ -28,11 +26,11 @@ namespace Sehaty.Application.Services
 
             var appointment = await unit.Repository<Appointment>().GetByIdAsync(dto.AppointmentId);
 
-            if (appointment is null)
-                return Result<Prescription>.Failure(ErrorType.NotFound, "Appointment not found");
-            //if (appointment?.Status != AppointmentStatus.InProgress || appointment?.Status != AppointmentStatus.Completed)
-            //    return BadRequest(new ApiResponse(400,
-            //        "Oops! You can add a prescription only when the appointment is In Progress or Completed."));
+            if(appointment is null)
+                return Result<Prescription>.Failure(ErrorType.NotFound,"Appointment not found");
+            if(appointment?.Status != AppointmentStatus.InProgress || appointment?.Status != AppointmentStatus.Completed)
+                return Result<Prescription>.Failure(ErrorType.BadRequest,
+                       "Oops! You can add a prescription only when the appointment is In Progress or Completed.");
 
 
             var doctorUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -128,7 +126,7 @@ namespace Sehaty.Application.Services
 
             return Result<byte[]>.Success(GeneratePrescriptionPdf(prescription));
         }
-        private byte[] GeneratePrescriptionPdf(Prescription prescription)
+        private static byte[] GeneratePrescriptionPdf(Prescription prescription)
         {
             var document = QuestPDF.Fluent.Document.Create(container =>
             {
