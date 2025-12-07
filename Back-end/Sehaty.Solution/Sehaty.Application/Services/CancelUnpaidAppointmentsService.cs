@@ -31,10 +31,16 @@ namespace Sehaty.Application.Services
                         .Where(a => a.Status == AppointmentStatus.Pending &&
                                     a.BookingDateTime <= limitTime)
                         .ToList();
-
                     foreach (var a in unpaidAppointments)
                     {
                         a.Status = AppointmentStatus.Canceled;
+                        a.CancellationReason = "unpaid after 2 hours";
+                        var slot = context.DoctorAppointmentSlots.FirstOrDefault(s => s.AppointmentId == a.Id);
+                        if (slot != null)
+                        {
+                            slot.IsBooked = false;
+                            slot.AppointmentId = null;
+                        }
                     }
 
                     await context.SaveChangesAsync();
