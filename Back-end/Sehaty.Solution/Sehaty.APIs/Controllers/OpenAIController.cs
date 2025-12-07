@@ -1,7 +1,7 @@
 ﻿namespace Sehaty.APIs.Controllers
 {
 
-    public class OpenAIController(IOpenAIService aiService, IUnitOfWork unit) : ApiBaseController
+    public class OpenAIController(IOpenAIService aiService,IUnitOfWork unit) : ApiBaseController
     {
         [HttpGet("analyze-prescription/{prescriptionId}")]
         [Authorize(Roles = "Patient")]
@@ -13,21 +13,21 @@
                 var patient = await unit.Repository<Patient>()
                     .GetFirstOrDefaultAsync(P => P.UserId == patientUserId);
 
-                if (patient == null)
-                    return NotFound(new ApiResponse(404, "Patient not found"));
+                if(patient == null)
+                    return NotFound(new ApiResponse(404,"Patient not found"));
 
                 var prescription = await unit.Repository<Prescription>()
                     .GetFirstOrDefaultAsync(P => P.Id == prescriptionId && P.PatientId == patient.Id);
 
-                if (prescription == null)
-                    return NotFound(new ApiResponse(404, "Prescription not found or you don't have access to it"));
+                if(prescription == null)
+                    return NotFound(new ApiResponse(404,"Prescription not found or you don't have access to it"));
 
                 var analysis = await aiService.AnalyzePrescriptionAsync(prescriptionId);
                 return Ok(analysis);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                return BadRequest(new ApiResponse(400, ex.Message));
+                return BadRequest(new ApiResponse(400,ex.Message));
             }
         }
 
@@ -41,19 +41,19 @@
                 var doctor = await unit.Repository<Doctor>()
                     .GetFirstOrDefaultAsync(d => d.UserId == doctorUserId);
 
-                if (doctor == null)
-                    return NotFound(new ApiResponse(404, "Doctor not found"));
+                if(doctor == null)
+                    return NotFound(new ApiResponse(404,"Doctor not found"));
 
                 var analysis = await aiService.AnalyzePatientHistoryAsync(patientId);
 
-                if (!analysis.IsSuccess)
-                    return StatusCode((int)analysis.ErrorType, new ApiResponse((int)analysis.ErrorType, analysis.Error));
+                if(!analysis.IsSuccess)
+                    return StatusCode((int) analysis.ErrorType,new ApiResponse((int) analysis.ErrorType,analysis.Error));
 
                 return Ok(analysis);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                return BadRequest(new ApiResponse(400, ex.Message));
+                return BadRequest(new ApiResponse(400,ex.Message));
             }
         }
 
@@ -67,28 +67,28 @@
                 var patient = await unit.Repository<Patient>()
                     .GetFirstOrDefaultAsync(p => p.UserId == patientUserId);
 
-                if (patient == null)
-                    return NotFound(new ApiResponse(404, "Patient not found"));
+                if(patient == null)
+                    return NotFound(new ApiResponse(404,"Patient not found"));
 
-                if (patient.Id != request.PatientId)
-                    return Unauthorized(new ApiResponse(401, "You can only request appointments for yourself"));
+                if(patient.Id != request.PatientId)
+                    return Unauthorized(new ApiResponse(401,"You can only request appointments for yourself"));
 
                 var result = await aiService.AnalyzeSymptomsAndSuggestAppointmentAsync(request);
 
-                if (!result.IsSuccess)
-                    return StatusCode((int)result.ErrorType, new ApiResponse((int)result.ErrorType, result.Error));
+                if(!result.IsSuccess)
+                    return StatusCode((int) result.ErrorType,new ApiResponse((int) result.ErrorType,result.Error));
 
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                return BadRequest(new ApiResponse(400, ex.Message));
+                return BadRequest(new ApiResponse(400,ex.Message));
             }
         }
 
 
         [HttpGet("analyze-prescription-alternatives/{prescriptionId}")]
-        [Authorize("Patient")]
+        [Authorize(Roles = "Patient")]
         public async Task<ActionResult<PrescriptionAlternativesResponseDto>> AnalyzePrescriptionAlternatives(int prescriptionId)
         {
             try
@@ -97,22 +97,22 @@
                 var patient = await unit.Repository<Patient>()
                     .GetFirstOrDefaultAsync(p => p.UserId == patientUserId);
 
-                if (patient == null)
-                    return NotFound(new ApiResponse(404, "Patient not found"));
+                if(patient == null)
+                    return NotFound(new ApiResponse(404,"Patient not found"));
 
                 var prescription = await unit.Repository<Prescription>()
                     .GetFirstOrDefaultAsync(p => p.Id == prescriptionId);
 
-                if (prescription == null)
-                    return NotFound(new ApiResponse(404, "Prescription not found or you don't have access to it"));
+                if(prescription == null)
+                    return NotFound(new ApiResponse(404,"Prescription not found or you don't have access to it"));
 
                 var result = await aiService.AnalyzePrescriptionAlternativesAsync(prescriptionId);
 
                 return result.ToApiResponse();
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                return BadRequest(new ApiResponse(400, ex.Message));
+                return BadRequest(new ApiResponse(400,ex.Message));
             }
         }
 
