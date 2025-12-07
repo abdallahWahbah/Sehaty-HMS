@@ -24,36 +24,39 @@
   </section>
 
   <section class="feature-grid mb-5 mt-5">
+
     <article class="feature-card mint">
-      <h3>Tracking Every Progress.</h3>
-      <p>Connect within 60 seconds.</p>
-      <button class="pill rounded-5">
+      <h3>Book Your Appointments.</h3>
+      <p>Schedule consultations instantly.</p>
+      <a class="pill rounded-5 text-decoration-none" [routerLink]="'/home/appointments'">
         <i class="fa-solid fa-arrow-right"></i>
-      </button>
+      </a>
       <img src="images/landing/Usability testing-bro.svg" alt="Progress" />
     </article>
+
     <article class="feature-card yellow">
-      <h3>Find Doctors Near You.</h3>
-      <p>Confirmed appointments.</p>
-      <button class="pill rounded-5">
+      <h3>Access Your Medical Records.</h3>
+      <p>View and manage your records.</p>
+      <a class="pill rounded-5 text-decoration-none" [routerLink]="'/home/medicalRecords'">
         <i class="fa-solid fa-arrow-right"></i>
-      </button>
+      </a>
       <img src="images/landing/Web search-cuate.svg" alt="Doctors" />
     </article>
+
     <article class="feature-card lilac">
-      <h3>Health care for hole family.</h3>
-      <p>Essentials at your doorstep.</p>
-      <button class="pill rounded-5">
+      <h3>Manage Your Prescriptions.</h3>
+      <p>View active and past prescriptions.</p>
+      <a class="pill rounded-5 text-decoration-none" [routerLink]="'/home/prescription'">
         <i class="fa-solid fa-arrow-right"></i>
-      </button>
+      </a>
       <img src="images/landing/Resume-amico.svg" alt="Medicine" />
     </article>
     <article class="feature-card blue">
-      <h3>Closer look to your lab results.</h3>
-      <p>Simple pickup at your home.</p>
-      <button class="pill rounded-5">
+      <h3>Check Your profile.</h3>
+      <p>Access detailed profile.</p>
+      <a class="pill rounded-5 text-decoration-none" [routerLink]="'/home/details'">
         <i class="fa-solid fa-arrow-right"></i>
-      </button>
+      </a>
       <img src="images/landing/Business analytics-rafiki.svg" alt="Lab tests" />
     </article>
   </section>
@@ -75,7 +78,6 @@
         The food we eat provides the nutrients that our bodies need to function
         properly.
       </p>
-      <button class="play"><i class="fa-solid fa-caret-right fs-1"></i></button>
       <img
         src="images/landing/Eating together-cuate.svg"
         alt="Nutrition"
