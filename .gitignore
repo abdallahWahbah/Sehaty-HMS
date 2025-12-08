@@ -11,7 +11,6 @@ Release/
 **/Release/
 **/net8.0/
 
- 
 # ============================
 # Visual Studio
 # ============================
@@ -20,8 +19,7 @@ Release/
 *.suo
 *.slnx/
 *.vscode/
-**/Migrations/
- 
+
 # ============================
 # Logs and temporary files
 # ============================
@@ -30,22 +28,19 @@ Release/
 *.temp
 *.swp
 *.pid
- 
+
 # ============================
 # Resharper, Rider, etc.
 # ============================
 _ReSharper*/
 *.DotSettings.user
- 
+
 # ============================
 # Keep config and code
 # ============================
 # Do NOT ignore these:
-# - Solution & project files
 !*.sln
 !*.csproj
-# - Config files (only the main ones, exclude secrets)
 !appsettings.json
 !appsettings.Development.json
-# - C# code files
 !*.cs

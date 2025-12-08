@@ -1,0 +1,57 @@
+.confirm-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+
+  &__content {
+    background: #fff;
+    padding: 2rem 5rem;
+    border-radius: 8px;
+    // width: 380px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+
+  &__title {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  &__header {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    color: #444;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+}
+
+.btn {
+  padding: 0.7rem 1.4rem;
+  border-radius: 2rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+  border: none;
+
+  &--cancel {
+    background: #ccc;
+    color: #333;
+  }
+
+  &--confirm {
+    background: #d9534f;
+    color: #fff;
+  }
+}

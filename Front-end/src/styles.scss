@@ -1,0 +1,18 @@
+/* You can add global styles to this file, and also import other style files */
+@import "./app/scss/abstracts/_global";
+@import "./app/scss/abstracts/mixins";
+@import "./app/scss/abstracts/variables";
+
+@import "./app/scss/base/base";
+@import "./app/scss/base/typography";
+@import "./app/scss/layout/admin/adminAppointmentsUpdate";
+@import "./app/scss/layout/admin/adminAppointments";
+@import "./app/scss/layout/admin/adminDashboard";
+@import "./app/scss/layout/admin/adminDoctors";
+@import "./app/scss/layout/auth";
+@import "./app/scss/layout/dashboardSidebar";
+@import "./app/scss/layout/department";
+@import "./app/scss/layout/admin/adminDepartmentDetails";
+@import "./app/scss/layout/admin/adminDepartmentUpdate";
+@import "./app/scss/layout/admin/adminDepartmentAdd";
+@import "./app/scss/layout/admin/adminAppointmentsDetails";

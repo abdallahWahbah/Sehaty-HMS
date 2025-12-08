@@ -1,0 +1,22 @@
+<section id="dashboard" class="dashboard">
+  <div class="dashboard__title">
+    <h2 class="dashboard__title-main">Payment</h2>
+    <p class="dashboard__title-sub">Complete Your Payment</p>
+
+    <!-- Payment Frame -->
+    <div class="payment-container" *ngIf="paymentLink; else loading">
+      <iframe
+        [src]="paymentLink | safeUrl"
+        width="100%"
+        height="800"
+        style="border: none; border-radius: 12px; overflow: hidden"
+      >
+      </iframe>
+    </div>
+
+    <!-- Loading State -->
+    <ng-template #loading>
+      <p style="font-size: 18px; margin-top: 20px">Loading payment page...</p>
+    </ng-template>
+  </div>
+</section>

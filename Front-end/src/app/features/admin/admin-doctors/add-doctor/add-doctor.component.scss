@@ -1,0 +1,156 @@
+.patient-edit {
+  margin-top: 3rem;
+  background: #ffffff;
+  border-radius: 1.4rem;
+  padding: 2.2rem 2.4rem;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+
+  /* عنوان القسم لو حبيت تستخدمه */
+  &__header {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-primary, #252b61);
+    margin-bottom: 1.5rem;
+  }
+
+  /* جريد مرن بدل 48% / 48% */
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.75rem 2rem;
+  }
+
+  /* كل wrapper بتاع الـ p-floatlabel */
+  &__input {
+    width: 100%;
+    margin-bottom: 0.5rem;
+
+    /* نخلي float label يملى العرض */
+    .p-float-label {
+      width: 100%;
+    }
+
+    /* ستايل الإنبتات */
+    input,
+    .p-inputtext,
+    .p-inputwrapper {
+      width: 100%;
+      border-radius: 0.9rem;
+      border: 1px solid #d0d7e2;
+      padding: 0.9rem 1rem;
+      font-size: 0.95rem;
+      color: #0f172a;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease,
+        background-color 0.18s ease;
+      background-color: #f9fafb;
+    }
+
+    input:focus,
+    .p-inputtext:focus,
+    .p-inputwrapper.p-inputwrapper-focus {
+      outline: none;
+      border-color: var(--color-primary, #252b61);
+      box-shadow: 0 0 0 1px rgba(37, 43, 97, 0.18);
+      background-color: #ffffff;
+    }
+
+    /* الليبل بتاع الـ float label */
+    label {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+  }
+
+  /* الـ Select (Department) */
+  &__select {
+    width: 100%;
+    border-radius: 0.9rem;
+    border: 1px solid #d0d7e2;
+    padding: 0.9rem 1rem;
+    font-size: 0.95rem;
+    color: #0f172a;
+    background-color: #f9fafb;
+    outline: none;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease,
+      background-color 0.18s ease;
+    appearance: none; /* شكل أنظف للـ select */
+  }
+
+  &__select:focus {
+    border-color: var(--color-primary, #252b61);
+    box-shadow: 0 0 0 1px rgba(37, 43, 97, 0.18);
+    background-color: #ffffff;
+  }
+
+  /* لو حابب تستخدم status dropdown */
+  &__status {
+    margin-top: 0.5rem;
+    width: 100%;
+
+    .p-dropdown.p-inputwrapper.p-select {
+      height: 3.2rem;
+      width: 100%;
+    }
+  }
+
+  /* زرار الإرسال */
+  &__button-container {
+    margin-top: 2.5rem;
+    display: flex;
+    justify-content: flex-end;
+
+    .p-button {
+      border-radius: 999px;
+      padding: 0.9rem 2.6rem;
+      font-weight: 700;
+      font-size: 0.98rem;
+      background: var(--color-primary, #252b61);
+      border-color: var(--color-primary, #252b61);
+      box-shadow: 0 14px 28px rgba(37, 43, 97, 0.35);
+      transition: transform 0.18s ease, box-shadow 0.18s ease,
+        background-color 0.18s ease;
+    }
+
+    .p-button:hover {
+      background: #1f244f;
+      border-color: #1f244f;
+      transform: translateY(-1px);
+      box-shadow: 0 18px 34px rgba(15, 23, 42, 0.4);
+    }
+
+    .p-button:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.35);
+    }
+  }
+
+  /* رسائل الخطأ */
+  .error-text {
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: #b91c1c;
+  }
+
+  /* بوكس السيرفر إيرور */
+  .server-error {
+    margin-bottom: 2rem !important;
+    padding: 0.9rem 1rem;
+    border-radius: 0.9rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    font-size: 0.9rem;
+  }
+
+  /* موبايل */
+  @media (max-width: 768px) {
+    margin-top: 2rem;
+    padding: 1.6rem 1.4rem;
+
+    &__button-container {
+      justify-content: center;
+    }
+  }
+}

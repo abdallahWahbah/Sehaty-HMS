@@ -1,0 +1,144 @@
+<section class="patients-dashboard">
+  <div class="patients-dashboard__wrapper">
+    <!-- Header -->
+    <div class="patients-dashboard__header">
+      <div class="patients-dashboard__title-group">
+        <h2 class="patients-dashboard__title">Patients</h2>
+        <p class="patients-dashboard__subtitle">
+          Manage patients, medical info, and status
+        </p>
+      </div>
+    </div>
+
+    <div class="patients-dashboard__content">
+      <!-- لو فيه Patients -->
+      @if (patients && patients.length > 0) {
+      <div class="patients-dashboard__list">
+        @for (patient of patients; track patient.id) {
+        <article class="patient-card">
+          <!-- Header: الاسم + تاريخ الميلاد + الحالة -->
+          <header class="patient-card__header">
+            <div class="patient-card__identity">
+              <div class="patient-card__avatar">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <div>
+                <p class="patient-card__name">
+                  {{ patient.firstName }} {{ patient.lastName }}
+                </p>
+                <p class="patient-card__dob">
+                  Date of birth:
+                  {{ patient.dateOfBirth | date : "yyyy-MM-dd" }}
+                </p>
+              </div>
+            </div>
+
+            <div class="patient-card__status-wrapper">
+              <span
+                class="patient-card__status"
+                [ngClass]="{
+                  'patient-card__status--active': patient.status === 'Active',
+                  'patient-card__status--discharged':
+                    patient.status === 'Discharged',
+                  'patient-card__status--readmitted':
+                    patient.status === 'Readmitted'
+                }"
+              >
+                {{ patient.status || "Unknown" }}
+              </span>
+            </div>
+          </header>
+
+          <!-- Body: medical summary -->
+          <section class="patient-card__body">
+            <div class="patient-card__info-grid">
+              <div class="patient-card__info-item">
+                <p class="patient-card__info-label">Blood Type</p>
+                <p class="patient-card__info-value">
+                  {{ patient.bloodType || "—" }}
+                </p>
+              </div>
+
+              <div class="patient-card__info-item">
+                <p class="patient-card__info-label">Chronic</p>
+                <p class="patient-card__info-value">
+                  {{ patient.chrinicConditions || "—" }}
+                </p>
+              </div>
+
+              <div class="patient-card__info-item">
+                <p class="patient-card__info-label">Allergies</p>
+                <p class="patient-card__info-value">
+                  {{ patient.allergies || "—" }}
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Contact section -->
+          <section class="patient-card__contact">
+            <div class="patient-card__contact-item">
+              <i class="fa-solid fa-phone patient-card__contact-icon"></i>
+              <p class="patient-card__contact-text">
+                {{ patient.emergencyContactPhone || "----" }}
+              </p>
+            </div>
+
+            <div class="patient-card__contact-item">
+              <i class="fa-solid fa-user patient-card__contact-icon"></i>
+              <p class="patient-card__contact-text">
+                Emergency: {{ patient.emergencyContactName || "----" }}
+              </p>
+            </div>
+          </section>
+
+          <!-- Footer: actions -->
+          <footer class="patient-card__footer">
+            <button
+              type="button"
+              class="patient-card__btn patient-card__btn--outline"
+              (click)="showPatient(patient)"
+            >
+              <i class="fa-solid fa-eye"></i>
+              <span>View</span>
+            </button>
+
+            <button
+              type="button"
+              class="patient-card__btn patient-card__btn--primary"
+              (click)="navigateToEdit(patient.id)"
+            >
+              <i class="fa-solid fa-file-pen"></i>
+              <span>Edit</span>
+            </button>
+          </footer>
+        </article>
+        }
+      </div>
+      } @else {
+      <!-- مفيش Patients -->
+      <div class="patients-dashboard__empty">
+        <i class="fa-solid fa-user-group patients-dashboard__empty-icon"></i>
+        <p class="patients-dashboard__empty-title">No patients found</p>
+        <p class="patients-dashboard__empty-subtitle">
+          There are no patients to display at the moment.
+        </p>
+      </div>
+      }
+
+      <!-- Dialog -->
+      @if (selectedPatient) {
+      <div class="patients-dashboard__dialog card flex justify-center">
+        <p-dialog
+          [modal]="true"
+          [(visible)]="isPatientShown"
+          [style]="{ width: '100rem', color: 'var(--color-primary)' }"
+          [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+        >
+          <app-patient [patient]="selectedPatient"></app-patient>
+        </p-dialog>
+      </div>
+      }
+    </div>
+  </div>
+</section>

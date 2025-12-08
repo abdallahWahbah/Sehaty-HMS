@@ -1,0 +1,387 @@
+// ====== Base colors ======
+$primary: #252b61;
+$primary-soft: #4b56a3;
+$bg-soft: #f5f6ff;
+$text-main: #1f2933;
+$text-muted: #6b7280;
+$danger: #dc2626;
+$radius-lg: 1.4rem;
+$shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+
+// ==========================
+// Prescriptions Layout
+// ==========================
+
+.prescriptions {
+  max-width: 110rem;
+  margin: 4rem auto;
+  padding: 0 2rem 4rem;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    align-items: flex-end;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: $primary;
+    margin: 0 0 0.4rem;
+  }
+
+  &__subtitle {
+    font-size: 1.4rem;
+    color: $text-muted;
+    margin: 0;
+  }
+
+  // ========== Search Bar ==========
+  &__search {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-width: 24rem;
+    max-width: 32rem;
+    width: 100%;
+    padding: 0.8rem 1.6rem;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    background-color: #ffffff;
+    transition: 0.2s ease border-color, 0.2s ease box-shadow;
+
+    &:focus-within {
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba($primary, 0.12);
+    }
+  }
+
+  &__search-icon {
+    position: static; // مفيش absolute
+    transform: none;
+    font-size: 1.6rem; // 16px مع base 10px
+    color: $text-muted;
+    flex-shrink: 0;
+  }
+
+  &__search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 0;
+    margin: 0 !important;
+    width: 100%;
+    font-size: 1.6rem;
+    color: $text-main;
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  &__empty-state {
+    margin-top: 4rem;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+// ==========================
+// Empty State
+// ==========================
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: #ffffff;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  max-width: 40rem;
+
+  &__icon {
+    font-size: 3.8rem;
+    color: $primary;
+    margin-bottom: 1.4rem;
+  }
+
+  &__title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    color: $text-main;
+  }
+
+  &__subtitle {
+    font-size: 1.4rem;
+    color: $text-muted;
+    margin: 0;
+  }
+}
+
+// ==========================
+// Prescription Card
+// ==========================
+
+.prescription-card {
+  background: #ffffff;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  padding: 1.8rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  border: 1px solid rgba(37, 43, 97, 0.05);
+
+  // ❌ Remove hover effect (keep original shadow)
+  &:hover {
+    transform: none !important;
+    box-shadow: $shadow-card !important;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    border-bottom: 1px dashed #e5e7eb;
+    padding-bottom: 1rem;
+  }
+
+  &__id-date {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  &__id {
+    font-weight: 700;
+    color: $primary;
+    font-size: 1.5rem;
+  }
+
+  &__date {
+    font-size: 1.3rem;
+    color: $text-muted;
+  }
+
+  &__status-wrapper {
+    display: flex;
+    align-items: center;
+  }
+
+  &__status {
+    padding: 0.4rem 1.4rem;
+    border-radius: 999px;
+    font-size: 1.2rem;
+    font-weight: 600;
+
+    &--active {
+      background: rgba(16, 185, 129, 0.12);
+      color: #047857;
+    }
+
+    &--expired {
+      background: rgba(245, 158, 11, 0.12);
+      color: #b45309;
+    }
+
+    &--cancelled {
+      background: rgba(239, 68, 68, 0.12);
+      color: #b91c1c;
+    }
+  }
+
+  // ========== Meta ==========
+  &__meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 1.4rem;
+  }
+
+  &__meta-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  &__meta-icon {
+    font-size: 1.6rem;
+    color: $primary;
+    margin-top: 0.1rem;
+  }
+
+  &__meta-label {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9ca3af;
+    margin: 0 0 0.2rem;
+  }
+
+  &__meta-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $text-main;
+    margin: 0;
+  }
+
+  &__meta-tag {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.5rem;
+    padding: 0.1rem 0.8rem;
+    border-radius: 999px;
+    background: $bg-soft;
+    font-size: 1.2rem;
+    color: $primary-soft;
+  }
+
+  // ========== Details ==========
+  &__details {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.4rem;
+  }
+
+  &__detail-label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #9ca3af;
+    margin-bottom: 0.3rem;
+  }
+
+  &__detail-value {
+    font-size: 1.4rem;
+    color: $text-main;
+  }
+
+  &__detail--signature {
+    grid-column: 1 / -1;
+  }
+
+  &__signature {
+    display: inline-flex;
+    padding: 0.4rem 0.9rem;
+    border-radius: 0.8rem;
+    background: #fefce8;
+    border: 1px dashed #facc15;
+    font-family: "Courier New";
+    font-size: 1.3rem;
+    color: #854d0e;
+  }
+
+  // ========== Medications ==========
+  &__medications {
+    margin-top: 1rem;
+  }
+
+  &__section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+
+  &__medications-table {
+    border-radius: 1.1rem;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    background: #f9fafb;
+  }
+
+  &__medications-header,
+  &__medications-row {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 1.2fr 1.2fr;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.3rem;
+  }
+
+  &__medications-header {
+    background: #eef2ff;
+    font-weight: 600;
+    color: $primary-soft;
+  }
+
+  &__medications-row {
+    background: white;
+    border-top: 1px solid #e5e7eb;
+
+    &:nth-child(2n) {
+      background: #f9fafb;
+    }
+  }
+
+  // ========== Footer ==========
+  &__footer {
+    border-top: 1px dashed #e5e7eb;
+    padding-top: 1.2rem;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    padding: 0.7rem 1.6rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: #e5e7eb;
+    color: #374151;
+
+    &--edit {
+      background: rgba(245, 158, 11, 0.1);
+      color: #92400e;
+
+      &:hover {
+        background: rgba(245, 158, 11, 0.2);
+      }
+    }
+
+    &--delete {
+      background: rgba($danger, 0.08);
+      color: $danger;
+
+      &:hover {
+        background: rgba($danger, 0.16);
+      }
+    }
+  }
+}
+
+// ==========================
+// Responsive
+// ==========================
+
+@media (max-width: 768px) {
+  .prescriptions {
+    padding: 0 1.4rem 3rem;
+  }
+
+  .prescription-card {
+    &__details {
+      grid-template-columns: 1fr;
+    }
+
+    &__actions > button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}

@@ -1,0 +1,368 @@
+<section id="dashboard" class="dashboard">
+  <div class="doctor-details-wrapper">
+    <!-- Title -->
+    <div class="dashboard__title">
+      <h2 class="dashboard__title-main">Appointments</h2>
+      <p class="dashboard__title-sub">
+        Appointments with Dr. {{ currentDoctor?.firstName }}
+        {{ currentDoctor?.lastName }}
+      </p>
+    </div>
+
+    <div class="appointments">
+      <!-- Loading state -->
+      @if (isLoading && appointments.length === 0) {
+      <div class="appointments__state appointments__state--loading">
+        <div class="appointments__spinner"></div>
+        <p class="appointments__state-text">Loading appointments…</p>
+      </div>
+      }
+
+      <!-- Empty state (no appointments at all from API) -->
+      @if (!isLoading && appointments.length === 0) {
+      <div class="appointments__state appointments__state--empty">
+        <i class="fa-regular fa-calendar-xmark appointments__state-icon"></i>
+        <p class="appointments__state-title">No appointments</p>
+        <p class="appointments__state-subtitle">
+          There are currently no appointments scheduled for this doctor.
+        </p>
+      </div>
+      }
+
+      <!-- Appointments available from API -->
+      @if (!isLoading && appointments.length > 0) {
+
+      <!-- Filter buttons -->
+      <div class="appointments__filter">
+        <button
+          type="button"
+          class="appointments__filter-btn"
+          [class.appointments__filter-btn--active]="viewMode === 'active'"
+          (click)="setViewMode('active')"
+        >
+          Upcoming (Confirmed / In progress)
+        </button>
+
+        <button
+          type="button"
+          class="appointments__filter-btn"
+          [class.appointments__filter-btn--active]="viewMode === 'completed'"
+          (click)="setViewMode('completed')"
+        >
+          Completed
+        </button>
+      </div>
+
+      <!-- No appointments in current filter -->
+      @if (filteredAppointments.length === 0) {
+      <div class="appointments__state appointments__state--empty">
+        <i class="fa-regular fa-calendar-xmark appointments__state-icon"></i>
+        <p class="appointments__state-title">No appointments</p>
+        <p class="appointments__state-subtitle">
+          {{
+            viewMode === "active"
+              ? "There are no Confirmed or In progress appointments."
+              : "There are no Completed appointments."
+          }}
+        </p>
+      </div>
+      } @else {
+
+      <!-- Appointments list (filtered) -->
+      <div class="appointments__list">
+        @for (appointment of filteredAppointments; track appointment.id) {
+        <article class="appointment-card">
+          <!-- Header -->
+          <header class="appointment-card__header">
+            <!-- Patient info -->
+            <div class="appointment-card__patient">
+              <div class="appointment-card__avatar">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <div>
+                <p class="appointment-card__label">Patient</p>
+                <p class="appointment-card__patient-name">
+                  {{ appointment.patientName }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Date / time / duration -->
+            <div class="appointment-card__datetime">
+              <div class="appointment-card__meta">
+                <i class="fa-regular fa-calendar appointment-card__icon"></i>
+                <span>
+                  {{ appointment.appointmentDateTime | date : "yyyy-MM-dd" }}
+                </span>
+              </div>
+              <div class="appointment-card__meta">
+                <i class="fa-regular fa-clock appointment-card__icon"></i>
+                <span>
+                  {{ appointment.appointmentDateTime | date : "HH:mm" }}
+                </span>
+              </div>
+              <div class="appointment-card__meta">
+                <i
+                  class="fa-regular fa-hourglass-half appointment-card__icon"
+                ></i>
+                <span>{{ appointment.durationMinutes }} mins</span>
+              </div>
+            </div>
+
+            <!-- Status -->
+            <div class="appointment-card__status">
+              <span
+                class="status-pill"
+                [ngClass]="{
+                  'status-pill--confirmed': appointment.status === 'Confirmed',
+                  'status-pill--pending': appointment.status === 'Pending',
+                  'status-pill--cancelled': appointment.status === 'Cancelled',
+                  'status-pill--delayed': appointment.status === 'Delayed',
+                  'status-pill--inprogress':
+                    appointment.status === 'InProgress' ||
+                    appointment.status === 'In Progress',
+                  'status-pill--completed': appointment.status === 'Completed'
+                }"
+              >
+                {{ appointment.status }}
+              </span>
+            </div>
+          </header>
+
+          <!-- Body -->
+          <section class="appointment-card__body">
+            <div class="appointment-card__reason">
+              <i
+                class="fa-solid fa-stethoscope appointment-card__icon appointment-card__icon--reason"
+              ></i>
+              <div>
+                <p class="appointment-card__label">Reason for visit</p>
+                <p class="appointment-card__reason-text">
+                  {{ appointment.reasonForVisit }}
+                </p>
+              </div>
+            </div>
+
+            <div class="appointment-card__actions">
+              <button
+                type="button"
+                class="appointment-card__btn appointment-card__btn--primary"
+                (click)="addPrescription(appointment)"
+                [disabled]="
+                  appointment.status !== 'InProgress' &&
+                  appointment.status !== 'In Progress'
+                "
+              >
+                Add Prescription
+              </button>
+
+              <!-- View History with AI -->
+              <button
+                type="button"
+                class="appointment-card__btn appointment-card__btn--outline rainbow-border"
+                (click)="openHistoryAiModal(appointment.patientId)"
+              >
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                View History with AI
+              </button>
+
+              @let recordExists =
+              medicalRecordExistsMap[appointment.patientId!]; @if (recordExists)
+              {
+              <button
+                type="button"
+                class="appointment-card__btn appointment-card__btn--outline"
+                (click)="goToPatientDetails(appointment.patientId)"
+              >
+                View Medical Record
+              </button>
+              <button
+                type="button"
+                class="appointment-card__btn appointment-card__btn--outline"
+                (click)="goToEditMedicalRecord(appointment.patientId!)"
+              >
+                Edit Medical Record
+              </button>
+              }
+
+              <!-- Apologize -->
+              <button
+                type="button"
+                class="appointment-card__btn appointment-card__btn--danger"
+                (click)="apologize(appointment)"
+                [disabled]="
+                  isAppointmentPassed(appointment.appointmentDateTime)
+                "
+              >
+                <i class="fa-regular fa-face-frown"></i>
+                Apologize
+              </button>
+
+              <button
+                type="button"
+                class="appointment-card__btn appointment-card__btn--ghost"
+                (click)="toggleFeedback(appointment.id)"
+              >
+                {{
+                  openedAppointmentId === appointment.id
+                    ? "Hide Feedback"
+                    : "View Feedback"
+                }}
+              </button>
+            </div>
+          </section>
+
+          <!-- Feedback -->
+          @if (openedAppointmentId === appointment.id) {
+          <section class="appointment-card__feedback">
+            @if (selectedFeedbackMap[appointment.id]) {
+            <div class="appointment-card__feedback-header">
+              <p class="appointment-card__feedback-title">Patient feedback</p>
+            </div>
+
+            <div class="appointment-card__feedback-content">
+              <div class="appointment-card__stars">
+                @for (star of [1, 2, 3, 4, 5]; track star) {
+                <span
+                  class="star"
+                  [class.filled]="
+                    star <= (selectedFeedbackMap[appointment.id]?.rating ?? 0)
+                  "
+                >
+                  &#9733;
+                </span>
+                }
+              </div>
+              <p class="appointment-card__feedback-text">
+                {{ selectedFeedbackMap[appointment.id]?.comments }}
+              </p>
+            </div>
+            } @else {
+            <p class="appointment-card__feedback-empty">
+              No feedback available for this appointment.
+            </p>
+            }
+          </section>
+          }
+        </article>
+        }
+      </div>
+
+      <!-- ========== Patient History AI Modal ========== -->
+      @if (isHistoryAiModalOpen) {
+      <div class="ai-modal-backdrop" (click)="closeHistoryAiModal()">
+        <div class="ai-modal" (click)="$event.stopPropagation()">
+          <!-- Header -->
+          <header class="ai-modal__header">
+            <div class="ai-modal__title-block">
+              <div class="ai-modal__icon">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+              </div>
+              <div>
+                <h3 class="ai-modal__title">Patient History Analysis</h3>
+                <p class="ai-modal__subtitle">
+                  AI-powered summary of the patient's medical history.
+                </p>
+              </div>
+            </div>
+
+            <button class="ai-modal__close" (click)="closeHistoryAiModal()">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </header>
+
+          <!-- Body -->
+          <section class="ai-modal__body">
+            @if (historyLoading) {
+            <div class="ai-modal__loading">
+              <span class="ai-modal__spinner"></span>
+              <p>Analyzing patient history...</p>
+            </div>
+            } @else if (historyError) {
+            <div class="ai-modal__error">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <p>{{ historyError }}</p>
+            </div>
+            } @else if (historyData) {
+
+            <div class="ai-modal__meta">
+              <p>
+                <span>Patient:</span>
+                <strong>{{ historyData.patientName }}</strong>
+              </p>
+              <p>
+                <span>Total Prescriptions:</span>
+                <strong>{{ historyData.totalPrescriptions }}</strong>
+              </p>
+            </div>
+
+            <!-- AI Summary (RTL) -->
+            <div class="ai-modal__content">
+              <pre class="ai-modal__text"
+                >{{ historyData.aiSummary }}
+              </pre>
+            </div>
+
+            @if (historyData && historyData.records &&
+            historyData.records.length > 0) {
+
+            <div class="ai-modal__meds">
+              <h4>Recorded medical visits</h4>
+              <ul>
+                @for (record of historyData.records; track record.recordId) {
+                <li>
+                  <strong>
+                    {{ record.recordDate | date : "medium" }}
+                    - {{ record.recordType }}
+                  </strong>
+                  <span>
+                    Diagnosis: {{ record.diagnosis }} • Symptoms:
+                    {{ record.symptoms }}
+                  </span>
+                </li>
+                }
+              </ul>
+            </div>
+            } }
+          </section>
+
+          <!-- Footer -->
+          <footer class="ai-modal__footer">
+            <div class="ai-modal__badge">
+              <span class="ai-modal__badge-icon">
+                <i class="fa-solid fa-bolt"></i>
+              </span>
+              <span>Powered by Gen AI</span>
+            </div>
+
+            <button
+              class="ai-modal__footer-btn"
+              (click)="closeHistoryAiModal()"
+            >
+              Close
+            </button>
+          </footer>
+        </div>
+      </div>
+      } }
+      <!-- نهاية @else بتاعة filteredAppointments.length -->
+      }
+      <!-- نهاية @if (!isLoading && appointments.length > 0) -->
+    </div>
+  </div>
+
+  <!-- Apologize Done Popup -->
+  @if (showApologyPopup) {
+  <div class="apology-popup-backdrop">
+    <div class="apology-popup">
+      <div class="apology-popup__icon">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <h4 class="apology-popup__title">Apologize done</h4>
+      <p class="apology-popup__message">
+        {{ apologyMessage }}
+      </p>
+    </div>
+  </div>
+  }
+</section>

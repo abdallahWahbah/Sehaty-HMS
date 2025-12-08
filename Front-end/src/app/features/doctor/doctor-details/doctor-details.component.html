@@ -1,0 +1,95 @@
+<section id="dashboard" class="dashboard">
+  <!-- Wrapper يظبط محاذاة العنوان + الكارت مع بعض -->
+  <div class="doctor-details-wrapper">
+    <!-- ======= PAGE TITLE ======= -->
+    <div class="dashboard__title">
+      <h2 class="dashboard__title-main">Profile</h2>
+      <p class="dashboard__title-sub">
+        profile of Dr. {{ currentDoctor?.firstName }} {{ currentDoctor?.lastName }}
+      </p>
+    </div>
+
+    <!-- ======= DOCTOR CARD ======= -->
+    @if (currentDoctor) {
+    <article class="doctor-details">
+      <!-- Header -->
+      <header class="doctor-details__header">
+        <div class="doctor-details__avatar">
+          <div class="doctor-details__avatar-circle">
+            <i class="fa-solid fa-user-doctor"></i>
+          </div>
+        </div>
+
+        <div class="doctor-details__info">
+          <h3 class="doctor-details__name">
+            Dr. {{ currentDoctor.firstName }} {{ currentDoctor.lastName }}
+          </h3>
+
+          <p class="doctor-details__specialty">
+            {{ currentDoctor.specialty || "Unknown specialty" }}
+          </p>
+
+          <div class="doctor-details__meta">
+            <span class="doctor-details__chip">
+              License: {{ currentDoctor.licenseNumber || "N/A" }}
+            </span>
+
+            <span class="doctor-details__chip">
+              Department: {{ currentDoctor.department || "Not specified" }}
+            </span>
+
+            <span class="doctor-details__chip">
+              Experience: {{ currentDoctor.yearsOfExperience || 0 }} years
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Body -->
+      <section class="doctor-details__body">
+        <div class="doctor-details__grid">
+          <div class="doctor-details__item">
+            <span class="doctor-details__label">License Number</span>
+            <span class="doctor-details__value">
+              {{ currentDoctor.licenseNumber || "Not specified" }}
+            </span>
+          </div>
+
+          <div class="doctor-details__item">
+            <span class="doctor-details__label">Department</span>
+            <span class="doctor-details__value">
+              {{ currentDoctor.department || "Not specified" }}
+            </span>
+          </div>
+
+          <div class="doctor-details__item">
+            <span class="doctor-details__label">Experience</span>
+            <span class="doctor-details__value">
+              {{ currentDoctor.yearsOfExperience || 0 }} years
+            </span>
+          </div>
+
+          <div class="doctor-details__item">
+            <span class="doctor-details__label">Qualifications</span>
+            <span class="doctor-details__value">
+              {{
+                currentDoctor.qualifications || "No qualifications added yet"
+              }}
+            </span>
+          </div>
+
+          <div class="doctor-details__item doctor-details__item--full">
+            <span class="doctor-details__label">Notes</span>
+            <span
+              class="doctor-details__value doctor-details__value--multiline"
+            >
+              {{ currentDoctor.availabilityNotes || "No notes added yet" }}
+            </span>
+          </div>
+        </div>
+      </section>
+    </article>
+    }
+  </div>
+  <!-- END WRAPPER -->
+</section>

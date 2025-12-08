@@ -1,0 +1,15 @@
+.title_dashboard {
+  color: var(--color-primary);
+  margin-top: 3.5rem;
+  margin-left: 2rem;
+  display: flex;
+  justify-content: space-between;
+}
+.title_dashboard div:first-child h2 {
+  font-weight: 700;
+  font-size: 2.4rem;
+}
+.title_dashboard :last-child {
+  font-size: 1.4rem;
+  font-weight: 400;
+}

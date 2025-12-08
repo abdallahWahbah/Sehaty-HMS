@@ -1,0 +1,13 @@
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
+namespace Sehaty.Core.UnitOfWork.Contract
+{
+    public interface IUnitOfWork : IDisposable
+    {
+
+        IRepository<T> Repository<T>() where T : BaseEntity; // This Function To Create And Get The Repositry U Need When You Ask
+        IUserRepository Users { get; }
+        Task<int> CommitAsync(); // To Save All Changes At Once
+        Task<IDbContextTransaction> BeginTransactionAsync();
+    }
+}

@@ -1,0 +1,319 @@
+// Base tokens (لو عندك variables في مكان تاني، ممكن تستخدمها)
+$primary: #252b61;
+$primary-soft: #4b56a3;
+$text-main: #1f2933;
+$text-muted: #6b7280;
+$danger: #dc2626;
+$bg-soft: #f5f6ff;
+$radius-lg: 1.4rem;
+$shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+
+.prescription-add {
+  max-width: 110rem;
+  margin: 4rem auto;
+  padding: 0 2rem 4rem;
+
+  // ===== Alert =====
+  &__alert {
+    padding: 1.2rem 1.6rem;
+    margin-bottom: 1.6rem;
+    border-radius: 1rem;
+    font-size: 1.4rem;
+
+    &--error {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+  }
+
+  // ===== Card =====
+  &__card {
+    background: #ffffff;
+    border-radius: $radius-lg;
+    padding: 2rem 2.4rem;
+    box-shadow: $shadow-card;
+    border: 1px solid rgba(37, 43, 97, 0.08);
+  }
+
+  // ===== Header =====
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.6rem;
+    padding-bottom: 1.4rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: $primary;
+  }
+
+  &__subtitle {
+    margin-top: 0.4rem;
+    font-size: 1.4rem;
+    color: $text-muted;
+  }
+
+  &__status-badge {
+    text-align: right;
+
+    @media (max-width: 768px) {
+      text-align: left;
+    }
+  }
+
+  &__status-label {
+    display: block;
+    font-size: 1.2rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__status-value {
+    display: inline-block;
+    padding: 0.4rem 1.2rem;
+    border-radius: 999px;
+    background: $bg-soft;
+    color: $primary-soft;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 0.4rem;
+  }
+
+  // ===== Sections =====
+  &__section {
+    margin-top: 2.4rem;
+  }
+
+  &__section-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    color: $text-main;
+  }
+
+  &__section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  // ===== Fields & Grid =====
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.2rem;
+  }
+
+  &__label {
+    font-size: 1.2rem;
+    color: #9ca3af;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__input {
+    border-radius: 0.9rem;
+    border: 1px solid #d1d5db;
+    padding: 0.9rem 1rem;
+    font-size: 1.4rem;
+    outline: none;
+    width: 100%;
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 2px rgba($primary, 0.15);
+    }
+
+    &--small {
+      font-size: 1.3rem;
+      padding: 0.7rem 0.9rem;
+    }
+  }
+
+  &__textarea {
+    border-radius: 0.9rem;
+    border: 1px solid #d1d5db;
+    padding: 1rem 1.2rem;
+    font-size: 1.4rem;
+    resize: vertical;
+    min-height: 7rem;
+    width: 100%;
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 2px rgba($primary, 0.15);
+    }
+  }
+
+  // ===== Medications table =====
+  &__medications-table {
+    margin-top: 1rem;
+    border-radius: 1.1rem;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    overflow: hidden;
+  }
+
+  &__medications-header,
+  &__medications-row {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 1.2fr 1.2fr 0.8fr;
+    gap: 0.9rem;
+    padding: 0.9rem 1.2rem;
+    align-items: center;
+  }
+
+  &__medications-header {
+    background: #eef2ff;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: $primary-soft;
+  }
+
+  &__medications-header--right {
+    text-align: right;
+  }
+
+  &__medications-row {
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+
+    &:nth-child(2n) {
+      background: #f9fafb;
+    }
+  }
+
+  &__icon-btn {
+    width: 3.4rem;
+    height: 3.4rem;
+    border-radius: 999px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: rgba($danger, 0.08);
+    color: $danger;
+    transition: 0.2s ease all;
+    margin-left: auto;
+
+    &:hover:not([disabled]) {
+      background: rgba($danger, 0.16);
+    }
+
+    &[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  // ===== Actions =====
+  &__footer {
+    margin-top: 2.4rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    border-radius: 999px;
+    padding: 0.9rem 1.8rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease all;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+
+    &--primary {
+      background: linear-gradient(135deg, $primary, $primary-soft);
+      color: #ffffff;
+      margin-right: 1.6rem;
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      &:hover:not(:disabled) {
+        box-shadow: 0 10px 24px rgba(37, 43, 97, 0.35);
+        transform: translateY(-1px);
+      }
+    }
+
+    &--secondary {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      color: $primary;
+
+      &:hover {
+        background: #f5f6ff;
+      }
+    }
+
+    &--ghost {
+      background: transparent;
+      border: 1px dashed $primary-soft;
+      color: $primary-soft;
+      padding-inline: 1.4rem;
+
+      &:hover {
+        background: #eef2ff;
+      }
+    }
+  }
+
+  // ===== Responsive =====
+  @media (max-width: 768px) {
+    padding: 0 1.4rem 3rem;
+
+    &__card {
+      padding: 1.8rem 1.6rem;
+    }
+
+    &__actions {
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    &__btn--primary,
+    &__btn--secondary {
+      width: 100%;
+      justify-content: center;
+    }
+
+    &__medications-header,
+    &__medications-row {
+      grid-template-columns: 1.5fr 1fr 1fr 1fr 0.7fr;
+    }
+  }
+}

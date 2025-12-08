@@ -1,0 +1,230 @@
+<!-- doctor-medicalrecordandprescription.component.html -->
+<section id="dashboard" class="dashboard">
+  <div class="medical-wrapper">
+    <!-- ========== Medical Record ========== -->
+    <div class="dashboard__title">
+      <h2 class="dashboard__title-main">Medical Records</h2>
+      <p class="dashboard__title-sub">
+        Medical records related to:
+        <span class="dashboard__title-highlight">
+          {{ medicalRecord?.patientName || "Unknown patient" }}
+        </span>
+      </p>
+    </div>
+
+    @if (medicalRecord) {
+    <article class="medical-record-card">
+      <!-- Header -->
+      <header class="medical-record-card__header">
+        <div class="medical-record-card__patient">
+          <div class="medical-record-card__avatar">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div>
+            <p class="medical-record-card__label">Patient</p>
+            <h3 class="medical-record-card__name">
+              {{ medicalRecord.patientName }}
+            </h3>
+          </div>
+        </div>
+
+        <div class="medical-record-card__meta">
+          <span class="medical-record-card__badge">
+            {{ medicalRecord.recordType }}
+          </span>
+        </div>
+      </header>
+
+      <!-- Dates -->
+      <section
+        class="medical-record-card__section medical-record-card__section--light"
+      >
+        <div class="medical-record-card__dates">
+          <div class="medical-record-card__date-item">
+            <span class="medical-record-card__label">Record Date</span>
+            <span class="medical-record-card__value">
+              {{ medicalRecord.recordDate | date : "yyyy-MM-dd HH:mm" }}
+            </span>
+          </div>
+          <div class="medical-record-card__date-item">
+            <span class="medical-record-card__label">Created At</span>
+            <span class="medical-record-card__value">
+              {{ medicalRecord.createdAt | date : "yyyy-MM-dd HH:mm" }}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Vitals -->
+      <section class="medical-record-card__section">
+        <h4 class="medical-record-card__section-title">Vitals</h4>
+        <div class="medical-record-card__vitals">
+          <div class="medical-record-card__vital-item">
+            <span class="medical-record-card__label">Blood Pressure</span>
+            <span class="medical-record-card__value">
+              {{ medicalRecord.vitalBp }}
+            </span>
+          </div>
+          <div class="medical-record-card__vital-item">
+            <span class="medical-record-card__label">Temperature</span>
+            <span class="medical-record-card__value">
+              {{ medicalRecord.temperature }} °C
+            </span>
+          </div>
+          <div class="medical-record-card__vital-item">
+            <span class="medical-record-card__label">Heart Rate</span>
+            <span class="medical-record-card__value">
+              {{ medicalRecord.heartRate }} bpm
+            </span>
+          </div>
+          <div class="medical-record-card__vital-item">
+            <span class="medical-record-card__label">Weight</span>
+            <span class="medical-record-card__value">
+              {{ medicalRecord.weight }} kg
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Details -->
+      <section class="medical-record-card__section">
+        <h4 class="medical-record-card__section-title">Details</h4>
+
+        <div class="medical-record-card__details-grid">
+          <div class="medical-record-card__detail">
+            <span class="medical-record-card__label">Symptoms</span>
+            <p class="medical-record-card__text">
+              {{ medicalRecord.symptoms || "No symptoms recorded." }}
+            </p>
+          </div>
+
+          <div class="medical-record-card__detail">
+            <span class="medical-record-card__label">Diagnosis</span>
+            <p class="medical-record-card__text">
+              {{ medicalRecord.diagnosis || "No diagnosis recorded." }}
+            </p>
+          </div>
+
+          <div class="medical-record-card__detail">
+            <span class="medical-record-card__label">Treatment Plan</span>
+            <p class="medical-record-card__text">
+              {{ medicalRecord.treatmentPlan || "No treatment plan recorded." }}
+            </p>
+          </div>
+
+          <div
+            class="medical-record-card__detail medical-record-card__detail--full"
+          >
+            <span class="medical-record-card__label">Notes</span>
+            <p class="medical-record-card__text">
+              {{ medicalRecord.notes || "No additional notes." }}
+            </p>
+          </div>
+        </div>
+      </section>
+    </article>
+    } @else {
+    <div class="medical-empty medical-empty--record">
+      <i class="fa-regular fa-file-lines medical-empty__icon"></i>
+      <p class="medical-empty__title">No medical records found</p>
+      <p class="medical-empty__subtitle">
+        This patient does not have any medical records associated yet.
+      </p>
+    </div>
+    }
+
+    <!-- ========== Prescriptions ========== -->
+    <div class="medical-prescriptions__header">
+      <h2 class="dashboard__title-main">Prescriptions</h2>
+      <p class="dashboard__title-sub">Prescriptions created for this patient</p>
+    </div>
+
+    @if (loading) {
+    <div class="medical-loading">
+      <div class="medical-loading__spinner"></div>
+      <p class="medical-loading__text">Loading prescriptions…</p>
+    </div>
+    } @else { @if (prescriptions.length > 0) {
+    <div class="medical-prescriptions__list">
+      @for (pres of prescriptions; track pres.prescriptionId) {
+      <article class="medical-prescription-card">
+        <!-- Header -->
+        <header class="medical-prescription-card__header">
+          <div class="medical-prescription-card__id-block">
+            <p class="medical-prescription-card__label">Prescription</p>
+            <p class="medical-prescription-card__id">
+              #{{ pres.prescriptionId }}
+            </p>
+          </div>
+
+          <div class="medical-prescription-card__meta-block">
+            <div class="medical-prescription-card__meta-item">
+              <span class="medical-prescription-card__label">Status</span>
+              <span class="status-pill">
+                {{ pres.status }}
+              </span>
+            </div>
+            <div class="medical-prescription-card__meta-item">
+              <span class="medical-prescription-card__label">
+                Date Issued
+              </span>
+              <span class="medical-prescription-card__value">
+                {{ pres.dateIssued | date : "medium" }}
+              </span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Body -->
+        <section class="medical-prescription-card__body">
+          <div class="medical-prescription-card__row">
+            <span class="medical-prescription-card__label">Doctor</span>
+            <span class="medical-prescription-card__value">
+              Dr. {{ pres.doctorName }}
+            </span>
+          </div>
+
+          <div class="medical-prescription-card__row">
+            <span class="medical-prescription-card__label">
+              Special Instructions
+            </span>
+            <span class="medical-prescription-card__value">
+              {{ pres.doctorNotes || "-" }}
+            </span>
+          </div>
+
+          <div
+            class="medical-prescription-card__row medical-prescription-card__row--meds"
+          >
+            <div>
+              <span class="medical-prescription-card__label">
+                Medications
+              </span>
+              @if (pres.medications && pres.medications.length > 0) {
+                <ul class="medical-prescription-card__meds-list">
+                  @for (med of pres.medications; track med) {
+                    <li>{{ med.medicationName }} - {{med.dosage}} - {{med.duration}} - {{med.frequency}}</li>
+                  }
+                </ul>
+              } @else {
+                <p class="medical-prescription-card__value">-</p>
+              }
+            </div>
+          </div>
+        </section>
+      </article>
+      }
+    </div>
+    } @else {
+    <div class="medical-empty medical-empty--prescriptions">
+      <i
+        class="fa-solid fa-prescription-bottle-medical medical-empty__icon"
+      ></i>
+      <p class="medical-empty__title">No prescriptions found</p>
+      <p class="medical-empty__subtitle">
+        There are no prescriptions created yet for this patient.
+      </p>
+    </div>
+    } }
+  </div>
+</section>

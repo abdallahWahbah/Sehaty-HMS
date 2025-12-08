@@ -1,0 +1,121 @@
+<div class="department-details" *ngIf="department">
+  <div class="department-details__wrapper">
+    <!-- Header -->
+    <header class="department-details__header">
+      <div class="department-details__title-group">
+        <h1 class="department-details__title">
+          {{ department?.en_Name }}
+        </h1>
+        <p class="department-details__subtitle">
+          {{ department?.description || "Department information and overview" }}
+        </p>
+      </div>
+
+      <button
+        class="department-details__back-btn"
+        routerLink="/admin/departments"
+        type="button"
+      >
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Back to Departments</span>
+      </button>
+    </header>
+
+    <!-- Main Card -->
+    <article class="department-card">
+      <!-- Top: Icon + Status -->
+      <div class="department-card__top">
+        <div class="department-card__icon">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+
+        <div class="department-card__status">
+          <span class="status-pill status-pill--available">
+            <i class="fa-solid fa-circle status-pill__dot"></i>
+            <span>Available</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Info fields -->
+      <section class="department-card__section">
+        <!-- English Name -->
+        <div class="department-card__field">
+          <p class="department-card__field-label">
+            <i class="fa-solid fa-language department-card__field-icon"></i>
+            English Name
+          </p>
+          <div class="department-card__field-value">
+            <p class="department-card__name-en">
+              {{ department?.en_Name }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Arabic Name -->
+        <div class="department-card__field">
+          <p class="department-card__field-label">
+            <i class="fa-solid fa-language department-card__field-icon"></i>
+            Arabic Name
+          </p>
+          <div
+            class="department-card__field-value department-card__field-value--rtl"
+          >
+            <p class="department-card__name-ar" dir="rtl">
+              {{ department?.ar_Name }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="department-card__field">
+          <p class="department-card__field-label">
+            <i class="fa-solid fa-file-lines department-card__field-icon"></i>
+            Description
+          </p>
+          <div class="department-card__field-value">
+            <p class="department-card__description">
+              {{ department?.description || "No description provided." }}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Additional Info -->
+      <section class="department-card__extras">
+        <div class="department-card__extra-item">
+          <div class="department-card__extra-icon">
+            <i class="fa-solid fa-user-doctor"></i>
+          </div>
+          <div class="department-card__extra-content">
+            <p class="department-card__extra-label">Total Doctors</p>
+            <p class="department-card__extra-value">
+              {{ department?.doctors?.length || 0 }} Specialists
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Actions -->
+      <footer class="department-card__actions">
+        <button
+          type="button"
+          class="department-card__btn department-card__btn--primary"
+          [routerLink]="['/admin/departments/update', department?.id]"
+        >
+          <i class="fa-solid fa-pen-to-square"></i>
+          <span>Update Department</span>
+        </button>
+
+        <button
+          type="button"
+          class="department-card__btn department-card__btn--danger"
+          (click)="deleteDepartment()"
+        >
+          <i class="fa-solid fa-trash"></i>
+          <span>Delete Department</span>
+        </button>
+      </footer>
+    </article>
+  </div>
+</div>

@@ -1,0 +1,86 @@
+<section id="dashboard" class="dashboard">
+  <!-- Title -->
+  <div class="dashboard__title">
+    <h2 class="dashboard__title-main">
+      Edit Doctor: {{ doctor?.firstName }} {{ doctor?.lastName }}
+    </h2>
+    <p class="dashboard__title-sub">
+      Update doctor information and professional details
+    </p>
+  </div>
+
+  <!-- Edit Card -->
+  <div class="doctor-edit">
+    <div class="doctor-edit__card">
+      <form [formGroup]="doctorForm" (ngSubmit)="onSubmit()">
+        @if(serverError){
+        <div class="server-error">
+          <span>{{ serverError }}</span>
+        </div>
+        }
+
+        <div class="patient-edit__grid">
+          <p-floatlabel class="patient-edit__input">
+            <input pInputText formControlName="firstName" />
+            <label>First Name</label>
+          </p-floatlabel>
+
+          <p-floatlabel class="patient-edit__input">
+            <input pInputText formControlName="lastName" />
+            <label>Last Name</label>
+          </p-floatlabel>
+
+          <p-floatlabel class="patient-edit__input">
+            <input pInputText formControlName="specialty" />
+            <label>Speciality</label>
+          </p-floatlabel>
+
+          <p-floatlabel class="patient-edit__input">
+            <input pInputText formControlName="licenseNumber" />
+            <label>License Number</label>
+          </p-floatlabel>
+
+          <p-floatlabel class="patient-edit__input">
+            <input pInputText formControlName="qualifications" />
+            <label>Qualifications</label>
+          </p-floatlabel>
+
+          <p-floatlabel class="patient-edit__input">
+            <input pInputText formControlName="yearsOfExperience" />
+            <label>Years Of Experience</label>
+          </p-floatlabel>
+
+          <p-floatlabel class="patient-edit__input">
+            <input pInputText formControlName="availabilityNotes" />
+            <label>Availability Notes</label>
+          </p-floatlabel>
+
+          <p-floatlabel class="patient-edit__input">
+            <input pInputText formControlName="detectionPrice" />
+            <label>Detection Price</label>
+          </p-floatlabel>
+
+          <p-floatlabel class="patient-edit__input">
+            <select
+              id="departmentId"
+              class="patient-edit__select"
+              formControlName="departmentId"placeholder=" "
+            >
+              <option value="" disabled>Select Department</option>
+              @for(dept of departments; track dept.id){
+                <option [value]="dept.id">
+                  {{ dept.en_Name }}
+                </option>
+              }
+            </select>
+            <label for="departmentId">Department</label>
+          </p-floatlabel>
+        </div>
+
+        <div class="patient-edit__button-container">
+          <p-button type="submit" label="Update Doctor"></p-button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

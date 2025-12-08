@@ -1,0 +1,70 @@
+@if(loading){
+  <app-loading-spinner></app-loading-spinner>
+}@else {
+    <section id="dashboard" class="dashboard">
+        <div class="dashboard__title">
+            <h2 class="dashboard__title-main">Patient Payments</h2>
+            @if (serverError) {
+                <div class="server-error" style="margin-bottom: 3rem">
+                    <span>{{ serverError }}</span>
+                </div>
+            }
+        </div>
+        <div class="payment-list">
+            @for(payment of billings; track payment.billDate){
+
+                <div class="payment-card">
+    
+                    <div class="payment-card__row">
+                    <div>
+                        <p class="payment-card__label">Patient</p>
+                        <p class="payment-card__value">{{ payment.patientName }}</p>
+                    </div>
+    
+                    <div>
+                        <p class="payment-card__label">Doctor</p>
+                        <p class="payment-card__value">{{ payment.doctorName }}</p>
+                    </div>
+                    </div>
+    
+                    <div class="payment-card__row">
+                    <div>
+                        <p class="payment-card__label">Appointment</p>
+                        <p class="payment-card__value">
+                        {{ payment.appointmentDateTime | date:'medium' }}
+                        </p>
+                    </div>
+    
+                    <div>
+                        <p class="payment-card__label">Bill Date</p>
+                        <p class="payment-card__value">
+                        {{ payment.billDate | date:'medium' }}
+                        </p>
+                    </div>
+                    </div>
+    
+                    <div class="payment-card__row">
+                    <div>
+                        <p class="payment-card__label">Amount</p>
+                        <p class="payment-card__amount">{{ payment.totalAmount }} EGP</p>
+                    </div>
+    
+                    <div>
+                        <p class="payment-card__label">Status</p>
+    
+                        <span 
+                        class="status-badge"
+                        [ngClass]="{
+                            'status-pending': payment.status === 'Pending',
+                            'status-paid': payment.status === 'Paid'
+                        }"
+                        >
+                        {{ payment.status }}
+                        </span>
+                    </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+}

@@ -1,0 +1,117 @@
+<section class="user-management">
+  <!-- Title -->
+  <div class="title_dashboard">
+    <div>
+      <h2>User Management</h2>
+      <p class="title_dashboard__subtitle">
+        Manage system users, roles and permissions
+      </p>
+    </div>
+  </div>
+
+  <!-- Loading / Error -->
+  <p *ngIf="isLoading" class="user-management__loading">Loading users...</p>
+  <p *ngIf="errorMessage" class="user-management__error">
+    {{ errorMessage }}
+  </p>
+
+  <!-- Users Table Card -->
+  <div class="user-management__card" *ngIf="!isLoading && users.length > 0">
+    <div class="user-management__card-header">
+      <h3>Users list</h3>
+      <p>Assign and update user roles</p>
+    </div>
+
+    <div class="user-management__table-wrapper">
+      <table class="user-management__table">
+        <thead class="user-management__thead">
+          <tr class="user-management__row user-management__row--header">
+            <th class="user-management__cell user-management__cell--header">
+              User Name
+            </th>
+            <th class="user-management__cell user-management__cell--header">
+              Email
+            </th>
+            <th class="user-management__cell user-management__cell--header">
+              Phone
+            </th>
+            <th class="user-management__cell user-management__cell--header">
+              User Role
+            </th>
+            <!-- <th class="user-management__cell user-management__cell--header">
+              Change Role
+            </th>
+            <th class="user-management__cell user-management__cell--header">
+              Action
+            </th> -->
+          </tr>
+        </thead>
+        <tbody class="user-management__tbody">
+          <tr *ngFor="let user of users" class="user-management__row">
+            <!-- User name + avatar -->
+            <td class="user-management__cell user-management__cell--name">
+              <div class="user-management__user-name">
+                <div class="user-management__avatar">
+                  {{ user.userName?.charAt(0) || "U" }}
+                </div>
+                <div>
+                  <p class="user-management__user-main">
+                    {{ user.userName }}
+                  </p>
+                  <p class="user-management__user-sub">
+                    {{ user.email }}
+                  </p>
+                </div>
+              </div>
+            </td>
+
+            <!-- Email (optional separate column) -->
+            <td class="user-management__cell user-management__cell--email">
+              {{ user.email }}
+            </td>
+
+            <!-- Phone -->
+            <td class="user-management__cell">
+              {{ user.phoneNumber || "-" }}
+            </td>
+
+            <td class="user-management__cell">
+              <span class="user-management__role-pill">
+                {{ user.role }}
+              </span>
+            </td>
+
+            <!-- <td class="user-management__cell">
+              <div class="user-management__select-wrapper">
+                <select
+                  class="user-management__select"
+                  [(ngModel)]="selectedRoles[user.id]"
+                >
+                  <option *ngFor="let roleName of roleNames" [value]="roleName">
+                    {{ roleName }}
+                  </option>
+                </select>
+                <span class="user-management__select-arrow">
+                  <i class="fa-solid fa-chevron-down"></i>
+                </span>
+              </div>
+            </td>
+            <td class="user-management__cell">
+              <button
+                class="user-management__button"
+                (click)="changeRole(user.id)"
+              >
+                Change Role
+              </button>
+            </td> -->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- No users state -->
+  <p *ngIf="!isLoading && users.length === 0" class="user-management__no-users">
+    No users found.
+  </p>
+</section>

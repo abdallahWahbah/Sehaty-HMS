@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "Cardiology",
+    "NameLocal": "أمراض القلب",
+    "Description": "Handles heart-related conditions"
+  },
+  {
+    "Name": "Neurology",
+    "NameLocal": "أمراض الأعصاب",
+    "Description": "Handles brain and nervous system conditions"
+  },
+  {
+    "Name": "Pediatrics",
+    "NameLocal": "طب الأطفال",
+    "Description": "Handles child health care"
+  }
+]

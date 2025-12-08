@@ -1,0 +1,134 @@
+@if(loading){
+  <app-loading-spinner></app-loading-spinner>
+}@else {
+  <section id="dashboard" class="dashboard">
+    <div class="dashboard__title">
+      <h2 class="dashboard__title-main">Medical Records</h2>
+      <p class="dashboard__title-sub">
+        Medical records related to:
+        <span class="dashboard__title-highlight">
+          {{patient?.firstName}} {{ patient?.lastName}}
+        </span>
+      </p>
+  
+      @if (medicalRecord) {
+        <article class="medical-record-card">
+          <!-- Header -->
+          <header class="medical-record-card__header">
+            <div class="medical-record-card__patient">
+              <div class="medical-record-card__avatar">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <div>
+                <p class="medical-record-card__label">Patient</p>
+                <h3 class="medical-record-card__name">
+                  {{ medicalRecord.patientName }}
+                </h3>
+              </div>
+            </div>
+    
+            <div class="medical-record-card__meta">
+              <span class="medical-record-card__badge">
+                {{ medicalRecord.recordType }}
+              </span>
+            </div>
+          </header>
+    
+          <!-- Dates -->
+          <section
+            class="medical-record-card__section medical-record-card__section--light"
+          >
+            <div class="medical-record-card__dates">
+              <div class="medical-record-card__date-item">
+                <span class="medical-record-card__label">Record Date</span>
+                <span class="medical-record-card__value">
+                  {{ medicalRecord.recordDate | date : "yyyy-MM-dd HH:mm" }}
+                </span>
+              </div>
+              <div class="medical-record-card__date-item">
+                <span class="medical-record-card__label">Created At</span>
+                <span class="medical-record-card__value">
+                  {{ medicalRecord.createdAt | date : "yyyy-MM-dd HH:mm" }}
+                </span>
+              </div>
+            </div>
+          </section>
+    
+          <!-- Vitals -->
+          <section class="medical-record-card__section">
+            <h4 class="medical-record-card__section-title">Vitals</h4>
+    
+            <div class="medical-record-card__vitals">
+              <div class="medical-record-card__vital-item">
+                <span class="medical-record-card__label">Blood Pressure</span>
+                <span class="medical-record-card__value">
+                  {{ medicalRecord.vitalBp }}
+                </span>
+              </div>
+    
+              <div class="medical-record-card__vital-item">
+                <span class="medical-record-card__label">Temperature</span>
+                <span class="medical-record-card__value">
+                  {{ medicalRecord.temperature }} °C
+                </span>
+              </div>
+    
+              <div class="medical-record-card__vital-item">
+                <span class="medical-record-card__label">Heart Rate</span>
+                <span class="medical-record-card__value">
+                  {{ medicalRecord.heartRate }} bpm
+                </span>
+              </div>
+    
+              <div class="medical-record-card__vital-item">
+                <span class="medical-record-card__label">Weight</span>
+                <span class="medical-record-card__value">
+                  {{ medicalRecord.weight }} kg
+                </span>
+              </div>
+            </div>
+          </section>
+    
+          <!-- Details -->
+          <section class="medical-record-card__section">
+            <h4 class="medical-record-card__section-title">Details</h4>
+    
+            <div class="medical-record-card__details-grid">
+              <div class="medical-record-card__detail">
+                <span class="medical-record-card__label">Symptoms</span>
+                <p class="medical-record-card__text">
+                  {{ medicalRecord.symptoms || "No symptoms recorded." }}
+                </p>
+              </div>
+    
+              <div class="medical-record-card__detail">
+                <span class="medical-record-card__label">Diagnosis</span>
+                <p class="medical-record-card__text">
+                  {{ medicalRecord.diagnosis || "No diagnosis recorded." }}
+                </p>
+              </div>
+    
+              <div class="medical-record-card__detail">
+                <span class="medical-record-card__label">Treatment Plan</span>
+                <p class="medical-record-card__text">
+                  {{ medicalRecord.treatmentPlan || "No treatment plan recorded." }}
+                </p>
+              </div>
+    
+              <div
+                class="medical-record-card__detail medical-record-card__detail--full"
+              >
+                <span class="medical-record-card__label">Notes</span>
+                <p class="medical-record-card__text">
+                  {{ medicalRecord.notes || "No additional notes." }}
+                </p>
+              </div>
+            </div>
+          </section>
+        </article>
+      } @else {
+        <p class="no-records">No medical records found.</p>
+      }
+    </div>
+  </section>
+}

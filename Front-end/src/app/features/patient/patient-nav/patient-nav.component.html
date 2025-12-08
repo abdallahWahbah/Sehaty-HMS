@@ -1,0 +1,94 @@
+<header class="top-bar">
+  <div class="top-bar__content">
+    <a class="logo" routerLink="/home">
+      <span class="logo__text">
+        <img src="images/logo.png" alt="logo" class="logo-img" />
+      </span>
+    </a>
+
+    <div
+      class="hamburger"
+      (click)="toggleMobileMenu()"
+      [class.active]="isMobileMenuOpen"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <div
+      class="nav-overlay"
+      [class.active]="isMobileMenuOpen"
+      (click)="toggleMobileMenu()"
+    ></div>
+
+    <div class="nav-container" [class.active]="isMobileMenuOpen">
+      <nav class="top-nav">
+        <a
+          routerLink="/home/medicalRecords"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="toggleMobileMenu()"
+        >
+          Medical Records
+        </a>
+        <a
+          routerLink="/home/appointments"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="toggleMobileMenu()"
+        >
+          Appointments
+        </a>
+        <a
+          routerLink="/home/prescription"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="toggleMobileMenu()"
+          >My Prescription
+        </a>
+        <a
+          routerLink="/home/billings"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="toggleMobileMenu()"
+          >My Billings
+        </a>
+        <a
+          routerLink="/home/feedback"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="toggleMobileMenu()"
+          >FeedBack
+        </a>
+        <a
+          routerLink="/home/details"
+          routerLinkActive="active"
+          class="nav-link login"
+          (click)="toggleMobileMenu()"
+        >
+          <span>Profile</span>
+        </a>
+        @if(storedData?.token){
+        <a
+          routerLink="/appointments"
+          routerLinkActive="active"
+          class="nav-link login"
+          (click)="toggleMobileMenu(true)"
+        >
+          <span>Logout</span>
+        </a>
+        }@else {
+        <a
+          routerLink="/login"
+          routerLinkActive="active"
+          class="nav-link login"
+          (click)="toggleMobileMenu()"
+        >
+          <span>Login</span>
+        </a>
+        }
+      </nav>
+    </div>
+  </div>
+</header>

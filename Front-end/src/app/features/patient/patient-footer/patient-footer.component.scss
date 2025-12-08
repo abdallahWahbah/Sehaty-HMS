@@ -1,0 +1,148 @@
+.footer {
+  background: #252B61;
+  color: #e6e8f5;
+  padding: 3rem 2rem 1.5rem;
+  border-radius: 32px 32px 0 0;
+  margin-top: 4rem;
+  box-shadow: 0 -15px 35px rgba(20, 24, 45, 0.25);
+}
+
+/* GRID LAYOUT */
+.footer__container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2.5rem;
+}
+
+/* Make brand section slightly wider */
+.footer__brand {
+  max-width: 320px;
+}
+
+/* Logo */
+.footer__logo {
+  width: 140px;
+  margin-bottom: 1rem;
+}
+
+/* Description */
+.footer__desc {
+  color: #d7dcf3;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+/* Socials */
+.footer__socials {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.footer__socials a {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  color: white;
+  font-size: 1.25rem;
+  transition: 0.3s ease;
+  cursor: pointer;
+}
+
+.footer__socials a:hover {
+  transform: translateY(-6px);
+  background: #f9686b;
+}
+
+/* Link group */
+.footer__links h4 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.footer__links a {
+  display: block;
+  color: #cbd0eb;
+  font-size: 1.25rem;
+  margin-bottom: 0.6rem;
+  text-decoration: none;
+  transition: 0.25s ease;
+  cursor: pointer;
+}
+
+.footer__links a:hover {
+  color: #f9686b;
+  transform: translateX(5px);
+}
+
+/* Bottom Section */
+.footer__bottom {
+  text-align: center;
+  margin-top: 2.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 1.2rem;
+}
+
+.footer__bottom p {
+  font-size: 1.25rem;
+  color: #c7cbee;
+}
+
+/* ------------------ */
+/* RESPONSIVE DESIGN  */
+/* ------------------ */
+
+/* Tablets (≤ 992px) → Switch to 2 columns */
+@media (max-width: 992px) {
+  .footer__container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer {
+    padding: 2.5rem 1.5rem;
+  }
+}
+
+/* Large Phones (≤ 768px) */
+@media (max-width: 768px) {
+  .footer__brand {
+    max-width: 100%;
+  }
+
+  .footer__container {
+    gap: 2rem;
+  }
+}
+
+/* Small Phones (≤ 600px) → Single Column */
+@media (max-width: 600px) {
+  .footer {
+    text-align: center;
+  }
+
+  .footer__container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .footer__socials {
+    justify-content: center;
+  }
+
+  .footer__links a:hover {
+    transform: translateX(0);
+    /* no jump on mobile */
+  }
+
+  .footer__brand,
+  .footer__links {
+    align-items: center;
+  }
+}

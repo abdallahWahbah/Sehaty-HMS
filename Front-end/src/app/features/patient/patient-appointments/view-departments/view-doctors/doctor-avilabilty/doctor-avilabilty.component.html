@@ -1,0 +1,108 @@
+<section class="availability">
+  <!-- Loading -->
+  @if (loading) {
+  <p class="availability__state availability__state--loading">
+    Loading available days...
+  </p>
+  }
+
+  <!-- Error -->
+  @if (!loading && errorMessage) {
+  <p class="availability__state availability__state--error">
+    {{ errorMessage }}
+  </p>
+  }
+
+  <!-- Doctor Name -->
+  @if (doctorAvailability) {
+  <header class="availability__header">
+    <div class="availability__header-content">
+      <div class="availability__header-text">
+        <h2 class="availability__title">
+          Dr. {{ doctorAvailability.doctorName }}
+        </h2>
+        <p class="availability__subtitle">
+          Recurring weekly availability & appointment windows
+        </p>
+      </div>
+    </div>
+  </header>
+  }
+
+  <!-- Days List -->
+  @if (!loading && doctorAvailability) {
+  <main class="availability__main">
+    <div class="availability__grid">
+      @for (day of doctorAvailability.recurringSchedule; track $index) {
+      <article
+        class="availability__card
+              {{
+          day.available === 'Available'
+            ? 'availability__card--available'
+            : 'availability__card--not-available'
+        }}"
+      >
+        <!-- Accent Bar -->
+        <div
+          class="availability__accent
+                {{
+            day.available === 'Available'
+              ? 'availability__accent--available'
+              : 'availability__accent--not-available'
+          }}"
+        ></div>
+
+        <!-- Card Inner -->
+        <div class="availability__card-inner">
+          <!-- Header row -->
+          <div class="availability__card-header">
+            <div class="availability__card-left">
+              <div class="availability__day-icon">
+                <i class="fa-regular fa-calendar-days"></i>
+              </div>
+              <div class="availability__day-block">
+                <h3 class="availability__day">{{ day.day }}</h3>
+                <p class="availability__date">{{ day.date }}</p>
+              </div>
+            </div>
+
+            <span class="availability__badge">
+              {{ day.available }}
+            </span>
+          </div>
+
+          <!-- Body -->
+          <div class="availability__card-body">
+            @if (day.available === 'Available') {
+            <p class="availability__info-line">
+              <span class="availability__label">Time window</span>
+              <span class="availability__value">
+                {{ day.startTime }} – {{ day.endTime }}
+              </span>
+            </p>
+
+            <footer class="availability__card-footer">
+              <button
+                class="availability__button"
+                (click)="viewSlots(day.date)"
+              >
+                <span>View available slots</span>
+                <i class="fa-solid fa-arrow-right-long"></i>
+              </button>
+            </footer>
+            } @else {
+            <p class="availability__info-line">
+              <span class="availability__label">Status</span>
+              <span class="availability__value availability__value--muted">
+                No appointments on this day
+              </span>
+            </p>
+            }
+          </div>
+        </div>
+      </article>
+      }
+    </div>
+  </main>
+  }
+</section>

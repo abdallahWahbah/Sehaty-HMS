@@ -1,0 +1,138 @@
+<section id="dashboard_doctor" class="doctors">
+  <!-- Header -->
+  <div class="doctors__header">
+    <div>
+      <h2 class="doctors__title">Doctors</h2>
+      <p class="doctors__subtitle">Manage doctor profiles and schedules</p>
+    </div>
+
+    <button class="doctors__add-btn" (click)="navigateToAdd()">
+      <i class="fa-solid fa-plus"></i>
+      <span>Add Doctor</span>
+    </button>
+  </div>
+
+  <div class="doctors__content">
+    <!-- لو فيه دكاترة -->
+    @if (doctors && doctors.length > 0) {
+    <div class="doctors__list">
+      @for (doctor of doctors; track doctor.id) {
+      <article class="doctor-card">
+        <!-- Header: الاسم + القسم + الحالة -->
+        <header class="doctor-card__header">
+          <div class="doctor-card__identity">
+            <div class="doctor-card__avatar">
+              <i class="fa-solid fa-user-doctor"></i>
+            </div>
+            <div>
+              <p class="doctor-card__label">Doctor</p>
+              <p class="doctor-card__name">
+                Dr. {{ doctor.firstName }} {{ doctor.lastName }}
+              </p>
+              <p class="doctor-card__department">
+                Department: {{ doctor.department || "N/A" }}
+              </p>
+            </div>
+          </div>
+
+          <div class="doctor-card__status">
+            <span class="status-pill status-pill--active">
+              <i class="fa-solid fa-circle status-pill__dot"></i>
+              <span>Active</span>
+            </span>
+          </div>
+        </header>
+
+        <!-- Body: البيانات الأساسية -->
+        <section class="doctor-card__body">
+          <div class="doctor-card__info-grid">
+            <div class="doctor-card__info-item">
+              <p class="doctor-card__info-label">License Number</p>
+              <p class="doctor-card__info-value">
+                {{ doctor.licenseNumber || "—" }}
+              </p>
+            </div>
+
+            <div class="doctor-card__info-item">
+              <p class="doctor-card__info-label">Specialty</p>
+              <p class="doctor-card__info-value">
+                {{ doctor.specialty || "—" }}
+              </p>
+            </div>
+
+            <div class="doctor-card__info-item">
+              <p class="doctor-card__info-label">Years of Experience</p>
+              <p class="doctor-card__info-value">
+                {{ doctor.yearsOfExperience ?? "—" }}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Footer: الأزرار -->
+        <footer class="doctor-card__footer">
+          <button
+            type="button"
+            class="doctor-card__btn doctor-card__btn--outline"
+            (click)="showDoctor(doctor)"
+          >
+            <i class="fa-solid fa-eye"></i>
+            <span>View</span>
+          </button>
+
+          <button
+            type="button"
+            class="doctor-card__btn doctor-card__btn--primary"
+            (click)="navigateToEdit(doctor.id)"
+          >
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>Edit</span>
+          </button>
+
+          <button
+            type="button"
+            class="doctor-card__btn doctor-card__btn--danger"
+            (click)="openDeleteDialog()"
+          >
+            <i class="fa-solid fa-trash"></i>
+            <span>Delete</span>
+          </button>
+          @if(showDeleteDialog){
+            <app-confirmation-dialog
+              title="Delete Doctor"
+              header="Are you sure you want to delete this doctor?"
+              (cancel)="closeDialog()"
+              (confirm)="deleteDoctor(doctor.id)"
+            ></app-confirmation-dialog>
+          }
+        </footer>
+      </article>
+      }
+    </div>
+    } @else {
+    <!-- مفيش دكاترة -->
+    <div class="doctors__empty">
+      <i class="fa-solid fa-user-doctor doctors__empty-icon"></i>
+      <p class="doctors__empty-title">No doctors found</p>
+      <p class="doctors__empty-subtitle">
+        You haven't added any doctors yet. Click "Add Doctor" to create a
+        profile.
+      </p>
+    </div>
+    }
+
+    <!-- Doctor Dialog -->
+    @if (selectedDoctor) {
+    <div class="doctors__dialog-wrapper card flex justify-center">
+      <p-dialog
+        [modal]="true"
+        [(visible)]="isDoctorShown"
+        [style]="{ width: '100rem', color: 'var(--color-primary)' }"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+      >
+        <app-doctor [doctor]="selectedDoctor"></app-doctor>
+      </p-dialog>
+    </div>
+    }
+  </div>
+</section>

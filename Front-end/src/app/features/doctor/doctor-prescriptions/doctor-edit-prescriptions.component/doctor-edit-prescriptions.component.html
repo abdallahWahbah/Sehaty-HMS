@@ -1,0 +1,202 @@
+@if(isLoading){
+  <app-loading-spinner></app-loading-spinner>
+}@else {
+  <section class="prescription-edit">
+  @if (isLoading) {
+  <div class="prescription-edit__loading">
+    <div class="prescription-edit__loading-inner">
+      <!-- Icon + Orbit -->
+      <div class="prescription-edit__loading-visual">
+        <div class="prescription-edit__loading-orbit"></div>
+        <div class="prescription-edit__loading-circle">
+          <i class="fa-solid fa-user-doctor"></i>
+        </div>
+      </div>
+
+      <!-- Text -->
+      <div class="prescription-edit__loading-text">
+        <p class="prescription-edit__loading-title">Loading prescription…</p>
+        <p class="prescription-edit__loading-subtitle">
+          Please wait while we fetch the latest prescription details.
+        </p>
+      </div>
+
+      <!-- Skeleton Card -->
+      <div class="prescription-edit__skeleton-card">
+        <div class="prescription-edit__skeleton-header">
+          <div
+            class="prescription-edit__skeleton-line prescription-edit__skeleton-line--lg shimmering"
+          ></div>
+          <div
+            class="prescription-edit__skeleton-line prescription-edit__skeleton-line--sm shimmering"
+          ></div>
+        </div>
+
+        <div class="prescription-edit__skeleton-grid">
+          <div class="prescription-edit__skeleton-block shimmering"></div>
+          <div class="prescription-edit__skeleton-block shimmering"></div>
+        </div>
+
+        <div class="prescription-edit__skeleton-medications">
+          <div
+            class="prescription-edit__skeleton-line prescription-edit__skeleton-line--md shimmering"
+          ></div>
+          <div class="prescription-edit__skeleton-row shimmering"></div>
+          <div class="prescription-edit__skeleton-row shimmering"></div>
+        </div>
+
+        <div class="prescription-edit__skeleton-footer">
+          <div class="prescription-edit__skeleton-btn shimmering"></div>
+          <div class="prescription-edit__skeleton-btn shimmering"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  } @if (serverError) {
+  <div class="prescription-edit__alert prescription-edit__alert--error">
+    <span class="prescription-edit__alert-dot"></span>
+    <p class="prescription-edit__alert-text">{{ serverError }}</p>
+  </div>
+  } @if (!isLoading && prescription) {
+  <article class="prescription-edit__card">
+    <!-- Header -->
+    <header class="prescription-edit__header">
+      <div>
+        <h3 class="prescription-edit__title">
+          Edit Prescription
+          <span class="prescription-edit__id">#{{ prescription.id }}</span>
+        </h3>
+        <p class="prescription-edit__subtitle">
+          Update prescription status, instructions and medications
+        </p>
+      </div>
+
+      <div class="prescription-edit__status-badge">
+        <span class="prescription-edit__status-label">Current status</span>
+        <span class="prescription-edit__status-value">
+          {{ prescription.status || "Unknown" }}
+        </span>
+      </div>
+    </header>
+
+    <!-- Form fields -->
+    <section class="prescription-edit__section">
+      <h4 class="prescription-edit__section-title">General Details</h4>
+
+      <div class="prescription-edit__grid">
+        <div class="prescription-edit__field">
+          <label class="prescription-edit__label">Status</label>
+          <input
+            class="prescription-edit__input"
+            [(ngModel)]="prescription.status"
+            placeholder="e.g. Active, Expired, Cancelled"
+          />
+        </div>
+
+        <div class="prescription-edit__field">
+          <label class="prescription-edit__label">Digital Signature</label>
+          <input
+            class="prescription-edit__input"
+            [(ngModel)]="prescription.digitalSignature"
+            placeholder="Doctor's digital signature"
+          />
+        </div>
+      </div>
+
+      <div class="prescription-edit__field">
+        <label class="prescription-edit__label">Special Instructions</label>
+        <textarea
+          class="prescription-edit__textarea"
+          rows="3"
+          [(ngModel)]="prescription.specialInstructions"
+          placeholder="Add any extra notes or instructions for the patient or pharmacy"
+        ></textarea>
+      </div>
+    </section>
+
+    <!-- Medications -->
+    <section class="prescription-edit__section">
+      <div class="prescription-edit__section-header">
+        <h4 class="prescription-edit__section-title">Medications</h4>
+        <button
+          type="button"
+          class="prescription-edit__btn prescription-edit__btn--ghost"
+          (click)="addMedication()"
+        >
+          <i class="fa-solid fa-plus"></i>
+          <span>Add Medication</span>
+        </button>
+      </div>
+
+      <div class="prescription-edit__medications-table">
+        <div class="prescription-edit__medications-header">
+          <span>Name</span>
+          <span>Dosage</span>
+          <span>Frequency</span>
+          <span>Duration</span>
+          <span class="prescription-edit__medications-header--right">
+            Remove
+          </span>
+        </div>
+
+        @for (med of prescription.medications; track $index; let i = $index) {
+        <div class="prescription-edit__medications-row">
+          <input
+            class="prescription-edit__input prescription-edit__input--small"
+            [(ngModel)]="med.medicationName"
+            placeholder="Medication name"
+          />
+          <input
+            class="prescription-edit__input prescription-edit__input--small"
+            [(ngModel)]="med.dosage"
+            placeholder="Dosage"
+          />
+          <input
+            class="prescription-edit__input prescription-edit__input--small"
+            [(ngModel)]="med.frequency"
+            placeholder="Frequency"
+          />
+          <input
+            class="prescription-edit__input prescription-edit__input--small"
+            [(ngModel)]="med.duration"
+            placeholder="Duration"
+          />
+          <button
+            type="button"
+            class="prescription-edit__icon-btn prescription-edit__icon-btn--danger"
+            (click)="removeMedication(i)"
+            [disabled]="
+              prescription.medications && prescription.medications.length === 1
+            "
+          >
+            <i class="fa-regular fa-trash-can"></i>
+          </button>
+        </div>
+        }
+      </div>
+    </section>
+
+    <!-- Actions -->
+    <footer class="prescription-edit__footer">
+      <div class="prescription-edit__actions">
+        <button
+          type="button"
+          class="prescription-edit__btn prescription-edit__btn--primary"
+          (click)="saveChanges()"
+        >
+          Save Changes
+        </button>
+
+        <button
+          type="button"
+          class="prescription-edit__btn prescription-edit__btn--secondary"
+          (click)="cancel()"
+        >
+          Cancel
+        </button>
+      </div>
+    </footer>
+  </article>
+  }
+</section>
+}

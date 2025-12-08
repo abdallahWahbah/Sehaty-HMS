@@ -1,0 +1,133 @@
+<div class="container mt-5 mb-5">
+  <section class="hero-card mb-5">
+    <div class="hero-card__text">
+      <h1 class="mb-4">Sehaty</h1>
+      <p class="hero-card__eyebrow mb-5 mt-5 fs-2">
+        Innovative care for every stage .....
+      </p>
+
+      <div class="d-flex mt-5 mb-4">
+        <button
+          class="btn rounded-5 py-2 px-4 btn--coral me-3 fs-5"
+          (click)="navigateToAppointments()"
+        >
+          Book Consultation <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+    <div class="hero-card__doctor">
+      <img
+        src="images/landing/doctor-with-his-arms-crossed-white-background 1.png"
+        alt="Doctor"
+      />
+    </div>
+  </section>
+
+  <section class="feature-grid mb-5 mt-5">
+
+    <article class="feature-card mint">
+      <h3>Book Your Appointments.</h3>
+      <p>Schedule consultations instantly.</p>
+      <a class="pill rounded-5 text-decoration-none" [routerLink]="'/home/appointments'">
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+      <img src="images/landing/Usability testing-bro.svg" alt="Progress" />
+    </article>
+
+    <article class="feature-card yellow">
+      <h3>Access Your Medical Records.</h3>
+      <p>View and manage your records.</p>
+      <a class="pill rounded-5 text-decoration-none" [routerLink]="'/home/medicalRecords'">
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+      <img src="images/landing/Web search-cuate.svg" alt="Doctors" />
+    </article>
+
+    <article class="feature-card lilac">
+      <h3>Manage Your Prescriptions.</h3>
+      <p>View active and past prescriptions.</p>
+      <a class="pill rounded-5 text-decoration-none" [routerLink]="'/home/prescription'">
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+      <img src="images/landing/Resume-amico.svg" alt="Medicine" />
+    </article>
+    <article class="feature-card blue">
+      <h3>Check Your profile.</h3>
+      <p>Access detailed profile.</p>
+      <a class="pill rounded-5 text-decoration-none" [routerLink]="'/home/details'">
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+      <img src="images/landing/Business analytics-rafiki.svg" alt="Lab tests" />
+    </article>
+  </section>
+
+  <section class="headline">
+    <h2>
+      Our doctors and clinics have earned big notice from patients all over the
+      country…
+    </h2>
+  </section>
+
+  <section class="bottom-grid">
+    <article class="wide-card yellow">
+      <div class="wide-card__header">
+        <span class="tag mb-2">Podcast</span>
+      </div>
+      <h3>Nutrition And Mental Health.</h3>
+      <p>
+        The food we eat provides the nutrients that our bodies need to function
+        properly.
+      </p>
+      <img
+        src="images/landing/Eating together-cuate.svg"
+        alt="Nutrition"
+        class="w-50"
+      />
+    </article>
+
+    <article class="tall-card indigo">
+      <div class="wide-card__header">
+        <span class="tag mb-2">Live Event</span>
+      </div>
+      <h3>Healthy Habits For A Happy Heart</h3>
+      <img
+        src="images/landing/Medical research-rafiki.svg"
+        alt="Event"
+        class="w-50"
+      />
+    </article>
+
+    <div class="stats-stack">
+      <article class="stat-card teal">
+        <div class="d-flex justify-content-evenly">
+          <div>
+            <p class="stat-card__value">04</p>
+            <p class="stat-card__label">Years Experience.</p>
+          </div>
+          <div>
+            <img
+              src="images/landing/DNA-bro.svg"
+              alt="Event"
+              class="w-50 ms-5"
+            />
+          </div>
+        </div>
+      </article>
+      <article class="stat-card blush">
+        <div class="d-flex justify-content-evenly">
+          <div>
+            <p class="stat-card__value">150k</p>
+            <p class="stat-card__label">Happy Customers.</p>
+          </div>
+          <div>
+            <img
+              src="images/landing/Enthusiastic-amico.svg"
+              alt="Event"
+              class="w-50 ms-5"
+            />
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+</div>

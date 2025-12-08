@@ -1,0 +1,43 @@
+<div class="auth">
+    <div class="auth__logo">
+        <img src="/images/logo.png" alt="main logo" class="auth__logo--image">
+    </div>
+    <div class="auth__main--container">
+        <div class="auth__content">
+            @if(serverError){
+                <div class="server-error">
+                    <span>{{ serverError }}</span>
+                </div>
+            }
+            <h3 class="auth__header">Verify code</h3>
+            <p class="auth__sub--header">An authentication code has been sent to your email.</p>
+
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                <p-floatlabel variant="on" class="auth__input--container">
+                    <input 
+                        pInputText 
+                        id="otp" 
+                        autocomplete="off" 
+                        formControlName="otp"
+                    />
+                    <label for="otp">otp</label>
+                </p-floatlabel>
+                @if(loginForm.get('otp')?.touched && loginForm.get('otp')?.invalid){
+                    <div class="error-text">
+                        @if(loginForm.get('otp')?.errors?.['required']){
+                            <span>OTP is required</span>
+                        }
+                    </div>
+                }
+    
+                <div class="card flex justify-center auth__button--container">
+                    <p-button type="submit" label="Verify" />
+                </div>
+            </form>
+
+        </div>
+        <div class="auth__image--container">
+            <img src="/images/login.jpg" alt="" class="auth__image">
+        </div>
+    </div>
+</div>

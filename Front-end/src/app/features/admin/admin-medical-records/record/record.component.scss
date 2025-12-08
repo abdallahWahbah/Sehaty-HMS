@@ -1,0 +1,197 @@
+// نفس الألوان اللي عندك
+$primary: #252b61;
+$primary-soft: #4b56a3;
+$text-main: #1f2933;
+$text-muted: #6b7280;
+$bg-soft: #f5f6ff;
+$shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+$radius-lg: 1.4rem;
+
+.record-dialog {
+  padding: 0.5rem;
+}
+
+/* ============================
+   Record Card (Dialog Version)
+============================ */
+
+.record-card {
+  background: #ffffff;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  border: 1px solid rgba(37, 43, 97, 0.08);
+  padding: 1.6rem 1.8rem;
+  max-height: 70vh;
+  overflow-y: auto;
+
+  /* ===== Header ===== */
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.6rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__patient {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  &__avatar {
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 50%;
+    background: #eef2ff;
+    color: $primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+  }
+
+  &__label {
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $primary-soft;
+    margin: 0 0 0.1rem;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: $primary;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: flex-end;
+
+    @media (max-width: 768px) {
+      align-items: flex-start;
+    }
+  }
+
+  &__badge {
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    background: $bg-soft;
+    color: $primary-soft;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  &__status {
+    padding: 0.2rem 0.9rem;
+    border-radius: 999px;
+    font-size: 1.1rem;
+    font-weight: 600;
+
+    &--final {
+      background: rgba(16, 185, 129, 0.1);
+      color: #059669;
+    }
+
+    &--draft {
+      background: rgba(249, 115, 22, 0.1);
+      color: #ea580c;
+    }
+  }
+
+  /* ===== Sections ===== */
+  &__section {
+    margin-top: 1.4rem;
+
+    &--light {
+      background: #f9fafb;
+      border-radius: 1rem;
+      padding: 0.9rem 1.2rem;
+    }
+  }
+
+  &__section-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 0.8rem;
+    color: $primary;
+  }
+
+  /* ===== Dates ===== */
+  &__dates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.4rem;
+  }
+
+  &__date-item {
+    min-width: 16rem;
+  }
+
+  &__value {
+    font-size: 1.3rem;
+    color: $primary;
+    font-weight: 500;
+  }
+
+  /* ===== Vitals ===== */
+  &__vitals {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem 1.4rem;
+
+    @media (max-width: 480px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__vital-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  /* ===== Details ===== */
+  &__details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem 1.6rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__detail {
+    &--full {
+      grid-column: 1 / -1;
+    }
+  }
+
+  &__text {
+    margin: 0.2rem 0 0;
+    font-size: 1.35rem;
+    color: $text-main;
+    line-height: 1.5;
+  }
+}
+
+/* لو حابب تسيب إعدادات الـ Dialog نفسها */
+:host ::ng-deep .p-dialog .p-dialog-header {
+  font-size: 1.8rem !important;
+  font-weight: 600;
+}
+
+.p-dialog-title.ng-tns-c2196985156-0 {
+  font-size: 2rem !important;
+  display: none !important;
+}

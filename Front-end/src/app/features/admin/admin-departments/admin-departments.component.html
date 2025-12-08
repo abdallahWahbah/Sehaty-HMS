@@ -1,0 +1,101 @@
+<div class="departments-dashboard">
+  <!-- Header Section -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div>
+        <h1 class="page-title">Medical Departments</h1>
+        <p class="page-subtitle">
+          Explore our specialized healthcare departments
+        </p>
+      </div>
+      <div class="header-actions">
+        <div class="header-search">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input
+              type="text"
+              placeholder="Search departments..."
+              [(ngModel)]="searchTerm"
+              (input)="searchDepartments()"
+            />
+          </div>
+        </div>
+        <button
+          type="button"
+          [routerLink]="['/admin/departments/add']"
+          class="btn-add-department"
+        >
+          <i class="fa-solid fa-plus"></i>
+          Add Department
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Overview -->
+  <div class="stats-overview">
+    <div class="overview-card">
+      <div class="overview-icon teal">
+        <i class="fa-solid fa-building"></i>
+      </div>
+      <div class="overview-content">
+        <h3>{{ totalDepartments }}</h3>
+        <p>Total Departments</p>
+      </div>
+    </div>
+
+    <div class="overview-card">
+      <div class="overview-icon blush">
+        <i class="fa-solid fa-user-doctor"></i>
+      </div>
+      <div class="overview-content">
+        <h3>{{ totalDoctors }}</h3>
+        <p>Specialist Doctors</p>
+      </div>
+    </div>
+
+    <div class="overview-card">
+      <div class="overview-icon yellow">
+        <i class="fa-solid fa-calendar-check"></i>
+      </div>
+      <div class="overview-content">
+        <h3>{{ monthlyAppointments }}</h3>
+        <p>Monthly Appointments</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Departments Grid -->
+  <div class="departments-grid">
+    <div
+      class="department-card mint"
+      *ngFor="let dept of filteredDepartments"
+    >
+      <div class="card-header-section">
+        <div class="department-icon">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <span class="department-badge">Available</span>
+      </div>
+      <div class="card-body">
+        <h3 class="department-name">{{ dept.en_Name }}</h3>
+        <p class="department-description">{{ dept.description }}</p>
+        <div class="department-stats">
+          <div class="stat-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>{{ dept.doctors?.length || 0 }} Doctors</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-book" [routerLink]="['/admin/departments', dept.id]">
+          Details
+        </button>
+
+        <button class="btn-view" [routerLink]="['/admin/departments', dept.id]">
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

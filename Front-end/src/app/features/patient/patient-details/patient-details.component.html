@@ -1,0 +1,95 @@
+@if(loading){
+  <app-loading-spinner></app-loading-spinner>
+}@else {
+  <section id="dashboard" class="dashboard">
+  <div class="dashboard__title">
+    <h2 class="dashboard__title-main">Patient Details</h2>
+  </div>
+
+  @if (patient) {
+  <section class="patient-details">
+    <article class="patient-details__card">
+      <!-- Header -->
+      <header class="patient-details__header">
+        <div class="patient-details__identity">
+          <div class="patient-details__avatar">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div>
+            <h3 class="patient-details__name">
+              {{ patient.firstName }} {{ patient.lastName }}
+            </h3>
+            <p class="patient-details__sub">
+              {{ patient.gender }} • {{ patient.bloodType || "N/A" }}
+            </p>
+          </div>
+        </div>
+
+        <div class="patient-details__status-block">
+          <span class="patient-details__status-pill">
+            {{ patient.status }}
+          </span>
+          <p class="patient-details__id">ID: {{ patient.nationalId }}</p>
+        </div>
+      </header>
+
+      <!-- Body -->
+      <section class="patient-details__body">
+        <div class="patient-details__grid">
+          <div class="patient-details__item">
+            <p class="patient-details__label">Date of Birth</p>
+            <p class="patient-details__value">
+              {{ patient.dateOfBirth | date : "mediumDate" }}
+            </p>
+          </div>
+
+          <div class="patient-details__item">
+            <p class="patient-details__label">Registration Date</p>
+            <p class="patient-details__value">
+              {{ patient.registrationDate | date : "mediumDate" }}
+            </p>
+          </div>
+
+          <div class="patient-details__item">
+            <p class="patient-details__label">Allergies</p>
+            <p class="patient-details__value">
+              {{ patient.allergies || "None reported" }}
+            </p>
+          </div>
+
+          <div class="patient-details__item">
+            <p class="patient-details__label">Chronic Conditions</p>
+            <p class="patient-details__value">
+              {{ patient.chrinicConditions || "None reported" }}
+            </p>
+          </div>
+
+          <div class="patient-details__item patient-details__item--full">
+            <p class="patient-details__label">Address</p>
+            <p class="patient-details__value">
+              {{ patient.address || "No address provided" }}
+            </p>
+          </div>
+
+          <div class="patient-details__item patient-details__item--full">
+            <p class="patient-details__label">Emergency Contact</p>
+            <p class="patient-details__value">
+              {{ patient.emergencyContactName }} —
+              {{ patient.emergencyContactPhone }}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="patient-details__footer">
+        <button class="patient-details__edit-btn" (click)="goToEdit()">
+          <i class="fa-regular fa-pen-to-square"></i>
+          <span>Edit Patient</span>
+        </button>
+      </footer>
+    </article>
+  </section>
+  }
+</section>
+}

@@ -1,0 +1,174 @@
+<section id="dashboard" class="prescriptions">
+  <div class="prescriptions__header">
+    <div>
+      <h2 class="prescriptions__title">Prescriptions</h2>
+      <p class="prescriptions__subtitle">
+        View and manage all patient prescriptions
+      </p>
+    </div>
+
+    <div class="prescriptions__search">
+      <i class="fa-solid fa-magnifying-glass prescriptions__search-icon"></i>
+      <input
+        class="prescriptions__search-input"
+        placeholder="Search by Patient Name..."
+        [(ngModel)]="searchPatientName"
+        (input)="filterByPatientName()"
+        style="margin-bottom: 2rem"
+      />
+    </div>
+  </div>
+
+  @if (filteredPrescriptions.length > 0) {
+
+  <div class="prescriptions__list">
+    @for (prescription of filteredPrescriptions; track prescription.id) {
+
+    <article class="prescription-card">
+      <!-- Header -->
+      <header class="prescription-card__header">
+        <div class="prescription-card__id-date">
+          <span class="prescription-card__id">#{{ prescription.id }}</span>
+          <span class="prescription-card__date">
+            {{ prescription.dateIssued | date : "medium" }}
+          </span>
+        </div>
+
+        <div class="prescription-card__status-wrapper">
+          <span
+            class="prescription-card__status"
+            [ngClass]="{
+              'prescription-card__status--active':
+                prescription.status === 'Active',
+              'prescription-card__status--expired':
+                prescription.status === 'Expired',
+              'prescription-card__status--cancelled':
+                prescription.status === 'Cancelled'
+            }"
+          >
+            {{ prescription.status }}
+          </span>
+        </div>
+      </header>
+
+      <!-- Meta -->
+      <div class="prescription-card__meta">
+        <div class="prescription-card__meta-item">
+          <i class="fa-solid fa-user-doctor prescription-card__meta-icon"></i>
+          <div>
+            <p class="prescription-card__meta-label">Doctor</p>
+            <p class="prescription-card__meta-value">
+              Dr. {{ prescription.doctorName }}
+              <span class="prescription-card__meta-tag">
+                {{ prescription.licenseNumber }}
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <div class="prescription-card__meta-item">
+          <i class="fa-regular fa-user prescription-card__meta-icon"></i>
+          <div>
+            <p class="prescription-card__meta-label">Patient</p>
+            <p class="prescription-card__meta-value">
+              {{ prescription.patiantName }}
+              <span class="prescription-card__meta-tag">
+                ID: {{ prescription.patientId }}
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div class="prescription-card__details">
+        <div class="prescription-card__detail">
+          <p class="prescription-card__detail-label">Medical Notes</p>
+          <p class="prescription-card__detail-value">
+            {{ prescription.medicalRecordNotes || "No notes provided" }}
+          </p>
+        </div>
+
+        <div class="prescription-card__detail">
+          <p class="prescription-card__detail-label">Instructions</p>
+          <p class="prescription-card__detail-value">
+            {{ prescription.specialInstructions || "No special instructions" }}
+          </p>
+        </div>
+
+        <div
+          class="prescription-card__detail prescription-card__detail--signature"
+        >
+          <p class="prescription-card__detail-label">Digital Signature</p>
+          <p class="prescription-card__signature">
+            {{ prescription.digitalSignature }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Medications -->
+      @if (prescription.medications && prescription.medications.length > 0) {
+      <div class="prescription-card__medications">
+        <div class="prescription-card__section-header">
+          <h3 class="prescription-card__section-title">Medications</h3>
+        </div>
+
+        <div class="prescription-card__medications-table">
+          <div class="prescription-card__medications-header">
+            <span>Name</span>
+            <span>Dosage</span>
+            <span>Frequency</span>
+            <span>Duration</span>
+          </div>
+
+          @for (med of prescription.medications; track $index) {
+          <div class="prescription-card__medications-row">
+            <span>{{ med.medicationName }}</span>
+            <span>{{ med.dosage }}</span>
+            <span>{{ med.frequency }}</span>
+            <span>{{ med.duration }}</span>
+          </div>
+          }
+        </div>
+      </div>
+      }
+
+      <!-- Actions -->
+      <footer class="prescription-card__footer">
+        <div class="prescription-card__actions">
+          <button
+            class="prescription-card__btn prescription-card__btn--edit"
+            (click)="editPrescription(prescription)"
+          >
+            <i class="fa-regular fa-pen-to-square"></i>
+            <span>Edit Prescription</span>
+          </button>
+
+          <button
+            class="prescription-card__btn prescription-card__btn--delete"
+            (click)="deletePrescription(prescription)"
+          >
+            <i class="fa-regular fa-trash-can"></i>
+            <span>Delete Prescription</span>
+          </button>
+        </div>
+      </footer>
+    </article>
+
+    }
+  </div>
+
+  } @else {
+
+  <div class="prescriptions__empty-state">
+    <div class="empty-state">
+      <i class="fa-solid fa-prescription-bottle-medical empty-state__icon"></i>
+      <p class="empty-state__title">No prescriptions found</p>
+      <p class="empty-state__subtitle">
+        Try searching with a different Patient ID or check again later.
+      </p>
+    </div>
+  </div>
+
+  }
+</section>

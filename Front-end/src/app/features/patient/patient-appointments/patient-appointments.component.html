@@ -1,0 +1,132 @@
+@if(loading){
+<app-loading-spinner></app-loading-spinner>
+}@else {
+<section class="dashboard_appointments">
+  <!-- Title + Add Button -->
+  <div class="title_dashboard">
+    <div>
+      <h2 class="title_dashboard__main">My Appointments</h2>
+      <p class="title_dashboard__sub">
+        Review your upcoming and past appointments
+      </p>
+    </div>
+
+    <button class="add_btn" (click)="navigateToAddAppointment()">
+      <i class="fa-solid fa-plus"></i>
+      <span>Add Appointment</span>
+    </button>
+  </div>
+
+  <!-- Empty State -->
+  @if ((!appointments || appointments.length === 0)) {
+  <div class="empty-state">
+    <i class="fa-regular fa-calendar-xmark empty-state__icon"></i>
+    <p class="empty-state__title">No appointments found</p>
+    <p class="empty-state__subtitle">You don’t have any appointments yet.</p>
+  </div>
+  }
+
+  <!-- Appointments List -->
+  @if (appointments && appointments.length > 0) {
+  <section class="appointments-list">
+    @for (appointment of appointments; track appointment.id) {
+
+    <article class="appointment-card">
+      <!-- Header -->
+      <header class="appointment-card__header">
+        <div class="appointment-card__date-time">
+          <div class="appointment-card__row-inline">
+            <i class="fa-regular fa-calendar appointment-card__icon"></i>
+            <span class="appointment-card__date">
+              {{ appointment.appointmentDateTime | date : "MMM d, yyyy" }}
+            </span>
+          </div>
+
+          <div class="appointment-card__row-inline">
+            <i class="fa-regular fa-clock appointment-card__icon"></i>
+            <span class="appointment-card__time">
+              {{ appointment.appointmentDateTime | date : "HH:mm" }}
+            </span>
+          </div>
+        </div>
+
+        <div class="appointment-card__status-wrapper">
+          <span
+            class="status-pill"
+            [ngClass]="{
+              'dashboard__appointments-item--confirmed':
+                appointment.status === 'Confirmed',
+              'dashboard__appointments-item--pending':
+                appointment.status === 'Pending',
+              'dashboard__appointments-item--delayed':
+                appointment.status === 'Delayed',
+              'dashboard__appointments-item--cancelled':
+                appointment.status === 'Cancelled',
+              'dashboard__appointments-item--noshow':
+                appointment.status === 'NoShow',
+              'dashboard__appointments-item--emergency':
+                appointment.status === 'Emergency'
+            }"
+          >
+            {{ appointment.status }}
+          </span>
+        </div>
+      </header>
+
+      <!-- Body -->
+      <section class="appointment-card__body">
+        <div class="appointment-card__row">
+          <span class="appointment-card__label">Doctor</span>
+          <span class="appointment-card__value">
+            <i
+              class="fa-solid fa-user-doctor appointment-card__icon-inline"
+            ></i>
+            Dr. {{ appointment.doctorName }}
+          </span>
+        </div>
+        <div class="appointment-card__row">
+          <span class="appointment-card__label">Reason for visit</span>
+          <div class="appointment-card__reason">
+            <i class="fa-solid fa-notes-medical"></i>
+            <span>{{
+              appointment.reasonForVisit || "No reason provided"
+            }}</span>
+          </div>
+        </div>
+        @if(appointment.status === "Confirmed"){
+        <div class="title_dashboard" style="margin-bottom: 0">
+          <button class="btn-danger" (click)="handleCancel(appointment)" [disabled]="loadingCancel">
+            Cancel
+          </button>
+        </div>
+        }
+        @if(showDialog){
+            <app-confirmation-dialog
+              title="Payment warning"
+              header="If you canceled the appointment before 24 hours of its date, 20% of the payment will be removed, Are you sure you want to continue?"
+              (cancel)="closeDialog()"
+              (confirm)="cancelAppointment(appointment)"
+            ></app-confirmation-dialog>
+          }
+        <p-toast />
+      </section>
+
+      @if(appointment.status === 'Pending'){
+      <!-- Footer -->
+      <footer class="appointment-card__footer">
+        <button
+          class="appointment-card__btn-pay"
+          (click)="goToPayment(appointment.id)"
+        >
+          <i class="fa-solid fa-credit-card"></i>
+          <span>Pay Now</span>
+        </button>
+      </footer>
+      }
+    </article>
+
+    }
+  </section>
+  }
+</section>
+}

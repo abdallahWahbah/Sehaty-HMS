@@ -1,0 +1,137 @@
+<section class="sidebar-layout">
+  <aside class="sidebar">
+    <div class="sidebar__container">
+      <img src="/images/logo.png" alt="" class="sidebar__logo" />
+
+      <nav class="sidebar__menu">
+        @if(storedUser.role === "Admin"){
+          <div
+            class="sidebar__item"
+            routerLink="/admin/dashboard"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-solid fa-house"></i>
+            <p class="sidebar__label">Dashboard</p>
+          </div>
+  
+          <div
+            class="sidebar__item"
+            routerLink="/admin/patients"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-solid fa-user"></i>
+            <p class="sidebar__label">Patients</p>
+          </div>
+  
+          <div
+            class="sidebar__item"
+            routerLink="/admin/doctors"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-solid fa-user-doctor"></i>
+            <p class="sidebar__label">Doctors</p>
+          </div>
+  
+          <div
+            class="sidebar__item"
+            routerLink="/admin/appointments"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-regular fa-calendar-check"></i>
+            <p class="sidebar__label">Appointments</p>
+          </div>
+  
+          <!-- <div
+            class="sidebar__item"
+            routerLink="/admin/medicalRecords"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-solid fa-id-badge"></i>
+            <p class="sidebar__label">Medical Records</p>
+          </div> -->
+  
+          <div
+            class="sidebar__item"
+            routerLink="/admin/departments"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-solid fa-building"></i>
+            <p class="sidebar__label">Departments</p>
+          </div>
+          
+          <div
+            class="sidebar__item"
+            routerLink="/admin/allBillings"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-solid fa-id-badge"></i>
+            <p class="sidebar__label">All Billings</p>
+          </div>
+  
+          <div
+            class="sidebar__item"
+            routerLink="/admin/users"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-solid fa-users"></i>
+            <p class="sidebar__label">Users</p>
+          </div>
+        }
+        @else if(storedUser.role === "Doctor"){
+          <div class="sidebar__item" routerLink="/doctor/details" routerLinkActive="sidebar__item--active">
+            <i class="sidebar__icon fa-solid fa-user"></i>
+            <p class="sidebar__label">Profile</p>
+          </div>
+
+          <div class="sidebar__item" routerLink="/doctor/appointments" routerLinkActive="sidebar__item--active">
+            <i class="sidebar__icon fa-solid fa-house"></i>
+            <p class="sidebar__label">Appointments</p>
+          </div>
+
+
+          <div class="sidebar__item" routerLink="/doctor/prescription" routerLinkActive="sidebar__item--active">
+            <i class="sidebar__icon fa-solid fa-user-doctor"></i>
+            <p class="sidebar__label">Prescription</p>
+          </div>
+
+          <div class="sidebar__item" routerLink="/doctor/availableSlots" routerLinkActive="sidebar__item--active">
+            <i class="sidebar__icon fa-regular fa-calendar-check"></i>
+            <p class="sidebar__label">Available Slots</p>
+          </div>
+        } @else if (storedUser.role === "Receptionist") {
+          <div class="sidebar__item" routerLink="/reception/appointments" routerLinkActive="sidebar__item--active">
+            <i class="sidebar__icon fa-solid fa-user"></i>
+            <p class="sidebar__label">Appointments</p>
+          </div>
+
+          <div class="sidebar__item" routerLink="/reception/new/appointment" routerLinkActive="sidebar__item--active">
+            <i class="sidebar__icon fa-solid fa-user"></i>
+            <p class="sidebar__label">New Appointment</p>
+          </div>
+          
+          <div
+            class="sidebar__item"
+            routerLink="/admin/allBillings"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-solid fa-id-badge"></i>
+            <p class="sidebar__label">All Billings</p>
+          </div>
+        }
+
+        <div
+          class="sidebar__item sidebar__item--logout"
+          (click)="logout()"
+          style="margin-top: auto"
+        >
+          <i class="sidebar__icon fa-solid fa-right-from-bracket"></i>
+          <p class="sidebar__label">Logout</p>
+        </div>
+      </nav>
+    </div>
+  </aside>
+
+  <main class="sidebar-layout__content">
+    <router-outlet></router-outlet>
+  </main>
+</section>

@@ -1,0 +1,122 @@
+<section class="appointment-details">
+  @if (appointment) {
+  <div class="appointment-details__wrapper">
+    <!-- Header -->
+    <header class="appointment-details__header">
+      <div>
+        <h1 class="appointment-details__title">Appointment Details</h1>
+        <p class="appointment-details__subtitle">
+          Review full information about this appointment
+        </p>
+      </div>
+
+      <div class="appointment-details__header-actions">
+        <button
+          class="appointment-details__btn appointment-details__btn--ghost"
+          routerLink="/admin/appointments"
+        >
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Back to Appointments</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main card -->
+    <article class="appointment-details__card">
+      <!-- Top row: patient + doctor + status -->
+      <div class="appointment-details__card-header">
+        <div class="appointment-details__person">
+          <div class="appointment-details__avatar">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div>
+            <p class="appointment-details__label">Patient</p>
+            <p class="appointment-details__patient-name">
+              {{ appointment.patientName }}
+            </p>
+          </div>
+        </div>
+
+        <div class="appointment-details__doctor">
+          <i class="fa-solid fa-user-doctor appointment-details__icon"></i>
+          <div>
+            <p class="appointment-details__label">Doctor</p>
+            <p class="appointment-details__doctor-name">
+              Dr. {{ appointment.doctorName }}
+            </p>
+          </div>
+        </div>
+
+        <div class="appointment-details__status">
+          <span class="status-pill" [ngClass]="getStatusClass()">
+            <i class="fa-solid fa-circle status-pill__dot"></i>
+            <span>{{ appointment.status }}</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Middle grid: date / time / duration -->
+      <div class="appointment-details__meta">
+        @if (appointment.appointmentDateTime) {
+        <div class="appointment-details__meta-item">
+          <p class="appointment-details__meta-label">
+            <i class="fa-regular fa-calendar appointment-details__icon"></i>
+            Date
+          </p>
+          <p class="appointment-details__meta-value">
+            {{ appointment.appointmentDateTime | date : "EEEE, MMM d, y" }}
+          </p>
+        </div>
+
+        <div class="appointment-details__meta-item">
+          <p class="appointment-details__meta-label">
+            <i class="fa-regular fa-clock appointment-details__icon"></i>
+            Time
+          </p>
+          <p class="appointment-details__meta-value">
+            {{ appointment.appointmentDateTime | date : "h:mm a" }}
+          </p>
+        </div>
+        } @if (appointment.durationMinutes !== undefined &&
+        appointment.durationMinutes !== null) {
+        <div class="appointment-details__meta-item">
+          <p class="appointment-details__meta-label">
+            <i
+              class="fa-regular fa-hourglass-half appointment-details__icon"
+            ></i>
+            Duration
+          </p>
+          <p class="appointment-details__meta-value">
+            {{ appointment.durationMinutes }} minutes
+          </p>
+        </div>
+        }
+      </div>
+
+      <!-- Reason block -->
+      <section class="appointment-details__section">
+        <h3 class="appointment-details__section-title">
+          <i class="fa-solid fa-file-medical appointment-details__icon"></i>
+          Reason for Visit
+        </h3>
+        <p class="appointment-details__section-text">
+          {{
+            appointment.reasonForVisit || "No details provided for this visit."
+          }}
+        </p>
+      </section>
+
+      <!-- Actions row -->
+      <footer class="appointment-details__footer">
+        <button
+          class="appointment-details__btn appointment-details__btn--outline"
+          routerLink="/admin/appointments"
+        >
+          <i class="fa-solid fa-list"></i>
+          <span>Back to Appointments</span>
+        </button>
+      </footer>
+    </article>
+  </div>
+  }
+</section>

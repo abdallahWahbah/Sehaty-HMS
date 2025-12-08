@@ -1,0 +1,79 @@
+<section class="doctors-dashboard">
+  <!-- Loading / Empty States -->
+  @if (loading) {
+  <p class="doctors-dashboard__state doctors-dashboard__state--loading">
+    Loading doctors...
+  </p>
+  } @else { @if (filteredDoctors.length === 0) {
+  <p class="doctors-dashboard__state doctors-dashboard__state--empty">
+    No doctors found.
+  </p>
+  } }
+
+  <!-- Cards Grid -->
+  <div class="doctors-dashboard__grid">
+    <article
+      class="doctors-dashboard__card"
+      *ngFor="let doctor of filteredDoctors"
+    >
+      <!-- Accent -->
+      <div class="doctors-dashboard__card-accent"></div>
+
+      <div class="doctors-dashboard__card-inner">
+        <!-- Header -->
+        <header class="doctors-dashboard__card-header">
+          <div class="doctors-dashboard__card-left">
+            <div class="doctors-dashboard__avatar">
+              <span>
+                {{ (doctor.firstName || doctor.lastName || "D")[0] }}
+              </span>
+            </div>
+
+            <div class="doctors-dashboard__identity">
+              <h3 class="doctors-dashboard__name">
+                {{ doctor.firstName }} {{ doctor.lastName }}
+              </h3>
+              <p class="doctors-dashboard__specialty">
+                {{ doctor.specialty || "General Practitioner" }}
+              </p>
+            </div>
+          </div>
+
+          <div class="doctors-dashboard__experience-badge">
+            {{ doctor.yearsOfExperience || 0 }} yrs
+          </div>
+        </header>
+
+        <!-- Body -->
+        <div class="doctors-dashboard__card-body">
+          <p class="doctors-dashboard__info-line">
+            <span class="doctors-dashboard__info-label">Experience</span>
+            <span class="doctors-dashboard__info-value">
+              {{ doctor.yearsOfExperience || 0 }} years
+            </span>
+          </p>
+
+          <p class="doctors-dashboard__info-line">
+            <span class="doctors-dashboard__info-label">Availability</span>
+            <span class="doctors-dashboard__info-value">
+              {{
+                doctor.availabilityNotes || "No availability notes provided."
+              }}
+            </span>
+          </p>
+        </div>
+
+        <!-- Footer -->
+        <footer class="doctors-dashboard__card-footer">
+          <button
+            class="doctors-dashboard__btn-view"
+            (click)="viewAvailability(doctor)"
+          >
+            <span>View Available Appointments</span>
+            <i class="fa-solid fa-calendar-check"></i>
+          </button>
+        </footer>
+      </div>
+    </article>
+  </div>
+</section>

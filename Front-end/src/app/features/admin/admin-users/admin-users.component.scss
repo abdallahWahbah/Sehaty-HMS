@@ -1,0 +1,283 @@
+.title_dashboard {
+  color: var(--color-primary);
+  margin-top: 3.5rem;
+  margin-left: 0.7rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+
+  div:first-child h2 {
+    font-weight: 700;
+    font-size: 2.4rem;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #6b7280;
+    margin: 0.4rem 0 0;
+  }
+}
+
+.user-management {
+  max-width: 110rem;
+  margin: 0 auto 4rem;
+  padding: 0 2rem 3rem;
+  color: #252b61;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+
+  /* ===== States ===== */
+  &__loading,
+  &__error,
+  &__no-users {
+    font-size: 1.4rem;
+    margin: 1rem 0;
+  }
+
+  &__loading {
+    color: #4b56a3;
+  }
+
+  &__error {
+    color: #dc3545;
+  }
+
+  &__no-users {
+    color: #6b7280;
+  }
+
+  /* ===== Card ===== */
+  &__card {
+    background: #ffffff;
+    border-radius: 1.4rem;
+    box-shadow: 0 14px 40px rgba(25, 39, 79, 0.12);
+    border: 1px solid rgba(37, 43, 97, 0.08);
+    padding: 1.8rem 1.8rem 2.2rem;
+  }
+
+  &__card-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 1.6rem;
+
+    h3 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #252b61;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1.3rem;
+      color: #6b7280;
+    }
+  }
+
+  /* ===== Table wrapper ===== */
+  &__table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  /* ===== Table ===== */
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.35rem;
+    min-width: 72rem;
+  }
+
+  &__thead {
+    background-color: #f5f6ff;
+  }
+
+  &__row {
+    &--header {
+      font-weight: 600;
+      text-align: left;
+    }
+
+    &:not(&--header):hover {
+      background-color: #f9fafb;
+    }
+
+    &:nth-child(even):not(&--header) {
+      background-color: #fdfdfd;
+    }
+  }
+
+  &__cell {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle;
+
+    &--header {
+      border-bottom: 2px solid #252b61;
+      font-size: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #4b56a3;
+      background: #f5f6ff;
+    }
+
+    &--name {
+      min-width: 18rem;
+    }
+
+    &--email {
+      min-width: 18rem;
+    }
+  }
+
+  /* ===== User name + avatar ===== */
+  &__user-name {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  &__avatar {
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #4b56a3, #252b61);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+  }
+
+  &__user-main {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #252b61;
+  }
+
+  &__user-sub {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #6b7280;
+  }
+
+  /* ===== Role pill ===== */
+  &__role-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem 0.9rem;
+    border-radius: 999px;
+    background: #f5f6ff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #4b56a3;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ===== Modern select (dropdown) ===== */
+  &__select-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    max-width: 18rem;
+    width: 100%;
+    padding: 0 0.8rem;
+    border-radius: 999px;
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    transition: 0.18s ease all;
+    cursor: pointer;
+
+    &:hover {
+      border-color: #a5b4fc;
+      background: #f3f4ff;
+    }
+
+    &:focus-within {
+      border-color: #252b61;
+      box-shadow: 0 0 0 3px rgba(37, 43, 97, 0.16);
+      background: #ffffff;
+    }
+  }
+
+  &__select {
+    border: none;
+    background: transparent;
+    padding: 0.4rem 0.4rem 0.4rem 0;
+    font-size: 1.3rem;
+    color: #111827;
+    width: 100%;
+    cursor: pointer;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+
+  &__select-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0.4rem;
+    pointer-events: none; // عشان الكليك يروح للـ select
+
+    i {
+      font-size: 1.1rem;
+      color: #6b7280;
+    }
+  }
+
+  /* ===== Button ===== */
+  &__button {
+    padding: 0.5rem 1.4rem;
+    background: linear-gradient(135deg, #252b61, #4b56a3);
+    color: #ffffff;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 1.3rem;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba(25, 39, 79, 0.35);
+    transition: 0.18s ease all;
+    white-space: nowrap;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(25, 39, 79, 0.5);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    padding: 0 1.4rem 3rem;
+
+    &__card {
+      padding-inline: 1.2rem;
+    }
+
+    &__table {
+      font-size: 1.3rem;
+      min-width: 100%;
+    }
+  }
+}

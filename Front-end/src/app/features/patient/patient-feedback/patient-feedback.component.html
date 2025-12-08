@@ -1,0 +1,75 @@
+<section id="dashboard" class="appointments-page">
+  <div class="appointments-page__header">
+    <h2>Appointments</h2>
+  </div>
+
+  @if (isLoading && appointments.length === 0) {
+  <p class="no-appointments">Loading...</p>
+  } @if (!isLoading && appointments.length === 0) {
+  <p class="no-appointments">No appointments</p>
+  } @if (!isLoading && appointments.length > 0) { @for (appointment of
+  appointments; track appointment.id) {
+
+  <div class="appointment-card">
+    <!-- TOP INFO -->
+    <div class="appointment-card__row">
+      <div class="appointment-card__info">
+        <div class="item">
+          <i class="fa-solid fa-user"></i>
+          <span>{{ appointment.patientName }}</span>
+        </div>
+
+        <div class="item">
+          <i class="fa-regular fa-calendar"></i>
+          <span>{{
+            appointment.appointmentDateTime | date : "yyyy-MM-dd"
+          }}</span>
+        </div>
+
+        <div class="item">
+          <i class="fa-regular fa-clock"></i>
+          <span>{{ appointment.appointmentDateTime | date : "HH:mm" }}</span>
+        </div>
+
+        <div class="item">
+          <i class="fa-solid fa-hourglass"></i>
+          <span>{{ appointment.durationMinutes }} mins</span>
+        </div>
+      </div>
+
+      <div class="appointment-card__status">
+        <span class="status-pill">{{ appointment.status }}</span>
+      </div>
+    </div>
+
+    <!-- REASON + BUTTON -->
+    <div class="appointment-card__row">
+      <div class="reason-box">
+        <i class="fa-solid fa-stethoscope"></i>
+        <span>{{ appointment.reasonForVisit }}</span>
+      </div>
+
+      <button
+        class="appointment-card__btn"
+        (click)="addFeedback(appointment.id)"
+      >
+        Add Feedback
+      </button>
+    </div>
+
+    <!-- FEEDBACK SUMMARY -->
+    @if (getFeedbackForAppointment(appointment.id); as feedback) {
+    <div class="feedback-summary">
+      <div class="rating-stars">
+        @for (star of [1,2,3,4,5]; track star; let i = $index) {
+        <span class="star" [class.filled]="i < feedback.rating">&#9733;</span>
+        }
+      </div>
+
+      <p class="comments-count">{{ feedback.comments }}</p>
+    </div>
+    }
+  </div>
+
+  } }
+</section>

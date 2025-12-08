@@ -1,0 +1,192 @@
+// ألوان ثابتة زي باقي الديزاينات
+$primary: #252b61;
+$primary-soft: #4b56a3;
+$text-main: #1f2933;
+$text-muted: #6b7280;
+$bg-soft: #f5f6ff;
+$shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+$radius-lg: 1.4rem;
+
+/* عنوان السكشن (لو مش متظبط قبل كده في مكان تاني) */
+.dashboard__title-main {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: $primary;
+  margin: 0 0 0.4rem;
+}
+
+.dashboard__title-sub {
+  font-size: 1.4rem;
+  color: $primary-soft;
+  margin: 0;
+}
+
+.dashboard__title-highlight {
+  font-weight: 600;
+  color: $primary;
+}
+
+/* ============================
+   Medical Record Card (New Design)
+============================ */
+
+.medical-record-card {
+  background: #ffffff;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  border: 1px solid rgba(37, 43, 97, 0.08);
+  padding: 2rem 2.4rem;
+  margin-top: 2rem;
+
+  /* ===== Header ===== */
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.6rem;
+    padding-bottom: 1.4rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__patient {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  &__avatar {
+    width: 4.4rem;
+    height: 4.4rem;
+    border-radius: 50%;
+    background: #eef2ff;
+    color: $primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+
+  &__label {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $primary-soft;
+    margin: 0 0 0.1rem;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: $primary;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+  }
+
+  &__badge {
+    padding: 0.4rem 1.2rem;
+    border-radius: 999px;
+    background: $bg-soft;
+    color: $primary-soft;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  /* ===== Sections ===== */
+  &__section {
+    margin-top: 1.8rem;
+
+    &--light {
+      background: #f9fafb;
+      border-radius: 1rem;
+      padding: 1rem 1.4rem;
+    }
+  }
+
+  &__section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.8rem;
+    color: $primary;
+  }
+
+  /* ===== Dates ===== */
+  &__dates {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  &__date-item {
+    min-width: 20rem;
+  }
+
+  &__value {
+    font-size: 1.4rem;
+    color: $primary;
+    font-weight: 500;
+  }
+
+  /* ===== Vitals ===== */
+  &__vitals {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.2rem 1.4rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  &__vital-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  /* ===== Details (Symptoms, Diagnosis...) ===== */
+  &__details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.4rem 2.4rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__detail {
+    &--full {
+      grid-column: 1 / -1;
+    }
+  }
+
+  &__text {
+    margin: 0.2rem 0 0;
+    font-size: 1.4rem;
+    color: $text-main;
+  }
+}
+
+/* ============================
+   Empty State (no records)
+============================ */
+
+.no-records {
+  margin: 3rem auto 0;
+  max-width: 40rem;
+  text-align: center;
+  font-size: 1.4rem;
+  color: $text-muted;
+  padding: 2.4rem 1.6rem;
+  border-radius: $radius-lg;
+  border: 1px dashed #c7cfff;
+  background: #f5f6ff;
+}

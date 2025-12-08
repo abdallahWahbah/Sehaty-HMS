@@ -1,0 +1,87 @@
+<section class="departments-dashboard">
+  <!-- Header Section -->
+  <header class="departments-dashboard__header">
+    <div class="departments-dashboard__header-content">
+      <div class="departments-dashboard__header-text">
+        <h1 class="departments-dashboard__title">Medical Departments</h1>
+        <p class="departments-dashboard__subtitle">
+          Explore our specialized healthcare departments
+        </p>
+      </div>
+
+      <div class="departments-dashboard__header-actions">
+        <div class="departments-dashboard__search">
+          <div class="departments-dashboard__search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input
+              type="text"
+              placeholder="Search departments..."
+              [(ngModel)]="searchTerm"
+              (input)="searchDepartments()"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main / Grid -->
+  <main class="departments-dashboard__main">
+    <div class="departments-dashboard__grid">
+      @if (!loading && filteredDepartments.length === 0 && departments.length
+      === 0) {
+      <p class="departments-dashboard__empty">No departments found.</p>
+      } @for ( dept of filteredDepartments.length ? filteredDepartments :
+      departments; track dept.id ) {
+      <article class="departments-dashboard__card">
+        <!-- Accent Bar -->
+        <div class="departments-dashboard__card-accent"></div>
+
+        <!-- Card Inner -->
+        <div class="departments-dashboard__card-inner">
+          <!-- Header -->
+          <div class="departments-dashboard__card-header">
+            <div class="departments-dashboard__card-icon-wrap">
+              <div class="departments-dashboard__card-icon">
+                <i class="fa-solid fa-heart-pulse"></i>
+              </div>
+
+              <div class="departments-dashboard__card-title-block">
+                <span class="departments-dashboard__card-eyebrow">
+                  Department
+                </span>
+                <h3 class="departments-dashboard__card-name">
+                  {{ dept.en_Name }}
+                </h3>
+              </div>
+            </div>
+
+            <span class="departments-dashboard__card-badge"> Available </span>
+          </div>
+
+          <!-- Body -->
+          <div class="departments-dashboard__card-body">
+            <p class="departments-dashboard__card-description">
+              {{
+                dept.description ||
+                  "No description provided for this department."
+              }}
+            </p>
+          </div>
+
+          <!-- Footer -->
+          <div class="departments-dashboard__card-footer">
+            <button
+              class="departments-dashboard__btn-view"
+              (click)="viewDoctors(dept.id)"
+            >
+              <span>View Doctors</span>
+              <i class="fa-solid fa-arrow-right-long"></i>
+            </button>
+          </div>
+        </div>
+      </article>
+      }
+    </div>
+  </main>
+</section>

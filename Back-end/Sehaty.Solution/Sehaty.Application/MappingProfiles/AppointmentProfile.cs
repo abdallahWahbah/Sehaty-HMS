@@ -1,0 +1,55 @@
+﻿namespace Sehaty.Application.MappingProfiles
+{
+    public class AppointmentProfile : Profile
+    {
+        public AppointmentProfile()
+        {
+            //Read
+            CreateMap<Appointment, AppointmentReadDto>()
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor != null
+                    ? src.Doctor.FirstName + " " + src.Doctor.LastName
+                    : "Unknown Doctor"))
+                .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient != null
+                    ? src.Patient.FirstName + " " + src.Patient.LastName
+                    : "Unknown Patient"));
+
+            CreateMap<Appointment, PatientAppointmentDto>()
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor != null
+                    ? src.Doctor.FirstName + " " + src.Doctor.LastName
+                    : "Unknown Doctor"))
+                .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient != null
+                    ? src.Patient.FirstName + " " + src.Patient.LastName
+                    : "Unknown Patient"))
+                .ForMember(P => P.UserId, O => O.MapFrom(S => S.Patient.UserId));
+
+
+
+            // Create 
+            CreateMap<AppointmentAddDto, Appointment>()
+                .ForMember(dest => dest.BookingDateTime,
+                    opt => opt.MapFrom(_ => DateTime.Now))
+                .ForMember(dest => dest.DurationMinutes,
+                    opt => opt.MapFrom(_ => 30))
+                   .ForMember(dest => dest.ScheduledDate,
+                   opt => opt.MapFrom(src => DateOnly.FromDateTime(src.AppointmentDateTime)))
+                   .ForMember(dest => dest.ScheduledTime,
+                   opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.AppointmentDateTime)));
+
+
+            CreateMap<AppointmentAddForAnonymousDto, Appointment>()
+                .ForMember(dest => dest.BookingDateTime,
+                    opt => opt.MapFrom(_ => DateTime.Now))
+                .ForMember(dest => dest.DurationMinutes,
+                    opt => opt.MapFrom(_ => 30))
+                   .ForMember(dest => dest.ScheduledDate,
+                   opt => opt.MapFrom(src => DateOnly.FromDateTime(src.AppointmentDateTime)))
+                   .ForMember(dest => dest.ScheduledTime,
+                   opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.AppointmentDateTime)))
+                   .ForMember(A => A.PatientId, O => O.MapFrom(_ => 999999))
+                   .ForMember(A => A.Status, O => O.MapFrom(_ => AppointmentStatus.Confirmed));
+
+        }
+
+
+    }
+}

@@ -1,0 +1,109 @@
+<section class="dashboard_appointments">
+  <div class="title_dashboard">
+    <div>
+      <h2>Appointments</h2>
+
+      <label class="custom-switch">
+        <input
+          class="custom-switch__input"
+          type="checkbox"
+          id="todayOnlySwitch"
+          [(ngModel)]="showTodayOnly"
+          (change)="filterAppointments()"
+        />
+        <span class="custom-switch__track">
+          <span class="custom-switch__thumb"></span>
+        </span>
+        <span class="custom-switch__label fs-4">Today only</span>
+      </label>
+    </div>
+  </div>
+
+  <p-toast />
+
+  @for (appointment of appointments; track appointment.id) {
+  <div class="section_two">
+    <div class="person_info">
+      <div class="name_time_other">
+        <div class="name_time">
+          <div class="name">
+            <i class="fa-solid fa-user"></i>
+            <p class="fw-bold">{{ appointment.patientName }}</p>
+          </div>
+          <div class="time">
+            <i class="fa-regular fa-calendar"></i>
+            <p>
+              {{ appointment.appointmentDateTime | date : "yyyy-MM-dd" }}
+            </p>
+          </div>
+        </div>
+
+        <div class="confirm_consultation">
+          <div
+            [ngClass]="{
+              'dashboard__appointments-item--confirmed':
+                appointment.status === 'Confirmed',
+              'dashboard__appointments-item--pending':
+                appointment.status === 'Pending',
+              'dashboard__appointments-item--delayed':
+                appointment.status === 'Delayed',
+              'dashboard__appointments-item--cancelled':
+                appointment.status === 'Cancelled',
+              'dashboard__appointments-item--noshow':
+                appointment.status === 'NoShow'
+            }"
+            class="status-pill"
+          >
+            {{ appointment.status }}
+          </div>
+          <div class="consultation">
+            {{ appointment.reasonForVisit }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doctor_info">
+      <div class="info">
+        <div class="name_time_doctor">
+          <div class="name_doctor">
+            <i class="fa-solid fa-user-doctor"></i>
+            <p>Dr: {{ appointment.doctorName }}</p>
+          </div>
+          <div class="time_doctor">
+            <i class="fa-regular fa-clock"></i>
+            <p>{{ appointment.appointmentDateTime | date : "HH:mm" }}</p>
+          </div>
+        </div>
+
+        <div class="name_time_other">
+          <div class="name_time btns_container">
+            @if(appointment.patientId !== 999999){
+              <button
+                class="appointment__button btn"
+                (click)="cancelAppointment(appointment.id)"
+              >
+                Cancel
+              </button>
+              <button
+                class="appointment__button btn"
+                (click)="handleReschedule(appointment)"
+              >
+                Reschedule
+              </button>
+            }
+            @if(appointment.status !== "InProgress"){
+              <button
+                class="appointment__button appointment__button--3 btn"
+                (click)="checkIn(appointment)"
+              >
+                Check in
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</section>

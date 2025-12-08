@@ -1,0 +1,47 @@
+<section class="not-found not-found--doctor">
+  <div class="not-found__container">
+    <!-- Doctor Illustration -->
+    <div class="not-found__illustration">
+      <div class="doctor-card">
+        <div class="doctor-card__bg"></div>
+
+        <div class="doctor-card__avatar">
+          <div class="doctor-card__circle">
+            <i class="fa-solid fa-user-doctor"></i>
+          </div>
+          <p class="doctor-card__label">Medical Portal</p>
+        </div>
+
+        <!-- Floating medical icons -->
+        <div class="doctor-card__icon doctor-card__icon--one">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <div class="doctor-card__icon doctor-card__icon--two">
+          <i class="fa-solid fa-stethoscope"></i>
+        </div>
+        <div class="doctor-card__icon doctor-card__icon--three">
+          <i class="fa-solid fa-syringe"></i>
+        </div>
+        <div class="doctor-card__icon doctor-card__icon--four">
+          <i class="fa-solid fa-notes-medical"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text Content -->
+    <div class="not-found__text">
+      <h1 class="not-found__code">404</h1>
+      <h2 class="not-found__title">Page not found</h2>
+      <p class="not-found__subtitle">
+        This page seems to be off the chart. Our doctor couldn’t find what you
+        were looking for. Try going back or return to the home page.
+      </p>
+
+      <div class="not-found__actions">
+        <button class="btn btn--primary" routerLink="/">Go to Home</button>
+
+        <button class="btn btn--outline" (click)="goBack()">Go Back</button>
+      </div>
+    </div>
+  </div>
+</section>

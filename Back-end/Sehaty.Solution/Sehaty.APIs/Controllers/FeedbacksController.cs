@@ -1,0 +1,83 @@
+﻿namespace Sehaty.APIs.Controllers
+{
+
+    public class FeedbacksController(IUnitOfWork unit,IMapper mapper) : ApiBaseController
+    {
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<GetFeedbackDto>>> GetAllFeedbacks()
+        {
+            var spec = new FeedbackSpecification();
+            var feedbacks = await unit.Repository<Feedback>().GetAllWithSpecAsync(spec);
+            if(feedbacks is null)
+                return NotFound(new ApiResponse(404));
+            return Ok(mapper.Map<IEnumerable<GetFeedbackDto>>(feedbacks));
+        }
+        [HttpGet("GetById/{id}")]
+        public async Task<ActionResult<GetFeedbackDto>> GetFeedbackById(int id)
+        {
+            var spec = new FeedbackSpecification(id);
+            var feedback = await unit.Repository<Feedback>().GetByIdWithSpecAsync(spec);
+            if(feedback is null)
+                return NotFound(new ApiResponse(404));
+            return Ok(mapper.Map<GetFeedbackDto>(feedback));
+        }
+
+
+        [HttpGet("GetByAppointmentId/{appointmentId}")]
+        public async Task<ActionResult<IEnumerable<GetFeedbackDto>>> GetFeedbackByAppointmentId(int appointmentId)
+        {
+            var spec = new FeedbackSpecification(F => F.AppointmentId == appointmentId);
+            var feedbacks = await unit.Repository<Feedback>().GetAllWithSpecAsync(spec);
+            if(feedbacks is null)
+                return NotFound(new ApiResponse(404));
+            return Ok(mapper.Map<IEnumerable<GetFeedbackDto>>(feedbacks));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateFeedback(int id,[FromBody] FeedbackAddUpdateDto feedbackDto)
+        {
+            var feedbackToEdit = await unit.Repository<Feedback>().GetByIdAsync(id);
+            if(feedbackToEdit is null)
+                return NotFound(new ApiResponse(404));
+            if(ModelState.IsValid)
+            {
+                mapper.Map(feedbackDto,feedbackToEdit);
+                unit.Repository<Feedback>().Update(feedbackToEdit);
+                await unit.CommitAsync();
+                return NoContent();
+            }
+            return BadRequest(ModelState);
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddFeedback([FromBody] FeedbackAddUpdateDto feedbackDto)
+        {
+            if(ModelState.IsValid)
+            {
+
+                var appointment = await unit.Repository<Appointment>().GetFirstOrDefaultAsync(A => A.Id == feedbackDto.AppointmentId);
+                if(appointment is null)
+                    return BadRequest(new ApiResponse(404,"Appointment Not Found"));
+                if(appointment.Status != AppointmentStatus.Completed)
+                    return BadRequest(new ApiResponse(400,"Cannot add feedback for an appointment that is not completed"));
+                var feedbackToAdd = mapper.Map<Feedback>(feedbackDto);
+                await unit.Repository<Feedback>().AddAsync(feedbackToAdd);
+                await unit.CommitAsync();
+                return CreatedAtAction(nameof(GetFeedbackById),new { id = feedbackToAdd.Id },mapper.Map<GetFeedbackDto>(feedbackToAdd));
+            }
+            return BadRequest(ModelState);
+        }
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteFeedback(int id)
+        {
+            var feedbackToDelete = await unit.Repository<Feedback>().GetByIdAsync(id);
+            if(feedbackToDelete is null)
+                return NotFound(new ApiResponse(404));
+            unit.Repository<Feedback>().Delete(feedbackToDelete);
+            await unit.CommitAsync();
+            return NoContent();
+        }
+
+    }
+}

@@ -1,0 +1,46 @@
+<div class="auth">
+    <div class="auth__logo">
+        <img src="/images/logo.png" alt="main logo" class="auth__logo--image">
+    </div>
+    <div class="auth__main--container">
+        <div class="auth__content">
+            @if(serverError){
+                <div class="server-error">
+                    <span>{{ serverError }}</span>
+                </div>
+            }
+            <h3 class="auth__header">Forgot your password?</h3>
+            <p class="auth__sub--header">Don’t worry, happens to all of us. Enter your email below to recover your password</p>
+
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                <p-floatlabel variant="on" class="auth__input--container">
+                    <input 
+                        pInputText 
+                        id="email" 
+                        autocomplete="off" 
+                        formControlName="email"
+                    />
+                    <label for="email">email</label>
+                </p-floatlabel>
+                @if(loginForm.get('email')?.touched && loginForm.get('email')?.invalid){
+                    <div class="error-text">
+                        @if(loginForm.get('email')?.errors?.['required']){
+                            <span>email is required</span>
+                        }
+                        @if(loginForm.get('email')?.errors?.['email']){
+                            <span>please enter a valid email</span>
+                        }
+                    </div>
+                }
+    
+                <div class="card flex justify-center auth__button--container">
+                    <p-button type="submit" label="Submit" />
+                </div>
+            </form>
+
+        </div>
+        <div class="auth__image--container">
+            <img src="/images/login.jpg" alt="" class="auth__image">
+        </div>
+    </div>
+</div>

@@ -1,0 +1,117 @@
+<section class="available-slots">
+  <div class="available-slots__panel">
+    <!-- Loading -->
+    @if (loading) {
+    <p class="available-slots__state available-slots__state--loading">
+      Loading slots...
+    </p>
+    }
+
+    <!-- Error message -->
+    @if (!loading && serverError) {
+    <p class="available-slots__state available-slots__state--error">
+      {{ serverError }}
+    </p>
+    }
+
+    <!-- Date selector -->
+    @if (!loading && availableDays.length > 0) {
+    <section class="available-slots__dates">
+      <header class="available-slots__header">
+        <h3 class="available-slots__title">Select date</h3>
+        <p class="available-slots__subtitle">
+          Choose a day to see all available appointment slots.
+        </p>
+      </header>
+
+      <div class="available-slots__buttons">
+        @for (day of availableDays[0].recurringSchedule; track $index) {
+        <button
+          class="available-slots__button"
+          [class.available-slots__button--selected]="selectedDate === day.date"
+          [disabled]="day.available === 'Not Available'"
+          (click)="loadSlots(day.date)"
+        >
+          <span class="available-slots__button-day">{{ day.day }}</span>
+          <span class="available-slots__button-status">
+            {{ day.available }}
+          </span>
+        </button>
+        }
+      </div>
+    </section>
+    }
+
+    <!-- Slots list -->
+    @if (!loading && slots.length > 0) {
+    <section class="available-slots__list">
+      <h3 class="available-slots__title available-slots__title--slots">
+        Available slots for {{ selectedDate }}:
+      </h3>
+
+      @for (slot of slots; track slot.slotId) {
+      <article class="available-slots__slot">
+        <div class="available-slots__slot-info" style="width: 8rem;">
+          <span class="available-slots__time">
+            {{ slot.timeRange.split("-")[0] }}
+          </span>
+          <span class="available-slots__time">
+            {{ slot.timeRange.split("-")[1] }}
+          </span>
+
+          @if (slot.isBooked) {
+          <span
+            class="available-slots__slot-badge available-slots__slot-badge--booked"
+          >
+            Booked
+          </span>
+          }
+        </div>
+
+        <!-- Reason for visit input (only if not booked) -->
+        @if (!slot.isBooked) {
+        <div class="available-slots__reason" style="display: flex; align-items: center;">
+          <label class="available-slots__reason-label">
+            Reason for visit
+          </label>
+
+          <input
+            type="text"
+            class="available-slots__reason-input"
+            placeholder="e.g. General checkup, Follow up..."
+            [(ngModel)]="reasonInputs[slot.slotId]"
+          />
+          <button
+            class="available-slots__book-btn"
+            [disabled]="slot.isBooked"
+            (click)="bookSlot(slot.slotId, slot)"
+          >
+            {{
+              isRescheduling ? "Reschedule" : slot.isBooked ? "Booked" : "Book"
+            }}
+          </button>
+        </div>
+        }
+      </article>
+      }
+    </section>
+    }
+
+    <!-- No slots message -->
+    @if (!loading && slots.length === 0 && !serverError) {
+    <p class="available-slots__state available-slots__state--no-slots">
+      No available slots for this date.
+    </p>
+    }
+  </div>
+
+  <!-- Popup -->
+  @if (showPopup) {
+  <div class="popup">
+    <div class="popup__content">
+      <div class="popup__icon">✔</div>
+      <div class="popup__text">{{ popupMessage }}</div>
+    </div>
+  </div>
+  }
+</section>

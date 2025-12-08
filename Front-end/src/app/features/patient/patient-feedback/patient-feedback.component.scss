@@ -1,0 +1,251 @@
+/* ===========================
+   VARIABLES
+=========================== */
+$primary: #252b61;
+$primary-soft: #4b56a3;
+$text-main: #1f2933;
+$text-muted: #6b7280;
+$bg-soft: #f5f6ff;
+
+/* ===========================
+   PAGE WRAPPER
+=========================== */
+.appointments-page {
+  max-width: 110rem;
+  margin: 4rem auto;
+  padding: 0 2rem;
+  font-family: inherit;
+}
+
+/* ===========================
+   HEADER
+=========================== */
+.appointments-page__header h2 {
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: $primary;
+  margin-bottom: 2rem;
+}
+
+/* ===========================
+   EMPTY / LOADING TEXT
+=========================== */
+.no-appointments {
+  text-align: center;
+  font-size: 1.6rem;
+  color: $text-muted;
+  margin-top: 3rem;
+}
+
+/* ===========================
+   APPOINTMENT CARD
+=========================== */
+.appointment-card {
+  background: #ffffff;
+  padding: 2rem 2.4rem;
+  border-radius: 1.4rem;
+  border: 1px solid rgba(37, 43, 97, 0.12);
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 28px rgba(25, 39, 79, 0.1);
+}
+
+/* ===========================
+   CARD ROWS
+=========================== */
+.appointment-card__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.8rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.4rem;
+  }
+}
+
+/* ===========================
+   LEFT INFO BLOCK
+=========================== */
+.appointment-card__info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.2rem;
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: $primary;
+    font-size: 1.55rem;
+    font-weight: 600;
+
+    i {
+      font-size: 1.7rem;
+      color: $primary-soft;
+    }
+  }
+}
+
+/* ===========================
+   STATUS PILL
+   (لو عايزة الألوان حسب القيمة:
+    ضيفي في الـ HTML:
+    <span class="status-pill" [ngClass]="appointment.status">
+   )
+=========================== */
+.status-pill {
+  padding: 0.6rem 1.8rem;
+  border-radius: 999px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(37, 43, 97, 0.12);
+  color: $primary;
+}
+
+/* Confirmed أخضر */
+.status-pill.Confirmed {
+  background: rgba(16, 185, 129, 0.18);
+  color: #047857;
+}
+
+/* Pending أصفر */
+.status-pill.Pending {
+  background: rgba(245, 158, 11, 0.2);
+  color: #b45309;
+}
+
+/* Cancelled أحمر */
+.status-pill.Cancelled {
+  background: rgba(239, 68, 68, 0.2);
+  color: #b91c1c;
+}
+
+/* Delayed أورانج */
+.status-pill.Delayed {
+  background: rgba(249, 115, 22, 0.25);
+  color: #9a3412;
+}
+
+/* NoShow رمادي */
+.status-pill.NoShow {
+  background: rgba(156, 163, 175, 0.25);
+  color: #4b5563;
+}
+
+/* Emergency أحمر قوي */
+.status-pill.Emergency {
+  background: rgba(220, 38, 38, 0.35);
+  color: #7f1d1d;
+}
+
+/* ===========================
+   REASON FOR VISIT (Highlighted)
+=========================== */
+.reason-box {
+  background: #eef1ff;
+  border-radius: 1rem;
+  padding: 1.4rem 1.8rem;
+  border-left: 6px solid $primary-soft;
+
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: $primary;
+  max-width: 60%;
+  box-shadow: 0 4px 10px rgba(37, 43, 97, 0.08);
+
+  i {
+    font-size: 2rem;
+    color: $primary;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
+}
+
+/* ===========================
+   ADD FEEDBACK BUTTON
+   (بدون hover)
+=========================== */
+.appointment-card__btn {
+  padding: 0.8rem 1.8rem;
+  background: $primary-soft;
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 700;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(25, 39, 79, 0.25);
+  transition: none !important;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+/* ===========================
+   FEEDBACK SUMMARY
+=========================== */
+.feedback-summary {
+  background: #f8f9ff;
+  border-radius: 1rem;
+  padding: 1.2rem 1.6rem;
+  border: 1px solid #e4e6f5;
+
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+/* Stars */
+.rating-stars {
+  display: flex;
+  gap: 0.4rem;
+
+  .star {
+    font-size: 2rem;
+    color: #d4d4d4;
+
+    &.filled {
+      color: #fbbf24;
+    }
+  }
+}
+
+/* Comments */
+.comments-count {
+  font-size: 1.45rem;
+  color: #4b5563;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* ===========================
+   RESPONSIVE EXTRA TWEAKS
+=========================== */
+@media (max-width: 768px) {
+  .appointment-card__info .item {
+    font-size: 1.4rem;
+  }
+
+  .reason-box {
+    font-size: 1.4rem;
+  }
+
+  .status-pill {
+    width: 100%;
+    justify-content: center;
+  }
+}

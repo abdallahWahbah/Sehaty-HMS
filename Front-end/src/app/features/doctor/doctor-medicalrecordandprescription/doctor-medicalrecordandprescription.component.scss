@@ -1,0 +1,387 @@
+// ====== Base tokens ======
+$primary: #252b61;
+$primary-soft: #4b56a3;
+$text-main: #1f2933;
+$text-muted: #6b7280;
+$bg-soft: #f5f6ff;
+$shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+$radius-lg: 1.4rem;
+
+// ====== Wrapper ======
+.medical-wrapper {
+  max-width: 110rem;
+  margin: 4rem auto;
+  padding: 0 2rem 4rem;
+}
+
+// =============================
+// Medical Record Card
+// =============================
+.medical-record-card {
+  background: #ffffff;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  border: 1px solid rgba(37, 43, 97, 0.08);
+  padding: 2rem 2.4rem;
+  margin-top: 2rem;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.6rem;
+    padding-bottom: 1.4rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__patient {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  &__avatar {
+    width: 4.4rem;
+    height: 4.4rem;
+    border-radius: 50%;
+    background: #eef2ff;
+    color: $primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+
+  &__label {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $primary-soft;
+    margin: 0 0 0.1rem;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: $primary;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+  }
+
+  &__badge {
+    padding: 0.4rem 1.2rem;
+    border-radius: 999px;
+    background: $bg-soft;
+    color: $primary-soft;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  &__section {
+    margin-top: 1.8rem;
+
+    &--light {
+      background: #f9fafb;
+      border-radius: 1rem;
+      padding: 1rem 1.4rem;
+    }
+  }
+
+  &__section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.8rem;
+    color: $primary;
+  }
+
+  // Dates
+  &__dates {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  &__date-item {
+    min-width: 20rem;
+  }
+
+  &__value {
+    font-size: 1.4rem;
+    color: $primary;
+    font-weight: 500;
+  }
+
+  // Vitals
+  &__vitals {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.2rem 1.4rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  &__vital-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  // Details
+  &__details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.4rem 2.4rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__detail {
+    &--full {
+      grid-column: 1 / -1;
+    }
+  }
+
+  &__text {
+    margin: 0.2rem 0 0;
+    font-size: 1.4rem;
+    color: $primary;
+  }
+}
+
+// =============================
+// Prescriptions Section Header
+// =============================
+.medical-prescriptions__header {
+  margin-top: 4rem;
+  margin-bottom: 1.4rem;
+  margin-left: 2rem;
+}
+
+.medical-prescriptions__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+// =============================
+// Prescription Card
+// =============================
+.medical-prescription-card {
+  background: #ffffff;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  border: 1px solid rgba(37, 43, 97, 0.08);
+  padding: 1.8rem 2rem;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.4rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__id-block {
+    .medical-prescription-card__label {
+      margin-bottom: 0.2rem;
+    }
+  }
+
+  &__id {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: $primary;
+  }
+
+  &__meta-block {
+    display: flex;
+    gap: 1.6rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  &__meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    align-items: flex-start;
+  }
+
+  &__label {
+    font-size: 1.2rem;
+    color: $primary-soft;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__value {
+    font-size: 1.4rem;
+    color: $primary;
+    font-weight: 500;
+  }
+
+  &__body {
+    margin-top: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  &__row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    &--meds {
+      margin-top: 0.4rem;
+    }
+  }
+
+  /* ==========================
+     FIX: bullet points inside box
+     and clean custom style
+  ========================== */
+  &__meds-list {
+    list-style: none;
+    margin: 0.6rem 0 0;
+    padding: 1.2rem 1.4rem;
+    background: $bg-soft;
+    border-radius: 1rem;
+    border: 1px solid rgba(37, 43, 97, 0.08);
+    font-size: 1.4rem;
+    color: $primary-soft;
+
+    li {
+      position: relative;
+      padding-left: 1.6rem;
+      color: $primary;
+
+      &::before {
+        content: "";
+        width: 0.55rem;
+        height: 0.55rem;
+        background: $primary-soft;
+        border-radius: 50%;
+        position: absolute;
+        left: 0;
+        top: 0.55rem;
+      }
+
+      & + li {
+        margin-top: 0.35rem;
+      }
+    }
+  }
+}
+
+// ====== Status pill ======
+.status-pill {
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  background: $bg-soft;
+  color: $primary-soft;
+  font-size: 1.2rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+// ====== Empty States ======
+.medical-empty {
+  text-align: center;
+  padding: 3rem 2rem;
+  border-radius: $radius-lg;
+  border: 1px dashed #c7cfff;
+  background: #f5f6ff;
+  margin-top: 2rem;
+
+  &__icon {
+    font-size: 3.2rem;
+    margin-bottom: 0.8rem;
+    color: $primary;
+  }
+
+  &__title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: $primary;
+  }
+
+  &__subtitle {
+    font-size: 1.4rem;
+    color: $text-muted;
+    margin: 0;
+  }
+}
+
+// ====== Loading ======
+.medical-loading {
+  margin-top: 2.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+
+  &__spinner {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 0.3rem solid #e5e7eb;
+    border-top-color: $primary;
+    animation: medical-spin 0.9s linear infinite;
+  }
+
+  &__text {
+    font-size: 1.4rem;
+    color: $primary-soft;
+  }
+}
+
+@keyframes medical-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ====== Responsive ======
+@media (max-width: 768px) {
+  .medical-wrapper {
+    padding: 0 1.4rem 3rem;
+  }
+}
+
+// ====== Dashboard Title ======
+.dashboard__title {
+  margin-bottom: 1.8rem;
+
+  &-main {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: $primary;
+    margin: 0 0 0.4rem;
+  }
+
+  &-sub {
+    font-size: 1.4rem;
+    color: $primary-soft;
+    margin: 0;
+  }
+}

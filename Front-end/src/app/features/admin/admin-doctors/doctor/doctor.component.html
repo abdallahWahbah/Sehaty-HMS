@@ -1,0 +1,69 @@
+<div class="doctor-details">
+  <!-- Header -->
+  <div class="doctor-details__header">
+    <div class="doctor-details__avatar">
+      <span>
+        {{ doctor.firstName || "D" | slice : 0 : 1 }}
+      </span>
+    </div>
+
+    <div class="doctor-details__headline">
+      <h2 class="doctor-details__name">
+        Dr. {{ doctor.firstName }} {{ doctor.lastName }}
+      </h2>
+
+      <p class="doctor-details__meta">
+        <span class="badge badge--id"> Doctor ID #{{ doctor.id }} </span>
+
+        <span class="badge badge--spec">
+          {{ doctor.specialty }}
+        </span>
+      </p>
+
+      <p class="doctor-details__sub">
+        Experience:
+        <strong>{{ doctor.yearsOfExperience }} years</strong>
+        · License:
+        <strong>{{ doctor.licenseNumber }}</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- Body GRID -->
+  <div class="doctor-details__grid">
+    <div class="doctor-details__item">
+      <p class="item-label">Qualifications</p>
+      <p class="item-value">{{ doctor.qualifications }}</p>
+    </div>
+
+    <div class="doctor-details__item">
+      <p class="item-label">Profile Photo</p>
+      <p class="item-value">{{ doctor.profilePhotoUrl }}</p>
+    </div>
+
+    <div class="doctor-details__item doctor-details__item--wide">
+      <p class="item-label">Availability Notes</p>
+      <p class="item-value">{{ doctor.availabilityNotes }}</p>
+    </div>
+
+    <div class="doctor-details__item">
+      <p class="item-label">User ID</p>
+      <p class="item-value">{{ doctor.userId }}</p>
+    </div>
+
+    <div class="doctor-details__item">
+      <p class="item-label">Associated User</p>
+      <p class="item-value">{{ doctor.user || "N/A" }}</p>
+    </div>
+
+    <div class="doctor-details__item">
+      <p class="item-label">Department ID</p>
+      <p class="item-value">{{ doctor.departmentId }}</p>
+    </div>
+
+    <div class="doctor-details__item">
+      <p class="item-label">Department</p>
+      <p class="item-value">{{ doctor.department }}</p>
+    </div>
+  </div>
+</div>

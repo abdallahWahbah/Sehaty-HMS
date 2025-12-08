@@ -1,0 +1,279 @@
+/* =============== Base tokens =============== */
+$primary: $color-primary;
+$text-main: #1f2933;
+$text-muted: #6b7280;
+$bg-soft: #f5f6ff;
+$shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+$radius-lg: 1.4rem;
+
+/* =============== Dashboard wrapper =============== */
+.dashboard {
+  max-width: 110rem;
+  margin: 0 auto 4rem;
+  padding: 3.5rem 2rem 4rem;
+
+  /* ===== Title ===== */
+  &__title {
+    margin-bottom: 2.4rem;
+
+    &-main {
+      font-weight: 700;
+      font-size: 2.4rem;
+      color: $primary;
+      margin: 0 0 0.4rem;
+    }
+
+    &-sub {
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: $text-muted;
+      margin: 0;
+    }
+  }
+
+  /* =====================
+     SECTION 1 - STATS
+  ===================== */
+  &__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.6rem;
+    margin-bottom: 3rem;
+  }
+
+  &__card {
+    flex: 1 1 24rem;
+    min-width: 24rem;
+    max-width: 32rem;
+    background: #ffffff;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-card;
+    border: 1px solid rgba(37, 43, 97, 0.08);
+    padding: 1.6rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &--header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.4rem;
+      margin-bottom: 0.6rem;
+    }
+
+    &-label {
+      font-size: 1.3rem;
+      color: $text-muted;
+      margin: 0 0 0.3rem;
+    }
+
+    &-value {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: $primary;
+      margin: 0;
+    }
+
+    &-sub {
+      font-size: 1.2rem;
+      color: $text-muted;
+      margin: 0.4rem 0 0;
+    }
+  }
+
+  .dashboard__card-icon {
+    width: 3.4rem;
+    height: 3.4rem;
+    border-radius: 1.2rem;
+    background: $bg-soft;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $primary;
+
+    i {
+      font-size: 1.7rem;
+    }
+  }
+
+  /* =====================
+     SECTION 2 - APPOINTMENTS
+  ===================== */
+  &__appointments {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 2.5rem;
+  }
+
+  &__appointments-card {
+    width: 100%;
+    border-radius: $radius-lg;
+    border: 1px solid rgba(37, 43, 97, 0.08);
+    background: #ffffff;
+    box-shadow: $shadow-card;
+    padding: 1.8rem 1.8rem 2.2rem;
+  }
+
+  &__appointments-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.4rem;
+    margin-bottom: 1.6rem;
+
+    h3 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: $primary;
+    }
+
+    p {
+      margin: 0.3rem 0 0;
+      font-size: 1.3rem;
+      color: $text-muted;
+    }
+  }
+
+  &__appointments-chip {
+    padding: 0.4rem 1.2rem;
+    border-radius: 999px;
+    background: $bg-soft;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: $primary;
+    white-space: nowrap;
+  }
+
+  &__appointments-item {
+    height: auto;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 1rem;
+    padding: 1rem 1.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: $primary;
+    background: #f9fafb;
+    transition: 0.15s ease all;
+
+    &:hover {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.12);
+    }
+
+    &-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+
+      p {
+        margin: 0;
+      }
+
+      p:first-child {
+        font-size: 1.6rem;
+        font-weight: 700;
+      }
+
+      p:last-child {
+        font-size: 1.4rem;
+        font-weight: 400;
+        color: $text-muted;
+      }
+    }
+
+    &-time {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      p:first-child {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin: 0 0 0.4rem;
+      }
+    }
+
+    /* STATUS BADGES */
+    &--confirmed,
+    &--delayed,
+    &--pending {
+      min-width: 7rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #111827;
+    }
+
+    &--confirmed {
+      background-color: var(--color-green-1);
+    }
+
+    &--delayed {
+      background-color: #ff7c7ee0;
+    }
+
+    &--pending {
+      background-color: #f9b701;
+    }
+  }
+
+  &__appointments-empty {
+    margin-top: 1.4rem;
+    padding: 2.2rem 1.4rem;
+    text-align: center;
+    border-radius: 1.2rem;
+    background: #f9fafb;
+    border: 1px dashed #d1d5db;
+
+    i {
+      font-size: 2.4rem;
+      color: #9ca3af;
+      margin-bottom: 0.6rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1.5rem;
+      color: $primary;
+      font-weight: 600;
+    }
+
+    span {
+      display: block;
+      margin-top: 0.3rem;
+      font-size: 1.3rem;
+      color: $text-muted;
+    }
+  }
+
+  /* =============== Responsive tweaks =============== */
+  @media (max-width: 768px) {
+    padding-inline: 1.4rem;
+
+    &__stats {
+      flex-direction: column;
+    }
+
+    &__appointments-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.6rem;
+
+      &-time {
+        align-items: flex-start;
+      }
+    }
+  }
+}

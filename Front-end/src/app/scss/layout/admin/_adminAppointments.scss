@@ -1,0 +1,295 @@
+// Wrapper نفس عرض باقي الصفحات
+.doctor-details-wrapper {
+  max-width: 110rem;
+  margin: 0 auto 4rem;
+  padding: 0 2rem;
+}
+
+// ===== Dashboard title (لو نفس الكلاسات بتاعة الصفحات التانية) =====
+.dashboard__title {
+  margin: 4rem 0 2rem;
+  color: #252b61;
+
+  &-main {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 0 0 0.4rem;
+  }
+
+  &-sub {
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #6b7280;
+    margin: 0;
+  }
+}
+
+// ========== Appointments Layout ==========
+
+.appointments {
+  margin-top: 1rem;
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  &__state {
+    margin-top: 4rem;
+    text-align: center;
+  }
+
+  &__state--loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: #4b56a3;
+  }
+
+  &__spinner {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 0.3rem solid #e5e7eb;
+    border-top-color: #252b61;
+    animation: spin 0.9s linear infinite;
+  }
+
+  &__state-text {
+    font-size: 1.4rem;
+    color: #4b56a3;
+  }
+
+  &__state--empty {
+    color: #6b7280;
+  }
+
+  &__state-icon {
+    font-size: 3rem;
+    margin-bottom: 0.6rem;
+    color: #a5b4fc;
+  }
+
+  &__state-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  &__state-subtitle {
+    font-size: 1.4rem;
+    margin: 0;
+  }
+}
+
+// ========== Appointment Card (نفس ديزاين الكومبوننت اللي بعتّه) ==========
+
+.appointment-card {
+  background: #ffffff;
+  border-radius: 1.4rem;
+  padding: 1.8rem 2rem;
+  box-shadow: 0 10px 28px rgba(25, 39, 79, 0.12);
+  border: 1px solid rgba(37, 43, 97, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+
+  &__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.6fr) auto;
+    gap: 1.4rem;
+    align-items: center;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: flex-start;
+    }
+  }
+
+  // Patient
+  &__patient {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: #eef2ff;
+    color: #252b61;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+
+  &__label {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #9ca3af;
+    margin: 0 0 0.1rem;
+  }
+
+  &__patient-name {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #252b61;
+  }
+
+  // Date / time / duration
+  &__datetime {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem 1.4rem;
+  }
+
+  &__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.3rem;
+    color: #374151;
+  }
+
+  &__icon {
+    font-size: 1.4rem;
+    color: #4b56a3;
+  }
+
+  // Status
+  &__status {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  // Body
+  &__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.3fr);
+    gap: 1.4rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__reason {
+    display: flex;
+    gap: 1rem;
+  }
+
+  &__icon--reason {
+    margin-top: 0.4rem;
+  }
+
+  &__reason-text {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #1f2933;
+    font-weight: 500;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: flex-end;
+    align-items: center;
+
+    &--single {
+      // للنسخة دي بالذات
+      justify-content: space-between;
+
+      @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 768px) {
+      justify-content: flex-start;
+    }
+  }
+
+  &__doctor-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.4rem;
+    color: #1f2933;
+  }
+
+  &__doctor-name {
+    font-weight: 500;
+  }
+
+  &__btn {
+    border-radius: 999px;
+    padding: 0.7rem 1.6rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: 0.2s ease all;
+    white-space: nowrap;
+
+    &--primary {
+      background: #252b61;
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(25, 39, 79, 0.35);
+
+      i {
+        font-size: 1.3rem;
+      }
+
+      &:hover {
+        background: #1a204a;
+      }
+    }
+  }
+}
+
+// Status pill (نفس اللي عندك)
+.status-pill {
+  padding: 0.4rem 1.4rem;
+  border-radius: 999px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: #4b56a3;
+  white-space: nowrap;
+
+  &--confirmed {
+    background: #16a34a;
+  }
+
+  &--pending {
+    background: #fbbf24;
+    color: #111827;
+  }
+
+  &--cancelled {
+    background: #ef4444;
+  }
+
+  &--delayed {
+    background: #f97316;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

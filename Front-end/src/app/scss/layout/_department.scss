@@ -1,0 +1,420 @@
+@import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap");
+
+.departments-dashboard {
+  padding: 2rem;
+  font-family: "Tajawal", sans-serif;
+  background: #f5f7fa;
+  min-height: 100vh;
+}
+
+/* Header Section */
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #252b61;
+  padding: 2rem 2.5rem;
+  border-radius: 28px;
+  color: white;
+  box-shadow: 0 25px 45px rgba(37, 43, 97, 0.15);
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: white;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: #c7d6ff;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.header-search {
+  flex: 1;
+  min-width: 300px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  transition: all 0.3s ease;
+}
+
+.btn-add-department {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.75rem;
+  border: none;
+  border-radius: 999px;
+  background: #f9686b;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(249, 104, 107, 0.35);
+  white-space: nowrap;
+}
+
+.btn-add-department:hover {
+  background: #ff7a7d;
+  transform: translateY(-2px);
+  box-shadow: 0 15px 28px rgba(249, 104, 107, 0.45);
+}
+
+.btn-add-department:active {
+  transform: translateY(0);
+}
+
+.btn-add-department i {
+  font-size: 1.1rem;
+}
+
+.search-box:focus-within {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.search-box i {
+  color: white;
+  font-size: 1.1rem;
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: white;
+  font-size: 1rem;
+}
+
+.search-box input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Stats Overview */
+.stats-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+/* -----------------------------
+   Overview Cards
+------------------------------ */
+.overview-card {
+  background: white;
+  border-radius: 28px;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: 0 25px 35px rgba(25, 24, 45, 0.1);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  cursor: pointer;
+  /* شيلنا الـ font-size العام هنا علشان الديزاين مايبظش */
+}
+
+.overview-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 35px 45px rgba(25, 24, 45, 0.18);
+}
+
+.overview-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #252b61;
+}
+
+.overview-content h3 {
+  font-size: 2.3rem; /* أكبر شوية من العادي بس مش مبالغ فيه */
+  font-weight: 700;
+  color: #252b61;
+  margin: 0 0 0.25rem 0;
+}
+
+.overview-content p {
+  font-size: 1.05rem; /* تكبير بسيط بدل 0.95rem */
+  color: #5c5e7b;
+  margin: 0;
+}
+
+/* Color Classes */
+.mint {
+  background: #a8f6d5;
+}
+.yellow {
+  background: #fbe27f;
+}
+.lilac {
+  background: #e2c2f5;
+}
+.blue {
+  background: #9ec9ff;
+}
+.teal {
+  background: #5bc0be;
+}
+.blush {
+  background: #f5b7c8;
+}
+.indigo {
+  background: #4648b1;
+}
+
+/* Departments Grid */
+.departments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+/* -----------------------------
+   Department Cards
+------------------------------ */
+.department-card {
+  background: white;
+  border-radius: 28px;
+  padding: 2rem;
+  box-shadow: 0 25px 35px rgba(25, 24, 45, 0.1);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  /* شيلنا font-size: 1.1rem; عشان ما يكبرش كل حاجة مرة واحدة */
+}
+
+.department-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, transparent, currentColor, transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.department-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 35px 45px rgba(25, 24, 45, 0.2);
+}
+
+.department-card:hover::before {
+  opacity: 0.3;
+}
+
+.card-header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.department-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #252b61;
+}
+
+.department-badge {
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: rgba(37, 43, 97, 0.1);
+  color: #252b61;
+}
+
+.department-badge.emergency {
+  background: #f9686b;
+  color: white;
+}
+
+.card-body {
+  flex: 1;
+  margin-bottom: 1.5rem;
+}
+
+.department-name {
+  font-size: 1.6rem; /* بين 1.5 و1.7 علشان ما يطلعش زيادة */
+  font-weight: 700;
+  color: #252b61;
+  margin: 0 0 0.75rem 0;
+}
+
+.department-description {
+  font-size: 1.05rem; /* تكبير بسيط عن 0.95rem */
+  color: #5c5e7b;
+  margin: 0 0 1.25rem 0;
+  line-height: 1.6;
+}
+
+.department-stats {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem; /* بين القديم والجديد */
+  color: #5c5e7b;
+}
+
+.stat-item i {
+  color: #f9686b;
+}
+
+.card-footer {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 2px solid #f4f5fb;
+}
+
+.btn-book {
+  flex: 1;
+  padding: 0.9rem 1.5rem;
+  border: none;
+  border-radius: 999px;
+  background: #252b61;
+  color: white;
+  font-weight: 600;
+  font-size: 1.02rem; /* سنة صغيرة زيادة بس */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-book:hover {
+  background: #1b204f;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(37, 43, 97, 0.3);
+}
+
+.btn-view {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: none;
+  background: #f4f5fb;
+  color: #252b61;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+}
+
+.btn-view:hover {
+  background: #252b61;
+  color: white;
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .departments-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .departments-dashboard {
+    padding: 1rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .header-search {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .btn-add-department {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .stats-overview {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .departments-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .overview-card {
+    padding: 1.5rem;
+  }
+
+  .department-card {
+    padding: 1.5rem;
+  }
+
+  .card-footer {
+    flex-direction: column;
+  }
+
+  .btn-book {
+    width: 100%;
+  }
+}

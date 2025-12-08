@@ -1,0 +1,162 @@
+<section id="dashboard" class="dashboard">
+  <div class="doctor-details-wrapper">
+    <!-- Title -->
+    <div class="dashboard__title">
+      <h2 class="dashboard__title-main">Appointments</h2>
+      <p class="dashboard__title-sub">Review the history of appointments</p>
+    </div>
+
+    <div class="appointments">
+      <!-- Error state (لو حصل error من الـ API) -->
+      @if (error) {
+      <div class="appointments__state appointments__state--error">
+        <p class="appointments__state-text">{{ error }}</p>
+      </div>
+      }
+
+      <!-- Loading -->
+      @if (loading) {
+      <div class="appointments__state appointments__state--loading">
+        <div class="appointments__spinner"></div>
+        <p class="appointments__state-text">Loading appointments…</p>
+      </div>
+      } @else if (!loading && appointments.length === 0) {
+      <!-- Empty -->
+      <div class="appointments__state appointments__state--empty">
+        <i class="fa-regular fa-calendar-xmark appointments__state-icon"></i>
+        <p class="appointments__state-title">No appointments</p>
+        <p class="appointments__state-subtitle">
+          There are no appointments to display.
+        </p>
+      </div>
+      } @else {
+      <!-- Appointments list -->
+      <div class="appointments__list">
+        @for (appointment of appointments; track trackById($index, appointment))
+        {
+        <article class="appointment-card">
+          <!-- ===== Header ===== -->
+          <header class="appointment-card__header">
+            <!-- Patient info -->
+            <div class="appointment-card__patient">
+              <div class="appointment-card__avatar">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <div>
+                <p class="appointment-card__label">Patient</p>
+                <p class="appointment-card__patient-name">
+                  {{ appointment.patientName }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Date / time -->
+            <div class="appointment-card__datetime">
+              <div class="appointment-card__meta">
+                <i class="fa-regular fa-calendar appointment-card__icon"></i>
+                <span>
+                  {{ appointment.appointmentDateTime | date : "yyyy-MM-dd" }}
+                </span>
+              </div>
+
+              <div class="appointment-card__meta">
+                <i class="fa-regular fa-clock appointment-card__icon"></i>
+                <span>
+                  {{ appointment.appointmentDateTime | date : "HH:mm" }}
+                </span>
+              </div>
+
+              <!-- لو عندك duration في الموديل هتظهر، لو مش موجود سيبه فاضي مش هيبوز -->
+              @if (appointment.durationMinutes !== undefined &&
+              appointment.durationMinutes !== null) {
+              <div class="appointment-card__meta">
+                <i
+                  class="fa-regular fa-hourglass-half appointment-card__icon"
+                ></i>
+                <span>{{ appointment.durationMinutes }} mins</span>
+              </div>
+              }
+            </div>
+
+            <!-- Status -->
+            <div class="appointment-card__status">
+              <span
+                class="status-pill"
+                [ngClass]="{
+                  'status-pill--confirmed': appointment.status === 'Confirmed',
+                  'status-pill--pending': appointment.status === 'Pending',
+                  'status-pill--cancelled': appointment.status === 'Cancelled',
+                  'status-pill--delayed': appointment.status === 'Delayed'
+                }"
+              >
+                {{ appointment.status }}
+              </span>
+            </div>
+          </header>
+
+          <!-- ===== Body ===== -->
+          <section class="appointment-card__body">
+            <!-- Reason for visit -->
+            <div class="appointment-card__reason">
+              <i
+                class="fa-solid fa-stethoscope appointment-card__icon appointment-card__icon--reason"
+              ></i>
+              <div>
+                <p class="appointment-card__label">Reason for visit</p>
+                <p class="appointment-card__reason-text">
+                  {{ appointment.reasonForVisit || "No reason provided" }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Doctor + Actions -->
+            <div
+              class="appointment-card__actions appointment-card__actions--single"
+            >
+              <div class="appointment-card__doctor-inline">
+                <i class="fa-solid fa-user-doctor appointment-card__icon"></i>
+                <span class="appointment-card__doctor-name">
+                  Dr. {{ appointment.doctorName }}
+                </span>
+              </div>
+            </div>
+          </section>
+          <!-- cancellation reason if cancelled -->
+          @if(appointment.status === "Canceled"){
+            <div class="appointment-card__reason">
+              <i class="fa-solid fa-xmark appointment-card__icon appointment-card__icon--reason"></i>
+              <div>
+                <p class="appointment-card__label">Cancellation Reason</p>
+                <p class="appointment-card__reason-text">
+                  {{ appointment.cancellationReason || "Not specefied" }}
+                </p>
+              </div>
+            </div>
+          }
+          
+          <div class="appointment-card__actisons">
+            <button
+              type="button"
+              class="appointment-card__btn appointment-card__btn--primary"
+              style="margin-right: 1rem;"
+              (click)="viewDetails(appointment)"
+            >
+              <i class="fa-solid fa-eye"></i>
+              <span>View details</span>
+            </button>
+
+            <button
+              type="button"
+              class="appointment-card__btn appointment-card__btn--outline"
+              (click)="navigateToMedicalRecords(appointment)"
+            >
+              View Medical Record
+            </button>
+          </div>
+        </article>
+        }
+      </div>
+      }
+    </div>
+  </div>
+</section>

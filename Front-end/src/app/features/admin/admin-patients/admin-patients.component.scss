@@ -1,0 +1,311 @@
+$patients-primary: #252b61;
+$patients-primary-soft: #4b56a3;
+$patients-text-main: #1f2933;
+$patients-text-muted: #6b7280;
+$patients-bg-soft: #f5f6ff;
+$patients-shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+$patients-radius-lg: 1.4rem;
+
+.patients-dashboard {
+  max-width: 110rem;
+  margin: 0 auto 4rem;
+  padding: 3.5rem 2rem 4rem;
+  color: $patients-primary;
+
+  &__wrapper {
+    width: 100%;
+  }
+
+  /* ===== Header ===== */
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.4rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  &__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  &__title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 0;
+    color: $patients-primary;
+  }
+
+  &__subtitle {
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin: 0;
+    color: $patients-text-muted;
+  }
+
+  &__content {
+    margin-top: 2.4rem;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  /* ===== Empty State ===== */
+  &__empty {
+    margin-top: 3rem;
+    padding: 2.4rem 1.8rem;
+    border-radius: $patients-radius-lg;
+    background: #f9fafb;
+    border: 1px dashed #d1d5db;
+    text-align: center;
+  }
+
+  &__empty-icon {
+    font-size: 3rem;
+    color: #a5b4fc;
+    margin-bottom: 0.8rem;
+  }
+
+  &__empty-title {
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: $patients-primary;
+    margin: 0 0 0.4rem;
+  }
+
+  &__empty-subtitle {
+    font-size: 1.4rem;
+    color: $patients-text-muted;
+    margin: 0;
+  }
+
+  &__dialog {
+    margin-top: 2rem;
+  }
+}
+
+/* =========================
+   Patient Card
+========================= */
+
+.patient-card {
+  background: #ffffff;
+  border-radius: $patients-radius-lg;
+  border: 1px solid rgba(37, 43, 97, 0.08);
+  box-shadow: $patients-shadow-card;
+  padding: 1.8rem 2rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+
+  /* Header */
+  &__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) auto;
+    gap: 1.4rem;
+    align-items: center;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: flex-start;
+    }
+  }
+
+  &__identity {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__avatar {
+    width: 4.2rem;
+    height: 4.2rem;
+    border-radius: 50%;
+    background: #eef2ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $patients-primary;
+    font-size: 2rem;
+  }
+
+  &__name {
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: $patients-text-main;
+    margin: 0 0 0.2rem;
+  }
+
+  &__dob {
+    font-size: 1.3rem;
+    color: $patients-text-muted;
+    margin: 0;
+  }
+
+  &__status-wrapper {
+    display: flex;
+    justify-content: flex-end;
+
+    @media (max-width: 768px) {
+      justify-content: flex-start;
+    }
+  }
+
+  &__status {
+    padding: 0.4rem 1.4rem;
+    border-radius: 999px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: #e5e7eb;
+    color: #374151;
+    white-space: nowrap;
+
+    &--active {
+      background: #d1fae5;
+      color: #047857;
+    }
+
+    &--discharged {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    &--readmitted {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+  }
+
+  /* Body */
+  &__body {
+    padding-bottom: 1.1rem;
+    border-bottom: 1px dashed #e5e7eb;
+  }
+
+  &__info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.2rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__info-item {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 0.9rem 1.1rem;
+  }
+
+  &__info-label {
+    margin: 0 0 0.2rem;
+    font-size: 1.2rem;
+    color: $patients-text-muted;
+  }
+
+  &__info-value {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: $patients-text-main;
+  }
+
+  /* Contact */
+  &__contact {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  &__contact-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  &__contact-icon {
+    font-size: 1.3rem;
+    color: $patients-primary-soft;
+  }
+
+  &__contact-text {
+    margin: 0;
+    font-size: 1.4rem;
+    color: $patients-text-main;
+  }
+
+  /* Footer */
+  &__footer {
+    margin-top: 0.8rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  &__btn {
+    border-radius: 999px;
+    padding: 0.7rem 1.6rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: 0.18s ease all;
+    white-space: nowrap;
+
+    i {
+      font-size: 1.3rem;
+    }
+
+    &--outline {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      color: $patients-primary;
+
+      &:hover {
+        background: #f5f6ff;
+      }
+    }
+
+    &--primary {
+      background: linear-gradient(
+        135deg,
+        $patients-primary,
+        $patients-primary-soft
+      );
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(25, 39, 79, 0.35);
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 26px rgba(25, 39, 79, 0.5);
+      }
+    }
+  }
+}
+
+/* ===== Responsive tweaks ===== */
+
+@media (max-width: 768px) {
+  .patients-dashboard {
+    padding-inline: 1.4rem;
+  }
+}

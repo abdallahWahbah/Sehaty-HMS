@@ -1,0 +1,75 @@
+<div class="update-department" *ngIf="department">
+  <h1 class="update-department__title">Update Department</h1>
+  <p class="update-department__subtitle">Modify the department details below</p>
+
+  <form
+    class="update-department__form"
+    [formGroup]="updateForm"
+    (ngSubmit)="updateDepartment()"
+  >
+    @if(serverError){
+    <div class="server-error">
+      <span>{{ serverError }}</span>
+    </div>
+    }
+    <!-- English Name -->
+    <div class="update-department__form-group">
+      <label class="update-department__label" for="en_Name">
+        <i class="fa-solid fa-language"></i> English Name
+      </label>
+      <input
+        id="en_Name"
+        class="update-department__input"
+        formControlName="en_Name"
+        type="text"
+        placeholder="Enter English name"
+      />
+    </div>
+
+    <!-- Arabic Name -->
+    <div class="update-department__form-group">
+      <label class="update-department__label" for="ar_Name">
+        <i class="fa-solid fa-language"></i> Arabic Name
+      </label>
+      <input
+        id="ar_Name"
+        class="update-department__input"
+        formControlName="ar_Name"
+        type="text"
+        placeholder="Enter Arabic name"
+        dir="rtl"
+      />
+    </div>
+
+    <!-- Description -->
+    <div class="update-department__form-group">
+      <label class="update-department__label" for="description">
+        <i class="fa-solid fa-file-lines"></i> Description
+      </label>
+      <textarea
+        id="description"
+        class="update-department__textarea"
+        formControlName="description"
+        placeholder="Enter description"
+      ></textarea>
+    </div>
+
+    <!-- Buttons -->
+    <div class="update-department__actions">
+      <button
+        type="submit"
+        class="update-department__btn update-department__btn--submit"
+        [disabled]="loading || updateForm.invalid"
+      >
+        {{ loading ? "Updating..." : "Update Department" }}
+      </button>
+      <button
+        type="button"
+        [routerLink]="['/admin/departments']"
+        class="update-department__btn update-department__btn--cancel"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

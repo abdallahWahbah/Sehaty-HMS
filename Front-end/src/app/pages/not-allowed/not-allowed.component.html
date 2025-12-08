@@ -1,0 +1,45 @@
+<section class="not-allowed">
+  <div class="not-allowed__container">
+    <!-- Illustration -->
+    <div class="not-allowed__illustration">
+      <div class="shield-card">
+        <div class="shield-card__bg"></div>
+
+        <div class="shield-card__shield">
+          <div class="shield-card__circle">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <div class="shield-card__lock">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+        </div>
+
+        <!-- Floating warning / security icons -->
+        <div class="shield-card__icon shield-card__icon--one">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div class="shield-card__icon shield-card__icon--two">
+          <i class="fa-solid fa-user-lock"></i>
+        </div>
+        <div class="shield-card__icon shield-card__icon--three">
+          <i class="fa-solid fa-key"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text -->
+    <div class="not-allowed__text">
+      <h1 class="not-allowed__code">403</h1>
+      <h2 class="not-allowed__title">Access denied</h2>
+      <p class="not-allowed__subtitle">
+        You don’t have permission to view this page. If you believe this is a
+        mistake, please contact support or try again with a different account.
+      </p>
+
+      <div class="not-allowed__actions">
+        <button class="btn btn--primary" (click)="goHome()">Change user credentials</button>
+        <button class="btn btn--outline" (click)="goBack()">Go Back</button>
+      </div>
+    </div>
+  </div>
+</section>

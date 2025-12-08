@@ -1,0 +1,760 @@
+// ====== Base tokens ======
+$primary: #252b61;
+$primary-soft: #4b56a3;
+$text-main: #1f2933;
+$text-muted: #6b7280;
+$bg-soft: #f5f6ff;
+$shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+
+// Wrapper نفس عرض باقي الصفحات
+.doctor-details-wrapper {
+  max-width: 110rem;
+  margin: 0 auto 4rem;
+  padding: 0 2rem;
+}
+
+// ========== Appointments Layout ==========
+
+.appointments {
+  margin-top: 2rem;
+
+  // ✅ Filter buttons
+  &__filter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  &__filter-btn {
+    border-radius: 999px;
+    padding: 0.5rem 1.4rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #4b5563;
+    cursor: pointer;
+    transition: 0.2s ease all;
+
+    &:hover {
+      background: #f5f6ff;
+    }
+
+    &--active {
+      background: #252b61;
+      color: #ffffff;
+      border-color: #252b61;
+      box-shadow: 0 8px 20px rgba(25, 39, 79, 0.25);
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  &__state {
+    margin-top: 4rem;
+    text-align: center;
+  }
+
+  &__state--loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: #4b56a3;
+  }
+
+  &__spinner {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 0.3rem solid #e5e7eb;
+    border-top-color: #252b61;
+    animation: spin 0.9s linear infinite;
+  }
+
+  &__state-text {
+    font-size: 1.4rem;
+    color: #4b56a3;
+  }
+
+  &__state--empty {
+    color: #6b7280;
+  }
+
+  &__state-icon {
+    font-size: 3rem;
+    margin-bottom: 0.6rem;
+    color: #a5b4fc;
+  }
+
+  &__state-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  &__state-subtitle {
+    font-size: 1.4rem;
+    margin: 0;
+  }
+}
+
+// ========== Appointment Card ==========
+
+.appointment-card {
+  background: #ffffff;
+  border-radius: 1.4rem;
+  padding: 1.8rem 2rem;
+  box-shadow: 0 10px 28px rgba(25, 39, 79, 0.12);
+  border: 1px solid rgba(37, 43, 97, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+
+  &__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.6fr) auto;
+    gap: 1.4rem;
+    align-items: center;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: flex-start;
+    }
+  }
+
+  // Patient
+  &__patient {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: #eef2ff;
+    color: #252b61;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+
+  &__label {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #9ca3af;
+    margin: 0 0 0.1rem;
+  }
+
+  &__patient-name {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #252b61;
+  }
+
+  // Date / time / duration
+  &__datetime {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem 1.4rem;
+  }
+
+  &__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.3rem;
+    color: #374151;
+  }
+
+  &__icon {
+    font-size: 1.4rem;
+    color: #4b56a3;
+  }
+
+  // Status
+  &__status {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  // Body
+  &__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.3fr);
+    gap: 1.4rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__reason {
+    display: flex;
+    gap: 1rem;
+  }
+
+  &__icon--reason {
+    margin-top: 0.4rem;
+  }
+
+  &__reason-text {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #1f2933;
+    font-weight: 500;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: flex-end;
+
+    @media (max-width: 768px) {
+      justify-content: flex-start;
+    }
+  }
+
+  &__btn {
+    border-radius: 999px;
+    padding: 0.7rem 1.6rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: 0.2s ease all;
+    white-space: nowrap;
+
+    &--primary {
+      background: #252b61;
+      color: #ffffff;
+
+      &:hover {
+        background: #1a204a;
+      }
+    }
+
+    &--outline {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      color: #252b61;
+
+      &:hover {
+        background: #f5f6ff;
+      }
+    }
+
+    &--ghost {
+      background: transparent;
+      border: 1px dashed #cbd5e1;
+      color: #4b5563;
+
+      &:hover {
+        background: #f9fafb;
+      }
+    }
+
+    &--danger {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+
+      i {
+        color: inherit;
+      }
+
+      &:hover {
+        background: #fee2e2;
+        border-color: #fca5a5;
+      }
+    }
+  }
+
+  // Feedback
+  &__feedback {
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px dashed #e5e7eb;
+  }
+
+  &__feedback-header {
+    margin-bottom: 0.4rem;
+  }
+
+  &__feedback-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #252b61;
+  }
+
+  &__feedback-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  &__stars {
+    .star {
+      font-size: 1.7rem;
+      color: #d1d5db;
+
+      &.filled {
+        color: #fbbf24;
+      }
+    }
+  }
+
+  &__feedback-text {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #374151;
+  }
+
+  &__feedback-empty {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #6b7280;
+  }
+}
+
+// Status pill (reuseable)
+.status-pill {
+  padding: 0.4rem 1.4rem;
+  border-radius: 999px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: #4b56a3;
+  white-space: nowrap;
+
+  &--confirmed {
+    background: #16a34a;
+  }
+
+  &--pending {
+    background: #fbbf24;
+    color: #111827;
+  }
+
+  &--cancelled {
+    background: #ef4444;
+  }
+
+  &--delayed {
+    background: #f97316;
+  }
+
+  &--inprogress {
+    background: #3b82f6;
+  }
+
+  &--completed {
+    background: #0ea5e9;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// 🌈 Vibrant Rainbow Animated Border
+.rainbow-border {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+  border-radius: 999px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    border-radius: inherit;
+    background: linear-gradient(
+      120deg,
+      #ff0000,
+      #ff7a00,
+      #ffee00,
+      #00ff00,
+      #00ffee,
+      #007bff,
+      #8a00ff,
+      #ff00c8,
+      #ff0000
+    );
+    background-size: 300% 300%;
+    animation: rainbowMove 2.5s linear infinite;
+
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+
+    z-index: -1;
+  }
+}
+
+@keyframes rainbowMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+// ========== AI Modal Styles ==========
+
+.ai-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.6rem;
+  z-index: 1000;
+}
+
+.ai-modal {
+  width: 100%;
+  max-width: 64rem;
+  max-height: 80vh;
+  background: #ffffff;
+  border-radius: 1.6rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.4);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// Header
+.ai-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.6rem 2rem 1.2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ai-modal__title-block {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ai-modal__icon {
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, $primary, $primary-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+
+  i {
+    font-size: 1.6rem;
+  }
+}
+
+.ai-modal__title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: $primary;
+}
+
+.ai-modal__subtitle {
+  margin: 0.3rem 0 0;
+  font-size: 1.3rem;
+  color: $text-muted;
+}
+
+.ai-modal__close {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 999px;
+  color: $text-muted;
+  transition: 0.15s ease all;
+
+  i {
+    font-size: 1.5rem;
+  }
+
+  &:hover {
+    background: #f3f4ff;
+    color: $primary;
+  }
+}
+
+// Body
+.ai-modal__body {
+  padding: 1.4rem 2rem 1.8rem;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.ai-modal__loading,
+.ai-modal__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  text-align: center;
+
+  p {
+    font-size: 1.3rem;
+    color: $text-muted;
+    margin: 0;
+  }
+
+  i {
+    font-size: 2rem;
+    color: $primary-soft;
+  }
+}
+
+.ai-modal__spinner {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 3px solid rgba(79, 70, 229, 0.2);
+  border-top-color: $primary-soft;
+  animation: spin 0.7s linear infinite;
+}
+
+.ai-modal__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  font-size: 1.2rem;
+
+  p {
+    margin: 0;
+    color: $text-muted;
+
+    strong {
+      color: $text-main;
+      margin-left: 0.2rem;
+    }
+  }
+}
+
+.ai-modal__content {
+  border-radius: 1rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 1.2rem 1.4rem;
+  direction: rtl;
+  text-align: right;
+}
+
+.ai-modal__text {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.6;
+  color: $text-main;
+  white-space: pre-wrap;
+  font-family: "Tajawal", system-ui;
+}
+
+// Footer
+.ai-modal__footer {
+  padding: 1.1rem 2rem 1.4rem;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ai-modal__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  background: rgba(79, 70, 229, 0.08);
+  color: $primary-soft;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.ai-modal__badge-icon {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 999px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 1.05rem;
+  }
+}
+
+.ai-modal__footer-btn {
+  border-radius: 999px;
+  padding: 0.7rem 1.8rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  background: $primary;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(25, 39, 79, 0.3);
+  transition: 0.18s ease all;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 26px rgba(25, 39, 79, 0.45);
+  }
+}
+
+@media (max-width: 640px) {
+  .ai-modal {
+    max-height: 88vh;
+  }
+
+  .ai-modal__body {
+    padding-inline: 1.4rem;
+  }
+
+  .ai-modal__footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+
+    .ai-modal__footer-btn {
+      width: 100%;
+    }
+
+    .ai-modal__badge {
+      justify-content: center;
+      width: 100%;
+    }
+  }
+}
+
+// ========== Apology Popup ==========
+
+.apology-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1300;
+}
+
+.apology-popup {
+  background: #ffffff;
+  border-radius: 1.4rem;
+  padding: 1.6rem 2.2rem;
+  box-shadow: 0 22px 50px rgba(15, 23, 42, 0.4);
+  text-align: center;
+  max-width: 32rem;
+  width: 100%;
+  animation: apologyPopupIn 0.35s ease-out;
+}
+
+.apology-popup__icon {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 999px;
+  background: #ecfdf3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.8rem;
+
+  i {
+    font-size: 2.2rem;
+    color: #16a34a;
+    animation: apologyCheckPop 0.45s ease-out;
+  }
+}
+
+.apology-popup__title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.apology-popup__message {
+  margin: 0.4rem 0 0;
+  font-size: 1.35rem;
+  color: #4b5563;
+}
+
+// Animations
+@keyframes apologyPopupIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes apologyCheckPop {
+  0% {
+    transform: scale(0);
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.appointment-card__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: #e5e7eb !important;
+  color: #9ca3af !important;
+  border-color: #e5e7eb !important;
+  pointer-events: none;
+}
+.appointment-card__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: #e5e7eb !important;
+  color: #9ca3af !important;
+  border-color: #e5e7eb !important;
+  pointer-events: none;
+}

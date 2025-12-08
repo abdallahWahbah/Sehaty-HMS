@@ -1,0 +1,155 @@
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { AppointmentResponseModel } from '../models/appointment-response-model';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { CreateAppointmentDto } from '../models/appointment-create-model';
+import { RescheduleAppointmentDto } from '../models/appointment-updateDate-model';
+import { ConfirmAppointmentResponse } from '../models/confirmappoitment.model';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AppointmentService {
+  baseUrl: string = 'https://localhost:7086/api/Appointments/';
+
+  constructor(private http: HttpClient) {}
+
+  private toAppointment(
+    raw: AppointmentResponseModel
+  ): AppointmentResponseModel {
+    return {
+      ...raw,
+      appointmentDateTime:
+        raw.appointmentDateTime && new Date(raw.appointmentDateTime),
+    };
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    console.error('Appointment API error:', error);
+    return throwError(() => error);
+  }
+
+  getAll(): Observable<AppointmentResponseModel[]> {
+    return this.http.get<AppointmentResponseModel[]>(this.baseUrl);
+  }
+
+  getById(id: number): Observable<AppointmentResponseModel> {
+    return this.http.get<AppointmentResponseModel>(`${this.baseUrl}${id}`).pipe(
+      map((raw) => this.toAppointment(raw)),
+      catchError(this.handleError)
+    );
+  }
+  getDoctorAppointments(): Observable<AppointmentResponseModel[]> {
+    const token = localStorage.getItem('token');
+    const headers = token
+      ? new HttpHeaders({ Authorization: `Bearer ${token}` })
+      : new HttpHeaders();
+
+    return this.http
+      .get<AppointmentResponseModel[]>(`${this.baseUrl}DoctorAppoinments`, {
+        headers,
+      })
+      .pipe(
+        map((rawArray) => rawArray.map((raw) => this.toAppointment(raw))), // لو عندك دالة لتحويل كل عنصر
+        catchError(this.handleError)
+      );
+  }
+
+  create(dto: CreateAppointmentDto): Observable<AppointmentResponseModel> {
+    const body = {
+      ...dto,
+      appointmentDateTime:
+        dto.appointmentDateTime instanceof Date
+          ? dto.appointmentDateTime.toISOString()
+          : dto.appointmentDateTime,
+    };
+    return this.http.post<AppointmentResponseModel>(this.baseUrl, body).pipe(
+      map((raw) => this.toAppointment(raw)),
+      catchError(this.handleError)
+    );
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http
+      .delete<void>(`${this.baseUrl}${id}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  markNoShow(id: number): Observable<void> {
+    return this.http
+      .post<void>(`${this.baseUrl}NoShow/${id}`, {})
+      .pipe(catchError(this.handleError));
+  }
+
+  checkIn(id: number): Observable<void> {
+    return this.http
+      .post<void>(`${this.baseUrl}CheckIn/${id}`, {})
+      .pipe(catchError(this.handleError));
+  }
+
+  cancel(id: number) {
+    return this.http.post(`${this.baseUrl}CancelAppointment/${id}`, {});
+  }
+
+  reschedule(id: number, dto: RescheduleAppointmentDto): Observable<void> {
+    const body = {
+      newAppointmentDateTime:
+        dto.newAppointmentDateTime instanceof Date
+          ? dto.newAppointmentDateTime.toISOString()
+          : dto.newAppointmentDateTime,
+    };
+    return this.http
+      .put<void>(`${this.baseUrl}RescheduleAppointment/${id}`, body)
+      .pipe(catchError(this.handleError));
+  }
+
+  confirm(id: number): Observable<ConfirmAppointmentResponse> {
+    return this.http
+      .post<ConfirmAppointmentResponse>(
+        `${this.baseUrl}ConfirmAppointment/${id}`,
+        {}
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  getByPatientId(patientId: number): Observable<AppointmentResponseModel[]> {
+    return this.http
+      .get<AppointmentResponseModel[]>(
+        `${this.baseUrl}GetByPatientId${patientId}`
+      )
+      .pipe(
+        map((list) => list.map((item) => this.toAppointment(item))),
+        catchError(this.handleError)
+      );
+  }
+  bookAppointmentByReception(
+    doctorId: number,
+    appointmentDateTime: string,
+    reasonForVisit: string
+  ) {
+    return this.http.post<any>(this.baseUrl + 'ReceptionistCreate', {
+      doctorId,
+      appointmentDateTime,
+      reasonForVisit,
+    });
+  }
+  apologizeForDoctor(id: number): Observable<{ message: string }> {
+    const token = localStorage.getItem('token');
+    const headers = token
+      ? new HttpHeaders({ Authorization: `Bearer ${token}` })
+      : new HttpHeaders();
+
+    return this.http
+      .post<{ message: string }>(
+        `${this.baseUrl}${id}/doctor-cancel`,
+        {},
+        { headers }
+      )
+      .pipe(catchError(this.handleError));
+  }
+}

@@ -1,0 +1,182 @@
+$doc-primary: #252b61;
+$doc-primary-soft: #4b56a3;
+$doc-text-main: #1f2933;
+$doc-text-muted: #6b7280;
+$doc-bg-soft: #f5f6ff;
+$doc-shadow-card: 0 14px 40px rgba(25, 39, 79, 0.14);
+$doc-radius-lg: 1.4rem;
+
+.dashboard {
+  max-width: 110rem;
+  margin: 0 auto 4rem;
+  padding: 3.5rem 2rem 4rem;
+}
+
+/* ===== عنوان الصفحة ===== */
+.dashboard__title {
+  margin-bottom: 2.4rem;
+
+  &-main {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: $doc-primary;
+    margin: 0 0 0.4rem;
+  }
+
+  &-sub {
+    font-size: 1.4rem;
+    color: $doc-text-muted;
+    margin: 0;
+  }
+}
+
+/* ===== Wrapper بتاع الفورم ===== */
+.doctor-edit {
+  &__card {
+    background: #ffffff;
+    border-radius: $doc-radius-lg;
+    border: 1px solid rgba(37, 43, 97, 0.08);
+    box-shadow: $doc-shadow-card;
+    padding: 2rem 2.4rem 2.4rem;
+  }
+}
+
+/* ===== Error من السيرفر ===== */
+.server-error {
+  margin-bottom: 2rem;
+  padding: 1rem 1.4rem;
+  border-radius: 0.8rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 1.3rem;
+
+  span {
+    font-weight: 500;
+  }
+}
+
+/* ===== Grid بتاع الإدخالات ===== */
+.patient-edit {
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.4rem 1.6rem;
+    margin-bottom: 2.2rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__input {
+    width: 100%;
+
+    ::ng-deep .p-float-label {
+      width: 100%;
+    }
+
+    ::ng-deep .p-inputtext {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      padding: 0.8rem 1.2rem;
+      font-size: 1.4rem;
+      color: $doc-text-main;
+
+      &:focus {
+        border-color: $doc-primary-soft;
+        box-shadow: 0 0 0 1px rgba(37, 43, 97, 0.15);
+      }
+    }
+
+    ::ng-deep label {
+      font-size: 1.2rem;
+      color: $doc-text-muted;
+    }
+
+    &--select {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+  }
+
+  &__select-label {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: $doc-text-muted;
+  }
+
+  &__select {
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    padding: 0.9rem 1.2rem;
+    font-size: 1.4rem;
+    color: $doc-text-main;
+    background: #ffffff;
+    outline: none;
+    appearance: none;
+
+    &:focus {
+      border-color: $doc-primary-soft;
+      box-shadow: 0 0 0 1px rgba(37, 43, 97, 0.15);
+    }
+  }
+
+  &__button-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+
+    ::ng-deep .p-button {
+      border-radius: 999px;
+      padding: 0.7rem 1.8rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    ::ng-deep .p-button-danger {
+      background: #ef4444;
+      border-color: #ef4444;
+
+      &:hover {
+        background: #b91c1c;
+        border-color: #b91c1c;
+      }
+    }
+  }
+}
+
+/* ===== Responsive tweaks ===== */
+@media (max-width: 768px) {
+  .dashboard {
+    padding-inline: 1.4rem;
+  }
+}
+.patient-edit__select {
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  padding: 0.9rem 1.2rem;
+  font-size: 1.4rem;
+  color: $doc-text-main;
+  background: #ffffff;
+  outline: none;
+  appearance: none;
+
+  &:focus {
+    border-color: $doc-primary-soft;
+    box-shadow: 0 0 0 1px rgba(37, 43, 97, 0.15);
+  }
+}
+
+::ng-deep p-floatlabel select {
+  width: 100%;
+}
+::ng-deep p-floatlabel select:not(:placeholder-shown) + label,
+::ng-deep p-floatlabel select:focus + label {
+  top: -0.7rem !important;
+  font-size: 1.1rem !important;
+}

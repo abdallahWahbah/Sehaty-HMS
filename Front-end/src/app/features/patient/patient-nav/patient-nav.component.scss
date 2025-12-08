@@ -1,0 +1,246 @@
+:host {
+  display: block;
+  margin-bottom: 2.5rem;
+  position: relative;
+  z-index: 100;
+}
+
+/* TOP BAR */
+.top-bar {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.top-bar__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* LOGO */
+.logo {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  z-index: 102;
+  /* Above overlay */
+}
+
+.logo-img {
+  height: 45px;
+  width: auto;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover .logo-img {
+  transform: scale(1.02);
+}
+
+/* NAV CONTAINER (Search + Links) */
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+  gap: 2rem;
+}
+
+/* SEARCH */
+.search {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  background: #f8f9fa;
+  width: 100%;
+  max-width: 400px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.search:focus-within {
+  background: #ffffff;
+  border-color: #252b61;
+  box-shadow: 0 0 0 4px rgba(37, 43, 97, 0.1);
+}
+
+.search input {
+  color: #252b61;
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.search input::placeholder {
+  color: #8a8d9f;
+}
+
+/* ICON */
+.fa-magnifying-glass {
+  color: #252b61;
+  font-size: 1rem;
+  opacity: 0.7;
+  transition: 0.3s ease;
+}
+
+.search:focus-within .fa-magnifying-glass {
+  opacity: 1;
+  color: #252b61;
+}
+
+/* NAVIGATION */
+.top-nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-link {
+  color: #5a5d6b;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.25rem;
+  transition: all 0.2s ease;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #252b61;
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+.nav-link:hover {
+  color: #252b61;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.nav-link.active {
+  color: #252b61;
+}
+
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* HAMBURGER MENU */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 21px;
+  cursor: pointer;
+  z-index: 102;
+}
+
+.hamburger span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background: #252b61;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+/* Hamburger Animation */
+.hamburger.active span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+/* OVERLAY */
+
+.nav-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 992px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-container {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: #ffffff;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 5rem 1.5rem 2rem;
+    gap: 2rem;
+    z-index: 101;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-container.active {
+    right: 0;
+  }
+
+  .top-nav {
+    flex-direction: column;
+    width: 100%;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .nav-link {
+    font-size: 1.75rem;
+    width: 100%;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .nav-link::after {
+    display: none;
+  }
+
+  .search {
+    width: 100%;
+    max-width: none;
+    order: -1;
+    /* Search at top of mobile menu */
+  }
+}
+
+@media (max-width: 576px) {
+  .top-bar {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+  }
+
+  .logo-img {
+    height: 35px;
+  }
+}

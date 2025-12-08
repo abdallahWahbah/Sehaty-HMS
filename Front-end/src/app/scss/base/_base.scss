@@ -1,0 +1,38 @@
+*, 
+*::after, 
+*::before
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+:root{
+    --p-floatlabel-focus-color: $color-primary !important;
+    --color-primary: #252B61;
+    --color-gray-1: #313131;
+    --color-black-1: #1C1B1F;
+    --color-orange-1: #FF8682;
+    --color-green-1: #7FFFAA;
+    --color-purple-1:#e88eff;
+}
+html
+{
+    font-size: 62.5%; /* 10px(wanted) / 16px(default browser font size) = 62.5% */
+
+    @include respond(tab-land)
+    {
+        font-size: 56.25%; // 9px
+    }
+    @include respond(tab-port)
+    {
+        font-size: 50%; // 8px
+    }
+    @include respond(big-desktop)
+    {
+        font-size: 75%; // 12px
+    }
+}
+body
+{
+    font-family: 'Poppins', sans-serif;
+}

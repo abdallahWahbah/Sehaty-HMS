@@ -1,0 +1,317 @@
+$dep-primary: #252b61;
+$dep-primary-soft: #4b56a3;
+$dep-text-main: #1f2933;
+$dep-text-muted: #6b7280;
+$dep-bg-soft: #f5f6ff;
+$dep-shadow-card: 0 14px 40px rgba(25, 39, 79, 0.14);
+$dep-radius-lg: 1.4rem;
+
+.department-details {
+  min-height: 100vh;
+  background: $dep-bg-soft;
+  padding: 3.5rem 2rem 4rem;
+
+  &__wrapper {
+    max-width: 110rem;
+    margin: 0 auto;
+  }
+
+  /* ===== Header ===== */
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 2.4rem;
+  }
+
+  &__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  &__title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: $dep-primary;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: 1.4rem;
+    color: $dep-text-muted;
+    margin: 0;
+  }
+
+  &__back-btn {
+    border: none;
+    border-radius: 999px;
+    padding: 0.7rem 1.4rem;
+    background: #ffffff;
+    color: $dep-primary;
+    font-size: 1.3rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(25, 39, 79, 0.16);
+    transition: 0.16s ease all;
+    white-space: nowrap;
+
+    i {
+      font-size: 1.3rem;
+    }
+
+    &:hover {
+      background: #f3f4ff;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(25, 39, 79, 0.22);
+    }
+  }
+}
+
+/* =========================
+   Department Card
+========================= */
+
+.department-card {
+  background: #ffffff;
+  border-radius: $dep-radius-lg;
+  border: 1px solid rgba(37, 43, 97, 0.08);
+  box-shadow: $dep-shadow-card;
+  padding: 2.2rem 2.4rem 2.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+
+  /* Top: icon + status */
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.4rem;
+    align-items: center;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__icon {
+    width: 4.8rem;
+    height: 4.8rem;
+    border-radius: 1.4rem;
+    background: #e0f7f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $dep-primary;
+    font-size: 2rem;
+  }
+
+  &__status {
+    display: flex;
+    justify-content: flex-end;
+
+    @media (max-width: 768px) {
+      justify-content: flex-start;
+    }
+  }
+
+  /* Status pill (reusable) */
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1.4rem;
+    border-radius: 999px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: #e5e7eb;
+    color: #374151;
+
+    &__dot {
+      font-size: 0.7rem;
+    }
+
+    &--available {
+      background: #d1fae5;
+      color: #047857;
+    }
+  }
+
+  /* Info section */
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    padding-bottom: 1.4rem;
+    border-bottom: 1px dashed #e5e7eb;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  &__field-label {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: $dep-text-muted;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__field-icon {
+    font-size: 1.3rem;
+    color: #f97373;
+  }
+
+  &__field-value {
+    padding: 1rem 1.2rem;
+    border-radius: 0.9rem;
+    background: #f9fafb;
+    border-left: 4px solid $dep-primary;
+
+    &--rtl {
+      direction: rtl;
+      text-align: right;
+    }
+  }
+
+  &__name-en,
+  &__name-ar {
+    margin: 0;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: $dep-primary;
+  }
+
+  &__description {
+    margin: 0;
+    font-size: 1.4rem;
+    color: $dep-text-main;
+    line-height: 1.7;
+  }
+
+  /* Extras: total doctors */
+  &__extras {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+  }
+
+  &__extra-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    background: #f9fafb;
+    border-radius: 1.1rem;
+  }
+
+  &__extra-icon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 1rem;
+    background: #e0f2fe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $dep-primary;
+    font-size: 1.6rem;
+  }
+
+  &__extra-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  &__extra-label {
+    margin: 0;
+    font-size: 1.2rem;
+    color: $dep-text-muted;
+  }
+
+  &__extra-value {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: $dep-primary;
+  }
+
+  /* Actions */
+  &__actions {
+    margin-top: 0.8rem;
+    padding-top: 1.4rem;
+    border-top: 1px dashed #e5e7eb;
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  &__btn {
+    flex: 1;
+    min-width: 18rem;
+    border-radius: 999px;
+    padding: 0.8rem 1.6rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    transition: 0.18s ease all;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+
+    i {
+      font-size: 1.3rem;
+    }
+
+    &--primary {
+      background: linear-gradient(135deg, $dep-primary, $dep-primary-soft);
+      color: #ffffff;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 26px rgba(25, 39, 79, 0.5);
+      }
+    }
+
+    &--danger {
+      background: #ef4444;
+      color: #ffffff;
+
+      &:hover {
+        background: #b91c1c;
+        transform: translateY(-1px);
+        box-shadow: 0 12px 26px rgba(239, 68, 68, 0.45);
+      }
+    }
+  }
+}
+
+/* ===== Responsive tweaks ===== */
+@media (max-width: 768px) {
+  .department-details {
+    padding-inline: 1.4rem;
+  }
+}

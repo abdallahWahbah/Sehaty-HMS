@@ -1,0 +1,257 @@
+// ====== Base tokens ======
+$primary: #252b61;
+$primary-soft: #4b56a3;
+$text-main: #1f2933;
+$text-muted: #6b7280;
+$bg-soft: #f5f6ff;
+$radius-lg: 1.4rem;
+$shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+
+// ====== Layout ======
+.patient-feedback {
+  min-height: calc(100vh - 8rem);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 4rem 1.6rem;
+  background: #f3f4f6;
+}
+
+.patient-feedback__card {
+  width: 100%;
+  max-width: 60rem;
+  background: #ffffff;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  border: 1px solid rgba(37, 43, 97, 0.08);
+  padding: 2.4rem 2.8rem;
+}
+
+// ====== Header ======
+.patient-feedback__header {
+  border-bottom: 1px dashed #e5e7eb;
+  padding-bottom: 1.4rem;
+  margin-bottom: 2rem;
+}
+
+.patient-feedback__title {
+  margin: 0 0 0.4rem;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: $primary;
+}
+
+.patient-feedback__subtitle {
+  margin: 0;
+  font-size: 1.4rem;
+  color: $text-muted;
+}
+
+// ====== Form ======
+.patient-feedback__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.patient-feedback__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+
+  &--inline {
+    gap: 0.6rem;
+  }
+}
+
+.patient-feedback__group-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.patient-feedback__label {
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $primary-soft;
+  font-weight: 700;
+}
+
+.patient-feedback__hint {
+  font-size: 1.3rem;
+  color: $text-muted;
+}
+
+.patient-feedback__textarea {
+  min-height: 12rem;
+  border-radius: 1rem;
+  border: 1px solid #d1d5db;
+  padding: 1rem 1.2rem;
+  font-size: 1.4rem;
+  color: $text-main;
+  resize: vertical;
+  transition: 0.2s ease border-color, 0.2s ease box-shadow, 0.2s ease background;
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-soft;
+    box-shadow: 0 0 0 3px rgba(75, 86, 163, 0.18);
+    background: #f9fafb;
+  }
+}
+
+.patient-feedback__error {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #dc2626;
+}
+
+// ====== Toggle (Anonymous) ======
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+}
+
+.toggle__input {
+  display: none;
+}
+
+.toggle__slider {
+  width: 4.4rem;
+  height: 2.4rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  position: relative;
+  transition: 0.2s ease background;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0.2rem;
+    left: 0.3rem;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.25);
+    transition: 0.2s ease transform;
+  }
+}
+
+.toggle__input:checked + .toggle__slider {
+  background: linear-gradient(135deg, $primary, $primary-soft);
+
+  &::before {
+    transform: translateX(1.8rem);
+  }
+}
+
+.toggle__label-text {
+  font-size: 1.4rem;
+  color: $text-main;
+}
+
+// ====== Actions ======
+.patient-feedback__actions {
+  margin-top: 0.8rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.patient-feedback__button {
+  padding: 0.9rem 2.4rem;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, $primary, $primary-soft);
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(25, 39, 79, 0.35);
+  transition: 0.2s ease all;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 32px rgba(25, 39, 79, 0.45);
+  }
+
+  &:disabled {
+    background: #cbd2ff;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+}
+
+// ====== Star Rating ======
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  font-size: 3rem;
+}
+
+.star-rating__input {
+  display: none;
+}
+
+.star-rating__label {
+  color: #d4d4d4;
+  cursor: pointer;
+  transition: 0.2s ease color, 0.2s ease transform;
+  line-height: 1;
+
+  &:hover,
+  &:hover ~ .star-rating__label {
+    color: #fbbf24;
+    transform: translateY(-1px);
+  }
+}
+
+/* when selected */
+.star-rating__input:checked + .star-rating__label,
+.star-rating__input:checked ~ .star-rating__label {
+  color: #f59e0b;
+}
+
+/* focus ring */
+.star-rating__input:focus-visible + .star-rating__label {
+  outline: 2px solid $primary-soft;
+  outline-offset: 2px;
+}
+
+// ====== Responsive ======
+@media (max-width: 600px) {
+  .patient-feedback__card {
+    padding: 2rem 1.6rem;
+  }
+
+  .patient-feedback__title {
+    font-size: 2rem;
+  }
+
+  .star-rating {
+    font-size: 2.6rem;
+    justify-content: center;
+  }
+
+  .patient-feedback__actions {
+    justify-content: stretch;
+
+    .patient-feedback__button {
+      width: 100%;
+      text-align: center;
+      justify-content: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}

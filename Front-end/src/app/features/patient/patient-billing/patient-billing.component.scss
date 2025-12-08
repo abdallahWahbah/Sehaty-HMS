@@ -1,0 +1,150 @@
+$patients-primary: #252b61;
+$patients-primary-soft: #4b56a3;
+$patients-text-main: #1f2933;
+$patients-text-muted: #6b7280;
+$patients-bg-soft: #f5f6ff;
+$patients-shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+$patients-radius-lg: 1.4rem;
+
+.patients-dashboard {
+  max-width: 110rem;
+  margin: 0 auto 4rem;
+  padding: 3.5rem 2rem 4rem;
+  color: $patients-primary;
+
+  &__wrapper {
+    width: 100%;
+  }
+
+  /* ===== Header ===== */
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.4rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  &__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  &__title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 0;
+    color: $patients-primary;
+  }
+
+  &__subtitle {
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin: 0;
+    color: $patients-text-muted;
+  }
+
+  &__content {
+    margin-top: 2.4rem;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  /* ===== Empty State ===== */
+  &__empty {
+    margin-top: 3rem;
+    padding: 2.4rem 1.8rem;
+    border-radius: $patients-radius-lg;
+    background: #f9fafb;
+    border: 1px dashed #d1d5db;
+    text-align: center;
+  }
+
+  &__empty-icon {
+    font-size: 3rem;
+    color: #a5b4fc;
+    margin-bottom: 0.8rem;
+  }
+
+  &__empty-title {
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: $patients-primary;
+    margin: 0 0 0.4rem;
+  }
+
+  &__empty-subtitle {
+    font-size: 1.4rem;
+    color: $patients-text-muted;
+    margin: 0;
+  }
+
+  &__dialog {
+    margin-top: 2rem;
+  }
+}
+
+// billing list
+.payment-list {
+  margin-top: 25px;
+}
+
+
+.payment-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+}
+
+.payment-card__row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.payment-card__label {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 3px;
+}
+
+.payment-card__value {
+  font-size: 15px;
+  font-weight: 600;
+  color: $patients-primary;
+}
+
+.payment-card__amount {
+  font-size: 16px;
+  font-weight: 700;
+  color: $patients-primary;
+}
+
+/* Status Badge */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.status-paid {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+}

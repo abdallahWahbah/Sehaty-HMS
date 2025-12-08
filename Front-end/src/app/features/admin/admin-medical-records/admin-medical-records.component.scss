@@ -1,0 +1,250 @@
+/* =====================
+   MEDICAL RECORDS
+===================== */
+
+.medical-records {
+  --mr-primary: var(--color-primary);
+  --mr-text-main: #1f2933;
+  --mr-text-muted: #6b7280;
+  --mr-bg-soft: #f5f6ff;
+  --mr-shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+  --mr-radius-lg: 1.4rem;
+
+  max-width: 110rem;
+  margin: 0 auto 4rem;
+  padding: 3.5rem 2rem 4rem;
+  color: var(--mr-primary);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+
+  /* ===== Header ===== */
+  &__header {
+    margin-bottom: 2.4rem;
+  }
+
+  &__title {
+    font-weight: 700;
+    font-size: 2.4rem;
+    margin: 0 0 0.4rem;
+    color: var(--mr-primary);
+  }
+
+  &__subtitle {
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--mr-text-muted);
+    margin: 0;
+  }
+
+  /* ===== List wrapper ===== */
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  /* ===== Card ===== */
+  &__card {
+    background: #ffffff;
+    border-radius: var(--mr-radius-lg);
+    border: 1px solid rgba(37, 43, 97, 0.08);
+    box-shadow: var(--mr-shadow-card);
+    padding: 1.6rem 1.8rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  &__card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px dashed #e5e7eb;
+  }
+
+  &__patient {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  &__patient-name {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--mr-primary);
+
+    span {
+      font-weight: 700;
+    }
+  }
+
+  &__diagnosis {
+    margin: 0;
+    font-size: 1.35rem;
+    color: var(--mr-text-main);
+  }
+
+  &__diagnosis-text {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1rem 0.8rem;
+    border-radius: 999px;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-left: 0.4rem;
+  }
+
+  &__label {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--mr-text-muted);
+    margin-right: 0.4rem;
+  }
+
+  /* ===== Body ===== */
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px dashed #e5e7eb;
+  }
+
+  &__symptoms,
+  &__notes {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+  }
+
+  &__text {
+    margin: 0;
+    font-size: 1.35rem;
+    color: var(--mr-text-main);
+  }
+
+  /* ===== Footer ===== */
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.4rem;
+    margin-top: 0.4rem;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem 1.6rem;
+  }
+
+  &__meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 1.3rem;
+    color: var(--mr-text-muted);
+  }
+
+  &__meta-icon {
+    font-size: 1.3rem;
+    color: var(--mr-primary);
+  }
+
+  &__meta-text {
+    font-size: 1.3rem;
+    color: var(--mr-text-main);
+  }
+
+  /* ===== Actions ===== */
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  &__action-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    border: 1px solid var(--mr-primary);
+    background: #ffffff;
+    color: var(--mr-primary);
+    font-size: 1.3rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(25, 39, 79, 0.18);
+    transition: 0.18s ease all;
+
+    i {
+      font-size: 1.3rem;
+    }
+
+    span {
+      line-height: 1;
+    }
+
+    &:hover {
+      background: var(--mr-primary);
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(25, 39, 79, 0.35);
+    }
+  }
+
+  /* ===== Empty state ===== */
+  &__empty {
+    margin-top: 2.4rem;
+    padding: 2.4rem 1.6rem;
+    border-radius: var(--mr-radius-lg);
+    border: 1px dashed #d1d5db;
+    background: #f9fafb;
+    text-align: center;
+
+    i {
+      font-size: 2.4rem;
+      color: #9ca3af;
+      margin-bottom: 0.6rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--mr-primary);
+    }
+
+    span {
+      display: block;
+      margin-top: 0.3rem;
+      font-size: 1.3rem;
+      color: var(--mr-text-muted);
+    }
+  }
+
+  /* ===== Dialog wrapper ===== */
+  &__dialog-wrapper {
+    margin-top: 1.6rem;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    padding-inline: 1.4rem;
+
+    &__footer {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    &__actions {
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+}

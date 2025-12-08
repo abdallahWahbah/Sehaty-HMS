@@ -1,0 +1,393 @@
+// ============== VARIABLES (optional) ==============
+$primary: #252b61;
+$primary-soft: #4b56a3;
+$danger: #e11d48;
+$bg-light: #e8f2ff;
+
+/* ===========================
+   ROOT
+=========================== */
+.not-allowed {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(
+    circle at top,
+    $bg-light 0,
+    #ffffff 55%,
+    #f9fbff 100%
+  );
+  padding: 2rem;
+}
+
+/* ===========================
+   CONTAINER
+=========================== */
+.not-allowed__container {
+  max-width: 90rem;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 2rem;
+  box-shadow: 0 18px 50px rgba(5, 42, 92, 0.15);
+  padding: 3rem 4rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+  gap: 3.5rem;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: auto auto -6rem -6rem;
+    width: 18rem;
+    height: 18rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba($primary, 0.12), transparent 60%);
+    pointer-events: none;
+  }
+}
+
+/* ===========================
+   ILLUSTRATION
+=========================== */
+.not-allowed__illustration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Main card */
+.shield-card {
+  position: relative;
+  width: 100%;
+  max-width: 26rem;
+  aspect-ratio: 4 / 5;
+  border-radius: 1.8rem;
+  overflow: hidden;
+  background: linear-gradient(150deg, #f5f7ff 0%, #ffffff 40%, #ffeef1 100%);
+  box-shadow: 0 18px 40px rgba(7, 42, 97, 0.18);
+}
+
+/* Background gradient inside */
+.shield-card__bg {
+  position: absolute;
+  inset: -30%;
+  background: radial-gradient(
+      circle at top,
+      rgba($primary, 0.35),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba($danger, 0.35),
+      transparent 55%
+    );
+  opacity: 0.95;
+}
+
+/* Shield + Lock */
+.shield-card__shield {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  padding: 2.4rem 2rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.shield-card__circle {
+  width: 8.5rem;
+  height: 8.5rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0, #e7ebff 70%);
+  box-shadow: 0 10px 25px rgba(9, 38, 84, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $primary;
+  font-size: 3.8rem;
+  border: 0.2rem solid #d5dbff;
+  animation: shield-float 4.4s ease-in-out infinite;
+}
+
+.shield-card__lock {
+  margin-top: 1.4rem;
+  width: 4.2rem;
+  height: 4.2rem;
+  border-radius: 1.4rem;
+  background: #ffffff;
+  border: 0.16rem solid rgba($primary, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $danger;
+  font-size: 2rem;
+  box-shadow: 0 8px 20px rgba(140, 31, 46, 0.2);
+  animation: lock-pulse 1.9s ease-in-out infinite;
+}
+
+/* Floating icons */
+.shield-card__icon {
+  position: absolute;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 1.1rem;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  box-shadow: 0 8px 20px rgba(15, 60, 130, 0.22);
+  z-index: 2;
+}
+
+/* Each icon position + animation */
+.shield-card__icon--one {
+  top: 1.6rem;
+  left: 1.8rem;
+  color: $danger;
+  animation: icon-orbit-one 7s ease-in-out infinite,
+    icon-pulse 2s ease-in-out infinite;
+}
+
+.shield-card__icon--two {
+  top: 2.4rem;
+  right: 1.6rem;
+  color: $primary;
+  animation: icon-orbit-two 8s ease-in-out infinite,
+    icon-pulse 2.2s ease-in-out infinite;
+}
+
+.shield-card__icon--three {
+  bottom: 2.2rem;
+  left: 2.2rem;
+  color: #0f766e;
+  animation: icon-orbit-three 9s ease-in-out infinite,
+    icon-pulse 2.4s ease-in-out infinite;
+}
+
+/* ===========================
+   TEXT
+=========================== */
+.not-allowed__text {
+  text-align: left;
+  position: relative;
+  z-index: 1;
+}
+
+.not-allowed__code {
+  font-size: 5.6rem;
+  font-weight: 800;
+  margin: 0 0 0.6rem;
+  color: $primary;
+  letter-spacing: 0.18em;
+}
+
+.not-allowed__title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 1.2rem;
+}
+
+.not-allowed__subtitle {
+  font-size: 1.5rem;
+  line-height: 1.8;
+  color: #4b5563;
+  margin: 0 0 2.5rem;
+}
+
+/* ===========================
+   BUTTONS
+=========================== */
+.not-allowed__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+}
+
+.btn {
+  border-radius: 999px;
+  padding: 0.9rem 2.4rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  white-space: nowrap;
+
+  &--primary {
+    background: linear-gradient(135deg, $primary, $primary-soft);
+    color: #ffffff;
+    box-shadow: 0 10px 25px rgba(37, 43, 97, 0.4);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px rgba(37, 43, 97, 0.5);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 20px rgba(37, 43, 97, 0.4);
+    }
+  }
+
+  &--outline {
+    background: #ffffff;
+    border: 0.14rem solid $primary;
+    color: $primary;
+
+    &:hover {
+      background: #e0e5ff;
+      box-shadow: 0 8px 18px rgba(37, 43, 97, 0.25);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+  }
+}
+
+/* ===========================
+   ANIMATIONS
+=========================== */
+@keyframes shield-float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes lock-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 8px 20px rgba(140, 31, 46, 0.2);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 12px 30px rgba(140, 31, 46, 0.32);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 8px 20px rgba(140, 31, 46, 0.2);
+  }
+}
+
+@keyframes icon-orbit-one {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-6px, 4px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes icon-orbit-two {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(6px, 6px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes icon-orbit-three {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-4px, -6px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes icon-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 8px 20px rgba(15, 60, 130, 0.22);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 12px 26px rgba(15, 60, 130, 0.28);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 8px 20px rgba(15, 60, 130, 0.22);
+  }
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+@media (max-width: 900px) {
+  .not-allowed__container {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 2.4rem 2rem;
+    text-align: center;
+  }
+
+  .not-allowed__text {
+    text-align: center;
+  }
+
+  .not-allowed__code {
+    font-size: 4.8rem;
+  }
+
+  .not-allowed__subtitle {
+    font-size: 1.4rem;
+  }
+
+  .not-allowed__actions {
+    justify-content: center;
+
+    .btn {
+      min-width: 14rem;
+    }
+  }
+
+  .not-allowed__illustration {
+    order: -1;
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .not-allowed {
+    padding: 1.6rem;
+  }
+
+  .not-allowed__container {
+    padding: 2rem 1.6rem;
+    border-radius: 1.6rem;
+  }
+
+  .shield-card {
+    max-width: 22rem;
+  }
+}

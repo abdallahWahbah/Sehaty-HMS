@@ -1,0 +1,29 @@
+﻿using System.Text.Json.Serialization;
+
+namespace Sehaty.Infrastructure.Dtos
+{
+    public class MedicalRecordAddByDoctorDto
+    {
+        public int PatientId { get; set; }
+        [JsonIgnore]
+        public DateTime RecordDate { get; set; } = DateTime.UtcNow;
+        public string Symptoms { get; set; }
+        [Required(ErrorMessage = "Diagnosis Plan IsRequired")]
+
+        public string Diagnosis { get; set; }
+        [Required(ErrorMessage = "Treatment Plan IsRequired")]
+        public string TreatmentPlan { get; set; }
+        public int? BpSystolic { get; set; }
+        public int? BpDiastolic { get; set; }
+        public decimal? Temperature { get; set; }
+        public int? HeartRate { get; set; }
+        public decimal? Weight { get; set; }
+        public string VitalBp { get; set; }
+        public string Notes { get; set; }
+        [Required]
+        [EnumDataType(typeof(RecordType))]
+        public RecordType RecordType { get; set; } = RecordType.Diagnosis;
+        [JsonIgnore]
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+    }
+}

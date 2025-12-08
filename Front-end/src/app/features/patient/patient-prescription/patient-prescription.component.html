@@ -1,0 +1,253 @@
+@if(loading){
+  <app-loading-spinner></app-loading-spinner>
+}@else {
+  <section id="dashboard" class="dashboard">
+  <div class="dashboard__title">
+    <h2 class="dashboard__title-main">Prescriptions</h2>
+    <p class="dashboard__title-sub">Your medical prescriptions</p>
+  </div>
+
+  <section class="prescriptions-list">
+    <!-- ========== لو فيه Prescriptions ========== -->
+    @if (prescriptions && prescriptions.length > 0) { @for (prescription of
+    prescriptions; track prescription.id) {
+
+    <article class="prescription-card">
+      <!-- Header -->
+      <header class="prescription-card__header">
+        <div>
+          <p class="prescription-card__label">Prescription</p>
+          <p class="prescription-card__id">#{{ prescription.id }}</p>
+        </div>
+
+        <div class="prescription-card__meta">
+          <div>
+            <p class="prescription-card__label">Status</p>
+            <span class="status-pill">
+              {{ prescription.status }}
+            </span>
+          </div>
+
+          <div>
+            <p class="prescription-card__label">Date Issued</p>
+            <p class="prescription-card__value">
+              {{ prescription.dateIssued | date : "medium" }}
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Body -->
+      <section class="prescription-card__body">
+        <div class="prescription-card__row">
+          <span class="prescription-card__label">Doctor Notes</span>
+          <span class="prescription-card__value">
+            {{ prescription.medicalRecordNotes || "-" }}
+          </span>
+        </div>
+
+        <div class="prescription-card__row">
+          <span class="prescription-card__label">Doctor</span>
+          <span class="prescription-card__value">
+            Dr. {{ prescription.doctorName }}
+          </span>
+        </div>
+
+        <!-- Medications (Table) -->
+        <div class="prescription-card__row prescription-card__meds-block">
+          <div class="prescription-card__meds-header-row">
+            <span class="prescription-card__label">Medications</span>
+
+            <!-- 🆕 زرار Find Alternative جوه سكشن الأدوية -->
+            <button
+              class="prescription-card__btn-ai rainbow-border small-btn"
+              (click)="openAnalysisModal(prescription.id, 'alternative')"
+            >
+              <i class="fa-solid fa-arrows-rotate"></i>
+              Find Alternative
+            </button>
+          </div>
+
+          @if (prescription?.medications && prescription.medications.length > 0)
+          {
+          <div class="prescription-card__meds-table">
+            <div class="prescription-card__meds-header">
+              <span>Name</span>
+              <span>Dosage</span>
+              <span>Frequency</span>
+              <span>Duration</span>
+            </div>
+
+            @for (med of prescription.medications; track med.medicationName) {
+            <div class="prescription-card__meds-row">
+              <span>{{ med.medicationName }}</span>
+              <span>{{ med.dosage }}</span>
+              <span>{{ med.frequency }}</span>
+              <span>{{ med.duration }}</span>
+            </div>
+            }
+          </div>
+          } @else {
+          <p class="prescription-card__value">No medications</p>
+          }
+        </div>
+      </section>
+
+      <!-- Actions (AI + Download) -->
+      @if (prescription?.id) {
+      <div class="prescription-card__footer">
+        <!-- 🔍 AI Analysis -->
+        <button
+          class="prescription-card__btn-ai rainbow-border"
+          (click)="openAnalysisModal(prescription.id, 'analysis')"
+        >
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          Analysis with AI
+        </button>
+
+        <!-- ⬇ Download -->
+        <button
+          class="prescription-card__btn-download"
+          (click)="downloadPrescription(prescription.id)"
+        >
+          <i class="fa-solid fa-file-arrow-down"></i>
+          Download PDF
+        </button>
+      </div>
+      }
+    </article>
+
+    } }
+    <!-- ========== مفيش Prescriptions ========== -->
+    @else {
+    <div class="empty-state">
+      <i class="fa-solid fa-prescription-bottle-medical"></i>
+      <p>No prescriptions found</p>
+      <p>You don’t have any prescriptions yet.</p>
+    </div>
+    }
+  </section>
+
+  <!-- ========== AI Analysis / Alternatives Modal ========== -->
+  @if (isAnalysisModalOpen) {
+  <div class="ai-modal-backdrop" (click)="closeAnalysisModal()">
+    <div class="ai-modal" (click)="$event.stopPropagation()">
+      <!-- Header -->
+      <header class="ai-modal__header">
+        <div class="ai-modal__title-block">
+          <div class="ai-modal__icon">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div>
+            <h3 class="ai-modal__title">
+              @if (analysisMode === 'analysis') { Prescription Analysis } @else
+              { Prescription Alternatives }
+            </h3>
+            <p class="ai-modal__subtitle">
+              @if (analysisMode === 'analysis') { Personalized explanation of
+              your prescription, powered by AI. } @else { Smart AI-powered
+              alternatives and safety insights for your prescription. }
+            </p>
+          </div>
+        </div>
+
+        <button class="ai-modal__close" (click)="closeAnalysisModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+
+      <!-- Body -->
+      <section class="ai-modal__body">
+        @if (analysisLoading) {
+        <div class="ai-modal__loading">
+          <span class="ai-modal__spinner"></span>
+          <p>Generating your AI analysis...</p>
+        </div>
+        } @else if (analysisError) {
+        <div class="ai-modal__error">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <p>{{ analysisError }}</p>
+        </div>
+        } @else if (analysisMode === 'analysis' && analysisData) {
+
+        <!-- 🔍 Mode: Prescription Analysis -->
+        <div class="ai-modal__meta">
+          <p>
+            <span>Patient:</span>
+            <strong>{{ analysisData.patientName }}</strong>
+          </p>
+          <p>
+            <span>Doctor:</span>
+            <strong>Dr. {{ analysisData.doctorName }}</strong>
+          </p>
+          <p>
+            <span>Date:</span>
+            <strong>{{ analysisData.dateIssued | date : "medium" }}</strong>
+          </p>
+        </div>
+
+        <div class="ai-modal__content">
+          <pre class="ai-modal__text"
+            >{{ analysisData.analysisResult }}
+              </pre
+          >
+        </div>
+
+        @if (analysisData?.medicationsAnalysis &&
+        analysisData.medicationsAnalysis.length > 0) {
+        <div class="ai-modal__meds">
+          <h4>Medications summary</h4>
+          <ul>
+            @for (med of analysisData.medicationsAnalysis; track
+            med.medicationName) {
+            <li>
+              <strong>{{ med.medicationName }}</strong>
+              <span>
+                {{ med.dosage }} • {{ med.frequency }} • {{ med.duration }}
+              </span>
+            </li>
+            }
+          </ul>
+        </div>
+        } } @else if (analysisMode === 'alternative' && alternativeData) {
+
+        <!-- 🆕 Mode: Alternatives -->
+        <div class="ai-modal__meta">
+          <p>
+            <span>Patient:</span>
+            <strong>{{ alternativeData.patientName }}</strong>
+          </p>
+          <p>
+            <span>Doctor:</span>
+            <strong>Dr. {{ alternativeData.doctorName }}</strong>
+          </p>
+        </div>
+
+        <div class="ai-modal__content">
+          <pre class="ai-modal__text"
+            >{{ alternativeData.alternativesAndSideEffects }}
+              </pre
+          >
+        </div>
+
+        }
+      </section>
+
+      <!-- Footer -->
+      <footer class="ai-modal__footer">
+        <div class="ai-modal__badge">
+          <span class="ai-modal__badge-icon">
+            <i class="fa-solid fa-bolt"></i>
+          </span>
+          <span>Powered by Gen AI</span>
+        </div>
+
+        <button class="ai-modal__footer-btn" (click)="closeAnalysisModal()">
+          Close
+        </button>
+      </footer>
+    </div>
+  </div>
+  }
+</section>
+}

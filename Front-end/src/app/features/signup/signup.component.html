@@ -1,0 +1,397 @@
+@if(loading){
+<app-loading-spinner></app-loading-spinner>
+}@else {
+<div class="auth">
+  <div class="auth__logo">
+    <img src="/images/logo.png" alt="main logo" class="auth__logo--image" />
+  </div>
+
+  <div class="auth__main--container">
+    <div class="auth__content">
+      @if(serverError){
+      <div class="server-error">
+        <span>{{ serverError }}</span>
+      </div>
+      }
+      <h3 class="auth__header">Sign up</h3>
+      <p class="auth__sub--header">
+        @if(step === 1){ Let's get you all st up so you can access your personal
+        account. }@else { please provide us with some data about you }
+      </p>
+
+      @if(step === 1){
+      <form [formGroup]="accountForm" (ngSubmit)="nextStep()">
+        <div class="d-flex justify-content-between gap-2">
+          <div class="col-6">
+            <p-floatlabel variant="on" class="auth__input--container">
+              <input
+                pInputText
+                id="firstName"
+                autocomplete="off"
+                formControlName="firstName"
+              />
+              <label for="firstName">First Name</label>
+            </p-floatlabel>
+            @if(accountForm.get('firstName')?.touched &&
+            accountForm.get('firstName')?.invalid){
+            <div class="error-text">
+              @if(accountForm.get('firstName')?.errors?.['required']){
+              <span>firstName is required</span>
+              }
+            </div>
+            }
+          </div>
+
+          <div class="col-6">
+            <p-floatlabel variant="on" class="auth__input--container">
+              <input pInputText formControlName="lastName" autocomplete="off" />
+              <label>Last Name</label>
+            </p-floatlabel>
+            @if(accountForm.get('lastName')?.touched &&
+            accountForm.get('lastName')?.invalid){
+            <div class="error-text">
+              @if(accountForm.get('lastName')?.errors?.['required']){
+              <span>lastName is required</span>
+              }
+            </div>
+            }
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between gap-2">
+          <div class="col-6">
+            <p-floatlabel variant="on" class="auth__input--container">
+              <input
+                pInputText
+                formControlName="email"
+                autocomplete="off"
+                class="form-control"
+              />
+              <label>Email</label>
+            </p-floatlabel>
+            @if(accountForm.get('email')?.touched &&
+            accountForm.get('email')?.invalid){
+            <div class="error-text">
+              @if(accountForm.get('email')?.errors?.['required']){
+              <span>Email is required</span>
+              }
+            </div>
+            } @if(accountForm.get('email')?.touched &&
+            accountForm.get('email')?.invalid){
+            <div class="error-text">
+              @if(accountForm.get('email')?.errors?.['email']){
+              <span>Enter a valid email</span>
+              }
+            </div>
+            }
+          </div>
+
+          <div class="col-6">
+            <p-floatlabel variant="on" class="auth__input--container">
+              <input
+                pInputText
+                formControlName="phoneNumber"
+                autocomplete="off"
+                class="form-control"
+              />
+              <label>Phone Number</label>
+            </p-floatlabel>
+            @if(accountForm.get('phoneNumber')?.touched && accountForm.get('phoneNumber')?.invalid){
+              <div class="error-text">
+                @if(accountForm.get('phoneNumber')?.errors?.['required']){
+                <span>Phone Number is required</span>
+                }
+                @if (accountForm.get('phoneNumber')?.errors?.['pattern']) {
+                  <span>
+                    Phone must be 010/011/012 with or without +2  
+                    (Example: +201092717902 or 01092717902)
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <p-floatlabel variant="on" class="auth__input--container">
+            <input pInputText formControlName="userName" autocomplete="off" />
+            <label>Username</label>
+          </p-floatlabel>
+          @if(accountForm.get('userName')?.touched &&
+          accountForm.get('userName')?.invalid){
+          <div class="error-text">
+            @if(accountForm.get('userName')?.errors?.['required']){
+            <span>userName is required</span>
+            }
+          </div>
+          }
+
+          <p-floatlabel variant="on" class="auth__input--container">
+            <p-password
+              formControlName="password"
+              [toggleMask]="true"
+            ></p-password>
+            <label>Password</label>
+          </p-floatlabel>
+          @if(accountForm.get('password')?.touched &&
+          accountForm.get('password')?.invalid){
+          <div class="error-text">
+            @if(accountForm.get('password')?.errors?.['required']){
+            <span>Password is required</span>
+            } @if(accountForm.get('password')?.errors?.['minlength']){
+            <span>Minimum 6 characters</span>
+            } @if(accountForm.get('password')?.errors?.['pattern']){
+            <span>
+              Must contain:
+              <br />• Uppercase letter <br />• Lowercase letter <br />• Number
+              <br />• Special character <br />• No spaces
+            </span>
+            }
+          </div>
+          }
+        </div>
+
+        <div class="flex gap-2">
+          <p-floatlabel variant="on" class="auth__input--container flex-1">
+            <p-password
+              formControlName="confirmPassword"
+              [toggleMask]="true"
+            ></p-password>
+            <label>Confirm Password</label>
+          </p-floatlabel>
+          @if(accountForm.get('confirmPassword')?.touched &&
+          accountForm.get('confirmPassword')?.invalid){
+          <div class="error-text">
+            @if(accountForm.get('confirmPassword')?.errors?.['required']){
+            <span>Confirm Password is required</span>
+            }
+          </div>
+          }
+        </div>
+
+        <div class="flex items-center mt-2">
+          <p-checkbox formControlName="agreeTerms" [binary]="true"></p-checkbox>
+          <label class="ml-2 checkbox__label"
+            >I agree to the terms and conditions</label
+          >
+          @if(accountForm.get('agreeTerms')?.touched &&
+          accountForm.get('agreeTerms')?.invalid){
+          <div class="error-text error-text-mt">
+            @if(accountForm.get('agreeTerms')?.errors?.['required']){
+            <span>please accept terms and conditions</span>
+            }
+          </div>
+          }
+        </div>
+
+        <div class="card flex justify-center auth__button--container mt-3 auth__next--button">
+          <p-button type="submit" label="Next"></p-button>
+        </div>
+
+        <div class="auth__no--account-container">
+          <span>You have an account?</span>
+          <span> <a routerLink="/login"> Login</a></span>
+        </div>
+      </form>
+      } @if(step === 2) {
+      <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+        <div class="d-flex justify-content-between gap-2">
+          <div class="col-6">
+            <p-floatlabel variant="on" class="auth__input--container">
+              <input
+                pInputText
+                type="date"
+                id="dateOfBirth"
+                autocomplete="off"
+                formControlName="dateOfBirth"
+              />
+              <label for="dateOfBirth">Date of birth</label>
+            </p-floatlabel>
+            @if(patientForm.get('dateOfBirth')?.touched &&
+            patientForm.get('dateOfBirth')?.invalid){
+            <div class="error-text">
+              @if(patientForm.get('dateOfBirth')?.errors?.['required']){
+              <span>Date of birth is required</span>
+              }
+            </div>
+            }
+          </div>
+
+          <div class="col-6">
+            <p-dropdown 
+              formControlName="gender" 
+              [options]="genderOptions"
+              />
+            @if(patientForm.get('gender')?.touched &&
+            patientForm.get('gender')?.invalid){
+            <div class="error-text">
+              @if(patientForm.get('gender')?.errors?.['required']){
+              <span>Gender is required</span>
+              }
+            </div>
+            }
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between gap-2">
+          <div class="col-6">
+            <p-floatlabel variant="on" class="auth__input--container">
+              <input
+                pInputText
+                formControlName="nationalId"
+                autocomplete="off"
+                class="form-control"
+              />
+              <label>National Id</label>
+            </p-floatlabel>
+            @if(patientForm.get('nationalId')?.touched &&
+            patientForm.get('nationalId')?.invalid){
+            <div class="error-text">
+              @if(patientForm.get('nationalId')?.errors?.['required']){
+              <span>National Id is required</span>
+              }
+            </div>
+            }
+          </div>
+
+          <div class="col-6">
+            <p-floatlabel variant="on" class="auth__input--container">
+              <input
+                pInputText
+                formControlName="bloodType"
+                autocomplete="off"
+                class="form-control"
+              />
+              <label>Blood Type</label>
+            </p-floatlabel>
+            @if(patientForm.get('bloodType')?.touched &&
+            patientForm.get('bloodType')?.invalid){
+            <div class="error-text">
+              @if(patientForm.get('bloodType')?.errors?.['required']){
+              <span>Blood Type is required</span>
+              }
+            </div>
+            }
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between gap-2">
+          <div class="col-6">
+            <p-floatlabel variant="on" class="auth__input--container">
+              <input
+                pInputText
+                id="allergies"
+                autocomplete="off"
+                formControlName="allergies"
+              />
+              <label for="allergies">Allergies</label>
+            </p-floatlabel>
+            @if(patientForm.get('allergies')?.touched &&
+            patientForm.get('allergies')?.invalid){
+            <div class="error-text">
+              @if(patientForm.get('allergies')?.errors?.['required']){
+              <span>Allergies is required</span>
+              }
+            </div>
+            }
+          </div>
+
+          <div class="col-6">
+            <p-floatlabel variant="on" class="auth__input--container">
+              <input
+                pInputText
+                formControlName="chrinicConditions"
+                autocomplete="off"
+              />
+              <label>ChrinicConditions</label>
+            </p-floatlabel>
+            @if(patientForm.get('chrinicConditions')?.touched &&
+            patientForm.get('chrinicConditions')?.invalid){
+            <div class="error-text">
+              @if(patientForm.get('chrinicConditions')?.errors?.['required']){
+              <span>Chrinic Conditions is required</span>
+              }
+            </div>
+            }
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between gap-2">
+          <div class="col-6">
+            <p-floatlabel variant="on" class="auth__input--container">
+              <input
+                pInputText
+                id="address"
+                autocomplete="off"
+                formControlName="address"
+              />
+              <label for="address">Address</label>
+            </p-floatlabel>
+            @if(patientForm.get('address')?.touched &&
+            patientForm.get('address')?.invalid){
+            <div class="error-text">
+              @if(patientForm.get('address')?.errors?.['required']){
+              <span>Address is required</span>
+              }
+            </div>
+            }
+          </div>
+          <div class="col-6">
+            <p-floatlabel variant="on" class="auth__input--container">
+              <input
+                pInputText
+                id="emergencyContactName"
+                autocomplete="off"
+                formControlName="emergencyContactName"
+              />
+              <label for="emergencyContactName">Emergency contact name</label>
+            </p-floatlabel>
+            @if(patientForm.get('emergencyContactName')?.touched &&
+            patientForm.get('emergencyContactName')?.invalid){
+            <div class="error-text">
+              @if(patientForm.get('emergencyContactName')?.errors?.['required']){
+              <span>Emergency contact name is required</span>
+              }
+            </div>
+            }
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between gap-2">
+          <div class="col-6">
+            <p-floatlabel variant="on" class="auth__input--container">
+              <input
+                pInputText
+                formControlName="emergencyContactPhone"
+                autocomplete="off"
+              />
+              <label>Emergency contact phone</label>
+            </p-floatlabel>
+            @if(patientForm.get('emergencyContactPhone')?.touched && patientForm.get('emergencyContactPhone')?.invalid){
+              <div class="error-text">
+                @if(patientForm.get('emergencyContactPhone')?.errors?.['required']){
+                <span>Emergency contact phone is required</span>
+                }
+                @if (patientForm.get('emergencyContactPhone')?.errors?.['pattern']) {
+                  <span>
+                    Phone must be 010/011/012 with or without +2  
+                    (Example: +201092717902 or 01092717902)
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+        <div class="flex justify-content-between  auth__button--container mt-3">
+          <p-button (click)="prevStep()" label="Back"></p-button>
+          <p-button type="submit" label="Create Account"></p-button>
+        </div>
+      </form>
+      }
+    </div>
+    <div class="auth__image--container">
+      <img src="/images/login.jpg" alt="signup image" class="auth__image" />
+    </div>
+  </div>
+</div>
+}

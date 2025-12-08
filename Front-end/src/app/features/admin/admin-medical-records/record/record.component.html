@@ -1,0 +1,124 @@
+@if (record) {
+<div class="record-dialog">
+  <article class="record-card">
+    <!-- Header -->
+    <header class="record-card__header">
+      <div class="record-card__patient">
+        <div class="record-card__avatar">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <div>
+          <p class="record-card__label">Patient</p>
+          <h3 class="record-card__name">
+            {{ record.patientName || "Unknown patient" }}
+          </h3>
+        </div>
+      </div>
+
+      <div class="record-card__meta">
+        <span class="record-card__badge">
+          {{ record.recordType || "Medical Record" }}
+        </span>
+
+        <span
+          class="record-card__status"
+          [ngClass]="
+            record.isFinialize
+              ? 'record-card__status--final'
+              : 'record-card__status--draft'
+          "
+        >
+          {{ record.isFinialize ? "Finalized" : "Draft" }}
+        </span>
+      </div>
+    </header>
+
+    <!-- Dates -->
+    <section class="record-card__section record-card__section--light">
+      <div class="record-card__dates">
+        <div class="record-card__date-item">
+          <span class="record-card__label">Record Date</span>
+          <span class="record-card__value">
+            {{ record.recordDate | date : "yyyy-MM-dd HH:mm" }}
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vitals -->
+    <section class="record-card__section">
+      <h4 class="record-card__section-title">Vitals</h4>
+
+      <div class="record-card__vitals">
+        <div class="record-card__vital-item">
+          <span class="record-card__label">Blood Pressure</span>
+          <span class="record-card__value">
+            {{
+              record.vitalBp ||
+                (record.bpSystolic && record.bpDiastolic
+                  ? record.bpSystolic + "/" + record.bpDiastolic
+                  : "N/A")
+            }}
+          </span>
+        </div>
+
+        <div class="record-card__vital-item">
+          <span class="record-card__label">Temperature</span>
+          <span class="record-card__value">
+            {{ record.temperature || "N/A" }} °C
+          </span>
+        </div>
+
+        <div class="record-card__vital-item">
+          <span class="record-card__label">Heart Rate</span>
+          <span class="record-card__value">
+            {{ record.heartRate || "N/A" }} bpm
+          </span>
+        </div>
+
+        <div class="record-card__vital-item">
+          <span class="record-card__label">Weight</span>
+          <span class="record-card__value">
+            {{ record.weight || "N/A" }} kg
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Details -->
+    <section class="record-card__section">
+      <h4 class="record-card__section-title">Details</h4>
+
+      <div class="record-card__details-grid">
+        <div class="record-card__detail">
+          <span class="record-card__label">Symptoms</span>
+          <p class="record-card__text">
+            {{ record.symptoms || "No symptoms recorded." }}
+          </p>
+        </div>
+
+        <div class="record-card__detail">
+          <span class="record-card__label">Diagnosis</span>
+          <p class="record-card__text">
+            {{ record.diagnosis || "No diagnosis recorded." }}
+          </p>
+        </div>
+
+        <div class="record-card__detail">
+          <span class="record-card__label">Treatment Plan</span>
+          <p class="record-card__text">
+            {{ record.treatmentPlan || "No treatment plan recorded." }}
+          </p>
+        </div>
+
+        <div class="record-card__detail record-card__detail--full">
+          <span class="record-card__label">Notes</span>
+          <p class="record-card__text">
+            {{ record.notes || "No additional notes." }}
+          </p>
+        </div>
+      </div>
+    </section>
+  </article>
+</div>
+}

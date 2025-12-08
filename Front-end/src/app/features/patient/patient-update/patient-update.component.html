@@ -1,0 +1,163 @@
+<div class="patient-update">
+  <div class="patient-update__card">
+    <header class="patient-update__header">
+      <h2 class="patient-update__title">Edit Profile</h2>
+      <p class="patient-update__subtitle">
+        Update your personal information and emergency contacts.
+      </p>
+    </header>
+
+    <form [formGroup]="patientForm" class="patient-update__form">
+      <div class="patient-update__grid">
+        <!-- First Name -->
+        <div class="patient-update__row">
+          <label class="patient-update__label">First Name</label>
+          <input class="patient-update__input" formControlName="firstName" />
+
+          @if (patientForm.get('firstName')?.touched &&
+          patientForm.get('firstName')?.invalid) {
+          <div class="patient-update__error">
+            @if (patientForm.get('firstName')?.errors?.['required']) {
+            <span>First Name is required</span>
+            } @if (patientForm.get('firstName')?.errors?.['maxlength']) {
+            <span>Max 20 characters</span>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Last Name -->
+        <div class="patient-update__row">
+          <label class="patient-update__label">Last Name</label>
+          <input class="patient-update__input" formControlName="lastName" />
+
+          @if (patientForm.get('lastName')?.touched &&
+          patientForm.get('lastName')?.invalid) {
+          <div class="patient-update__error">
+            @if (patientForm.get('lastName')?.errors?.['required']) {
+            <span>Last Name is required</span>
+            } @if (patientForm.get('lastName')?.errors?.['maxlength']) {
+            <span>Max 20 characters</span>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Date of Birth -->
+        <div class="patient-update__row">
+          <label class="patient-update__label">Date of Birth</label>
+          <input
+            type="date"
+            class="patient-update__input"
+            formControlName="dateOfBirth"
+          />
+
+          @if (patientForm.get('dateOfBirth')?.touched &&
+          patientForm.get('dateOfBirth')?.invalid) {
+          <div class="patient-update__error">
+            @if (patientForm.get('dateOfBirth')?.errors?.['required']) {
+            <span>Date of Birth is required</span>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Gender -->
+        <div class="patient-update__row">
+          <label class="patient-update__label">Gender</label>
+
+          <select class="patient-update__input" formControlName="gender">
+            <option value="" disabled>Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+
+          @if (patientForm.get('gender')?.touched &&
+          patientForm.get('gender')?.invalid) {
+          <div class="patient-update__error">
+            @if (patientForm.get('gender')?.errors?.['required']) {
+            <span>Gender is required</span>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Address (full width) -->
+        <div class="patient-update__row patient-update__row--full">
+          <label class="patient-update__label">Address</label>
+          <input class="patient-update__input" formControlName="address" />
+
+          @if (patientForm.get('address')?.touched &&
+          patientForm.get('address')?.invalid) {
+          <div class="patient-update__error">
+            @if (patientForm.get('address')?.errors?.['required']) {
+              <span>Address is required</span>
+            }
+            @if (patientForm.get('address')?.errors?.['maxlength']) {
+            <span>Max 500 characters</span>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Emergency Contact Name -->
+        <div class="patient-update__row">
+          <label class="patient-update__label">Emergency Contact Name</label>
+          <input
+            class="patient-update__input"
+            formControlName="emergencyContactName"
+          />
+
+          @if (patientForm.get('emergencyContactName')?.touched &&
+          patientForm.get('emergencyContactName')?.invalid) {
+          <div class="patient-update__error">
+            @if (patientForm.get('emergencyContactName')?.errors?.['required']) {
+              <span>Emergency Contact Name is required</span>
+            }
+            @if (patientForm.get('emergencyContactName')?.errors?.['maxlength'])
+            {
+            <span>Max 100 characters</span>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Emergency Contact Phone -->
+        <div class="patient-update__row">
+          <label class="patient-update__label">Emergency Contact Phone</label>
+          <input
+            class="patient-update__input"
+            formControlName="emergencyContactPhone"
+          />
+
+          @if (patientForm.get('emergencyContactPhone')?.touched &&
+          patientForm.get('emergencyContactPhone')?.invalid) {
+          <div class="patient-update__error">
+            @if (patientForm.get('emergencyContactPhone')?.errors?.['required']) {
+              <span>Emergency Contact Phone is required</span>
+            }
+            @if (patientForm.get('emergencyContactPhone')?.errors?.['pattern']) {
+              <span>
+                Phone must be 010/011/012 with or without +2  
+                (Example: +201092717902 or 01092717902)
+              </span>
+            }
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="patient-update__actions">
+        <button
+          type="button"
+          class="patient-update__save-btn"
+          (click)="saveChanges()"
+          >
+          <!-- [disabled]="patientForm.invalid" -->
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

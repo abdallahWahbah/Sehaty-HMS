@@ -1,0 +1,34 @@
+﻿namespace Sehaty.APIs.Controllers
+{
+    [Authorize(Roles = "Admin")]
+    public class RolesController(IRoleManagementService roleService) : ApiBaseController
+    {
+        [HttpPost("ChangeUserRole")]
+        public async Task<IActionResult> ChangeUserRole(ChangeUserRoleDto model)
+        {
+            try
+            {
+                var result = await roleService.ChangeUserRoleAsync(model.UserId, model.NewRoleId);
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpGet("GetUserRole/{userId}")]
+        public async Task<IActionResult> GetUserRole(int userId)
+        {
+            try
+            {
+                var result = await roleService.GetUserRoleAsync(userId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+    }
+}

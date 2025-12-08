@@ -1,0 +1,620 @@
+// ====== Base tokens (محلية للـ component ده) ======
+$primary: #252b61;
+$primary-soft: #4b56a3;
+$text-main: #1f2933;
+$text-muted: #6b7280;
+$bg-soft: #f5f6ff;
+$shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+$radius-lg: 1.4rem;
+
+// ====== Dashboard title ======
+.dashboard__title {
+  margin: 4rem auto 2rem;
+  max-width: 110rem;
+  padding: 0 2rem;
+
+  &-main {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: $primary;
+    margin: 0 0 0.4rem;
+  }
+
+  &-sub {
+    font-size: 1.4rem;
+    color: $primary-soft;
+    margin: 0;
+  }
+}
+
+// ====== Wrapper للقائمة ======
+.prescriptions-list {
+  max-width: 110rem;
+  margin: 0 auto 4rem;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+// ====== Loading & Empty States ======
+.loading-state,
+.empty-state {
+  max-width: 110rem;
+  margin: 3rem auto 4rem;
+  padding: 0 2rem;
+  text-align: center;
+
+  p {
+    font-size: 1.4rem;
+    color: $text-muted;
+    margin: 0.4rem 0 0;
+  }
+
+  i {
+    font-size: 3rem;
+    color: $primary-soft;
+    margin-bottom: 0.6rem;
+  }
+}
+
+.loading-state p {
+  color: $primary-soft;
+}
+
+// ====== Prescription Card ======
+.prescription-card {
+  background: #ffffff;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  border: 1px solid rgba(37, 43, 97, 0.08);
+  padding: 1.8rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+
+  // ==== Header ====
+  &__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) auto;
+    gap: 1.4rem;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: flex-start;
+    }
+  }
+
+  &__id {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: $primary;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: flex-start;
+  }
+
+  &__label {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $primary-soft;
+    margin: 0;
+  }
+
+  &__value {
+    font-size: 1.4rem;
+    color: $text-main;
+    font-weight: 500;
+  }
+
+  // ==== Status pill ====
+  .status-pill {
+    padding: 0.4rem 1.2rem;
+    border-radius: 999px;
+    background: $bg-soft;
+    color: $primary-soft;
+    font-size: 1.2rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  // ==== Body ====
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  &__row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  // ==== Medications block ====
+  &__meds-block {
+    margin-top: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  // صف العنوان + الزرار
+  &__meds-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  // ===== Medications table =====
+  &__meds-table {
+    margin-top: 0.4rem;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    background: #f9fafb;
+  }
+
+  &__meds-header,
+  &__meds-row {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 1.2fr 1.2fr;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.3rem;
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__meds-header {
+    background: #eef2ff;
+    font-weight: 600;
+    color: $primary-soft;
+  }
+
+  &__meds-row {
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+
+    &:nth-child(2n) {
+      background: #f9fafb;
+    }
+  }
+
+  // ==== Actions buttons (AI + Download) ====
+  &__footer {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  &__btn-download,
+  &__btn-ai {
+    margin-top: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-radius: 999px;
+    padding: 0.8rem 1.8rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(25, 39, 79, 0.25);
+    transition: 0.2s ease all;
+
+    i {
+      font-size: 1.4rem;
+    }
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(25, 39, 79, 0.4);
+    }
+  }
+
+  &__btn-download {
+    background: linear-gradient(135deg, $primary, $primary-soft);
+    color: #ffffff;
+  }
+
+  &__btn-ai {
+    background: #ffffff;
+    color: $primary;
+    border: 1px solid rgba(37, 43, 97, 0.18);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
+
+    &:hover {
+      background: #f5f6ff;
+    }
+  }
+}
+
+// ====== زرار صغير جوه سكشن الأدوية ======
+.small-btn {
+  padding: 0.5rem 1.4rem !important;
+  font-size: 1.2rem !important;
+  box-shadow: 0 4px 12px rgba(25, 39, 79, 0.2) !important;
+
+  i {
+    font-size: 1.2rem !important;
+  }
+}
+
+// ====== Responsive tweaks ======
+@media (max-width: 768px) {
+  .prescriptions-list {
+    padding: 0 1.4rem;
+  }
+
+  .prescription-card__footer {
+    justify-content: stretch;
+
+    .prescription-card__btn-download,
+    .prescription-card__btn-ai {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .prescription-card__meds-header,
+  .prescription-card__meds-row {
+    grid-template-columns: 1.8fr 1.2fr 1.2fr 1.2fr;
+  }
+
+  .prescription-card__meds-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .small-btn {
+      align-self: stretch;
+      justify-content: center;
+      width: 100%;
+      text-align: center;
+    }
+  }
+}
+
+// ========== AI Modal Styles ==========
+.ai-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.6rem;
+  z-index: 1000;
+}
+
+.ai-modal {
+  width: 100%;
+  max-width: 64rem;
+  max-height: 80vh;
+  background: #ffffff;
+  border-radius: 1.6rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.4);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// Header
+.ai-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.6rem 2rem 1.2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ai-modal__title-block {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ai-modal__icon {
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, $primary, $primary-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+
+  i {
+    font-size: 1.6rem;
+  }
+}
+
+.ai-modal__title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: $primary;
+}
+
+.ai-modal__subtitle {
+  margin: 0.3rem 0 0;
+  font-size: 1.3rem;
+  color: $text-muted;
+}
+
+.ai-modal__close {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 999px;
+  color: $text-muted;
+  transition: 0.15s ease all;
+
+  i {
+    font-size: 1.5rem;
+  }
+
+  &:hover {
+    background: #f3f4ff;
+    color: $primary;
+  }
+}
+
+// Body
+.ai-modal__body {
+  padding: 1.4rem 2rem 1.8rem;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.ai-modal__loading,
+.ai-modal__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  text-align: center;
+
+  p {
+    font-size: 1.3rem;
+    color: $text-muted;
+    margin: 0;
+  }
+
+  i {
+    font-size: 2rem;
+    color: $primary-soft;
+  }
+}
+
+.ai-modal__spinner {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 3px solid rgba(79, 70, 229, 0.2);
+  border-top-color: $primary-soft;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ai-modal__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  font-size: 1.2rem;
+
+  p {
+    margin: 0;
+    color: $text-muted;
+
+    span {
+      color: $text-muted;
+    }
+
+    strong {
+      color: $text-main;
+      margin-left: 0.2rem;
+    }
+  }
+}
+
+.ai-modal__content {
+  border-radius: 1rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 1.2rem 1.4rem;
+
+  // RTL للمحتوى النصي (نتائج الـ AI بالعربي)
+  direction: rtl;
+  text-align: right;
+}
+
+.ai-modal__text {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.6;
+  color: $text-main;
+  white-space: pre-wrap;
+  font-family: "Tajawal", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+.ai-modal__meds {
+  h4 {
+    margin: 0 0 0.6rem;
+    font-size: 1.4rem;
+    color: $primary;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  li {
+    font-size: 1.25rem;
+    color: $text-main;
+
+    span {
+      margin-left: 0.4rem;
+      color: $text-muted;
+      font-size: 1.2rem;
+    }
+  }
+}
+
+// Footer
+.ai-modal__footer {
+  padding: 1.1rem 2rem 1.4rem;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ai-modal__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  background: rgba(79, 70, 229, 0.08);
+  color: $primary-soft;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ai-modal__badge-icon {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 999px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 1.05rem;
+  }
+}
+
+.ai-modal__footer-btn {
+  border-radius: 999px;
+  padding: 0.7rem 1.8rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  background: $primary;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(25, 39, 79, 0.3);
+  transition: 0.18s ease all;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 26px rgba(25, 39, 79, 0.45);
+  }
+}
+
+@media (max-width: 640px) {
+  .ai-modal {
+    max-height: 88vh;
+  }
+
+  .ai-modal__body {
+    padding-inline: 1.4rem;
+  }
+
+  .ai-modal__footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+
+    .ai-modal__footer-btn {
+      width: 100%;
+    }
+
+    .ai-modal__badge {
+      justify-content: center;
+      width: 100%;
+    }
+  }
+}
+
+// 🌈 Vibrant Rainbow Animated Border
+.rainbow-border {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+  border-radius: 999px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 2px; // سمك البوردر
+    border-radius: inherit;
+    background: linear-gradient(
+      120deg,
+      #ff0000,
+      #ff7a00,
+      #ffee00,
+      #00ff00,
+      #00ffee,
+      #007bff,
+      #8a00ff,
+      #ff00c8,
+      #ff0000
+    );
+    background-size: 300% 300%;
+    animation: rainbowMove 2.5s linear infinite;
+
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+
+    z-index: -1;
+  }
+}
+
+@keyframes rainbowMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

@@ -1,0 +1,97 @@
+<div class="patient-details">
+  <!-- Header -->
+  <div class="patient-details__header">
+    <div class="patient-details__avatar">
+      <span>
+        {{ patient.firstName || "P" | slice : 0 : 1 }}
+      </span>
+    </div>
+
+    <div class="patient-details__headline">
+      <h2 class="patient-details__name">
+        {{ patient.firstName }} {{ patient.lastName }}
+      </h2>
+
+      <p class="patient-details__meta">
+        <span class="badge badge--id">
+          Patient ID #{{ patient.patientId }}
+        </span>
+
+        <span class="badge badge--status">
+          {{ patient.status || "Active" }}
+        </span>
+      </p>
+
+      <p class="patient-details__sub">
+        Date of Birth:
+        <strong>{{ patient.dateOfBirth | date : "yyyy-MM-dd" }}</strong>
+        · Gender:
+        <strong>{{ patient.gender }}</strong>
+        · Blood Type:
+        <strong>{{ patient.bloodType || "N/A" }}</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="patient-details__grid">
+    <div class="patient-details__item">
+      <p class="item-label">National ID</p>
+      <p class="item-value">{{ patient.nationalId }}</p>
+    </div>
+
+    <div class="patient-details__item">
+      <p class="item-label">Allergies</p>
+      <p class="item-value">
+        {{ patient.allergies || "No recorded allergies" }}
+      </p>
+    </div>
+
+    <div class="patient-details__item">
+      <p class="item-label">Chronic Conditions</p>
+      <p class="item-value">
+        {{ patient.chrinicConditions || "No chronic conditions" }}
+      </p>
+    </div>
+
+    <div class="patient-details__item patient-details__item--wide">
+      <p class="item-label">Address</p>
+      <p class="item-value">
+        {{ patient.address || "Not specified" }}
+      </p>
+    </div>
+
+    <div class="patient-details__item">
+      <p class="item-label">Emergency Contact Name</p>
+      <p class="item-value">
+        {{ patient.emergencyContactName || "Not specified" }}
+      </p>
+    </div>
+
+    <div class="patient-details__item">
+      <p class="item-label">Emergency Contact Phone</p>
+      <p class="item-value">
+        {{ patient.emergencyContactPhone || "Not specified" }}
+      </p>
+    </div>
+
+    <div class="patient-details__item">
+      <p class="item-label">Registration Date</p>
+      <p class="item-value">
+        {{ patient.registrationDate | date : "yyyy-MM-dd HH:mm" }}
+      </p>
+    </div>
+
+    <div class="patient-details__item">
+      <p class="item-label">User ID</p>
+      <p class="item-value">{{ patient.userId }}</p>
+    </div>
+
+    <div class="patient-details__item">
+      <p class="item-label">Associated User</p>
+      <p class="item-value">
+        {{ patient.user?.username || "N/A" }}
+      </p>
+    </div>
+  </div>
+</div>

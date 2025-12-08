@@ -1,0 +1,123 @@
+<section id="dashboard" class="dashboard">
+  <!-- Title -->
+  <div class="dashboard__title">
+    <h2 class="dashboard__title-main">Dashboard</h2>
+    <p class="dashboard__title-sub">
+      Welcome to MediCare Hospital Management System
+    </p>
+  </div>
+
+  <!-- Stats cards -->
+  <div class="dashboard__stats">
+    <!-- 🩺 Total Patients -->
+    <div class="dashboard__card">
+      <div class="dashboard__card--header">
+        <div>
+          <p class="dashboard__card-label">Total Patients</p>
+          <p class="dashboard__card-value">{{ numOfPatients }}</p>
+        </div>
+        <div class="dashboard__card-icon">
+          <i class="fa-solid fa-user"></i>
+        </div>
+      </div>
+      <p class="dashboard__card-sub">Registered in the system</p>
+    </div>
+
+    <!-- 👨‍⚕️ Total Doctors -->
+    <div class="dashboard__card">
+      <div class="dashboard__card--header">
+        <div>
+          <p class="dashboard__card-label">Total Doctors</p>
+          <p class="dashboard__card-value">{{ numOfDoctors }}</p>
+        </div>
+        <div class="dashboard__card-icon">
+          <i class="fa-solid fa-user-doctor"></i>
+        </div>
+      </div>
+      <p class="dashboard__card-sub">Active doctors in hospital</p>
+    </div>
+
+    <!-- 📚 Total Departments -->
+    <div class="dashboard__card">
+      <div class="dashboard__card--header">
+        <div>
+          <p class="dashboard__card-label">Departments</p>
+          <p class="dashboard__card-value">{{ numOfDepartments }}</p>
+        </div>
+        <div class="dashboard__card-icon">
+          <i class="fa-solid fa-building-columns"></i>
+        </div>
+      </div>
+      <p class="dashboard__card-sub">Active hospital departments</p>
+    </div>
+
+    <!-- 🩺👨‍⚕️ Doctors Available Today -->
+    <div class="dashboard__card">
+      <div class="dashboard__card--header">
+        <div>
+          <p class="dashboard__card-label">Available Doctors Today</p>
+          <p class="dashboard__card-value">{{ availableDoctorsTodayCount }}</p>
+        </div>
+        <div class="dashboard__card-icon">
+          <i class="fa-solid fa-user-clock"></i>
+        </div>
+      </div>
+      <p class="dashboard__card-sub">Doctors with free slots available today</p>
+    </div>
+  </div>
+
+  <!-- Appointments list -->
+  <div class="dashboard__appointments">
+    <div class="dashboard__appointments-card">
+      <div class="dashboard__appointments-heading">
+        <div>
+          <h3>Today's Appointments</h3>
+          <p>Overview of your daily schedule</p>
+        </div>
+        <span class="dashboard__appointments-chip">
+          {{ numOfTodaysAppointments }} total
+        </span>
+      </div>
+
+      @if (todaysAppointments && todaysAppointments.length > 0) { @for
+      (appointment of todaysAppointments; track appointment.id) {
+      <div class="dashboard__appointments-item">
+        <div class="dashboard__appointments-item-info">
+          <p class="dashboard__appointments-patient">
+            {{ appointment.patientName }}
+          </p>
+          <p class="dashboard__appointments-doctor">
+            Dr. {{ appointment.doctorName }}
+          </p>
+        </div>
+
+        <div class="dashboard__appointments-item-time">
+          <p class="dashboard__appointments-time">
+            {{ appointment.appointmentDateTime | date : "hh:mm a" }}
+          </p>
+
+          <div
+            [ngClass]="{
+              'dashboard__appointments-item--confirmed':
+                appointment.status === 'Confirmed',
+              'dashboard__appointments-item--pending':
+                appointment.status === 'Pending',
+              'dashboard__appointments-item--delayed':
+                appointment.status !== 'Confirmed' &&
+                appointment.status !== 'Pending'
+            }"
+          >
+            {{ appointment.status }}
+          </div>
+        </div>
+      </div>
+      } } @else {
+      <div class="dashboard__appointments-empty">
+        <i class="fa-regular fa-face-smile"></i>
+        <p>No appointments for today</p>
+        <span>You're all caught up 🎉</span>
+      </div>
+      }
+    </div>
+  </div>
+</section>

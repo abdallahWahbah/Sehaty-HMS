@@ -1,0 +1,93 @@
+<section class="sidebar-layout">
+  <aside class="sidebar">
+    <div class="sidebar__container">
+      <img src="/images/logo.png" alt="" class="sidebar__logo" />
+
+      <nav class="sidebar__menu">
+        @if(userData.role === 'Patient'){
+          <div
+            class="sidebar__item"
+            routerLink="/patient/medicalRecords"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-solid fa-house"></i>
+            <p class="sidebar__label">Medical Records</p>
+          </div>
+        }
+
+        <div
+          class="sidebar__item"
+          [routerLink]="userData.role === 'Patient' ? '/patient/appointments' : '/reception/appointments'"
+          routerLinkActive="sidebar__item--active"
+        >
+          <i class="sidebar__icon fa-solid fa-user"></i>
+          <p class="sidebar__label">Appointments</p>
+        </div>
+
+        @if(userData.role === 'Patient'){
+          <div
+            class="sidebar__item"
+            routerLink="/patient/prescription"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-solid fa-prescription-bottle-medical"></i>
+            <p class="sidebar__label">Prescription</p>
+          </div>
+        }
+
+        @if(userData.role === 'Patient'){
+          <div
+            class="sidebar__item"
+            routerLink="/patient/details"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-solid fa-user-doctor"></i>
+            <p class="sidebar__label">Details</p>
+          </div>
+
+          <div
+            class="sidebar__item"
+            routerLink="/patient/payment"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-regular fa-calendar-check"></i>
+            <p class="sidebar__label">Payment</p>
+          </div>
+
+          <div
+            class="sidebar__item"
+            routerLink="/patient/feedback"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-solid fa-comment-dots"></i>
+            <p class="sidebar__label">FeedBack</p>
+          </div>
+  
+        }
+        @if(userData.role === 'Receptionist'){
+          <div
+            class="sidebar__item"
+            routerLink="/reception/new/appointment"
+            routerLinkActive="sidebar__item--active"
+          >
+            <i class="sidebar__icon fa-solid fa-user"></i>
+            <p class="sidebar__label">New Appointment</p>
+          </div>
+        }
+        <div
+          class="sidebar__item sidebar__item--logout"
+          (click)="logout()"
+          style="margin-top: auto"
+        >
+          <i class="sidebar__icon fa-solid fa-right-from-bracket"></i>
+          <p class="sidebar__label">Logout</p>
+        </div>
+
+      </nav>
+    </div>
+  </aside>
+
+  <main class="sidebar-layout__content">
+    <router-outlet></router-outlet>
+  </main>
+</section>

@@ -1,0 +1,64 @@
+.error-text {
+  color: #d32f2f;
+  font-size: 1.2rem;
+  margin-top: -1.3rem;
+  margin-bottom: 2rem;
+}
+.error-text-mt{
+    margin-top: 1rem !important;
+}
+
+.server-error {
+    background-color: #fdecea;  /* light red background */
+    color: #b71c1c;            /* dark red text */
+    border-left: 4px solid #f44336;  /* red accent line */
+    padding: 0.5rem 1rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.server-error span {
+    flex: 1;
+}
+
+.form-control.ng-invalid.ng-touched,
+.p-inputtext.ng-invalid.ng-touched,
+.p-component.ng-invalid.ng-touched,
+.p-component.ng-invalid.ng-touched
+{
+    border: 1px solid red !important;
+}
+
+
+// FORMS
+
+label{
+    font-size: 1.2rem !important;
+
+}
+input {
+    padding: 1rem;
+    font-size: 1.4rem;
+    color: var(--color-black-1) !important;
+
+    &:enabled:focus{
+        border-color: var(--color-primary);
+    }
+    &:focus + label {
+        color: var(--color-primary) !important;
+        font-size: 1.2rem !important;
+    }
+}
+.p-password, input{
+    width: 100% !important;
+}
+input{
+    padding: 1rem !important;
+    font-size: 1.4rem !important;
+}

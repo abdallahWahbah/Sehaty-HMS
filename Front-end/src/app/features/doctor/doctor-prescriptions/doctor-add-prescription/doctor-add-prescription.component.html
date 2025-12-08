@@ -1,0 +1,151 @@
+@if(isSubmitting){
+  <app-loading-spinner></app-loading-spinner>
+}@else {
+  <section class="prescription-add">
+  <!-- Error Alert -->
+  @if (serverError) {
+  <div class="prescription-add__alert prescription-add__alert--error">
+    {{ serverError }}
+  </div>
+  }
+
+  <article class="prescription-add__card">
+    <!-- Header -->
+    <header class="prescription-add__header">
+      <div>
+        <h3 class="prescription-add__title">Add Prescription</h3>
+        <p class="prescription-add__subtitle">
+          Create a new prescription, add medications and sign it digitally.
+        </p>
+      </div>
+
+      <div class="prescription-add__status-badge">
+        <span class="prescription-add__status-label">Current status</span>
+        <span class="prescription-add__status-value">
+          {{ prescription.status || "Draft" }}
+        </span>
+      </div>
+    </header>
+
+    <!-- General details -->
+    <section class="prescription-add__section">
+      <h4 class="prescription-add__section-title">General Details</h4>
+
+      <div class="prescription-add__grid">
+        <div class="prescription-add__field">
+          <label class="prescription-add__label">Status</label>
+          <select 
+            class="prescription-add__input"
+            [(ngModel)]="prescription.status"
+          >
+            <option value="" disabled selected>Select Status</option>
+            <option value="Active">Active</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+
+        <div class="prescription-add__field">
+          <label class="prescription-add__label">Digital Signature</label>
+          <input
+            class="prescription-add__input"
+            [(ngModel)]="prescription.digitalSignature"
+            placeholder="Doctor's digital signature"
+          />
+        </div>
+      </div>
+
+      <div class="prescription-add__field">
+        <label class="prescription-add__label">Special Instructions</label>
+        <textarea
+          class="prescription-add__textarea"
+          rows="3"
+          [(ngModel)]="prescription.specialInstructions"
+          placeholder="Add extra instructions for patient or pharmacy"
+        ></textarea>
+      </div>
+    </section>
+
+    <!-- Medications -->
+    <section class="prescription-add__section">
+      <div class="prescription-add__section-header">
+        <h4 class="prescription-add__section-title">Medications</h4>
+        <button
+          type="button"
+          class="prescription-add__btn prescription-add__btn--ghost"
+          (click)="addMedication()"
+        >
+          <i class="fa-solid fa-plus"></i>
+          <span>Add Medication</span>
+        </button>
+      </div>
+
+      <div class="prescription-add__medications-table">
+        <div class="prescription-add__medications-header">
+          <span>Name</span>
+          <span>Dosage</span>
+          <span>Frequency</span>
+          <span>Duration</span>
+          <span class="prescription-add__medications-header--right">
+            Remove
+          </span>
+        </div>
+
+        @for (med of prescription.medications; track $index; let i = $index) {
+        <div class="prescription-add__medications-row">
+          <input
+            class="prescription-add__input prescription-add__input--small"
+            [(ngModel)]="med.medicationName"
+            placeholder="Medication name"
+          />
+          <input
+            class="prescription-add__input prescription-add__input--small"
+            [(ngModel)]="med.dosage"
+            placeholder="Dosage"
+          />
+          <input
+            class="prescription-add__input prescription-add__input--small"
+            [(ngModel)]="med.frequency"
+            placeholder="Frequency"
+          />
+          <input
+            class="prescription-add__input prescription-add__input--small"
+            [(ngModel)]="med.duration"
+            placeholder="Duration"
+          />
+          <button
+            type="button"
+            class="prescription-add__icon-btn prescription-add__icon-btn--danger"
+            (click)="removeMedication(i)"
+            [disabled]="prescription.medications?.length === 1"
+          >
+            <i class="fa-regular fa-trash-can"></i>
+          </button>
+        </div>
+        }
+      </div>
+    </section>
+
+    <!-- Actions -->
+    <footer class="prescription-add__footer">
+      <div class="prescription-add__actions">
+        <button
+          type="button"
+          class="prescription-add__btn prescription-add__btn--primary"
+          (click)="savePrescription()"
+          [disabled]="isSubmitting"
+        >
+          Save Prescription
+        </button>
+
+        <button
+          type="button"
+          class="prescription-add__btn prescription-add__btn--secondary"
+          (click)="cancel()"
+        >
+          Cancel
+        </button>
+      </div>
+    </footer>
+  </article>
+</section>
+}

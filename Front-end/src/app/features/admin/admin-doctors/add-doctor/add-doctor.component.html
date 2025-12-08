@@ -1,0 +1,244 @@
+<section id="dashboard" class="dashboard">
+  <div class="dashboard__title">
+    <h2 class="dashboard__title-main">Add New Doctor</h2>
+
+    <div class="patient-edit">
+      <form [formGroup]="doctorForm" (ngSubmit)="onSubmit()">
+        @if (serverError) {
+        <div class="server-error" style="margin-bottom: 3rem">
+          <span>{{ serverError }}</span>
+        </div>
+        }
+
+        <div class="patient-edit__grid">
+          <div>
+            <p-floatlabel class="patient-edit__input auth__input--container">
+              <input 
+                  pInputText 
+                  id="firstName" 
+                  autocomplete="off" 
+                  formControlName="firstName"
+              />
+              <label for="firstName">First Name</label>
+            </p-floatlabel>
+              @if(doctorForm.get('firstName')?.touched && doctorForm.get('firstName')?.invalid){
+                <div class="error-text">
+                  @if(doctorForm.get('firstName')?.errors?.['required']){
+                    <span>first Name is required</span>
+                  }
+                  @if(doctorForm.get('firstName')?.errors?.['maxlength']){
+                    <span>Maximum 50 characters allowed</span>
+                  }
+                </div>
+              }
+          </div>
+
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="lastName" />
+              <label>Last Name</label>
+            </p-floatlabel>
+            @if(doctorForm.get('lastName')?.touched && doctorForm.get('lastName')?.invalid){
+                <div class="error-text">
+                  @if(doctorForm.get('lastName')?.errors?.['required']){
+                    <span>Last Name is required</span>
+                  }
+                  @if(doctorForm.get('lastName')?.errors?.['maxlength']){
+                    <span>Maximum 50 characters allowed</span>
+                  }
+                </div>
+              }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="userName" />
+              <label>userName</label>
+            </p-floatlabel>
+            @if(doctorForm.get('userName')?.touched && doctorForm.get('userName')?.invalid){
+                <div class="error-text">
+                  @if(doctorForm.get('userName')?.errors?.['required']){
+                    <span>userName is required</span>
+                  }
+                </div>
+              }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="email" />
+              <label>email</label>
+            </p-floatlabel>
+            @if(doctorForm.get('email')?.touched && doctorForm.get('email')?.invalid){
+                <div class="error-text">
+                    @if(doctorForm.get('email')?.errors?.['required']){
+                        <span>Email is required</span>
+                    }
+                </div>
+            }
+            @if(doctorForm.get('email')?.touched && doctorForm.get('email')?.invalid){
+                <div class="error-text">
+                    @if(doctorForm.get('email')?.errors?.['email']){
+                        <span>Enter a valid email</span>
+                    }
+                </div>
+            }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="phoneNumber" />
+              <label>Phone Number</label>
+            </p-floatlabel>
+            @if(doctorForm.get('phoneNumber')?.touched && doctorForm.get('phoneNumber')?.invalid){
+                <div class="error-text">
+                  @if (doctorForm.get('phoneNumber')?.errors?.['pattern']) {
+                    <span>
+                      Phone must be 010/011/012 with or without +2  
+                      (Example: +201092717902 or 01092717902)
+                    </span>
+                  }
+                  @if(doctorForm.get('phoneNumber')?.errors?.['required']){
+                    <span>phoneNumber is required</span>
+                  }
+                </div>
+              }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="password" type="password"/>
+              <label>Password</label>
+            </p-floatlabel>
+            @if(doctorForm.get('password')?.touched && doctorForm.get('password')?.invalid){
+              <div class="error-text">
+                  
+                  @if(doctorForm.get('password')?.errors?.['required']){
+                  <span>Password is required</span>
+                  }
+
+                  @if(doctorForm.get('password')?.errors?.['minlength']){
+                  <span>Minimum 6 characters</span>
+                  }
+
+                  @if(doctorForm.get('password')?.errors?.['pattern']){
+                  <span>
+                      Must contain:
+                      <br>• Uppercase letter
+                      <br>• Lowercase letter
+                      <br>• Number
+                      <br>• Special character
+                      <br>• No spaces
+                  </span>
+                  }
+
+              </div>
+            }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="confirmPassword" type="password"/>
+              <label>Confirm Password</label>
+            </p-floatlabel>
+            @if(doctorForm.get('confirmPassword')?.touched && doctorForm.get('confirmPassword')?.invalid){
+              <div class="error-text">
+                  @if(doctorForm.get('confirmPassword')?.errors?.['required']){
+                      <span>Confirm Password is required</span>
+                  }
+              </div>
+            }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="specialty" />
+              <label>Specialty</label>
+            </p-floatlabel>
+            @if(doctorForm.get('specialty')?.touched && doctorForm.get('specialty')?.invalid){
+                <div class="error-text">
+                  @if(doctorForm.get('specialty')?.errors?.['required']){
+                    <span>specialty is required</span>
+                  }
+                  @if(doctorForm.get('specialty')?.errors?.['maxlength']){
+                    <span>Maximum 100 characters allowed</span>
+                  }
+                </div>
+              }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="licenseNumber" />
+              <label>License Number</label>
+            </p-floatlabel>
+            @if(doctorForm.get('licenseNumber')?.touched && doctorForm.get('licenseNumber')?.invalid){
+                <div class="error-text">
+                  @if(doctorForm.get('licenseNumber')?.errors?.['required']){
+                    <span>licenseNumber is required</span>
+                  }
+                  @if(doctorForm.get('licenseNumber')?.errors?.['maxlength']){
+                    <span>Maximum 50 characters allowed</span>
+                  }
+                </div>
+              }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input" style="width: 100%">
+              <select
+                id="departmentId"
+                class="patient-edit__select"
+                formControlName="departmentId"
+                placeholder=" "
+                style="width: 100%"
+              >
+                <option value="" disabled>Select Department</option>
+                @for(dept of departments; track dept.id){
+                  <option [value]="dept.id">
+                    {{ dept.en_Name }}
+                  </option>
+                }
+              </select>
+            </p-floatlabel>
+            @if(doctorForm.get('departmentId')?.touched && doctorForm.get('departmentId')?.invalid){
+              <div class="error-text">
+                @if(doctorForm.get('departmentId')?.errors?.['required']){
+                  <span>Department is required</span>
+                }
+              </div>
+            }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="detectionPrice" type="number" />
+              <label>Detection Price</label>
+            </p-floatlabel>
+            @if(doctorForm.get('detectionPrice')?.touched && doctorForm.get('detectionPrice')?.invalid){
+              <div class="error-text">
+                @if(doctorForm.get('detectionPrice')?.errors?.['required']){
+                  <span>detectionPrice is required</span>
+                }
+              </div>
+            }
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="qualifications" />
+              <label>Qualifications</label>
+            </p-floatlabel>
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="yearsOfExperience" />
+              <label>Years Of Experience</label>
+            </p-floatlabel>
+          </div>
+          <div>
+            <p-floatlabel class="patient-edit__input">
+              <input pInputText formControlName="availabilityNotes" />
+              <label>Availability Notes</label>
+            </p-floatlabel>
+          </div>
+          
+        </div>
+
+        <div class="patient-edit__button-container">
+          <p-button type="submit" label="Add Doctor"></p-button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

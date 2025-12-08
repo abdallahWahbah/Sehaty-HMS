@@ -1,0 +1,153 @@
+.doctor-details {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.75rem 1.5rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #f7f9ff, #ffffff);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+}
+
+/* Header */
+.doctor-details__header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.doctor-details__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 20%,
+    #ffffff,
+    var(--color-primary, #4b56a3)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.18);
+}
+
+.doctor-details__avatar span {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.doctor-details__headline {
+  flex: 1;
+}
+
+.doctor-details__name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-primary, #1f2933);
+  margin-bottom: 0.35rem;
+}
+
+.doctor-details__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.badge--id {
+  background: rgba(37, 43, 97, 0.06);
+  color: var(--color-primary, #252b61);
+}
+
+.badge--spec {
+  background: rgba(59, 130, 246, 0.08);
+  color: #1d4ed8;
+}
+
+.doctor-details__sub {
+  font-size: 0.86rem;
+  color: #6b7280;
+}
+
+.doctor-details__sub strong {
+  color: var(--color-primary, #1f2933);
+  font-weight: 600;
+}
+
+/* Grid */
+.doctor-details__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem 1rem;
+}
+
+.doctor-details__item {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  padding: 0.9rem 0.9rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.doctor-details__item--wide {
+  grid-column: span 2;
+}
+
+/* Font sizes as requested */
+.item-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9ca3af;
+}
+
+.item-value {
+  font-size: 1.05rem;
+  color: var(--color-primary, #111827);
+  font-weight: 500;
+  word-break: break-word;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .doctor-details {
+    padding: 1.25rem 1rem;
+  }
+
+  .doctor-details__item--wide {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .doctor-details__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .doctor-details__avatar {
+    width: 56px;
+    height: 56px;
+  }
+
+  .doctor-details__name {
+    font-size: 1.2rem;
+  }
+}

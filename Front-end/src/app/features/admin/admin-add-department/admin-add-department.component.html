@@ -1,0 +1,65 @@
+<div class="department-add">
+  <div class="department-add__header">
+    <div class="department-add__icon">
+      <i class="fa-solid fa-hospital"></i>
+    </div>
+
+    <div class="department-add__header-text">
+      <h2 class="department-add__title">Add Department</h2>
+      <p class="department-add__subtitle">
+        Create a new medical department in the hospital
+      </p>
+    </div>
+  </div>
+
+  <form
+    class="department-add__form"
+    [formGroup]="addForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <!-- English Name -->
+    <div class="department-add__field">
+      <label class="department-add__label" for="en_Name"> English Name </label>
+      <input
+        id="en_Name"
+        class="department-add__input"
+        formControlName="en_Name"
+        placeholder="e.g. Cardiology"
+      />
+    </div>
+
+    <!-- Arabic Name -->
+    <div class="department-add__field">
+      <label class="department-add__label" for="ar_Name"> Arabic Name </label>
+      <input
+        id="ar_Name"
+        class="department-add__input"
+        formControlName="ar_Name"
+        placeholder="مثال: قسم القلب"
+      />
+    </div>
+
+    <!-- Description -->
+    <div class="department-add__field department-add__field--textarea">
+      <label class="department-add__label" for="description">
+        Description
+      </label>
+      <textarea
+        id="description"
+        class="department-add__textarea"
+        formControlName="description"
+        placeholder="Short description of the department, services and notes..."
+      ></textarea>
+    </div>
+
+    <div class="department-add__actions">
+      <button
+        type="submit"
+        class="department-add__submit-btn"
+        [disabled]="addForm.invalid"
+      >
+        Add Department
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,382 @@
+@import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap");
+
+$primary: #252b61;
+$primary-soft: #4b56a3;
+$text-main: #1f2933;
+$text-muted: #6b7280;
+$success: #22c55e;
+$danger: #ef4444;
+$bg-soft: #f5f6ff;
+$radius-lg: 1.4rem;
+$shadow-card: 0 20px 45px rgba(25, 39, 79, 0.18);
+
+.available-slots {
+  font-family: "Tajawal", system-ui, sans-serif;
+  padding: 2rem;
+  background: #f4f6f9;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+
+  &__panel {
+    width: 100%;
+    max-width: 820px;
+    background: #ffffff;
+    border-radius: 28px;
+    padding: 2.1rem 2.3rem;
+    box-shadow: $shadow-card;
+    border: 1px solid rgba(37, 43, 97, 0.08);
+  }
+
+  /* ===== States (Loading / Error / No Slots) ===== */
+  &__state {
+    text-align: center;
+    font-size: 1.4rem;
+    padding: 1.2rem 1rem;
+    border-radius: 1rem;
+    margin-bottom: 1.4rem;
+
+    &--loading {
+      background: #e5edff;
+      color: $primary-soft;
+      font-weight: 700;
+    }
+
+    &--error {
+      background: #ffe3e3;
+      color: $danger;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      font-weight: 700;
+    }
+
+    &--no-slots {
+      background: $bg-soft;
+      color: $text-muted;
+      border: 1px dashed rgba(37, 43, 97, 0.25);
+      font-weight: 600;
+    }
+  }
+
+  /* ===== Titles ===== */
+  &__title {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: $primary;
+    margin: 0 0 0.3rem;
+
+    &--slots {
+      margin-top: 1.6rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-size: 1.05rem;
+    color: $text-muted;
+  }
+
+  /* ===== Dates Section ===== */
+  &__dates {
+    margin-bottom: 1.8rem;
+    border-radius: 1.4rem;
+    background: radial-gradient(circle at top left, #f5f6ff, #ffffff 60%);
+    padding: 1.4rem 1.4rem 1.2rem;
+    border: 1px solid rgba(37, 43, 97, 0.08);
+  }
+
+  &__header {
+    margin-bottom: 1rem;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 0.5rem;
+  }
+
+  &__button {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.15rem;
+    min-width: 140px;
+    padding: 0.8rem 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(37, 43, 97, 0.18);
+    background: #f3f4ff;
+    cursor: pointer;
+    transition: 0.22s ease;
+    font-size: 0.95rem;
+    color: $text-main;
+    box-shadow: 0 8px 18px rgba(37, 43, 97, 0.08);
+
+    &-day {
+      font-weight: 700;
+      color: $primary;
+    }
+
+    &-status {
+      font-size: 0.85rem;
+      color: $text-muted;
+    }
+
+    &:hover:not(:disabled) {
+      background: #e0e4ff;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(37, 43, 97, 0.2);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    &--selected {
+      background: $primary;
+      border-color: $primary;
+      color: #ffffff;
+      box-shadow: 0 14px 28px rgba(37, 43, 97, 0.45);
+
+      .available-slots__button-day,
+      .available-slots__button-status {
+        color: #ffffff;
+      }
+    }
+  }
+
+  /* ===== Slots List ===== */
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  &__slot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2.3rem 1.1rem 0.9rem 1.1rem;
+    background: #ffffff;
+    border-radius: 1.1rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+    transition: 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
+      transform: translateY(-2px);
+    }
+  }
+
+  &__slot-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__time {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: $primary;
+  }
+
+  &__slot-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    &--booked {
+      background: rgba(239, 68, 68, 0.08);
+      color: #b91c1c;
+    }
+  }
+
+  &__book-btn {
+    padding: 0.55rem 1.2rem;
+    border-radius: 999px;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: $success;
+    color: #ffffff;
+    box-shadow: 0 12px 22px rgba(34, 197, 94, 0.5);
+    transition: 0.22s ease;
+
+    &:hover:not(:disabled) {
+      background: darken($success, 6%);
+      transform: translateY(-2px);
+      box-shadow: 0 15px 28px rgba(34, 197, 94, 0.65);
+    }
+
+    &:disabled {
+      background: #cbd5f5;
+      color: #4b5563;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    padding: 1.2rem;
+
+    &__panel {
+      padding: 1.6rem 1.4rem;
+      border-radius: 22px;
+    }
+
+    &__buttons {
+      gap: 0.5rem;
+    }
+
+    &__button {
+      min-width: 125px;
+    }
+
+    &__slot {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.6rem;
+    }
+
+    &__book-btn {
+      align-self: flex-end;
+    }
+  }
+}
+
+/* ===== Popup (success toast) ===== */
+.popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2000;
+  animation: slide-in 0.4s ease-out, fade-out 0.4s ease-in 2.1s forwards;
+
+  &__content {
+    background: $success;
+    color: #fff;
+    padding: 1rem 1.3rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    box-shadow: 0 4px 14px rgba(22, 163, 74, 0.6);
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  &__icon {
+    background: #fff;
+    color: $success;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(150%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+    transform: translateX(150%);
+  }
+}
+.reason-box {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1.5px solid #d3d7f1;
+  border-radius: 10px;
+  margin: 8px 0 12px;
+  font-size: 14px;
+  font-family: "Tajawal", sans-serif;
+  transition: 0.25s;
+
+  &:focus {
+    border-color: #252b61;
+    box-shadow: 0 0 4px rgba(37, 43, 97, 0.3);
+    outline: none;
+  }
+}
+/* ===========================
+   Reason for Visit Box
+   =========================== */
+
+.available-slots__reason {
+  margin: 0.75rem 0 1rem;
+  width: 100%;
+  position: relative;;
+  display: flex;
+  justify-content: space-between;
+}
+
+.available-slots__reason-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #3e3f5e;
+  margin-bottom: 0.35rem;
+  position: absolute;
+  top: -1.9rem;
+  left: .5rem;
+}
+
+/* 💙 Input بشكل طبي احترافي */
+.available-slots__reason-input {
+  width: 90% !important;
+  padding: 0.65rem 1rem;
+  border: 1.5px solid #d6d9e4;
+  border-radius: 999px; /* pill shape */
+  font-size: 0.9rem;
+  font-family: "Tajawal", sans-serif;
+  color: #252b61;
+  background: #f9faff;
+  transition: all 0.25s ease-in-out;
+  outline: none;
+
+  /* عندما يقف الماوس أو يبدأ يكتب */
+  &:hover {
+    border-color: #b8bdd3;
+    background: #ffffff;
+  }
+
+  /* فوكس طبي محترف */
+  &:focus {
+    border-color: #252b61;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 43, 97, 0.15);
+  }
+
+  /* Placeholder جميل */
+  &::placeholder {
+    color: #9ca3af;
+    font-size: 0.85rem;
+  }
+}
+input::placeholder {
+  font-size: 1.4rem !important;   // change to any size
+}

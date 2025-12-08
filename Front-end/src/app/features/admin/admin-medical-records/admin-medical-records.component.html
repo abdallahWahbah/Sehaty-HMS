@@ -1,0 +1,90 @@
+<section id="dashboard_medicalRecord" class="medical-records">
+  <!-- Header -->
+  <div class="medical-records__header">
+    <div>
+      <h2 class="medical-records__title">Medical Records</h2>
+      <p class="medical-records__subtitle">View patients medical records</p>
+    </div>
+  </div>
+
+  <!-- Records list -->
+  @if (records?.length && records.length > 0) {
+  <div class="medical-records__list">
+    @for (rec of records; track rec.id) {
+    <article class="medical-records__card">
+      <!-- Top info -->
+      <header class="medical-records__card-header">
+        <div class="medical-records__patient">
+          <p class="medical-records__patient-name">
+            Patient: <span>{{ rec.patientName || "Unknown" }}</span>
+          </p>
+          <p class="medical-records__diagnosis">
+            <span class="medical-records__label">Diagnosis:</span>
+            <span class="medical-records__diagnosis-text">
+              {{ rec.diagnosis || "No diagnosis" }}
+            </span>
+          </p>
+        </div>
+      </header>
+
+      <!-- Middle: symptoms + notes -->
+      <section class="medical-records__body">
+        <div class="medical-records__symptoms">
+          <span class="medical-records__label">Symptoms:</span>
+          <p class="medical-records__text">
+            {{ rec.symptoms || "No symptoms provided" }}
+          </p>
+        </div>
+
+        <div class="medical-records__notes">
+          <span class="medical-records__label">Notes:</span>
+          <p class="medical-records__text">
+            {{ rec.notes || "No notes" }}
+          </p>
+        </div>
+      </section>
+
+      <!-- Bottom: date + actions -->
+      <footer class="medical-records__footer">
+        <div class="medical-records__meta">
+          <div class="medical-records__meta-item">
+            <i class="fa-solid fa-calendar medical-records__meta-icon"></i>
+            <span class="medical-records__meta-text">
+              {{ rec.appointmentDateTime | date : "yyyy-MM-dd HH:mm" }}
+            </span>
+          </div>
+        </div>
+
+        <div class="medical-records__actions">
+          <button
+            class="medical-records__action-view appointments__person-actions-edit"
+            (click)="viewRecord(rec)"
+          >
+            <i class="fa-solid fa-eye"></i>
+            <span>View</span>
+          </button>
+        </div>
+      </footer>
+    </article>
+    }
+  </div>
+  } @else {
+  <div class="medical-records__empty">
+    <i class="fa-regular fa-folder-open"></i>
+    <p>No medical records found</p>
+    <span>There are no records to display yet.</span>
+  </div>
+  }
+
+  <!-- Dialog for record details -->
+  <div class="medical-records__dialog-wrapper">
+    <p-dialog
+      [modal]="true"
+      [(visible)]="visible"
+      [style]="{ width: '100rem', color: 'var(--color-primary)' }"
+      [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    >
+      <app-record [record]="selectedRecord"></app-record>
+    </p-dialog>
+  </div>
+</section>

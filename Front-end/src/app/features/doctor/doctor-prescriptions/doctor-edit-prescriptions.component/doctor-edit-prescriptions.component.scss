@@ -1,0 +1,460 @@
+// ====== Base colors ======
+$primary: #252b61;
+$primary-soft: #4b56a3;
+$bg-soft: #f5f6ff;
+$text-main: #1f2933;
+$text-muted: #6b7280;
+$danger: #dc2626;
+$radius-lg: 1.4rem;
+$shadow-card: 0 14px 40px rgba(25, 39, 79, 0.12);
+
+// ==========================
+// Container
+// ==========================
+
+.prescription-edit {
+  max-width: 110rem;
+  margin: 4rem auto;
+  padding: 0 2rem 4rem;
+
+  // ==========================
+  // ALERTS (ERROR / INFO)
+  // ==========================
+  &__alert {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1.2rem 1.6rem;
+    border-radius: 1rem;
+    font-size: 1.4rem;
+    margin-bottom: 1.6rem;
+
+    &--info {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    &--error {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+  }
+
+  &__alert-dot {
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  // ==========================
+  // LOADING (Doctor Orbit + Skeleton)
+  // ==========================
+  &__loading {
+    background: #ffffff;
+    border-radius: $radius-lg;
+    padding: 2.2rem;
+    box-shadow: $shadow-card;
+    border: 1px solid rgba(37, 43, 97, 0.08);
+    margin-bottom: 2rem;
+  }
+
+  &__loading-inner {
+    display: grid;
+    grid-template-columns: 26rem 1fr;
+    gap: 2.4rem;
+    align-items: center;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+  }
+
+  // Orbit wrapper
+  &__loading-visual {
+    position: relative;
+    width: 10rem;
+    height: 10rem;
+    margin-inline: auto;
+  }
+
+  // Orbit ring
+  &__loading-orbit {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 0.18rem dashed rgba($primary-soft, 0.6);
+    animation: orbit-spin 2.3s linear infinite;
+  }
+
+  // Floating doctor icon
+  &__loading-circle {
+    position: absolute;
+    inset: 1.6rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, #e8ecff 75%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $primary;
+    font-size: 3.4rem;
+    box-shadow: 0 10px 25px rgba(25, 39, 79, 0.28);
+    animation: float-up-down 3s ease-in-out infinite;
+  }
+
+  // Loading text
+  &__loading-title {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: $text-main;
+  }
+
+  &__loading-subtitle {
+    margin-top: 0.4rem;
+    font-size: 1.4rem;
+    color: $text-muted;
+  }
+
+  // Skeleton card
+  &__skeleton-card {
+    margin-top: 2rem;
+    padding: 1.6rem;
+    border-radius: 1.3rem;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+  }
+
+  &__skeleton-header {
+    margin-bottom: 1rem;
+  }
+
+  &__skeleton-line {
+    height: 1.1rem;
+    border-radius: 999px;
+    background: #e5e7eb;
+    margin-bottom: 0.6rem;
+
+    &--lg {
+      width: 40%;
+      max-width: 16rem;
+    }
+
+    &--md {
+      width: 30%;
+      max-width: 12rem;
+    }
+
+    &--sm {
+      width: 18%;
+      max-width: 7rem;
+    }
+  }
+
+  &__skeleton-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem;
+    margin-bottom: 1.4rem;
+  }
+
+  &__skeleton-block {
+    height: 4rem;
+    border-radius: 0.8rem;
+    background: #e5e7eb;
+  }
+
+  &__skeleton-row {
+    height: 3.2rem;
+    border-radius: 0.8rem;
+    background: #e5e7eb;
+    margin-top: 0.6rem;
+  }
+
+  &__skeleton-footer {
+    display: flex;
+    gap: 0.8rem;
+  }
+
+  &__skeleton-btn {
+    width: 10rem;
+    height: 3.6rem;
+    border-radius: 999px;
+    background: #e5e7eb;
+  }
+
+  // Shimmer effect
+  .shimmering {
+    animation: shimmer 1.6s infinite linear;
+    background: linear-gradient(90deg, #e5e7eb 0%, #f3f4f6 40%, #e5e7eb 80%);
+    background-size: 200% 100%;
+  }
+
+  // ==========================
+  // FORM CARD
+  // ==========================
+  &__card {
+    background: #ffffff;
+    border-radius: $radius-lg;
+    padding: 2rem 2.4rem;
+    box-shadow: $shadow-card;
+    border: 1px solid rgba(37, 43, 97, 0.08);
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-bottom: 1.4rem;
+    border-bottom: 1px dashed #e5e7eb;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: $primary;
+  }
+
+  &__id {
+    color: $primary-soft;
+    margin-left: 0.4rem;
+    font-weight: 600;
+  }
+
+  &__subtitle {
+    margin-top: 0.4rem;
+    color: $text-muted;
+    font-size: 1.3rem;
+  }
+
+  // Status badge
+  &__status-badge {
+    text-align: right;
+
+    @media (max-width: 768px) {
+      text-align: left;
+    }
+  }
+
+  &__status-label {
+    display: block;
+    font-size: 1.2rem;
+    color: $text-muted;
+  }
+
+  &__status-value {
+    display: inline-block;
+    background: $bg-soft;
+    color: $primary-soft;
+    padding: 0.4rem 1.2rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 1.3rem;
+  }
+
+  // ==========================
+  // GENERAL SECTION
+  // ==========================
+  &__section {
+    margin-top: 2.4rem;
+  }
+
+  &__section-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); // equal columns
+    gap: 1.6rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__label {
+    font-size: 1.2rem;
+    color: #9ca3af;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+  }
+
+  &__input {
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    border-radius: 0.9rem;
+    padding: 0.9rem 1rem;
+    font-size: 1.4rem;
+  }
+
+  &__textarea {
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    border-radius: 0.9rem;
+    padding: 1rem 1.2rem;
+    width: 100%; // SAME WIDTH as input
+    font-size: 1.4rem;
+    resize: vertical;
+    min-height: 7rem;
+  }
+
+  // ==========================
+  // MEDICATIONS
+  // ==========================
+  &__section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__medications-table {
+    margin-top: 1.6rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 1.1rem;
+    overflow: hidden;
+    background: #f9fafb;
+  }
+
+  &__medications-header,
+  &__medications-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 0.8fr;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    align-items: center;
+  }
+
+  &__medications-header {
+    background: #eef2ff;
+    color: $primary-soft;
+    font-weight: 700;
+  }
+
+  &__icon-btn {
+    width: 3.4rem;
+    height: 3.4rem;
+    border-radius: 999px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($danger, 0.1);
+    color: $danger;
+    cursor: pointer;
+
+    &:hover:not([disabled]) {
+      background: rgba($danger, 0.2);
+    }
+
+    &[disabled] {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  // ==========================
+  // BUTTONS (Save / Cancel)
+  // ==========================
+  &__footer {
+    margin-top: 2.4rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    padding: 1rem 2rem;
+    border-radius: 999px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+
+  &__btn--primary {
+    background: linear-gradient(135deg, $primary, $primary-soft);
+    color: #ffffff;
+    margin-right: 1.6rem; // spacing between Save & Cancel
+    box-shadow: 0 10px 28px rgba(37, 43, 97, 0.33);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px rgba(37, 43, 97, 0.45);
+    }
+  }
+
+  &__btn--secondary {
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    color: $primary;
+
+    &:hover {
+      background: #f1f4ff;
+    }
+  }
+
+  &__btn--ghost {
+    background: transparent;
+    border: 1px dashed $primary-soft;
+    color: $primary-soft;
+    padding: 0.9rem 1.4rem;
+
+    &:hover {
+      background: #eef2ff;
+    }
+  }
+
+  // ==========================
+  // ANIMATIONS
+  // ==========================
+  @keyframes orbit-spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes float-up-down {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -150% 0;
+    }
+    100% {
+      background-position: 150% 0;
+    }
+  }
+}
